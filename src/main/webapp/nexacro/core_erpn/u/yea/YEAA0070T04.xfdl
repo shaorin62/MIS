@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="YEAA0070T04" classname="YEAA0070T01" left="0" top="0" width="1024" height="493" titletext="연금저축">
+    <Layouts>
+      <Layout>
+        <Static id="Static12" taborder="6" text="퇴직연금공제" cssclass="sta_WF_Subtitle" left="9" top="12" width="127" height="21"/>
+        <Grid id="grdYEA_PENSAV1" taborder="0" useinputpanel="false" left="10" top="34" right="10" binddataset="dsYEA_PENSAV1" height="81" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="150"/>
+                <Column size="218"/>
+                <Column size="175"/>
+                <Column size="183"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="background: ;" cssclass="Cellgrd_WF_essential" text="퇴직연금구분"/>
+                <Cell col="1" displaytype="text" style="background: ;" cssclass="Cellgrd_WF_essential" text="금융기관"/>
+                <Cell col="2" displaytype="text" style="background: ;" cssclass="Cellgrd_WF_essential" text="계좌번호"/>
+                <Cell col="3" displaytype="text" style="background: ;" cssclass="Cellgrd_WF_essential" text="불입금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="combo" edittype="combo" style="align:left;background: ;" text="bind:YEA_PEN_STR001"/>
+                <Cell col="1" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_FINA_NAME" editimemode="hangul" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="2" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_STR003" editlimit="20" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_PEN_NUM001" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation" taborder="1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="119" top="12" width="168" height="21"/>
+        <Button id="btnAddRow01" taborder="2" text="행추가" onclick="btnAddRow01_OnClick" cssclass="btn_WF_Module" top="9" width="62" height="21" right="77"/>
+        <Button id="btnDelRow01" taborder="3" text="행삭제" onclick="btnDelRow01_OnClick" cssclass="btn_WF_Module" top="9" height="21" right="10" width="64"/>
+        <Static id="Static09" taborder="4" text="h 6" visible="false" left="8" top="28" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation04" taborder="5" cssclass="sta_WF_line" left="111" top="15" width="10" height="13"/>
+        <Static id="Static00" taborder="7" text="연금저축공제" cssclass="sta_WF_Subtitle" left="9" top="132" width="127" height="21"/>
+        <Grid id="grdYEA_PENSAV2" taborder="8" binddataset="dsYEA_PENSAV2" useinputpanel="false" left="10" top="154" right="10" height="81" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="150"/>
+                <Column size="218"/>
+                <Column size="175"/>
+                <Column size="183"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="연금저축구분"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="금융기관"/>
+                <Cell col="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="계좌번호"/>
+                <Cell col="3" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="불입금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="combo" edittype="combo" style="align:left;background: ;" text="bind:YEA_PEN_STR001"/>
+                <Cell col="1" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_FINA_NAME" editimemode="hangul" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="2" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_STR003" editlimit="20" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_PEN_NUM001" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation00" taborder="9" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="119" top="132" width="168" height="21"/>
+        <Button id="btnAddRow02" taborder="10" text="행추가" onclick="btnAddRow02_OnClick" cssclass="btn_WF_Module" top="129" right="77" width="62" height="21"/>
+        <Button id="btnDelRow02" taborder="11" text="행삭제" onclick="btnDelRow02_OnClick" cssclass="btn_WF_Module" top="129" right="10" width="64" height="21"/>
+        <Static id="Static01" taborder="12" text="h 6" visible="false" left="8" top="148" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation01" taborder="13" cssclass="sta_WF_line" left="111" top="135" width="10" height="13"/>
+        <Static id="Static02" taborder="14" text="주택마련저축공제" cssclass="sta_WF_Subtitle" left="9" top="252" width="127" height="21"/>
+        <Grid id="grdYEA_PENSAV3" taborder="15" binddataset="dsYEA_PENSAV3" useinputpanel="false" left="10" top="274" right="10" height="81" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="150"/>
+                <Column size="180"/>
+                <Column size="180"/>
+                <Column size="120"/>
+                <Column size="105"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="저축구분"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="금융기관"/>
+                <Cell col="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="계좌번호"/>
+                <Cell col="3" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="불입금액"/>
+                <Cell col="4" displaytype="text" style="backgroundimage: ;" text="2015.01.01 이후&#10;가입 여부"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="combo" edittype="combo" style="align:left;background: ;" text="bind:YEA_PEN_STR001" editlengthunit="ascii"/>
+                <Cell col="1" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_FINA_NAME" editimemode="hangul" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="2" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_STR003" editlimit="20" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_PEN_NUM001" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="4" celltype="none" displaytype="checkbox" edittype="expr:YEA_PEN_STR001 == '34'? 'none' : 'checkbox'" editfilter="none" style="align:center;background:white;background2:white;" text="bind:YEA_PEN_STR005" editlimit="-1" editlengthunit="utf16"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation02" taborder="16" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="143" top="252" width="168" height="21"/>
+        <Button id="btnAddRow03" taborder="17" text="행추가" onclick="btnAddRow03_OnClick" cssclass="btn_WF_Module" top="249" right="77" width="62" height="21"/>
+        <Button id="btnDelRow03" taborder="18" text="행삭제" onclick="btnDelRow03_OnClick" cssclass="btn_WF_Module" top="249" right="10" width="64" height="21"/>
+        <Static id="Static03" taborder="19" text="h 6" visible="false" left="8" top="268" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation03" taborder="20" cssclass="sta_WF_line" left="135" top="255" width="10" height="13"/>
+        <Static id="Static04" taborder="21" text="장기집합투자증권저축공제" cssclass="sta_WF_Subtitle" left="9" top="372" width="191" height="21"/>
+        <Grid id="grdYEA_PENSAV4" taborder="22" binddataset="dsYEA_PENSAV4" useinputpanel="false" left="10" top="394" right="10" height="81" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="240"/>
+                <Column size="240"/>
+                <Column size="240"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="금융기관"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="계좌번호"/>
+                <Cell col="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="불입금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_FINA_NAME" editimemode="hangul" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="1" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_PEN_STR003" editlimit="20" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="2" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_PEN_NUM001" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation05" taborder="23" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="199" top="372" width="168" height="21"/>
+        <Button id="btnAddRow04" taborder="24" text="행추가" onclick="btnAddRow04_OnClick" cssclass="btn_WF_Module" top="369" right="77" width="62" height="21"/>
+        <Button id="btnDelRow04" taborder="25" text="행삭제" onclick="btnDelRow04_OnClick" cssclass="btn_WF_Module" top="369" right="10" width="64" height="21"/>
+        <Static id="Static05" taborder="26" text="h 6" visible="false" left="8" top="388" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation06" taborder="27" cssclass="sta_WF_line" left="191" top="375" width="10" height="13"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.0"><![CDATA[this.btnAddRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavAddRow(obj,e);
+}
+
+this.btnDelRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavDelRow(obj,e);
+}
+
+this.btnAddRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavAddRow(obj,e);
+}
+
+this.btnDelRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavDelRow(obj,e);
+}
+
+this.btnAddRow03_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavAddRow(obj,e);
+}
+
+this.btnDelRow03_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavDelRow(obj,e);
+}
+
+this.btnAddRow04_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavAddRow(obj,e);
+}
+
+this.btnDelRow04_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_PensavDelRow(obj,e);
+}
+
+this.fn_HelpDialoge = function(obj:Grid, e:nexacro.GridMouseEventInfo)
+{
+	this.parent.parent.parent.fn_HelpDialoge(obj,e);
+}
+]]></Script>
+  </Form>
+</FDL>

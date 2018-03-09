@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TXMD0050">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : 기타소득지급명세 조회
+********************************************************************************/
+ -->
+    <select id="TXMD0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT  /* TXMD0050.SEARCH00.기타소득지급명세 조회  */
+                   A.CUST_CODE  /*소득자번호*/
+                  ,A.CUST_NAME  /*소득명 상호*/
+                  ,NVL(A.OWNR_NAME, A.CUST_NAME) AS OWNR_NAME /*소득자성명*/
+                  ,A.TELE_NUMB  /*소득자전화번호*/
+                  ,B.SUPP_DATE AS SUPP_DATE  /*지급일자*/
+                  ,B.PERS_YYMM  /*소득귀속년월*/
+                  ,A.RERN_NUMB  /*소득자주민번호*/
+                  ,A.BIZR_NUMB  /*소득자사업자번호*/
+                  ,A.FORI_GUBN  /*내외국인구분*/
+                  ,SF_GET_COMMNAME('RM10', A.FORI_GUBN) AS FORI_NAME    /*내외국인구분명*/
+                  ,B.WORK_DCNT  /*근무일수*/
+                  ,B.SUPP_KMAK  /*지급액*/
+                  ,B.GASE_TOKM  /*소득금액*/
+                  ,B.OUTL_KMAK  /*필요경비*/
+                  ,B.TAXX_RATE  /*세율*/
+                  ,B.INCM_TAXX  /*소득세*/
+                  ,B.INHA_TAXX  /*주민세*/
+                  ,B.SEKM_TOKM  /*원천징수계*/
+                  ,A.RESI_GUBN  /*소득자거주구분*/
+                  ,SF_GET_COMMNAME('RESI_GUBN', A.RESI_GUBN) AS RESI_NAME   /*소득자거주구분명*/
+                  ,SF_GET_COMMNAME('GITA_GUBN', B.GITA_GUBN) AS LABO_GUBN /*기타소득구분*/
+                  ,SF_GET_COMMNAMEREF('GITA_GUBN', B.GITA_GUBN, 1) AS GITA_GUBN
+                  ,B.REMK_NOTE AS GITA_MEMO
+            FROM TA_CUSTXM A
+              LEFT OUTER JOIN TA_INCMXM B ON A.CUST_CODE = B.CUST_CODE
+            WHERE B.INCM_TYCD = 'FA010020'
+              AND A.CUST_CODE = DECODE(#CUST_CODE#, NULL, A.CUST_CODE, #CUST_CODE#)
+              AND B.SUPP_DATE BETWEEN DECODE(#PAYY_DATE1#, NULL, '19000101', #PAYY_DATE1#) AND DECODE(#PAYY_DATE2#, NULL, '29991231', #PAYY_DATE2#)
+            ORDER BY B.SUPP_DATE, A.CUST_NAME, A.RERN_NUMB
+        ]]>
+    </select>
+</sqlMap>

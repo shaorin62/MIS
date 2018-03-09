@@ -1,0 +1,398 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="topFrame" classname="mnutop" inheritanceid="" position="absolute" onload="fn_FormLoadSetting" left="0" width="1264" top="0" height="50" scrollbars="none" cssclass="frm_TF_Bg">
+    <Layouts>
+      <Layout>
+        <Static id="staUserInfo" taborder="50" text="홍길동(0123456)" top="15" width="191" height="24" style="color:#959595ff;align:right middle;" right="168" visible="false"/>
+        <Static id="staLogoImg" taborder="1" left="75" top="14" width="104" height="21" cssclass="sta_TF_logo" tooltiptext="농심기획"/>
+        <Button id="btnHome" taborder="0" left="0" top="0" width="60" height="50" cssclass="btn_TF_home" tooltiptext="HOME" onclick="btnHome_onclick"/>
+        <Button id="btnMyinfo" taborder="4" cssclass="btn_TF_myinfo" top="12" width="34" height="27" right="67" tooltiptext="나의정보" onclick="btnMyinfo_onclick"/>
+        <Button id="btnMySetting" taborder="5" cssclass="btn_TF_set" top="12" width="34" height="27" right="67" tooltiptext="설정" onclick="btnMySetting_onclick" visible="false"/>
+        <Button id="btnSystemClose" taborder="6" cssclass="btn_TF_logout" top="12" width="34" height="27" right="20" onclick="fn_SystemLogout" tooltiptext="시스템닫기"/>
+        <Static id="Static03" taborder="46" text="w20" visible="false" left="1244" top="0" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Tab id="tabTopMenu" taborder="3" left="303" top="13" height="28" tabindex="0" scrollbars="autoboth" cssclass="tab_TF_menu" right="162" onlbuttonup="tabTopMenu_onlbuttonup">
+          <Tabpages>
+            <Tabpage id="tabpage1" text="공통관리"/>
+          </Tabpages>
+        </Tab>
+        <Combo id="cmbGBL_SYSTCD" taborder="2" left="195" top="10" width="115" height="28" cssclass="com_TF_system" ondropdown="cmbGBL_SYSTCD_ondropdown" onitemchanged="cmbGBL_SYSTCD_onitemchanged" tooltiptext="시스템선택"/>
+      </Layout>
+    </Layouts>
+    <InitValue/>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsGBL_SYSTCD</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTopMenu" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false"/>
+      <Dataset id="dsAllMenuList" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false"/>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	topFrame 메인 상단 프레임
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.14		jsh			Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+
+/**
+ * 공통 스크립트 Include
+ */
+include "script::lib_script_common.xjs"
+include "script::lib_script_theme.xjs"
+
+/**
+ *  화면 변수 선언
+ */
+this.iRow = 0; //Row Position Change 오동작 대응
+
+this.bShowHome = false;
+
+/**
+ * 최초 화면 로드 시 처리할 내용
+ */
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	// 다국어 처리에 따라
+	if (application.GBL_LANGCD != "ko") {
+		this.btnMySetting.set_tooltiptext("Setting");
+		this.btnMyinfo.set_tooltiptext("My Info");
+		this.btnSystemClose.set_tooltiptext("System Exit");
+	}
+	
+	// 솔루션일때는 테마설정 버튼 활성화
+	if (application._SVCENV == "SOLUTION") {
+		this.btnMyinfo.set_right(114);
+		this.btnMySetting.set_visible(true);
+	}
+	
+	// 화면 재정의
+	this.fnc_SetAdjustWindows();
+	
+	// 테마 설정 적용
+	this.fnc_ThemeSetting(this);
+	
+	// 사원정보 표시
+	var infoStr = application.GBL_USERNM + "(" + application.GBL_EMPLNO + ")";
+	this.staUserInfo.set_text(infoStr);
+	
+	this.fnc_GetComboDs(this.dsCombo);
+	
+	// 기본 탭 제거 - 넥사크로플랫폼 스튜디오에서 탭페이지를 모두 지울수 없어서 1개 남겨둠
+	for (var i = (this.tabTopMenu.components.length - 1); i >= 0; i--){
+		this.tabTopMenu.removeTabpage(i);
+	}
+	
+	// 메인(대시보드) 표시
+	this.fn_ShowHome(true);
+	
+	// 상단메뉴 초기화
+	this.fn_InitTopMenuTab();
+
+}
+
+
+/**
+ * Transaction 후 처리
+ */
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		this.alert(ErrorMSG);
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+
+}
+
+
+/**
+ * Transaction 후 Post Process!
+ */
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "GetCommCode") {
+		this.dsGBL_SYSTCD.filter("REF3_FILD == '1' || COMD_CDNM == '선택'");
+		
+		var arrParam = new Array();
+		arrParam[0] = "COMBO,cmbGBL_SYSTCD,dsGBL_SYSTCD,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+		this.cmbGBL_SYSTCD.set_value(application.GBL_SYSTCD);
+		
+	} else if (sMethodName == "Menusearch") {
+		
+		// 시스템 구분 변경시에도 메인 홈화면 표시
+		this.fn_ShowHome(true);
+		
+		// 메뉴 목록 처리
+		this.fn_InitTopMenuTab();
+		
+		// 메뉴는 모두 전체펼침
+		application.FRMLEFT.form.divLNBMenu.grdLeftMenu.set_treeinitstatus("expand,all");
+		// 트리의 시작 레벨을 조정
+		application.FRMLEFT.form.fn_SetMenuStartLevel(1);
+		
+		// 메뉴 목록이 숨겨져있으면 다시 표시
+		application.FRMLEFT.form.fn_ChangeMenuList("MENU");
+		
+		// 좌측 즐겨찾기 버튼 재정렬
+		application.FRMLEFT.form.fn_InitFavoriteBtn();
+		
+	}
+
+}
+
+
+/**
+ * 상단 메뉴 초기화
+ */
+this.fn_InitTopMenuTab = function() {
+	
+	// 전체 메뉴 목록 처리
+	this.dsAllMenuList.clearData();
+	this.dsAllMenuList.copyData(application.dsMenuList);
+
+	// 전체 메뉴리스트에서 상단 1레벨 메뉴 구성
+	this.dsTopMenu.clearData();
+	this.dsTopMenu.copyData(application.dsMenuList);
+	this.dsTopMenu.filter("MENU_LEVL == '1'");
+	var nCount = this.tabTopMenu.getTabpageCount();
+	
+	this.tabTopMenu.set_enableevent(false);
+	
+	for (nIdx = nCount; nIdx >= 0; nIdx--) {
+		this.tabTopMenu.removeTabpage(nIdx);
+	}
+	
+	this.tabTopMenu.set_enableevent(true);
+	
+	// 메뉴 탭 추가
+	for (var idx = 1; idx < this.dsTopMenu.rowcount + 1 ; idx++){
+		this.tabTopMenu.insertTabpage(this.dsTopMenu.getColumn(idx - 1, "SYST_CODE").trim(), idx, "", this.dsTopMenu.getColumn(idx - 1,"MENU_NAME").trim());
+	}
+	
+	// 전체 메뉴 추가!
+	this.tabTopMenu.insertTabpage("ALLMENU", 0, "", "전체메뉴");
+	
+	// 첫번째 메뉴 탭 선택!
+	this.tabTopMenu.set_tabindex(0);
+	
+}
+
+/**
+ * 상단 메뉴탭 클릭 시 이벤트 처리
+ */
+this.tabTopMenu_onlbuttonup = function(obj:Tab, e:nexacro.MouseEventInfo) {
+
+	var sChoosedMenu = this.tabTopMenu.components[obj.tabindex].id;
+	
+	// 전체업무를 선택한 경우와 다른 메뉴를 선택한 경우
+	if (sChoosedMenu == "ALLMENU") {
+		// 메뉴 레벨 조정
+		application.FRMLEFT.form.fn_SetMenuStartLevel(1);
+		
+		application.dsMenuList.filter("");
+	} else {
+	
+		// 메뉴 레벨 조정
+		application.FRMLEFT.form.fn_SetMenuStartLevel(2);
+		
+		// 메뉴 목록을 선택된 대분류 메뉴 하위만 표시되도록 필터
+		application.dsMenuList.filter("SYST_CODE=='" + sChoosedMenu + "' && MENU_IDXX != 'M" + sChoosedMenu + "'");	
+	}
+	
+	// 메뉴는 모두 전체펼침
+	application.FRMLEFT.form.divLNBMenu.grdLeftMenu.set_treeinitstatus("expand,all");
+	
+	// 메뉴 데이터셋 행 처리
+	application.dsMenuList.set_rowposition(0);
+	
+	// 메뉴목록 표시
+	application.FRMLEFT.form.fn_ChangeMenuList("MENU");
+	
+}
+
+
+/**
+ * 메인 상단 시스템구분 콤보 변경 시
+ */
+this.cmbGBL_SYSTCD_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo) {
+	
+	application.dsMenuList.filter(""); // 메뉴필터 초기화
+	var sChoosedVal = e.postvalue;
+	var sPrevVal = e.prevalue;
+	
+	application.GBL_SYSTCD = (sChoosedVal == "ALL" ? sPrevVal : sChoosedVal);
+
+	// 1. 선택된 시스템구분에 따라서 메뉴를 다시 조회
+	var sOutDataSet = "dsMenuList=dsMenuList dsMyMenuList=dsMyMenuList";
+	var sArgument    = " USER_IDXX=" + application.GBL_USERID;
+		sArgument	+= " SYST_CODE=" + (sChoosedVal == "ALL" ? application.GBL_SYSTCD + "||" + sChoosedVal : application.GBL_SYSTCD);
+	
+	this.fnc_TransactionCall(this, "ComMain", "Menusearch", "", sOutDataSet, sArgument, "fn_CallBack", false);
+	
+}
+
+
+/**
+ * 시스템구분 펼쳐질 때
+ */
+this.cmbGBL_SYSTCD_ondropdown = function(obj:Combo, e:nexacro.EventInfo) {
+	var ev = window.event || event;
+	
+	if (ev.ctrlKey && ev.shiftKey && (this.dsGBL_SYSTCD.getColumn(0, "COMD_CODE") != "ALL")) {
+		this.dsGBL_SYSTCD.insertRow(0);
+		this.dsGBL_SYSTCD.setColumn(0, "COMM_CODE", "SYST_CODE");
+		this.dsGBL_SYSTCD.setColumn(0, "COMD_CODE", "ALL");
+		this.dsGBL_SYSTCD.setColumn(0, "COMD_CDNM", "전체");
+	}
+
+}
+
+
+/**
+ * 시스템 종료 버튼 클릭 시 로그아웃 처리
+ */
+this.fn_SystemLogout = function (obj:Button, e:ClickEventInfo) {
+
+	if (!this.fnc_Message("TMM140", "실행중인 모든 화면을 닫고 시스템을 종료하시겠습니까?")) return;
+	
+	  this.fnc_TransactionCall(this, "ComLogin", "Logout", "", "", "", "fn_CallBack", false);
+	
+	
+	//실행중인 모든 화면 닫기
+	for (var i = (application.MAINWORK.all.length - 1); i >= 0; i--) {
+		try {
+			application.MAINWORK.all[i].form.close();
+		} catch (e) {}
+	}
+
+	//활성화된 화면이 없으면 시스템을 종료하고 있으면 종료처리 않음
+	if (application.MAINWORK.all.length < 1){
+			if (application.GBL_SERVERGUBUN == "LOCAL") {
+				application.exit();
+			}else{
+				window.top.close();
+			}
+	}
+
+}
+
+
+/**
+ * 홈버튼 클릭 시 메인 대시보드 표시
+ */
+this.btnHome_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.fn_ShowHome(!this.bShowHome);
+}
+
+/**
+ * 홈화면 대시보드를 보여줄것인지 말것인지 표시
+ */
+this.fn_ShowHome = function(bShow) {
+	
+	this.bShowHome = bShow;
+	
+	if (bShow) {
+		application.FRMBODY.set_separatesize("0,0,*");
+		
+		if (application.FRMDASHBOARD.form.divMainTop) {
+			this.fnc_RefreshChilds(application.FRMDASHBOARD.form.divMainTop);
+		}
+		
+		// 대시보드 보여질 때 카운트 재조회
+		if (application.FRMDASHBOARD.form.divMainBottom) {
+			application.FRMDASHBOARD.form.divMainBottom.divBottomArea.fn_GetItemCount();
+		}
+	} else {
+		application.FRMBODY.set_separatesize("*,34,0");
+	}
+
+}
+
+
+/**
+ * 화면 상단우측 나의정보 버튼 클릭 시 처리
+ */
+this.btnMyinfo_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	var cw = application.mainframe.width;
+	var ch = application.mainframe.height;
+	
+	var nTop = 25;
+	var nLeft = -187;
+	var nWidth = 305;
+	var nHeight = ch - 25;
+
+	var sPopupDivName 	= "_POPUPDIV_MYINFO_LAYER";
+	var oPopupDiv 	= this.components[sPopupDivName];
+	
+	// 개인정보 레이어 생성
+	if (oPopupDiv) {
+		
+		// 개인정보 레이어가 이미 표시되어 있으면 닫고 화면에서 제거..
+		if (oPopupDiv.isPopup()) {
+			oPopupDiv.closePopup();
+		}
+		
+		this.removeChild(oPopupDiv.name);
+		oPopupDiv.destroy(); 
+	}
+	
+	oPopupDiv = new nexacro.PopupDiv;
+	oPopupDiv.init(sPopupDivName, "absolute", cw - nWidth, nTop, nWidth, nHeight, null, null);
+	oPopupDiv.set_scrollbars("none");
+	oPopupDiv.set_tabstop(false);
+	oPopupDiv.set_async(false);
+	oPopupDiv.set_cssclass("pdiv_WF_Myinfo");
+	this.addChild(sPopupDivName, oPopupDiv);
+	oPopupDiv.show();
+	
+	oPopupDiv.set_url("main::myinfolayer.xfdl");
+	oPopupDiv.trackPopupByComponent(obj, nLeft, nTop, nWidth, nHeight);
+	
+}
+
+/**
+ * 나의정보 설정 버튼 클릭 시
+ */
+this.btnMySetting_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{	
+	
+	var sPopupId = "__POP_THEMESET";
+	var sFormUrl = "main::Themeset.xfdl";
+	
+	this.fnc_OpenPopup(sPopupId, sFormUrl, {}, "", "");
+	
+}
+]]></Script>
+  </Form>
+</FDL>

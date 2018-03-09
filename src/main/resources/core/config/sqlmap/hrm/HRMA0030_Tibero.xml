@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMA0030">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.10.21
+     내    용 : 부서변경 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRMA0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* HRMA0030.SEARCH00.부서변경 테이블 조회 */
+                   B.DEPT_LEVL
+                 , A.SMUL_SEQN /* 시뮬레이션회차 */
+                 , A.DEPT_CODE /* 부서코드 */
+                 , A.STDS_DATE /* 기준일 */
+                 , A.DTCH_CODE /* 부서변경코드 */
+                 , A.DEPT_NAME /* 부서명 */
+                 , A.ENGL_DTNM /* 영문부서명 */
+                 , A.ABBR_DTNM /* 약어부서명 */
+                 , A.DTGN_CODE /* 부서구분코드 */
+                 , A.DTGP_CODE /* 부서그룹코드 */
+                 , A.ENFC_CODE /* 사업장코드 */
+                 , C.OFFI_NAME /* 사업장명 */
+                 , SF_GET_DEPTNAME2(A.UPPR_DTCD, A.STDS_DATE ) AS UPPR_NAME
+                 , A.UPPR_DTCD /* 상위부서코드 */
+                 , A.SORT_ORDR /* 정렬순서 */
+                 , A.SECT_YSNO /* 소속여부 */
+            FROM TM_SIMUDT A
+            LEFT OUTER JOIN TABLE(SF_TM_DEPTXM(A.STDS_DATE)) B
+                         ON A.DEPT_CODE = B.DEPT_CODE
+            LEFT OUTER JOIN VI_BRCHXM C
+                         ON A.ENFC_CODE = C.ACCT_GUBN
+           WHERE B.REGR_DATE <= A.STDS_DATE
+             AND (B.WAST_DATE IS NULL OR B.WAST_DATE >= A.STDS_DATE)
+             AND  A.SMUL_SEQN = #SMUL_SEQN#
+           ORDER BY B.DEPT_FCOD
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.10.21
+     내    용 : 인사변경 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRMA0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* HRMA0030.SEARCH01.인사변경 테이블 조회 */
+               A.SMUL_SEQN  /* 시뮬레이션회차 */
+             , A.EMPL_NUMB  /* 사원번호 */
+             , SF_GET_EMPLNAME(A.EMPL_NUMB) AS EMPL_NAME
+             , A.DEPT_CODE  /* 부서코드 */
+             , SF_GET_DEPTNAME2(A.DEPT_CODE, B.STDS_DATE) AS DEPT_NAME
+             , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME   /* 직위코드 */
+             , A.DURS_CODE                                              /* 직책코드 */
+             , SF_GET_COMMNAME('DURS_CODE', A.DURS_CODE) AS DURS_NAME   /* 직책명 */
+             , A.DTMN_YSNO  /* 부서장여부 */
+          FROM TM_SIMUEM A
+          LEFT OUTER JOIN TM_SIMUDT B
+                       ON A.SMUL_SEQN = B.SMUL_SEQN
+                      AND A.DEPT_CODE = B.DEPT_CODE
+         WHERE A.SMUL_SEQN = #SMUL_SEQN#
+         ORDER BY A.DEPT_CODE
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.10.21
+     내    용 : 부서변경 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRMA0030.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE TM_SIMUDT /* HRMA0030.UPDATE00.부서변경 테이블 수정 */
+           SET STDS_DATE = #STDS_DATE#  /* 기준일 */
+             , DTCH_CODE = #DTCH_CODE#  /* 부서변경코드 */
+             , DEPT_NAME = #DEPT_NAME#  /* 부서명 */
+             , ENGL_DTNM = #ENGL_DTNM#  /* 영문부서명 */
+             , ABBR_DTNM = #ABBR_DTNM#  /* 약어부서명 */
+             , DTGN_CODE = #DTGN_CODE#  /* 부서구분코드 */
+             , DTGP_CODE = #DTGP_CODE#  /* 부서그룹코드 */
+             , ENFC_CODE = #ENFC_CODE#  /* 사업장코드 */
+             , UPPR_DTCD = #UPPR_DTCD#  /* 상위부서코드 */
+             , SORT_ORDR = #SORT_ORDR#  /* 정렬순서 */
+             , SECT_YSNO = #SECT_YSNO#  /* 소속여부 */
+             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+             , UPDT_DATE = SYSDATE      /* 수정일시 */
+         WHERE SMUL_SEQN = #SMUL_SEQN#  /* 시뮬레이션회차 */
+           AND DEPT_CODE = #DEPT_CODE#  /* 부서코드 */
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.10.21
+     내    용 : 인사변경 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRMA0030.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE TM_SIMUEM /* HRMA0030.UPDATE01.인사변경 테이블 수정 */
+           SET DEPT_CODE = #DEPT_CODE#  /* 부서코드 */
+             , OPOS_CODE = #OPOS_CODE#  /* 직위코드 */
+             , DURS_CODE = #DURS_CODE#  /* 직책코드 */
+             , DTMN_YSNO = #DTMN_YSNO#  /* 부서장여부 */
+             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+             , UPDT_DATE = SYSDATE      /* 수정일시 */
+         WHERE SMUL_SEQN = #SMUL_SEQN#  /* 시뮬레이션회차 */
+           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+    ]]>
+    </update>
+</sqlMap>

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="sample_excel_import" classname="sample_excel_import" left="0" top="0" width="1024" height="768" titletext="New Form">
+    <Layouts>
+      <Layout>
+        <Grid id="Grid00" cssclass="EXCEL" taborder="0" binddataset="dsList" useinputpanel="false" left="11" top="48" width="349" height="536">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="aa"/>
+                <Cell col="1" text="bb"/>
+                <Cell col="2" text="cc"/>
+                <Cell col="3" text="dd"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="normal" text="bind:aa"/>
+                <Cell col="1" edittype="normal" text="bind:bb"/>
+                <Cell col="2" edittype="normal" text="bind:cc"/>
+                <Cell col="3" edittype="normal" text="bind:dd"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="Button00" taborder="1" text="import" left="12" top="11" width="81" height="27" onclick="Button00_onclick"/>
+        <Static id="Static00" taborder="2" text="Dataset ColCnt = Excel ColCnt (Okay)" left="400" top="68" width="270" height="30"/>
+        <Static id="Static01" taborder="3" text="Dataset ColCnt &gt; Excel ColCnt (Okay)" left="400" top="92" width="270" height="30"/>
+        <Static id="Static02" taborder="4" text="Dataset ColCnt &lt; Excel ColCnt (Error)" left="400" top="116" width="270" height="30"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsList" firenextcount="0" reversesubsum="false" useclientlayout="false">
+        <ColumnInfo>
+          <Column id="aa" type="STRING" size="256"/>
+          <Column id="bb" type="STRING" size="256"/>
+          <Column id="cc" type="STRING" size="256"/>
+          <Column id="dd" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTemp" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false"/>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[include "script::lib_script_common.xjs"
+
+this.Button00_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+
+	this.dsList.clearData();
+	this.fnc_ExcelUpload("dsList","Sheet1","A2", "this.fn_ExcelSuccess");
+
+}
+
+this.fn_ExcelSuccess = function(obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+
+	this.objDsImport.clearData();
+	this.objDsImport.set_enableevent(false);
+	this.objDsImport.appendData(this.objDsImportTemp);
+	this.objDsImportTemp.clear();
+
+	/*
+	윗 스크립트와 하단 스크립트는 고정으로 사용하고
+	이곳에 후처리 프로세스를 넣는다.
+	*/
+
+	this.objDsImport.set_enableevent(true);
+	this.setWaitCursor(false);
+	this.fnc_Message("TMM125", "엑셀 업로드를 완료하였습니다.");
+
+}]]></Script>
+  </Form>
+</FDL>

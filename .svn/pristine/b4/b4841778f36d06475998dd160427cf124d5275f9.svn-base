@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                         
+<sqlMap namespace="BDMB0040">
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.08.23
+     내      용 : 부서별예산편성 조회
+********************************************************************************/ 
+-->
+    <select id="BDMB0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* BDMB0040.SEARCH00.부서별예산편성 조회 */
+                   A.ACCT_UNIT     /* 회계단위 */
+                 , A.BUDG_YEAR     /* 예산년도 */
+                 , A.CSTC_CODE     /* 코스트센터코드 */
+                 , SF_GET_CSTCNAME(A.CSTC_CODE, #BUDG_YEAR#) AS CSTC_NAME      /* 코스트센터명 */
+                 , A.BDSB_CODE     /* 예산과목코드 */
+                 , SF_GET_BDSBNAME(A.BDSB_CODE) AS BDSB_NAME /* 예산과목명 */
+                 , A.BUDG_ATAL     /* 예산금액_총계 */
+                 , NVL(A.BUDG_AT01, 0) + NVL(A.BUDG_AT02, 0) + NVL(A.BUDG_AT03, 0) AS BUDG_QT01     /* 예산금액_1분기 */
+                 , A.BUDG_AT01     /* 예산금액_1월 */
+                 , A.BUDG_AT02     /* 예산금액_2월 */
+                 , A.BUDG_AT03     /* 예산금액_3월 */
+                 , NVL(A.BUDG_AT04, 0) + NVL(A.BUDG_AT05, 0) + NVL(A.BUDG_AT06, 0) AS BUDG_QT02     /* 예산금액_2분기 */
+                 , A.BUDG_AT04     /* 예산금액_4월 */
+                 , A.BUDG_AT05     /* 예산금액_5월 */
+                 , A.BUDG_AT06     /* 예산금액_6월 */
+                 , NVL(A.BUDG_AT07, 0) + NVL(A.BUDG_AT08, 0) + NVL(A.BUDG_AT09, 0) AS BUDG_QT03     /* 예산금액_3분기 */
+                 , A.BUDG_AT07     /* 예산금액_7월 */
+                 , A.BUDG_AT08     /* 예산금액_8월 */
+                 , A.BUDG_AT09     /* 예산금액_9월 */
+                 , NVL(A.BUDG_AT10, 0) + NVL(A.BUDG_AT11, 0) + NVL(A.BUDG_AT12, 0) AS BUDG_QT04     /* 예산금액_4분기 */
+                 , A.BUDG_AT10     /* 예산금액_10월 */
+                 , A.BUDG_AT11     /* 예산금액_11월 */
+                 , A.BUDG_AT12     /* 예산금액_12월 */
+                 , A.REMK_NOTE     /* 비고메모 */
+              FROM TB_CPLDPT A      /* [부서별예산편성] */
+             WHERE A.BUDG_YEAR = #BUDG_YEAR#     /* 예산년도 */
+               AND A.ACCT_UNIT = #ACCT_UNIT#     /* 회계단위 */
+        ]]>
+            <isNotEmpty property="CSTC_CODE" prepend="AND">
+                A.CSTC_CODE = #CSTC_CODE#     /* 코스트센터코드 */
+            </isNotEmpty>
+            <isNotEmpty property="BDSB_CODE" prepend="AND">
+                A.BDSB_CODE = #BDSB_CODE#     /* 예산과목코드 */
+            </isNotEmpty>
+    </select>
+
+    
+<!-- 
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.07.27
+     내      용 : 부서별예산편성 저장
+********************************************************************************/
+-->
+    <insert id="BDMB0040.SAVE00" parameterClass="hashmap">
+        <![CDATA[ 
+        INSERT INTO TB_CPLDPT ( /* BDMB0040.SAVE00.부서별예산편성 저장 */ /* [부서별예산편성] */
+                    ACCT_UNIT        /* 회계단위 */
+                  , BUDG_YEAR        /* 예산년도 */
+                  , CSTC_CODE        /* 코스트센터코드 */
+                  , BDSB_CODE        /* 예산과목코드 */
+                  , BUDG_ATAL        /* 예산금액_총계 */
+                  , BUDG_AT01        /* 예산금액_1월 */
+                  , BUDG_AT02        /* 예산금액_2월 */
+                  , BUDG_AT03        /* 예산금액_3월 */
+                  , BUDG_AT04        /* 예산금액_4월 */
+                  , BUDG_AT05        /* 예산금액_5월 */
+                  , BUDG_AT06        /* 예산금액_6월 */
+                  , BUDG_AT07        /* 예산금액_7월 */
+                  , BUDG_AT08        /* 예산금액_8월 */
+                  , BUDG_AT09        /* 예산금액_9월 */
+                  , BUDG_AT10        /* 예산금액_10월 */
+                  , BUDG_AT11        /* 예산금액_11월 */
+                  , BUDG_AT12        /* 예산금액_12월 */
+                  , REMK_NOTE        /* 비고메모 */
+                  , INST_USID        /* 입력작업자 */
+                  , INST_DATE        /* 입력일시 */
+                  , UPDT_USID        /* 수정작업자 */
+                  , UPDT_DATE        /* 수정일시 */
+       ) VALUES (
+                    #ACCT_UNIT#       /* 회계단위 */
+                  , #BUDG_YEAR#       /* 예산년도 */
+                  , #CSTC_CODE#       /* 코스트센터코드 */
+                  , #BDSB_CODE#       /* 예산과목코드 */
+                  , NVL(#BUDG_ATAL#, 0)       /* 예산금액_총계 */
+                  , NVL(#BUDG_AT01#, 0) /* 예산금액_1월 */
+                  , NVL(#BUDG_AT02#, 0) /* 예산금액_2월 */
+                  , NVL(#BUDG_AT03#, 0) /* 예산금액_3월 */
+                  , NVL(#BUDG_AT04#, 0) /* 예산금액_4월 */
+                  , NVL(#BUDG_AT05#, 0) /* 예산금액_5월 */
+                  , NVL(#BUDG_AT06#, 0) /* 예산금액_6월 */
+                  , NVL(#BUDG_AT07#, 0) /* 예산금액_7월 */
+                  , NVL(#BUDG_AT08#, 0) /* 예산금액_8월 */
+                  , NVL(#BUDG_AT09#, 0) /* 예산금액_9월 */
+                  , NVL(#BUDG_AT10#, 0) /* 예산금액_10월 */
+                  , NVL(#BUDG_AT11#, 0) /* 예산금액_11월 */
+                  , NVL(#BUDG_AT12#, 0) /* 예산금액_12월 */
+                  , #REMK_NOTE#       /* 비고메모 */
+                  , #UPDT_USID#       /* 입력작업자 */
+                  , SYSDATE            /* 입력일시 */
+                  , #UPDT_USID#       /* 수정작업자 */
+                  , SYSDATE            /* 수정일시 */
+        )
+        ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.07.27
+     내      용 : 부서별예산편성 수정
+********************************************************************************/
+-->
+    <update id="BDMB0040.UPDATE00" parameterClass="hashmap">
+        <![CDATA[
+        UPDATE TB_CPLDPT                 /* BDMB0040.UPDATE00.부서별예산편성 수정 */ /* [부서별예산편성] */
+           SET BUDG_ATAL = NVL(#BUDG_ATAL#, 0)  /* 예산금액_총계 */
+             , BUDG_AT01 = NVL(#BUDG_AT01#, 0)  /* 예산금액_1월 */
+             , BUDG_AT02 = NVL(#BUDG_AT02#, 0)  /* 예산금액_2월 */
+             , BUDG_AT03 = NVL(#BUDG_AT03#, 0)  /* 예산금액_3월 */
+             , BUDG_AT04 = NVL(#BUDG_AT04#, 0)  /* 예산금액_4월 */
+             , BUDG_AT05 = NVL(#BUDG_AT05#, 0)  /* 예산금액_5월 */
+             , BUDG_AT06 = NVL(#BUDG_AT06#, 0)  /* 예산금액_6월 */
+             , BUDG_AT07 = NVL(#BUDG_AT07#, 0)  /* 예산금액_7월 */
+             , BUDG_AT08 = NVL(#BUDG_AT08#, 0)  /* 예산금액_8월 */
+             , BUDG_AT09 = NVL(#BUDG_AT09#, 0)  /* 예산금액_9월 */
+             , BUDG_AT10 = NVL(#BUDG_AT10#, 0)  /* 예산금액_10월 */
+             , BUDG_AT11 = NVL(#BUDG_AT11#, 0)  /* 예산금액_11월 */
+             , BUDG_AT12 = NVL(#BUDG_AT12#, 0)  /* 예산금액_12월 */
+             , REMK_NOTE = #REMK_NOTE#  /* 비고메모 */
+             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+             , UPDT_DATE = SYSDATE       /* 수정일시 */
+         WHERE ACCT_UNIT  = #ACCT_UNIT#  /* 회계단위 */
+           AND BUDG_YEAR  = #BUDG_YEAR#  /* 예산년도 */
+           AND CSTC_CODE  = #CSTC_CODE#  /* 코스트센터코드 */
+           AND BDSB_CODE  = #BDSB_CODE#  /* 예산과목코드 */
+        ]]>
+    </update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.07.27
+     내      용 : 부서별예산편성 삭제
+********************************************************************************/
+-->
+    <delete id="BDMB0040.DELETE00" parameterClass="hashmap">
+        <![CDATA[
+        DELETE FROM TB_CPLDPT            /* BDMB0040.DELETE00.부서별예산편성 삭제 */ /* [부서별예산편성] */
+         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위 */
+           AND BUDG_YEAR = #BUDG_YEAR#   /* 예산년도 */
+           AND CSTC_CODE = #CSTC_CODE#   /* 코스트센터코드 */
+           AND BDSB_CODE = #BDSB_CODE#   /* 예산과목코드 */
+        ]]>
+    </delete>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.12.21
+     내      용 : 부서별예산 복사
+********************************************************************************/
+-->
+    <insert id="BDMB0040.PROC00" parameterClass="hashmap">
+        <![CDATA[
+        BEGIN /* BDMB0040.PROC00 부서별예산 복사(금액은 복사하지 않는다) */
+        
+             DELETE FROM TB_CPLDPT           /* [부서별예산편성] */
+              WHERE ACCT_UNIT = #ACCT_UNIT#   /* 재무제표양식코드 */
+                AND BUDG_YEAR = #COPY_YEAR#   /* 예산년도 */
+               ;
+            
+             INSERT INTO TB_CPLDPT (  /* [부서별예산편성] */
+                         ACCT_UNIT        /* 회계단위 */
+                       , BUDG_YEAR        /* 예산년도 */
+                       , CSTC_CODE        /* 코스트센터코드 */
+                       , BDSB_CODE        /* 예산과목코드 */
+                       , BUDG_ATAL        /* 예산금액_총계 */
+                       , BUDG_AT01        /* 예산금액_1월 */
+                       , BUDG_AT02        /* 예산금액_2월 */
+                       , BUDG_AT03        /* 예산금액_3월 */
+                       , BUDG_AT04        /* 예산금액_4월 */
+                       , BUDG_AT05        /* 예산금액_5월 */
+                       , BUDG_AT06        /* 예산금액_6월 */
+                       , BUDG_AT07        /* 예산금액_7월 */
+                       , BUDG_AT08        /* 예산금액_8월 */
+                       , BUDG_AT09        /* 예산금액_9월 */
+                       , BUDG_AT10        /* 예산금액_10월 */
+                       , BUDG_AT11        /* 예산금액_11월 */
+                       , BUDG_AT12        /* 예산금액_12월 */
+                       , INST_USID        /* 입력작업자 */
+                       , INST_DATE        /* 입력일시 */
+                       , UPDT_USID        /* 수정작업자 */
+                       , UPDT_DATE        /* 수정일시 */
+            )
+            SELECT 
+                   A.ACCT_UNIT                  /* 회계단위 */
+                 , #COPY_YEAR# AS BUDG_YEAR     /* 예산년도 */
+                 , A.CSTC_CODE                  /* 코스트센터코드 */
+                 , A.BDSB_CODE                  /* 예산과목코드 */
+                 , 0 BUDG_ATAL                  /* 예산금액_총계 */
+                 , 0 BUDG_AT01                  /* 예산금액_1월 */
+                 , 0 BUDG_AT02                  /* 예산금액_2월 */
+                 , 0 BUDG_AT03                  /* 예산금액_3월 */
+                 , 0 BUDG_AT04                  /* 예산금액_4월 */
+                 , 0 BUDG_AT05                  /* 예산금액_5월 */
+                 , 0 BUDG_AT06                  /* 예산금액_6월 */
+                 , 0 BUDG_AT07                  /* 예산금액_7월 */
+                 , 0 BUDG_AT08                  /* 예산금액_8월 */
+                 , 0 BUDG_AT09                  /* 예산금액_9월 */
+                 , 0 BUDG_AT10                  /* 예산금액_10월 */
+                 , 0 BUDG_AT11                  /* 예산금액_11월 */
+                 , 0 BUDG_AT12                  /* 예산금액_12월 */
+                 , #UPDT_USID#  AS INST_USID    /* 입력작업자 */
+                 , SYSDATE      AS INST_DATE    /* 입력일시 */
+                 , #UPDT_USID#  AS UPDT_USID    /* 수정작업자 */
+                 , SYSDATE      AS UPDT_DATE    /* 수정일시 */
+              FROM TB_CPLDPT A              /* [부서별예산편성] */
+             WHERE A.ACCT_UNIT = #ACCT_UNIT#     /* 회계단위 */
+               AND A.BUDG_YEAR = #STDS_YEAR#     /* 예산년도 */
+            ;
+            
+        END;
+        ]]>
+    </insert>
+
+</sqlMap>

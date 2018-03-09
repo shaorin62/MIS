@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		  
+<sqlMap namespace="FAMB0050P01">
+<!-- 
+	/*******************************************************************************
+	     작  성  자 : 권미영
+	     작  성  일 : 2016.07.24
+	     내      용 : 전표변경내역조회
+    ********************************************************************************/
+-->
+	<select id="FAMB0050P01.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[
+        SELECT /* FAMB0050P01.SEARCH00.전표변경내역조회 */	
+        	   A.SLIP_NUMB                                 /* 전표번호 */ 
+        	 , A.LOGX_SEQX                                 /* 이력순번 */
+        	 , A.LOGX_GUBN                                 /* 이력구분 */
+             , A.SLIP_DATE                                 /* 전표일자(작성일자) */
+             , B.SLIP_LINE                                 /* 전표라인번호 */
+             , B.ACCT_INTL                                 /* 계정과목코드 */
+             , C.ACCT_NAME                                 /* 계정과목명 */
+             , DECODE(B.DRCR_GUBN, 'D', B.SLIP_AMNT, 0) AS SLIP_DAMT /* 차변금액 */
+             , DECODE(B.DRCR_GUBN, 'C', B.SLIP_AMNT, 0) AS SLIP_CAMT /* 대변금액 */
+             , B.REMK_NAME                                 /* 적요 */
+          FROM TA_SLIPXMLOG A           /* [전표마스터변경이력] */
+               LEFT JOIN TA_SLIPNTLOG B /* [전표분개내역변경이력] */
+                      ON A.SLIP_NUMB = B.SLIP_NUMB
+                     AND A.LOGX_SEQX = B.LOGX_SEQX
+               LEFT JOIN TA_ACCTXM C    /* [계정코드] */
+                      ON B.ACCT_INTL = C.ACCT_INTL
+         WHERE A.SLIP_DATE BETWEEN #SLIP_DATE1# AND #SLIP_DATE2#         
+    ]]>       
+    <isNotEmpty prepend="AND" property="ACCT_INTL">
+    	<![CDATA[
+				B.ACCT_INTL = #ACCT_INTL#
+		]]>
+	</isNotEmpty>	
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+    	<![CDATA[
+				A.EMPL_NUMB = #EMPL_NUMB#
+		]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+    	<![CDATA[
+				A.DEPT_CODE = #DEPT_CODE#
+		]]>
+	</isNotEmpty>       
+   	<isNotEmpty prepend="AND" property="REMK_NAME">
+    	<![CDATA[
+				B.REMK_NAME LIKE '%' || #REMK_NAME# || '%'
+		]]>
+	</isNotEmpty>             
+    <![CDATA[
+         ORDER BY A.SLIP_NUMB DESC, A.LOGX_SEQX, B.SLIP_LINE 
+	]]>
+	</select>
+</sqlMap>

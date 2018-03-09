@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="TRMA0010">
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.27
+     내      용 : 조회[자금계획추가내역]
+********************************************************************************/
+ -->
+
+    <select id="TRMA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /*TRMA0010.SEARCH00.조회[자금계획추가내역]*/
+                    A.ACCT_UNIT    /* 회계단위 */
+                   ,A.PROV_DATE    /* 기준일 */
+                   ,A.EXCE_GUBN    /* 입출항목구분 */
+                   ,A.EXCE_SEQN    /* 입출금순번 */
+                   ,A.ACNT_NUMB    /* 계좌번호 */
+                   ,SF_GET_ACNTNAME(A.ACNT_NUMB)   AS ACNT_NAME /*계좌명*/
+                   ,A.BANK_CODE    /* 은행코드 */
+                   ,A.CURR_GUBN    /* 화폐단위 */
+                   ,A.MONE_AMNT    /* 금액 */
+                   ,A.REMK_NOTE    /* 내용 */
+                   ,D.REF1_FILD    /* 입출구분 */
+                   ,D.COMD_CODE    AS EXCE_GRUP   /* 대구분*/
+             FROM  TA_MONEPL A     /* 자금계획추가내역 */
+                   LEFT JOIN TM_CODEXD C  
+                   		  ON C.COMM_CODE = 'EXCE_GUBN'
+                   		 AND C.COMD_CODE = A.EXCE_GUBN
+                   LEFT JOIN TM_CODEXD D 
+                   		  ON D.COMM_CODE = 'EXCE_GRUP'
+                   		 AND D.COMD_CODE = C.REF1_FILD
+            WHERE  A.ACCT_UNIT = #ACCT_UNIT#   /* 회계단위 */
+              AND  A.PROV_DATE = #PROV_DATE#   /* 기준일 */
+              AND  A.EXCE_GUBN = NVL(#EXCE_GUBN#, A.EXCE_GUBN) /* 입출항목구분 */
+        ]]>
+        <isNotEmpty prepend="AND" property="BANK_INOU">
+              NVL(D.REF1_FILD, ' ') = NVL(#BANK_INOU#, NVL(D.REF1_FILD, ' '))
+        </isNotEmpty>
+        
+        <isNotEmpty prepend="AND" > <![CDATA[
+            NVL(A.ATGN_YSNO, ' ') <> 'Y'
+        ]]></isNotEmpty>     
+            ORDER  BY
+                    A.ACCT_UNIT
+                   ,A.PROV_DATE
+                   ,D.COMD_CODE
+                   ,A.EXCE_GUBN
+                   ,A.EXCE_SEQN
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.29
+     내      용 : 입력[자금계획추가내역]
+********************************************************************************/
+-->
+    <insert id="TRMA0010.SAVE00" parameterClass="hashmap">
+        <![CDATA[
+            INSERT  /*TRMA0010.SAVE00.입력[자금계획추가내역]*/
+                    INTO TA_MONEPL  /* 자금계획추가내역 */
+                    (
+                     ACCT_UNIT  /* 회계단위 */
+                    ,PROV_DATE  /* 기준일 */
+                    ,EXCE_GUBN  /* 입출항목구분 */
+                    ,EXCE_SEQN  /* 입출금순번 */
+                    ,ACNT_NUMB  /* 계좌번호 */
+                    ,BANK_CODE  /* 은행코드 */
+                    ,CURR_GUBN  /* 화폐단위 */
+                    ,MONE_AMNT  /* 금액 */
+                    ,REMK_NOTE  /* 내용 */
+                    ,INST_DATE  /* 등록일시 */
+                    ,INST_USID  /* 등록자 */
+                    ,UPDT_DATE  /* 수정일시 */
+                    ,UPDT_USID  /* 수정자 */
+                    ,ATGN_YSNO  /* 자동생성여부*/
+                    )
+            VALUES
+                    (
+                     #ACCT_UNIT#    /* 회계단위 */
+                    ,#PROV_DATE#    /* 기준일 */
+                    ,#EXCE_GUBN#    /* 입출항목구분 */
+                    ,           /* 입출금순번 */
+                    (
+		                SELECT  NVL(MAX(A.EXCE_SEQN),0) + 1 /* 입출금순번 */
+		                  FROM  TA_MONEPL A                 /* 자금계획추가내역 */
+		                 WHERE  1 = 1
+		                   AND  A.ACCT_UNIT = #ACCT_UNIT#   /* 회계단위 */
+		                   AND  A.PROV_DATE = #PROV_DATE#   /* 기준일 */
+		                   AND  A.EXCE_GUBN = #EXCE_GUBN#   /* 입출항목구분 */
+                    )
+                    ,#ACNT_NUMB#    /* 계좌번호 */
+                    ,#BANK_CODE#    /* 은행코드 */
+                    ,#CURR_GUBN#    /* 화폐단위 */
+                    ,#MONE_AMNT#    /* 금액 */
+                    ,#REMK_NOTE#    /* 내용 */
+                    ,SYSDATE    /* 등록일시 */
+                    ,#UPDT_USID#    /* 등록자 */
+                    ,SYSDATE    /* 수정일시 */
+                    ,#UPDT_USID#    /* 수정자 */
+                    ,'N'
+                )
+        ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.29
+     내      용 : 수정[자금계획추가내역]
+********************************************************************************/
+ -->
+    <update id="TRMA0010.UPDATE00" parameterClass="hashmap">
+        <![CDATA[
+            UPDATE  /*TRMA0010.UPDATE00.수정[자금계획추가내역]*/
+                    TA_MONEPL   /* 자금계획추가내역 */
+               SET   ACNT_NUMB  = #ACNT_NUMB#   /* 계좌번호 */
+                    ,BANK_CODE  = #BANK_CODE#   /* 은행코드 */
+                    ,CURR_GUBN  = #CURR_GUBN#   /* 화폐단위 */
+                    ,MONE_AMNT  = #MONE_AMNT#   /* 금액 */
+                    ,REMK_NOTE  = #REMK_NOTE#   /* 내용 */
+                    ,UPDT_DATE  = SYSDATE   /* 수정일자 */
+                    ,UPDT_USID  = #UPDT_USID#   /* 수정자 */
+            WHERE   1 = 1
+              AND   ACCT_UNIT   = #ACCT_UNIT#   /* 회계단위 */
+              AND   PROV_DATE   = #PROV_DATE#   /* 기준일 */
+              AND   EXCE_GUBN   = #EXCE_GUBN#   /* 입출항목구분 */
+              AND   EXCE_SEQN   = #EXCE_SEQN#   /* 입출금순번 */
+        ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.29
+     내      용 : 삭제[자금계획추가내역]
+********************************************************************************/
+ -->
+    <delete id="TRMA0010.DELETE00" parameterClass="hashmap">
+        <![CDATA[
+            DELETE  /*TRMA0010.DELETE00.삭제[자금계획추가내역]*/
+                    FROM TA_MONEPL  /* 자금계획추가내역 */
+            WHERE   1 = 1
+              AND   ACCT_UNIT   = #ACCT_UNIT#   /* 회계단위 */
+              AND   PROV_DATE   = #PROV_DATE#   /* 기준일 */
+              AND   EXCE_GUBN   = #EXCE_GUBN#   /* 입출항목구분 */
+              AND   EXCE_SEQN   = #EXCE_SEQN#   /* 입출금순번 */
+        ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.29
+     내      용 : 수정[일계획가져오기]
+********************************************************************************/
+ -->
+    <insert id="TRMA0010.PROC00" parameterClass="hashmap">
+        <![CDATA[
+        BEGIN
+            /* TRMA0010.PROC00.수정[일계획가져오기] */
+            /* 먼저 삭제후 전표자료 이관한다.. */
+            DELETE  FROM TA_MONEPL  /* 자금계획추가내역 */
+             WHERE  1 = 1
+               AND  ACCT_UNIT   = #ACCT_UNIT#   /* 회계단위 */
+               AND  PROV_DATE   = #PROV_DATE#   /* 기준일 */
+            ;
+
+
+            INSERT  INTO TA_MONEPL  /* 자금계획추가내역 */
+                    (
+                     ACCT_UNIT  /* 회계단위 */
+                    ,PROV_DATE  /* 기준일 */
+                    ,EXCE_GUBN  /* 입출항목구분 */
+                    ,EXCE_SEQN  /* 입출금순번 */
+                    ,ACNT_NUMB  /* 계좌번호 */
+                    ,BANK_CODE  /* 은행코드 */
+                    ,CURR_GUBN  /* 화폐단위 */
+                    ,MONE_AMNT  /* 금액 */
+                    ,REMK_NOTE  /* 내용 */
+                    ,INST_DATE  /* 등록일시 */
+                    ,INST_USID  /* 등록자 */
+                    ,UPDT_DATE  /* 수정일시 */
+                    ,UPDT_USID  /* 수정자 */
+                    )
+            SELECT
+                     C.ACCT_UNIT        AS ACCT_UNIT    /* 회계단위 */
+                    ,CASE WHEN F.REF4_FILD IS NOT NULL THEN M.COND_VACD ELSE B.PAYX_DATE END        AS PROV_DATE    /* 기준일 */
+                    ,F.REF1_FILD        AS EXCE_GUBN    /* 입출항목구분 */
+                    ,ROW_NUMBER() OVER(PARTITION BY B.LEDG_GUBN ORDER BY B.SLIP_NUMB) AS EXCE_SEQN  /* 입출금순번 */
+                	,N.COND_VACD        AS ACNT_NUMB    /* 계좌번호 */
+                    ,O.BANK_CODE        AS BANK_CODE    /* 은행코드 */
+                    ,B.CURR_GUBN        AS CURR_GUBN    /* 화폐단위 */
+                    ,B.SLIP_AMNT        AS MONE_AMNT    /* 금액 */
+                    ,SUBSTRB(B.REMK_NAME,1,100)     AS REMK_NOTE    /* 내용 */
+                    ,SYSDATE    /* 등록일시 */
+                    ,#UPDT_USID#    /* 등록자 */
+                    ,SYSDATE    /* 수정일시 */
+                    ,#UPDT_USID#    /* 수정자 */
+            FROM    TA_SLIPNT B
+                    INNER JOIN TA_SLIPXM C
+                    ON      1 = 1
+                    AND     C.SLIP_NUMB = B.SLIP_NUMB
+                    AND     C.ACCT_UNIT = #ACCT_UNIT#   /* 회계단위 */
+                    AND     B.ACCT_DATE IS NOT NULL     /* 승인된건만*/
+
+                    LEFT OUTER JOIN TM_CODEXD F
+                    ON      1 = 1
+                    AND     F.COMM_CODE = 'FUND_ACCT'	/* 자금계획관련계정 */
+                    AND     F.COMD_CODE = B.ACCT_INTL   /* 계정코드*/
+                    AND     F.REF3_FILD = B.DRCR_GUBN   /* 차대구분*/
+
+                    LEFT OUTER JOIN TA_SLIPRF M
+                    ON      1 = 1
+                    AND     M.SLIP_NUMB = B.SLIP_NUMB
+                    AND     M.SLIP_LINE = B.SLIP_LINE
+                    AND     M.COND_CODE = F.REF4_FILD	/* 관리항목코드(지급일) - 0046 */
+
+		            LEFT JOIN ( SELECT A.*
+		                         FROM TA_SLIPRF A
+		                        INNER JOIN TA_ACCTXF B ON A.COND_CODE = B.COND_CODE
+		                        WHERE B.COND_COLM = 'ACNT_NUMB' ) N /* 관리항목 - 계좌번호 */
+		            ON      N.SLIP_NUMB = B.SLIP_NUMB                     
+		            AND     N.SLIP_LINE = B.SLIP_LINE                     
+		
+		            LEFT JOIN TA_ACNTXM O	/* 금융계좌정보 */
+		            ON      N.COND_VACD = O.ACNT_NUMB
+
+            WHERE   1 = 1
+    /*        AND   B.PAYX_YSNO = '1'   */ /*출납처리여부*/
+              AND   CASE WHEN F.REF4_FILD IS NOT NULL THEN M.COND_VACD	/* 관리항목-지급일 */ 
+              		ELSE B.PAYX_DATE END = #PROV_DATE#				/* 출납예정일 */
+              AND   F.COMD_CODE IS NOT NULL
+              ;
+        END;
+        ]]>
+    </insert>
+</sqlMap>

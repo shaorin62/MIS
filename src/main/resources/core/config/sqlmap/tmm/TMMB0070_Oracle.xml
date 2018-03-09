@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMB0070">
+	<typeAlias alias="egovMap"
+		type="egovframework.rte.psl.dataaccess.util.EgovMap" />                          
+
+	<resultMap class="java.util.HashMap" id="PKG_TMMB0070.SP_TMMB0070_SEARCH00_PARAMMAP">
+		<result property="LOGX_NAME" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="EMPL_NUMB" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="EMPL_NAME" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="EXCT_DATE" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="MENU_IDXX" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="MENU_NAME" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="USEX_IPAR" javaType="java.lang.String" jdbcType="VARCHAR2"/>
+		<result property="EXCT_CNTT" javaType="java.lang.String" jdbcType="CLOB"/>
+		<result property="CAFN_NAME" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+	<!-- 
+    제  목 : 프로그램별실행 현황 조회
+    작성자 : 임선빈
+    작성일 : 2014.10.17
+	-->
+	<select id="PKG_TMMB0070.SP_TMMB0070_SEARCH00" parameterClass="java.util.HashMap" resultMap="PKG_TMMB0070.SP_TMMB0070_SEARCH00_PARAMMAP">
+		<![CDATA[
+				SELECT SF_GET_COMMNAME('LOGD_CODE', A.LOGD_CODE) AS LOGX_NAME ,
+				       B.EMPL_NUMB ,
+				       SF_GET_EMPLNAME(B.EMPL_NUMB) AS EMPL_NAME ,
+				       A.EXCT_DATE ,
+				       A.MENU_IDXX ,
+				       SF_GET_MENUNAME(A.MENU_IDXX) AS MENU_NAME ,
+				       A.USEX_IPAR ,
+				       A.EXCT_CNTT ,
+				       A.CAFN_NAME
+				  FROM TM_OPERXM A LEFT OUTER JOIN TM_USERXM B ON A.USER_IDXX = B.USER_IDXX
+                 WHERE EXCT_DATE BETWEEN #calSHROPER_STDT# AND #calSHROPER_ENDT#  
+                   AND A.EMPL_NUMB = DECODE(#edtSHREMPL_NUMB#, NULL, A.EMPL_NUMB, #edtSHREMPL_NUMB#)
+                   AND A.MENU_IDXX = DECODE(#edtSHRMENU_IDXX#, NULL, A.MENU_IDXX, #edtSHRMENU_IDXX#)
+                 ORDER BY A.EXCT_DATE DESC
+		]]>
+	</select>
+
+	<!-- 
+    제  목 : 로그 삭제    
+    작성자 : 권순환
+    작성일 : 2015.03.05
+	-->
+	<delete id="PKG_TMMB0070.SP_TMMB0070_DELETE00" parameterClass="java.util.HashMap">
+	<![CDATA[
+	        DELETE FROM TM_OPERXM           /*[채용코드]*/
+	         WHERE EXCT_DATE <= #calSHRBASE_DATE#   /*채용코드*/
+	]]>
+	</delete>
+</sqlMap>

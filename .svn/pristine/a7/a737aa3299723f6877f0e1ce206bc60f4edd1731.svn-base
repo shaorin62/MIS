@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Temp00011M" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="조회/상세/그리드(2)" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Shape1" taborder="74" cssclass="styFormItemBoxOut" left="8" top="164" right="25" height="91"/>
+        <Static id="spSearchBox0" radiusy="10" radiusx="10" type="roundrectangle" position="absolute" left="8" right="25" top="60" height="69" cssclass="styFormSearchBox" taborder="34"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="99" width="192" top="269" height="21" cssclass="styFormSearchInfo" taborder="35" usedecorate="true"/>
+        <Grid selecttype="row" autoenter="none" binddataset="dsTA_SLIPXM" cellsizingtype="both" enable="true" id="grdTA_SLIPXM" useinputpanel="false" oncelldblclick="grdTA_SLIPXM_OnCellDblClick" sCommonGubnonheadclick="fn_GridSort" taborder="28" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" right="25" top="290" bottom="227" cssclass="styGrid01" autofittype="none" onexpandup="fn_HelpDialoge" onheadclick="grdTA_SLIPXM_onheadclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="45" band="left"/>
+                <Column size="25" band="left"/>
+                <Column size="80" band="left"/>
+                <Column size="80" band="left"/>
+                <Column size="140" band="left"/>
+                <Column size="120" band="left"/>
+                <Column size="107" band="left"/>
+                <Column size="120" band="left"/>
+                <Column size="201" band="left"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="160"/>
+                <Column size="200"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="86"/>
+                <Column size="140"/>
+                <Column size="55"/>
+                <Column size="100"/>
+                <Column size="140"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="No"/>
+                <Cell col="1" displaytype="checkbox" edittype="checkbox"/>
+                <Cell col="2" text="회계일자"/>
+                <Cell col="3" text="출납예정일"/>
+                <Cell col="4" text="전표번호"/>
+                <Cell col="5" text="계정코드"/>
+                <Cell col="6" text="거래처"/>
+                <Cell col="7" text="구매카드가맹점번호"/>
+                <Cell col="8" text="발생전표적요"/>
+                <Cell col="9" text="발생금액"/>
+                <Cell col="10" text="기정리액"/>
+                <Cell col="11" text="잔액"/>
+                <Cell col="12" style="background: ;" cssclass="Cellgrd_WF_edit" text="정리금액"/>
+                <Cell col="13" text="결제계정코드"/>
+                <Cell col="14" style="background: ;" cssclass="Cellgrd_WF_edit" text="결제계정명"/>
+                <Cell col="15" style="background: ;" cssclass="Cellgrd_WF_edit" text="적요"/>
+                <Cell col="16" text="부서"/>
+                <Cell col="17" style="background: ;" cssclass="Cellgrd_WF_edit" text="출납방법"/>
+                <Cell col="18" text="금융기관"/>
+                <Cell col="19" text="거래처계좌번호"/>
+                <Cell col="20"/>
+                <Cell col="21" text="당사금융기관"/>
+                <Cell col="22" style="background: ;" cssclass="Cellgrd_WF_edit" text="당사계좌번호"/>
+                <Cell col="23" style="background: ;" cssclass="Cellgrd_WF_edit" text="지급일"/>
+                <Cell col="24" style="background: ;" cssclass="Cellgrd_WF_edit" text="발행일"/>
+                <Cell col="25" style="background: ;" cssclass="Cellgrd_WF_edit" text="관리번호"/>
+              </Band>
+              <Band id="body">
+                <Cell expr="expr:currow + 1"/>
+                <Cell col="1" displaytype="expr:nexacro.toNumber(REMA_AMNT, 0) != 0 ? 'checkbox' : 'none'" edittype="expr:nexacro.toNumber(REMA_AMNT, 0) != 0 ? 'checkbox' : 'none'" style="align:left;" text="bind:CHK"/>
+                <Cell col="2" displaytype="date" style="align:center;" text="bind:ACCT_DATE" editlimit="-1" calendardisplaynulltype="none"/>
+                <Cell col="3" displaytype="date" style="align:center;" text="bind:PAYX_DATE" calendardisplaynulltype="none"/>
+                <Cell col="4" style="align:center;" text="bind:SLIP_KEY" mask="##-########-####-####"/>
+                <Cell col="5" style="align:left;" text="bind:ACCT_NAME"/>
+                <Cell col="6" style="align:left;" text="bind:VIEW_CUST"/>
+                <Cell col="7" style="align:left;" text="bind:JOIN_NO"/>
+                <Cell col="8" style="align:left;" text="bind:REMK_NAME"/>
+                <Cell col="9" displaytype="number" style="align:right;" text="bind:SLIP_AMNT"/>
+                <Cell col="10" displaytype="number" style="align:right;" text="bind:RPAY_AMNT"/>
+                <Cell col="11" displaytype="number" style="align:right;" text="bind:REMA_AMNT"/>
+                <Cell col="12" displaytype="number" edittype="expr:nexacro.toNumber(REMA_AMNT, 0) != 0 ? 'normal' : 'none'" style="align:right;" text="bind:LAST_AMNT"/>
+                <Cell col="13" style="align:center;" text="bind:RPAY_ACCT_INTL"/>
+                <Cell col="14" edittype="normal" style="align: ;" text="bind:RPAY_ACCT_NAME" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="15" edittype="normal" style="align:left;" text="bind:RPAY_REMK_NAME"/>
+                <Cell col="16" style="align:left;" text="bind:RPAY_DEPT_NAME"/>
+                <Cell col="17" displaytype="combo" edittype="combo" style="align:left;background: ;" text="bind:RPAY_LEDG_GUBN"/>
+                <Cell col="18" displaytype="combo" style="align:left;" text="bind:BANK_CODE"/>
+                <Cell col="19" edittype="none" style="align:left;" text="bind:ACNT_NUMB"/>
+                <Cell col="20" text="bind:RPAY_BABR_CODE"/>
+                <Cell col="21" displaytype="combo" edittype="none" style="align:left;" text="bind:RPAY_BANK_CODE"/>
+                <Cell col="22" edittype="normal" style="align: ;" cssclass="theme://images/btn_WF_Search.png" text="bind:RPAY_ACNT_NUMB" expandshow="show" expandsize="20"/>
+                <Cell col="23" displaytype="date" edittype="date" style="align:center;" text="bind:RPAY_PAYX_DATE" calendardisplaynulltype="none"/>
+                <Cell col="24" displaytype="date" edittype="date" style="align:center;" text="bind:RPAY_ISSU_DATE" calendardisplaynulltype="none"/>
+                <Cell col="25" edittype="normal" style="align:left;" text="bind:RPAY_MANA_NOXX"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="9" style="align:center;" text="계"/>
+                <Cell col="9" displaytype="number" style="align:right;" expr="expr:nexacro.toNumber(dataset.getSum('SLIP_AMNT'), 0)" mask="#,###"/>
+                <Cell col="10" displaytype="number" style="align:right;" expr="expr:nexacro.toNumber(dataset.getSum('RPAY_AMNT'), 0)" mask="#,###"/>
+                <Cell col="11" displaytype="number" style="align:right;" expr="expr:nexacro.toNumber(dataset.getSum('REMA_AMNT'), 0)" mask="#,###"/>
+                <Cell col="12" displaytype="number" style="align:right;" expr="expr:nexacro.toNumber(dataset.getSum('LAST_AMNT'), 0)" mask="#,###"/>
+                <Cell col="13"/>
+                <Cell col="14"/>
+                <Cell col="15"/>
+                <Cell col="16"/>
+                <Cell col="17"/>
+                <Cell col="18"/>
+                <Cell col="19"/>
+                <Cell col="20"/>
+                <Cell col="21"/>
+                <Cell col="22"/>
+                <Cell col="23"/>
+                <Cell col="24"/>
+                <Cell col="25"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static3" text="거래처" position="absolute" left="794" width="55" top="97" height="21" cssclass="styFormSearchCap" taborder="37"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtSHRCUST_CODE" onsetfocus="fn_EditFocus" taborder="57" tabstop="false" position="absolute" width="62" top="97" height="21" cssclass="styFormSearchItem" left="889"/>
+        <Edit autoselect="true" lengthunit="asciii" id="edtSHRCUST_NAME" imemode="hangul" maxlength="50" taborder="11" position="absolute" width="135" top="97" height="21" cssclass="styFormSearchItem" left="976" onkillfocus="fn_HelpDialoge"/>
+        <Static id="Static5" text="계정과목" position="absolute" width="68" top="97" height="21" cssclass="styFormSearchCap" left="28" taborder="40"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtSHRACCT_INTL" onsetfocus="fn_EditFocus" taborder="58" tabstop="false" position="absolute" width="55" top="97" height="21" cssclass="styFormSearchItem" left="97"/>
+        <Static id="Static16" text="당사계좌번호" visible="true" position="absolute" left="28" width="91" top="199" height="21" cssclass="styFormItemCap" taborder="42"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtACNT_NUMB" onsetfocus="fn_EditFocus" taborder="59" visible="true" position="absolute" value="13321452300104" left="123" width="135" top="199" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" lengthunit="asciii" id="edtACNT_NAME" imemode="hangul" taborder="18" visible="true" position="absolute" value="하나(구로디지털) " left="283" width="201" top="199" height="21" cssclass="styFormItemText" onkillfocus="fn_HelpDialoge"/>
+        <Static id="Static15" text="당사금융기관" visible="true" position="absolute" left="513" width="91" top="199" height="21" cssclass="styFormItemCap" taborder="45"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtBANK_CODE" taborder="60" visible="false" value="081" position="absolute" right="314" width="52" top="139" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtBANK_NAME" imemode="native" taborder="19" visible="true" position="absolute" value="하나은행" left="609" width="150" top="199" height="21" cssclass="styFormItemText"/>
+        <Static id="Static4" text="회계단위" position="absolute" width="68" top="71" height="21" cssclass="styFormSearchCapBe" left="28" taborder="51"/>
+        <Combo id="cmbSHRACCT_UNIT" taborder="0" onsetfocus="fn_EditFocus" position="absolute" width="92" top="71" height="21" cssclass="styFormSearchItem" left="97"/>
+        <Combo id="cmbSHRACCT_GUBN" taborder="1" onsetfocus="fn_EditFocus" position="absolute" width="126" top="71" height="21" cssclass="styFormSearchItem" left="279"/>
+        <Static id="Static6" text="회계일자" position="absolute" width="68" top="71" height="21" cssclass="styFormSearchCap" left="468" taborder="53"/>
+        <Calendar id="calSHRACCT_DATE1" taborder="2" dateformat="yyyy-MM-dd" position="absolute" width="98" top="71" height="21" cssclass="styFormSearchItemCalendar" left="538"/>
+        <Calendar id="calSHRACCT_DATE2" taborder="3" dateformat="yyyy-MM-dd" position="absolute" width="98" top="71" height="21" cssclass="styFormSearchItemCalendar" left="654"/>
+        <Button id="btnREMAIN_COPY" taborder="27" text="잔액복사" onclick="btnREMAIN_COPY_onclick" position="absolute" right="102" width="74" top="139" height="21" cssclass="styTextButtonBizProc"/>
+        <Button id="btnCREATE_SLIP" taborder="61" text="전표처리" onclick="btnCREATE_SLIP_OnClick" position="absolute" right="25" width="74" top="139" height="21" cssclass="styTextButtonBizProc"/>
+        <Static id="Static00" text="발생내역" position="absolute" left="8" width="89" top="269" height="21" cssclass="styFormItemTitle" taborder="32"/>
+        <Static id="stInformation2" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="99" width="192" bottom="202" height="21" cssclass="styFormSearchInfo" taborder="33" usedecorate="true"/>
+        <Grid id="grdTA_SLIPNT" taborder="62" tabstop="false" binddataset="dsTA_SLIPNT" wheelscrollrow="1" useinputpanel="false" selecttype="row" cellsizingtype="both" autofittype="col" onheadclick="fn_GridSort" oncelldblclick="grdTA_SLIPNT_OnCellDblClick" position="absolute" left="8" right="25" bottom="15" height="187" cssclass="styGrid01">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100" band="left"/>
+                <Column size="120"/>
+                <Column size="90"/>
+                <Column size="333"/>
+                <Column size="160"/>
+                <Column size="160"/>
+                <Column size="100"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="회계일자"/>
+                <Cell col="1" displaytype="text" text="계정과목"/>
+                <Cell col="2" displaytype="text" text="정리금액"/>
+                <Cell col="3" displaytype="text" text="적요"/>
+                <Cell col="4" displaytype="text" text="전표번호"/>
+                <Cell col="5" displaytype="text" text="귀속부서"/>
+                <Cell col="6" text="출납예정일"/>
+                <Cell col="7" text="출납방법"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="date" text="bind:ACCT_DATE" calendardisplaynulltype="none"/>
+                <Cell col="1" displaytype="text" style="align: left;" text="bind:ACCT_NAME"/>
+                <Cell col="2" displaytype="number" style="align:right;" text="bind:SLIP_AMNT" mask="#,###"/>
+                <Cell col="3" displaytype="text" style="align: left;" text="bind:REMK_NAME"/>
+                <Cell col="4" displaytype="text" style="align: center;" text="bind:DISP_NUMB" mask="##-########-####-####"/>
+                <Cell col="5" displaytype="text" style="align: left;" text="bind:DEPT_NAME"/>
+                <Cell col="6" displaytype="date" text="bind:PAYX_DATE" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="combo" style="align:left;" text="bind:LEDG_GUBN"/>
+              </Band>
+              <Band id="summary">
+                <Cell/>
+                <Cell col="1" displaytype="text" style="align: left;"/>
+                <Cell col="2" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;SLIP_CHAX&quot;)" mask="#,###"/>
+                <Cell col="3" displaytype="text" style="align: left;"/>
+                <Cell col="4" displaytype="text" style="align: left;"/>
+                <Cell col="5" displaytype="text" style="align: left;"/>
+                <Cell col="6"/>
+                <Cell col="7"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static01" text="정리내역" position="absolute" left="8" width="89" bottom="202" height="21" cssclass="styFormItemTitle" taborder="38"/>
+        <Static id="Static07" text="잔액여부" position="absolute" width="68" top="97" height="21" cssclass="styFormSearchCap" left="615" taborder="39"/>
+        <Combo id="cmbSHRREMA_GUBN" taborder="12" position="absolute" width="68" top="97" height="21" cssclass="styFormSearchItem" left="684"/>
+        <Static id="Static09" text="결제계정코드" position="absolute" left="28" width="91" top="173" height="21" cssclass="styFormItemCap" taborder="43"/>
+        <Edit id="edtACCT_INTL" taborder="13" autoselect="true" onsetfocus="fn_EditFocus" enable="false" position="absolute" left="123" width="135" top="173" height="21" cssclass="styFormItemText"/>
+        <Edit id="edtACCT_NAME" taborder="15" autoselect="true" position="absolute" imemode="hangul" left="283" width="201" top="173" height="21" cssclass="styFormItemText" onkillfocus="fn_HelpDialoge"/>
+        <Button id="btnAPPLY_ALL" taborder="25" text="일괄넣기" onclick="btnAPPLY_ALL_OnClick" position="absolute" right="179" width="74" top="139" height="21" cssclass="styTextButtonBizProc"/>
+        <Static id="Static18" text="출납방법" position="absolute" left="513" width="91" top="173" height="21" cssclass="styFormItemCap" taborder="50"/>
+        <Combo id="cmbLEDG_GUBN" taborder="16" displayrowcount="20" position="absolute" left="609" width="150" top="173" height="21" cssclass="styFormSearchItem"/>
+        <Static id="Static05" text="지급일" position="absolute" left="789" width="91" top="199" height="21" cssclass="styFormItemCap" taborder="54"/>
+        <Calendar id="calPAYX_DATE" taborder="21" dateformat="yyyy-MM-dd" position="absolute" left="858" width="135" top="199" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Static id="Static10" text="발행일" position="absolute" left="28" width="91" top="225" height="21" cssclass="styFormItemCap" taborder="30"/>
+        <Calendar id="calISSU_DATE" taborder="22" dateformat="yyyy-MM-dd" position="absolute" left="123" width="135" top="225" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Static id="Static11" text="관리번호" visible="true" position="absolute" left="513" width="91" top="225" height="21" cssclass="styFormItemCap" taborder="36"/>
+        <Edit id="edtMANA_NOXX" taborder="23" autoselect="true" visible="true" position="absolute" left="609" width="150" top="225" height="21" cssclass="styFormItemText"/>
+        <Edit id="edtBABR_CODE" taborder="64" autoselect="true" enable="false" visible="false" value="811338" position="absolute" right="261" width="52" top="139" height="21" cssclass="styFormItemText"/>
+        <Edit id="edtSHRACCT_NAME" taborder="7" maxlength="50" autoselect="true" position="absolute" imemode="hangul" width="132" top="97" height="21" cssclass="styFormSearchItem" left="177" onkillfocus="fn_HelpDialoge"/>
+        <Static id="Static12" text="제외계정과목" position="absolute" width="96" top="71" height="21" cssclass="styFormSearchCap" left="794" taborder="47"/>
+        <Edit id="edtSHREXCP_ACCT_INTL" taborder="66" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" enable="false" position="absolute" width="62" top="71" height="21" cssclass="styFormSearchItem" left="889"/>
+        <Edit id="edtSHREXCP_ACCT_NAME" taborder="5" maxlength="50" autoselect="true" position="absolute" imemode="hangul" width="135" top="71" height="21" cssclass="styFormSearchItem" left="976" onkillfocus="fn_HelpDialoge"/>
+        <Static id="Static1" text="전표일자" position="absolute" left="789" width="76" top="173" height="21" cssclass="styFormItemCapBE" taborder="31"/>
+        <Calendar id="calSLIP_DATE" taborder="20" dateformat="yyyy-MM-dd" position="absolute" left="858" width="135" top="173" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Static id="Static13" text="선택건수" position="absolute" width="74" top="265" height="21" cssclass="styFormItemCap" right="316" taborder="44"/>
+        <MaskEdit id="mskCHK_CNT" taborder="69" mask="#,###" onsetfocus="fn_EditFocus" enable="false" style=":disabled {align:right;}" binddataset="dsTA_GITAGETA" position="absolute" width="76" top="265" height="21" cssclass="styFormItemText" right="245"/>
+        <Static id="Static14" text="정리금액합계" position="absolute" width="90" top="265" height="21" cssclass="styFormItemCap" right="145" taborder="52"/>
+        <MaskEdit id="mskLAST_AMNT_SUM" taborder="70" mask="#,###" onsetfocus="fn_EditFocus" enable="false" style=":disabled {align:right;}" binddataset="dsTA_GITAGETA" position="absolute" width="116" top="264" height="21" cssclass="styFormItemText" right="25"/>
+        <Static id="Static17" text="~" position="absolute" style="align: center middle;" width="14" top="97" height="21" left="311" taborder="41"/>
+        <Edit id="edtSHRACCT_INTL_TO" taborder="71" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" enable="false" position="absolute" width="55" top="97" height="21" cssclass="styFormSearchItem" left="327"/>
+        <Edit id="edtSHRACCT_NAME_TO" taborder="9" imemode="hangul" maxlength="50" autoselect="true" position="absolute" width="132" top="97" height="21" cssclass="styFormSearchItem" left="407" onkillfocus="fn_HelpDialoge"/>
+        <Static id="Static2" text="사업장" position="absolute" width="55" top="71" height="21" cssclass="styFormSearchCap" left="222" taborder="46"/>
+        <Combo id="cmbGROUP_GUBN" taborder="24" position="absolute" left="858" width="135" top="225" height="21" cssclass="styFormSearchItem"/>
+        <Static id="Static19" text="반제생성" position="absolute" left="789" width="76" top="225" height="21" cssclass="styFormItemCap" taborder="29"/>
+        <Static id="imgHelpSHRACCT_NAME" taborder="6" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="154" top="97" height="21" width="21"/>
+        <Static id="imgHelpSHRACCT_NAME_TO" taborder="8" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="384" top="97" height="21" width="22"/>
+        <Static id="imgHelpSHRCUST_NAME" taborder="10" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="953" top="97" height="21" width="22"/>
+        <Static id="imgHelpSHREXCP_ACCT_NAME" taborder="4" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="953" top="71" height="21" width="22"/>
+        <Static id="ImgHelpACCT_INTL" taborder="14" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="260" top="173" height="21" width="21"/>
+        <Static id="imgHelpACNT_NAME" taborder="17" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="260" top="199" height="21" width="21"/>
+        <Static id="Static23" taborder="94" text="~" top="71" height="21" style="align: center middle;" width="14" left="638"/>
+        <Static id="st_FormTitle" taborder="95" text="미불반제관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="96" text="&gt;회계관리&gt;사업장등록" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="97" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="98" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="101" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static20" taborder="102" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="103" text="h 4" visible="false" left="741" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static24" taborder="105" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="106" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static22" taborder="107" text="h 35" visible="false" left="584" top="255" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static25" taborder="108" text="w30" visible="false" left="9" top="61" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static27" taborder="110" text="h10" visible="false" left="120" top="61" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static28" taborder="111" text="h5" visible="false" left="120" top="92" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static29" taborder="112" text="h10" visible="false" left="120" top="118" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="113" text="w30" visible="false" left="9" top="165" width="30" height="89" style="background:#fb7b7b7a;"/>
+        <Static id="Static48" taborder="115" text="h8" visible="false" left="93" top="165" width="38" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static46" taborder="116" text="h5" visible="false" left="93" top="194" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static57" taborder="117" text="h5" visible="false" left="93" top="220" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static49" taborder="118" text="h8" visible="false" left="93" top="246" width="38" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation01" taborder="119" cssclass="sta_WF_line" left="87" top="272" width="10" height="13"/>
+        <Static id="stInformation00" taborder="122" cssclass="sta_WF_line" left="87" top="497" width="10" height="13"/>
+        <Static id="Static26" taborder="123" text="w20" visible="false" left="942" top="261" width="20" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static30" taborder="124" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static31" taborder="125" text="h 25" visible="false" left="663" top="490" width="80" height="25" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind>
+      <BindItem id="Tab0_FA010010_medGABG_SEKM_value" compid="mskCHK_CNT" propid="value" datasetid="dsTA_GITAGETA" columnid="GABG_SEKM"/>
+      <BindItem id="Tab0_FA010010_medJUMI_SEKM_value" compid="mskLAST_AMNT_SUM" propid="value" datasetid="dsTA_GITAGETA" columnid="JUMI_SEKM"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

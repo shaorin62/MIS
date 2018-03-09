@@ -1,0 +1,692 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MACA0010">
+
+<!--  
+ *   프로그램명 : 회계 입금표
+ *   작 성 일 : 2016.10.31(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+ 
+ 
+ <!-- 미완료  검색 조건 -->
+	<sql id="search">
+   	    <isNotEmpty prepend="AND" property="YEAR_MNTH" >
+			 A.YEAR_MNTH  = #YEAR_MNTH#
+		</isNotEmpty>
+	</sql>
+	
+	<sql id="search2">
+		<isNotEmpty prepend="AND" property="MEDX_CODE" >
+			 MEDX_CODE  = #MEDX_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="MEDX_NAME" >
+			 MEDX_NAME  LIKE '%' || #MEDX_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="MEDX_FLAG">
+			<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00A">
+				MEDX_FLAG IN ('A001','A002','A003','A00A')
+			</isEqual>
+			<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+				MEDX_FLAG IN ('A005','A006')
+			</isEqual>
+			<isNotEqual prepend="AND" property="MEDX_FLAG" compareValue="A00A">
+				<isNotEqual property="MEDX_FLAG" compareValue="A00B">
+				MEDX_FLAG = #MEDX_FLAG#
+				</isNotEqual>
+			</isNotEqual>
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 
+		작  성  자 :  최제현    2차 수정  : 오세훈
+		작  성  일 : 2016.10.31(표준화 완료) 2차 수정 2016.11.30 
+		내      용  : 회계 입금표 조회
+		파라미터  : YEAR_MNTH : 년월, MEDX_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	SELECT * FROM
+	(
+				SELECT					/* MACA0010.SEARCH00. 매체 입금표 출력을 위한 조회[매체 입금표 내역 조회] */
+				'0' AS CHEK_FILD
+				, TO_NUMBER(ROWNUM) AS IDXX_SEQX
+				, A.GUBUN					/* 매체구분 */
+				, A.MEDX_FLAG			/* 매체구분코드 */
+				, A.YEAR_MNTH			/* 년월 */
+				, A.MEDX_CODE			/* 매체사코드 */
+				, SF_GET_CUSTEMAILDEP(A.MEDX_CODE) AS MELT_MLAD
+				, A.BIZR_NUMB			/* 사업자번호 */
+				, A.MEDX_NAME			/* 매체사명 */
+				, A.COMI_FILD			/* 금액 */
+				, A.COMI_VAT				/* 부가세액 */
+				, A.COMI_SUM			/* 합계금액 */
+				, A.MEMO_FILD			/* 내용 */
+				, 8 - LENGTH(A.COMI_FILD) AS A0    /* 공란수 */
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD) END , 1 ) AS A1
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-1 END , 1 ) AS A2
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-2 END , 1 ) AS A3
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-3 END , 1 ) AS A4
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-4 END , 1 ) AS A5
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-5 END , 1 ) AS A6
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-6 END , 1 ) AS A7
+				, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-7 END , 1 ) AS A8
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT) END , 1 ) AS V1
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-1 END , 1 ) AS V2
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-2 END , 1 ) AS V3
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-3 END , 1 ) AS V4
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-4 END , 1 ) AS V5
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-5 END , 1 ) AS V6
+				, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-6 END , 1 ) AS V7
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM) END , 1 ) AS S1
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-1 END , 1 ) AS S2
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-2 END , 1 ) AS S3
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-3 END , 1 ) AS S4
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-4 END , 1 ) AS S5
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-5 END , 1 ) AS S6
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-6 END , 1 ) AS S7
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-7 END , 1 ) AS S8
+				, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-8) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-7 END , 1 ) AS S9
+				, B.BSNS_NUMB
+				, ''''||B.OFFI_NAME||'''' AS OFFI_NAME
+				, B.OWNR_NAME
+				, B.ADDR_DESC
+				, '' AS FILE_NAME
+				, NVL(A.SEND_FLAG,'0') AS SEND_FLAG
+				, A.TABLE_NAME
+				, '★' AS SPLIT
+				FROM (
+				    SELECT
+				    '인쇄' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD	
+				    , SEND_FLAG
+				    , 'MD_PTMDXM' AS TABLE_NAME	
+				    FROM (
+				        SELECT					
+				        YEAR_MNTH
+				        , 'A00B' AS MEDX_FLAG
+				        , A.MEDX_CODE			
+				        , C.BIZR_NUMB			
+				        , C.CUST_NAME AS MEDX_NAME				
+				        , SUM(COMI_FILD)  AS COMI_FILD		
+				        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+				        , A.CUST_CODE
+				        , B.CUST_NAME
+				        , A.SEND_FLAG
+				        FROM MD_PTMDXM A	
+				        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+				        WHERE 1=1
+				        ]]>
+				     	<include refid="search" />	
+						<![CDATA[
+				        AND A.COMI_FILD IS NOT NULL 
+				        AND A.COMI_FILD != 0
+				        AND A.TRTR_NUMB IS NOT NULL 
+				        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+				        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG,A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    UNION ALL
+				    SELECT
+				    '전파' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD		
+				    , SEND_FLAG
+				    , 'MD_ETMDXM' AS TABLE_NAME	
+				    FROM (
+				        SELECT					
+				        YEAR_MNTH		
+						, 'A00A' AS MEDX_FLAG
+				        , A.MEDX_CODE			
+				        , C.BIZR_NUMB			
+				        , C.CUST_NAME AS MEDX_NAME				
+				        , SUM(COMI_FILD)  AS COMI_FILD		
+				        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+				        , A.CUST_CODE
+				        , B.CUST_NAME
+				        , A.SEND_FLAG
+				        FROM MD_ETMDXM A	
+				        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+				        WHERE 1=1
+				        ]]>
+				     	<include refid="search" />	
+						<![CDATA[
+				        AND A.COMI_FILD IS NOT NULL 
+				        AND A.COMI_FILD != 0
+				        AND A.TRTR_NUMB IS NOT NULL 
+				        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+				        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG,A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    UNION ALL
+				    SELECT
+				    '케이블' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD	
+				    , SEND_FLAG	
+				    , 'MD_CTMDXM' AS TABLE_NAME
+				    FROM (
+				        SELECT					
+				        YEAR_MNTH		
+						, A.MEDX_FLAG
+				        , A.MEDX_CODE			
+				        , C.BIZR_NUMB			
+				        , C.CUST_NAME AS MEDX_NAME				
+				        , SUM(COMI_FILD)  AS COMI_FILD		
+				        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+				        , A.CUST_CODE
+				        , B.CUST_NAME
+				        , A.SEND_FLAG
+				        FROM MD_CTMDXM A	
+				        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+				        WHERE 1=1
+				        ]]>
+				     	<include refid="search" />	
+						<![CDATA[
+				        AND A.COMI_FILD IS NOT NULL 
+				        AND A.COMI_FILD != 0
+				        AND A.TRTR_NUMB IS NOT NULL 
+				        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+				        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG, A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    UNION ALL
+				    SELECT
+				    '인터넷' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD		
+				    , SEND_FLAG
+				    , 'MD_ITMDXM' AS TABLE_NAME
+				    FROM (
+				        SELECT					
+				        YEAR_MNTH	
+				        , 'A008' AS MEDX_FLAG
+				        , A.MEDX_CODE			
+				        , C.BIZR_NUMB			
+				        , C.CUST_NAME AS MEDX_NAME				
+				        , SUM(COMI_FILD)  AS COMI_FILD		
+				        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+				        , A.CUST_CODE
+				        , B.CUST_NAME
+				        , A.SEND_FLAG
+				        FROM MD_ITMDXM A	
+				        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+				        WHERE 1=1
+				        ]]>
+				     	<include refid="search" />	
+						<![CDATA[
+				        AND A.COMI_FILD IS NOT NULL 
+				        AND A.COMI_FILD != 0
+				        AND A.TRTR_NUMB IS NOT NULL 
+				        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+				        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG,A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    UNION ALL
+				    SELECT
+				    '옥외' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD	
+				    , SEND_FLAG	
+				    , 'MD_ODMDXM' AS TABLE_NAME
+				    FROM (
+				        SELECT					
+				        YEAR_MNTH		
+						, 'A007' AS MEDX_FLAG
+				        , A.MEDX_CODE			
+				        , C.BIZR_NUMB			
+				        , C.CUST_NAME AS MEDX_NAME				
+				        , SUM(COMI_FILD)  AS COMI_FILD		
+				        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+				        , A.CUST_CODE
+				        , B.CUST_NAME
+				        , A.SEND_FLAG
+				        FROM MD_ODMDXM A	
+				        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+				        WHERE 1=1
+				        ]]>
+				     	<include refid="search" />	
+						<![CDATA[
+				        AND A.COMI_FILD IS NOT NULL 
+				        AND A.COMI_FILD != 0
+				        AND A.TRTR_NUMB IS NOT NULL 
+				        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+				        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG,A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    UNION ALL
+				    SELECT
+				     '전파' AS GUBUN
+				    , MEDX_FLAG
+				    , YEAR_MNTH
+				    , MEDX_CODE
+				    , BIZR_NUMB
+				    , MEDX_NAME
+				    , SUM(COMI_FILD) AS COMI_FILD
+				    , SUM(COMI_VAT) AS COMI_VAT
+				    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+				    , TO_CHAR(SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료') AS MEMO_FILD	
+				    , SEND_FLAG
+				    , 'MD_COMIXM' AS TABLE_NAME
+				    FROM (
+						SELECT
+							 A.YEAR_MNTH
+						    , 'A00A' AS MEDX_FLAG
+						    , SF_GET_MEDXCODE(A.MEDX_CODE) AS MEDX_CODE
+						    , B.BIZR_NUMB
+						    , B.CUST_NAME MEDX_NAME
+						    , SUM(A.COMI_FILD) AS  COMI_FILD            /* 광고료 */
+		                    , TRUNC(SUM(A.COMI_FILD*0.1)) AS COMI_VAT              /* 광고수수료 */
+							, A.CUST_CODE
+							, C.CUST_NAME
+							, A.SEND_FLAG
+						    FROM MD_COMIXM A
+						    LEFT JOIN TA_CUSTXM B ON SF_GET_MEDXCODE(A.MEDX_CODE) = B.CUST_CODE
+						    LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+						    WHERE 1=1
+					        ]]>
+					     	<include refid="search" />	
+							<![CDATA[
+						    AND A.COMI_FILD IS NOT NULL 
+						    AND A.COMI_FILD != 0
+						    GROUP BY A.YEAR_MNTH,A.CUST_CODE ,A.MEDX_CODE 
+						    , B.BIZR_NUMB, B.CUST_NAME,C.CUST_NAME, A.MEDX_FLAG,A.SEND_FLAG
+				    )A
+				    GROUP BY YEAR_MNTH, MEDX_CODE
+				    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG,SEND_FLAG
+				    
+				)A
+				LEFT JOIN TM_OFFICE B ON B.ACCT_GUBN = '100' AND B.OFFI_GUBN ='1'
+				LEFT JOIN TA_CUSTXM C ON C.BIZR_NUMB = B.BSNS_NUMB
+				WHERE 1=1		
+				ORDER BY   GUBUN,ROWNUM ASC
+	)	WHERE 1=1
+	]]>
+	<include refid="search2" />	
+	</select>
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.21(표준화 완료)
+		내      용  : 매체사목록 조회
+		파라미터  : 
+	-->
+	<select id="MACA0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT                                         /* MDMA0030.SEARCH01 매체사목록 가져오기 */
+                A.CUST_CODE								/* 매체사코드 */
+                , A.CUST_NAME                                 /* 거래처명 */
+                , A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+                , ' ' AS USEX_CODE                          /* NULL */
+                FROM TA_CUSTXM A 
+                LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUCL_CODE = 'FA260120'
+	]]>
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.02.22
+     내      용 : 거래처코드로 담당자 메일 가져오기
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="MACA0010.SEARCH02" parameterClass="String" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        SELECT 
+			CUST_CODE AS CUST_CODE
+			,ELTR_MLAD AS COMB_CODE
+			,ELTR_MLAD AS COMB_NAME 
+	        ,EMPL_GUBN
+	        FROM TA_CUSTMN	
+			WHERE 1=1
+			AND CUST_CODE IN ($CUST_CODE$)
+			ORDER BY DECODE(MJCH_YSNO,'1',0,SEQN_NUMB)		
+			
+			]]>
+	</select>
+	
+		<!-- 
+		작  성  자 :  오세훈
+		작  성  일 : 2016.11.30(표준화 완료)
+		내      용  : 입금표 출력을 위한 조회
+		파라미터  : 
+	-->
+	<select id="MACA0010.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	SELECT * FROM
+	(
+		SELECT						/* MACA0010.PRINT00. 매체 입금표 출력을 위한 조회[매체 입금표 내역 조회] */
+		ROWNUM AS IDXX_SEQX					/* 입금표 시퀸스 */
+		, A.GUBUN						/* 매체구분 */
+		, A.MEDX_FLAG				/* 매체구분코드 */
+		, A.YEAR_MNTH				/* 년월 */
+		, A.MEDX_CODE				/* 매체사코드 */
+		, A.BIZR_NUMB				/* 사업자번호 */
+		, A.MEDX_NAME				/* 매체사명 */
+		, A.COMI_FILD				/* 금액 */
+		, A.COMI_VAT					/* 부가세액*/
+		, A.COMI_SUM				/* 합계금액*/
+		, A.MEMO_FILD				/* 내용 */
+		, 8 - LENGTH(COMI_FILD) AS A0    /* 공란수 */
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD) END , 1 ) AS A1
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-1 END , 1 ) AS A2
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-2 END , 1 ) AS A3
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-3 END , 1 ) AS A4
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-4 END , 1 ) AS A5
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-5 END , 1 ) AS A6
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-6 END , 1 ) AS A7
+		, SUBSTR(CAST(A.COMI_FILD AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_FILD)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_FILD)-7 END , 1 ) AS A8
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT) END , 1 ) AS V1
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-1 END , 1 ) AS V2
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-2 END , 1 ) AS V3
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-3 END , 1 ) AS V4
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-4 END , 1 ) AS V5
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-5 END , 1 ) AS V6
+		, SUBSTR(CAST(A.COMI_VAT AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_VAT)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_VAT)-6 END , 1 ) AS V7
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM) END , 1 ) AS S1
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-1 END , 1 ) AS S2
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-2 END , 1 ) AS S3
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-3 END , 1 ) AS S4
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-4 END , 1 ) AS S5
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-5 END , 1 ) AS S6
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-6 END , 1 ) AS S7
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-7 END , 1 ) AS S8
+		, SUBSTR(CAST(A.COMI_SUM AS VARCHAR(20)),CASE SIGN(LENGTH(A.COMI_SUM)-8) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.COMI_SUM)-7 END , 1 ) AS S9
+		, B.BSNS_NUMB
+		, ''''||B.OFFI_NAME||'''' AS OFFI_NAME
+		, B.OWNR_NAME
+		, B.ADDR_DESC
+		FROM (
+		    SELECT
+		    '인쇄' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD		
+		    FROM (
+		        SELECT					
+		        YEAR_MNTH
+		        , 'A00B' AS MEDX_FLAG
+		        , A.MEDX_CODE			
+		        , C.BIZR_NUMB			
+		        , C.CUST_NAME AS MEDX_NAME				
+		        , SUM(COMI_FILD)  AS COMI_FILD		
+		        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+		        , A.CUST_CODE
+		        , B.CUST_NAME
+		        FROM MD_PTMDXM A	
+		        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+		        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+		        WHERE 1=1
+		        AND A.YEAR_MNTH = #YEAR_MNTH#
+		        AND A.COMI_FILD IS NOT NULL 
+		        AND A.COMI_FILD != 0
+		        AND A.TRTR_NUMB IS NOT NULL 
+		        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+		        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG
+		    UNION ALL
+		    SELECT
+		    '전파' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD		
+		    FROM (
+		        SELECT					
+		        YEAR_MNTH		
+				, 'A00A' AS MEDX_FLAG
+		        , A.MEDX_CODE			
+		        , C.BIZR_NUMB			
+		        , C.CUST_NAME AS MEDX_NAME				
+		        , SUM(COMI_FILD)  AS COMI_FILD		
+		        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+		        , A.CUST_CODE
+		        , B.CUST_NAME
+		        FROM MD_ETMDXM A	
+		        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+		        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+		        WHERE 1=1
+		        AND A.YEAR_MNTH = #YEAR_MNTH#
+		        AND A.COMI_FILD IS NOT NULL 
+		        AND A.COMI_FILD != 0
+		        AND A.TRTR_NUMB IS NOT NULL 
+		        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+		        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG 
+		    UNION ALL
+		    SELECT
+		    '케이블' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD		
+		    FROM (
+		        SELECT					
+		        YEAR_MNTH		
+				, A.MEDX_FLAG
+		        , A.MEDX_CODE			
+		        , C.BIZR_NUMB			
+		        , C.CUST_NAME AS MEDX_NAME				
+		        , SUM(COMI_FILD)  AS COMI_FILD		
+		        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+		        , A.CUST_CODE
+		        , B.CUST_NAME
+		        FROM MD_CTMDXM A	
+		        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+		        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+		        WHERE 1=1
+		        AND A.YEAR_MNTH = #YEAR_MNTH#
+		        AND A.COMI_FILD IS NOT NULL 
+		        AND A.COMI_FILD != 0
+		        AND A.TRTR_NUMB IS NOT NULL 
+		        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+		        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG
+		    UNION ALL
+		    SELECT
+		    '인터넷' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD		
+		    FROM (
+		        SELECT					
+		        YEAR_MNTH	
+		        , 'A008' AS MEDX_FLAG
+		        , A.MEDX_CODE			
+		        , C.BIZR_NUMB			
+		        , C.CUST_NAME AS MEDX_NAME				
+		        , SUM(COMI_FILD)  AS COMI_FILD		
+		        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+		        , A.CUST_CODE
+		        , B.CUST_NAME
+		        FROM MD_ITMDXM A	
+		        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+		        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+		        WHERE 1=1
+		        AND A.YEAR_MNTH = #YEAR_MNTH#
+		        AND A.COMI_FILD IS NOT NULL 
+		        AND A.COMI_FILD != 0
+		        AND A.TRTR_NUMB IS NOT NULL 
+		        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+		        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG
+		    UNION ALL
+		    SELECT
+		    '옥외' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD		
+		    FROM (
+		        SELECT					
+		        YEAR_MNTH		
+				, 'A007' AS MEDX_FLAG
+		        , A.MEDX_CODE			
+		        , C.BIZR_NUMB			
+		        , C.CUST_NAME AS MEDX_NAME				
+		        , SUM(COMI_FILD)  AS COMI_FILD		
+		        , TRUNC(SUM(COMI_FILD) * 0.1) AS COMI_VAT
+		        , A.CUST_CODE
+		        , B.CUST_NAME
+		        FROM MD_ODMDXM A	
+		        LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+		        LEFT JOIN TA_CUSTXM C ON A.MEDX_CODE = C.CUST_CODE 
+		        WHERE 1=1
+		        AND A.YEAR_MNTH = #YEAR_MNTH#
+		        AND A.COMI_FILD IS NOT NULL 
+		        AND A.COMI_FILD != 0
+		        AND A.TRTR_NUMB IS NOT NULL 
+		        GROUP BY YEAR_MNTH, A.CUST_CODE, B.CUST_NAME
+		        ,A.MEDX_CODE,C.CUST_NAME ,C.BIZR_NUMB, A.MEDX_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG
+		    UNION ALL
+		    SELECT
+		    '전파' AS GUBUN
+		    , MEDX_FLAG
+		    , YEAR_MNTH
+		    , MEDX_CODE
+		    , BIZR_NUMB
+		    , MEDX_NAME
+		    , SUM(COMI_FILD) AS COMI_FILD
+		    , SUM(COMI_VAT) AS COMI_VAT
+		    , SUM(COMI_FILD) + SUM(COMI_VAT)  AS COMI_SUM
+		    , SUBSTR(XMLAGG(XMLELEMENT(X,'/',CUST_NAME) ORDER BY CUST_NAME).Extract('//text()'),2) || ' ' || SUBSTR(YEAR_MNTH,5,2) || '월 광고대행 수수료' AS MEMO_FILD	
+		    FROM (
+				SELECT
+							 A.YEAR_MNTH
+						    , 'A00A' AS MEDX_FLAG
+						    , SF_GET_MEDXCODE(A.MEDX_CODE) AS MEDX_CODE
+						    , B.BIZR_NUMB
+						    , B.CUST_NAME MEDX_NAME
+						    , SUM(A.COMI_FILD) AS  COMI_FILD            /* 광고료 */
+		                    , TRUNC(SUM(A.COMI_FILD*0.1)) AS COMI_VAT              /* 광고수수료 */
+							, A.CUST_CODE
+							, C.CUST_NAME
+							, A.SEND_FLAG
+						    FROM MD_COMIXM A
+						    LEFT JOIN TA_CUSTXM B ON SF_GET_MEDXCODE(A.MEDX_CODE) = B.CUST_CODE
+						    LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+						    WHERE 1=1
+					        AND A.YEAR_MNTH = #YEAR_MNTH#
+						    AND A.COMI_FILD IS NOT NULL 
+						    AND A.COMI_FILD != 0
+						    GROUP BY A.YEAR_MNTH,A.CUST_CODE ,A.MEDX_CODE 
+						    , B.BIZR_NUMB, B.CUST_NAME,C.CUST_NAME, A.MEDX_FLAG,A.SEND_FLAG
+		    )A
+		    GROUP BY YEAR_MNTH, MEDX_CODE
+		    , BIZR_NUMB, MEDX_NAME, MEDX_FLAG
+		)A
+		LEFT JOIN TM_OFFICE B ON B.ACCT_GUBN = '100' AND B.OFFI_GUBN ='1'
+		LEFT JOIN TA_CUSTXM C ON C.BIZR_NUMB = B.BSNS_NUMB
+		WHERE 1=1
+		ORDER BY   GUBUN, IDXX_SEQX ASC
+	)A
+	WHERE IDXX_SEQX IN ($IDXX_SEQX_QUERY$)
+
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2017.02.17(표준화 완료)
+		내      용 : 입금표 발송여부 수정
+	-->
+	<update id="MACA0010.SEND00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE $TABLE_NAME$    /* MACA0010.SEND00 발송여부 수정 */
+           SET SEND_FLAG = '3'
+             WHERE YEAR_MNTH = #YEAR_MNTH#
+             AND MEDX_CODE = #MEDX_CODE#
+	]]>
+	</update>
+
+</sqlMap>

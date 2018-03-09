@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMD0100">
+
+<!--
+ *   프로그램명 : 메타단어관리 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.08.08
+ *   작 성 자 : 최흥규
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 최흥규
+	 작 성 일 : 2016.08.08
+	 내    용 : 표준단어 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="TMMD0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT STDD_WORD	/* 표준단어 */
+			 , STWD_NAME	/* 표준단어명 */
+			 , STWD_ENNM	/* 표준단어영문명 */
+			 , STWD_DESC	/* 표준단어설명 */
+			 , STWD_ORGI	/* 표준단어출처 */
+			 , DOMN_YSNO	/* 도메인여부 */
+		  FROM TM_STWORD
+	]]>		
+	<dynamic prepend="WHERE">
+	<isNotNull prepend="AND" property="STDD_WORD">	  
+               (STDD_WORD LIKE '%' || UPPER(#STDD_WORD#) || '%' 
+            OR  STWD_NAME LIKE '%' || UPPER(#STDD_WORD#) || '%')
+	</isNotNull>
+	</dynamic>
+	<![CDATA[
+		 ORDER BY STDD_WORD
+	]]>
+	</select>	
+
+
+	<!--
+	 작 성 자 : 최흥규
+	 작 성 일 : 2016.08.08
+	 내    용 : 표준단어 테이블 저장
+	 파라미터 : 
+	-->
+	<insert id="TMMD0100.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO TM_STWORD (
+			   STDD_WORD	/* 표준단어 */
+			 , STWD_NAME	/* 표준단어명 */
+			 , STWD_ENNM	/* 표준단어영문명 */
+			 , STWD_DESC	/* 표준단어설명 */
+			 , STWD_ORGI	/* 표준단어출처 */
+			 , DOMN_YSNO	/* 도메인여부 */
+			 , INST_USID	/* 입력작업자 */
+			 , INST_DATE	/* 입력일시 */
+			 , UPDT_USID	/* 수정작업자 */
+			 , UPDT_DATE	/* 수정일시 */
+		) VALUES (
+			   #STDD_WORD#	/* 표준단어 */
+			 , #STWD_NAME#	/* 표준단어명 */
+			 , #STWD_ENNM#	/* 표준단어영문명 */
+			 , #STWD_DESC#	/* 표준단어설명 */
+			 , #STWD_ORGI#	/* 표준단어출처 */
+			 , #DOMN_YSNO#	/* 도메인여부 */
+			 , #UPDT_USID#	/* 입력작업자 */
+			 , SYSDATE		/* 입력일시 */
+			 , #UPDT_USID#	/* 수정작업자 */
+			 , SYSDATE		/* 수정일시 */
+		)
+	]]>
+	</insert>
+
+	<!--
+	 작 성 자 : 최흥규
+	 작 성 일 : 2016.08.08
+	 내    용 : 표준단어 테이블 수정
+	 파라미터 : 
+	-->
+	<update id="TMMD0100.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE TM_STWORD
+		   SET STWD_NAME = #STWD_NAME#	/* 표준단어명 */
+			 , STWD_ENNM = #STWD_ENNM#	/* 표준단어영문명 */
+			 , STWD_DESC = #STWD_DESC#	/* 표준단어설명 */
+			 , STWD_ORGI = #STWD_ORGI#	/* 표준단어출처 */
+			 , DOMN_YSNO = #DOMN_YSNO#	/* 도메인여부 */
+			 , UPDT_USID = #UPDT_USID#	/* 수정작업자 */
+			 , UPDT_DATE = SYSDATE		/* 수정일시 */
+		 WHERE STDD_WORD = #STDD_WORD#	/* 표준단어 */
+	]]>
+	</update>
+
+	<!--
+	 작 성 자 : 최흥규
+	 작 성 일 : 2016.08.08
+	 내    용 : 표준단어 테이블 삭제
+	 파라미터 : 
+	-->
+	<delete id="TMMD0100.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_STWORD
+		 WHERE STDD_WORD = #STDD_WORD#	/* 표준단어 */
+	]]>
+	</delete>
+
+</sqlMap>

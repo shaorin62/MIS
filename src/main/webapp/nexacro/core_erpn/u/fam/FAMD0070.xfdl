@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../..\default_typedef.xml"/>
+  <Form id="FAMD0070" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="원천납부세액명세현황" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="240" top="122" height="21" cssclass="styFormSearchInfo" taborder="5" usedecorate="true"/>
+        <Grid autoenter="select" binddataset="dsTA_SLIPNT" cellsizingtype="row" enable="true" id="grdTA_SLIPNT" useinputpanel="false" selecttype="row" taborder="6" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" autofittype="col" position="absolute" left="8" right="25" top="143" bottom="17" cssclass="styGrid01">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="128"/>
+                <Column size="207"/>
+                <Column size="90"/>
+                <Column size="132"/>
+                <Column size="69"/>
+                <Column size="114"/>
+                <Column size="275"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell colspan="2" text="원천징수의무자"/>
+                <Cell col="2" rowspan="2" displaytype="text" text="원천징수일"/>
+                <Cell col="3" rowspan="2" text="이자금액"/>
+                <Cell col="4" rowspan="2" text="세율&#10;(%)"/>
+                <Cell col="5" rowspan="2" text="법인세"/>
+                <Cell col="6" rowspan="2" text="적요"/>
+                <Cell row="1" text="사업자번호"/>
+                <Cell row="1" col="1" text="상호"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;" text="bind:BIZR_NUMB" mask="expr:BIZR_NUMB.toString().length == 0 ? &quot;&quot; : &quot;###-##-#####&quot;"/>
+                <Cell col="1" displaytype="text" style="align:left" text="bind:CUST_NAME"/>
+                <Cell col="2" displaytype="date" style="align:center" text="bind:PAYX_DATE" calendardisplaynulltype="none"/>
+                <Cell col="3" displaytype="number" style="align:right" text="bind:INST_AMNT"/>
+                <Cell col="4" style="align:right;" text="bind:INST_RATE"/>
+                <Cell col="5" style="align:right;" text="bind:SLIP_AMNT"/>
+                <Cell col="6" style="align:left;" text="bind:REMK_NAME"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="3" displaytype="text" style="align: center;" text="합    계"/>
+                <Cell col="3" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;INST_AMNT&quot;)"/>
+                <Cell col="4"/>
+                <Cell col="5" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;SLIP_AMNT&quot;)"/>
+                <Cell col="6"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox01" taborder="8" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43"/>
+        <Combo id="cmbSHRACCT_UNIT" taborder="0" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="96" top="71" width="110" height="21"/>
+        <Static id="Static02" taborder="9" text="회계기간" cssclass="styFormSearchCapBe" left="235" top="71" width="76" height="21"/>
+        <Static id="Static5" taborder="10" text="회계단위" cssclass="styFormSearchCapBe" left="28" top="71" width="76" height="21"/>
+        <Calendar id="calSHRACCT_DATE2" taborder="2" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="426" top="71" width="100" height="21"/>
+        <Calendar id="calSHRACCT_DATE1" taborder="1" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="305" top="71" width="100" height="21"/>
+        <Static id="Static36" taborder="11" text="~" cssclass="styFormSearch" left="411" top="71" width="16" height="21"/>
+        <Static id="st_FormTitle" taborder="13" text="원천납부세액명세현황" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="14" text="홈 &gt; 세무조정자료 &gt; 원천납부세액명세현황" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="15" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="16" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="17" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="18" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="19" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="20" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="21" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="22" text="h 40" visible="false" left="573" top="103" width="80" height="40" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="23" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="25" text="h 6" visible="false" left="8" top="137" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="26" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="27" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="28" text="w 40" visible="false" left="206" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation00" taborder="29" text="[계정과목등록]메뉴에서 계정종류가 &lt;원천징수(법인세)&gt;로 설정된 계정과목의 전표 자료가 조회 됩니다." cssclass="sta_WF_Info" top="105" right="25" width="697" height="21" style="background:transparent URL('theme://images/sta_WF_Info.png') left middle;align:left middle;"/>
+        <Static id="stInformation01" taborder="30" text="계정과목의 관리항목에는 금융기관, 지급일, 원금 관리항목이 설정되어 있어야 하며 전표금액의 14%를 법인세로 표시 합니다." cssclass="sta_WF_Info" top="121" right="25" width="697" height="21" style="background:transparent URL('theme://images/sta_WF_Info.png') left middle;align:left middle;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTA_SLIPNT" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="ACCT_UNIT" size="4" prop="default" type="STRING"/>
+          <Column id="BIZR_NUMB" size="10" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" size="30" prop="default" type="STRING"/>
+          <Column id="PAYX_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="INST_AMNT" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="INST_RATE" size="22" prop="default" type="STRING"/>
+          <Column id="SLIP_AMNT" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="REMK_NAME" size="400" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">ACCT_UNIT</Col>
+            <Col id="DSNAME">dsACCT_UNIT</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	FAMD0070 원천납부 세액명세 현황
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ *   2016.07.26		오혜성		Initial Created.
+ *   2016.12.28		황치웅		수정.
+ * -------------------------------------------------------------------------------------------------
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                     *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                      *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망    *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_ubireport.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST = "TTFFFFTT"; // 종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄
+this.sPACKAGENAME = "FAMD0070";
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+
+	this.sUSERAUTH     =  "";   //사용자별 프로그램 사용 권한
+	this.sFORMCAPTION  =  "";   //Form의 Title 정보
+	this.sFORMLOCATION =  "";   //Form의 Location 정보
+	this.sUSERLAVEL    =  "";   //Form의 Location 정보
+
+} else {
+
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.calSHRACCT_DATE1.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 6) + "01");
+	this.calSHRACCT_DATE2.set_value(this.fnc_GetServerDateTime("DATE"));
+	this.cmbSHRACCT_UNIT.setFocus();
+	
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj){
+	this.close();
+}
+
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck())	return;
+	this.fnc_DatasetClear("dsTA_SLIPNT");
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTA_SLIPNT=dsTA_SLIPNT";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTA_SLIPNT.setFocus();
+
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj:Button, e:nexacro.ClickEventInfo){
+	// 기능없음
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj:Button, e:nexacro.ClickEventInfo){
+	// 기능없음
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj:Button, e:nexacro.ClickEventInfo){
+	// 기능없음
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj:Button, e:nexacro.ClickEventInfo){
+	// 기능없음
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj:Button, e:nexacro.ClickEventInfo){
+
+	this.fnc_ToExcel(this);
+
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	var reportfile = "/fam/FAMD0070R01.jrf";
+	
+	var	params  = "#ACCT_DAT1#" + this.fnc_Trim(this.calSHRACCT_DATE1.value)
+		params += "#ACCT_DAT2#" + this.fnc_Trim(this.calSHRACCT_DATE2.value);
+		
+	var dataref = new Array();
+	
+	dataref[0]            	= new Object();
+    dataref[0].type      	= "DATASET";
+    dataref[0].dsObj		= this.dsTA_SLIPNT;
+	
+	this.fn_UbiReport(reportfile, params, dataref);
+
+}
+
+/*-----------------------------------+
+ |  10.화면 종료時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTA_SLIPNT", this);
+		
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj,e:nexacro.CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTA_SLIPNT")) {
+		return this.fnc_Message("TMM023");
+	}
+	
+	if(this.fnc_Length(this.cmbSHRACCT_UNIT.text)<1) {
+		return this.fnc_SearchCheckPostAction("TMM001", "회계단위", this.cmbSHRACCT_UNIT);
+	}
+
+	if (this.fnc_IsDate(this.calSHRACCT_DATE1.value) == false) {
+		return this.fnc_SearchCheckPostAction("TMM001", "회계시작일자", this.calSHRACCT_DATE1);
+	}
+
+	if (this.fnc_IsDate(this.calSHRACCT_DATE2.value) == false) {
+		return this.fnc_SearchCheckPostAction("TMM001", "회계종료일자", this.calSHRACCT_DATE2);
+	}
+
+	if (this.calSHRACCT_DATE1.value > this.calSHRACCT_DATE2.value) {
+		return this.fnc_SearchCheckPostAction("TMM042", "회계시작일자,회계종료일자", this.calSHRACCT_DATE2);
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (){
+	// 기능없음
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function (){
+	// 기능없음
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm="       	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    	+ this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_UNIT.value));
+		sReturnString += " ACCT_DATE1=" + this.fnc_Quote(this.fnc_Trim(this.calSHRACCT_DATE1.value));
+		sReturnString += " ACCT_DATE2=" + this.fnc_Quote(this.fnc_Trim(this.calSHRACCT_DATE2.value));
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsTA_SLIPNT.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_SLIPNT.getCaseCount("dataset.getRowLevel(currow)==0"));		
+
+	} else if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRACCT_UNIT,dsACCT_UNIT,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+	
+	}
+	
+}
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/]]></Script>
+  </Form>
+</FDL>

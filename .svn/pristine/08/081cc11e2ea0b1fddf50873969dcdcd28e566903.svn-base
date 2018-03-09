@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATD0070">
+
+ <!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차조정 조회
+********************************************************************************/
+-->
+    <select id="HATD0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* HATD0070.SEARCH00.연차조정 */
+				A.EMPL_NUMB  /*사원번호*/
+			   ,A.EMPL_NAME  /*사원명*/
+			   ,SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME    /* 직위 */
+			   ,B.DEPT_NAME	 /*부서코드*/
+			   ,C.STDS_YEAR	 /*기준년도*/
+			   ,C.ALAD_SEQN	 /*연차조정일련번호*/
+			   ,C.ADJT_ANDC	 /*조정연차개수*/
+			   ,C.RESN_DESC	 /*사유*/
+			   ,C.REMK_100X	 /*비고*/
+		  FROM HR_MASTXM A
+		  		INNER JOIN TM_DEPTXM B
+		  			ON A.DEPT_CODE = B.DEPT_CODE
+		  		INNER JOIN AT_ANNUXD C
+		  			ON A.EMPL_NUMB = C.EMPL_NUMB    
+		  WHERE 1=1
+    ]]>
+    
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+        A.DEPT_CODE LIKE #DEPT_CODE# || '%'            /* 부서 */ 
+    </isNotEmpty> 
+    
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">                    
+       A.EMPL_NUMB = #EMPL_NUMB#										/* 사원번호 */
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="STDS_YEAR">                     
+       C.STDS_YEAR = #STDS_YEAR#										/* 기준년도 */
+    </isNotEmpty>
+
+    <![CDATA[
+         ORDER BY A.DEPT_CODE, A.EMPL_NUMB
+    ]]>
+    </select>
+    
+ <!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차조정 저장
+********************************************************************************/
+-->
+	<insert id="HATD0070.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+    
+
+	    DECLARE 
+			  v_ROWCNT INT;
+	    BEGIN  
+	        
+	        SELECT COUNT(*) 
+	          INTO v_ROWCNT
+	          FROM AT_ANNUXD
+	         WHERE STDS_YEAR = #STDS_YEAR#	/*기준년도*/
+	           AND ALAD_SEQN = NVL(#ALAD_SEQN#, 0)	/*연차조정일련번호*/
+	           ;
+	         
+	        IF v_ROWCNT > 0 THEN 
+	        
+	              UPDATE AT_ANNUXD
+	                 SET EMPL_NUMB = #EMPL_NUMB#
+	                 	,ADJT_ANDC = #ADJT_ANDC#
+	                 	,RESN_DESC = #RESN_DESC#
+	                 	,REMK_100X = #REMK_100X#
+	                 	,UPDT_USID = #UPDT_USID#	                 	
+	                 	,UPDT_DATE = SYSDATE
+	               WHERE STDS_YEAR = #STDS_YEAR#	/*기준년도*/
+		            AND ALAD_SEQN = NVL(#ALAD_SEQN#, 0)	/*연차조정일련번호*/
+	              ;
+	              
+	        ELSE
+	               INSERT INTO AT_ANNUXD (
+	                      EMPL_NUMB	/*사원번호*/
+						 ,STDS_YEAR	/*기준년도*/
+						 ,ALAD_SEQN	/*연차조정일련번호*/
+						 ,ADJT_ANDC	/*조정연차개수*/
+						 ,RESN_DESC	/*사유*/
+						 ,REMK_100X	/*비고100*/
+						 ,INST_USID	/*입력작업자*/
+						 ,INST_DATE	/*입력일시*/
+
+	             ) VALUES (
+						#EMPL_NUMB#
+						,#STDS_YEAR#
+						,
+						NVL(
+							(SELECT MAX(ALAD_SEQN) 
+							 FROM AT_ANNUXD
+							 WHERE STDS_YEAR = #STDS_YEAR#	/*기준년도*/) + 1
+				        , 1 )
+						,#ADJT_ANDC#
+						,#RESN_DESC#
+						,#REMK_100X#
+						,#UPDT_USID#
+						,sysdate
+	              );	
+	        END IF; 
+   	    END;
+            
+	]]>
+	</insert>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차조정 삭제
+********************************************************************************/
+-->
+	<delete id="HATD0070.DELETE00" parameterClass="hashmap">
+		DELETE FROM AT_ANNUXD
+		WHERE STDS_YEAR = #STDS_YEAR#	/*기준년도*/
+		  AND ALAD_SEQN = NVL(#ALAD_SEQN#, 0)	/*연차조정일련번호*/
+		  AND EMPL_NUMB  = #EMPL_NUMB#	/*사원번호*/
+	</delete>	
+
+</sqlMap>

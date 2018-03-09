@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TC_NDS_4" onload="fn_FormLoadSetting" position="absolute" left="0" width="218" top="0" height="285" scrollbars="none" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[솔루션]Day OFF">
+    <Layouts>
+      <Layout>
+        <Static id="Static26" taborder="6" text="h 18" visible="false" left="34" top="0" width="151" height="18" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="7" text="w40" visible="false" left="0" top="9" width="40" height="113" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="9" text="DAY OFF" cssclass="sta_MF_name" left="39" top="9" width="135" height="32" style="font:antialias 15 Malgun Gothic;"/>
+        <Static id="Static00" taborder="11" text="경영지원팀" onclick="Static03_onclick" cssclass="sta_MF_text1" left="39" top="48" width="175" height="30" style="font:antialias 13 Malgun Gothic;"/>
+        <Static id="Static01" taborder="12" text="외출" onclick="Static03_onclick" cssclass="sta_MF_text1" left="39" top="104" width="52" height="30" style="font:antialias 12 Malgun Gothic;"/>
+        <Static id="Static02" taborder="13" text="출장" onclick="Static03_onclick" cssclass="sta_MF_text1" left="39" top="151" width="52" height="30" style="font:antialias 12 Malgun Gothic;"/>
+        <Static id="Static03" taborder="14" text="휴가" onclick="Static03_onclick" cssclass="sta_MF_text1" left="39" top="197" width="52" height="30" style="font:antialias 12 Malgun Gothic;"/>
+        <Static id="Static04" taborder="15" text="h 21" visible="false" left="26" top="34" width="151" height="24" style="background:#fb7b7b7a;"/>
+        <Static id="Static29" taborder="19" cssclass="sta_MF_line1" left="40" top="93" width="150" height="1"/>
+        <Static id="Static08" taborder="20" cssclass="sta_MF_line1" left="40" top="144" width="150" height="1"/>
+        <Static id="Static09" taborder="21" cssclass="sta_MF_line1" left="40" top="190" width="150" height="1"/>
+        <Static id="Static11" taborder="23" cssclass="sta_MF_line1" left="40" top="237" width="150" height="1"/>
+        <Static id="Static28" taborder="24" cssclass="sta_MF_text4" left="133" top="96" width="57" height="40" text="2&lt;fs v='11'&gt;명&lt;/fs&gt;" usedecorate="true" style="align:right middle;"/>
+        <Static id="Static05" taborder="25" text="0&lt;fs v='11'&gt;명&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="133" top="147" width="57" height="40" style="align:right middle;"/>
+        <Static id="Static06" taborder="26" text="1&lt;fs v='11'&gt;명&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="133" top="193" width="57" height="40" style="align:right middle;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

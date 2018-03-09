@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRME0010">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령관리 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRME0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* HRME0010.SEARCH00.발령관리 테이블 조회 */
+                   A.APNT_HOCT                                /* 발령호수 */
+                 , A.DRFT_DATE                                /* 기안일 */
+                 , A.APNT_SBJT                                /* 발령제목 */
+                 , A.APAL_YSNO                                /* 발령승인여부 */
+                 , B.SECT_NAME                                /* 기안자소속명 */
+                 , B.DEPT_NAME                                /* 기안자부서명 */
+                 , A.DRFR_EMNR                                /* 기안자사원번호 */
+                 , SF_GET_EMPLNAME(A.DRFR_EMNR) AS DRFR_EMNM  /* 기안자성명 */
+                 , A.APPK_CODE                                /* 발령종류코드 */
+                 , A.DRFR_DTCD                                /* 기안자부서코드 */
+                 , A.SMUL_SEQN                                /* 시뮬레이션회차 */
+                 , A.PROP_YSNO                                /* 승진대상처리여부 */
+              FROM HR_APPOXM A
+                LEFT OUTER JOIN VI_DEPTXM B
+                  ON A.DRFR_DTCD = B.DEPT_CODE
+             WHERE A.DRFT_DATE LIKE #DRFT_YEAR# || '%'
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                   B.DEPT_FCOD LIKE  SF_GET_DEPTFCOD(SF_GET_SECTCODE(#DEPT_CODE#)) || '%'
+    </isNotEmpty>
+               AND APPK_CODE = '1'
+    <isNotEmpty prepend="AND" property="APNT_SBJT">
+                   A.APNT_SBJT LIKE '%' || #APNT_SBJT# || '%'
+    </isNotEmpty>
+             ORDER BY APNT_HOCT DESC
+
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 인사발령관리 상세헤더 조회
+********************************************************************************/
+-->
+    <select id="HRME0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* HRME0010.SEARCH01.인사발령관리 상세헤더 조회 */
+                   APNT_HOCT                                        /* 발령호수 */
+                 , DRFT_DATE                                        /* 기안일 */
+                 , APNT_SBJT                                        /* 발령제목 */
+                 , APAL_YSNO                                        /* 발령승인여부 */
+                 , DECODE(APAL_YSNO,'1','승인','미승인') AS APAL_YNNM /* 발령승인여부 */
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 인사발령관리 상세 조회
+********************************************************************************/
+-->
+    <select id="HRME0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+           SELECT /* HRME0010.SEARCH02.인사발령관리 상세 조회 */
+                  EMPL_NUMB                   /* 사원번호 */
+                , SF_GET_EMPLNAME(EMPL_NUMB) AS EMPL_NAME  /* 성명 */
+                , SRAL_NUMB                   /* 일련번호 */
+                , APNT_DATE                   /* 발령일 */
+                , APNT_SEQN                   /* 발령일련번호 */
+                , APNT_HOCT                   /* 발령호수 */
+                , APDN_CODE                   /* 발령구분코드 */
+                , SF_GET_COMMNAME('APDN_CODE', APDN_CODE) AS APDN_NAME   /* 발령구분명 */
+                , DEPT_CODE                   /* 부서코드 */
+                , SF_GET_SECTNAME2(DEPT_CODE, APNT_DATE) AS SECT_NAME  /* 소속명 */
+                , SF_GET_DEPTNAME2(DEPT_CODE, APNT_DATE) AS DEPT_NAME  /* 부서명 */
+                , CPOS_CODE                   /* 직급코드 */
+                , SF_GET_COMMNAME('CPOS_CODE', CPOS_CODE) AS CPOS_NAME /* 직급명 */
+                , PSTP_CODE                   /* 호봉코드 */
+                , SF_GET_COMMNAME('PSTP_CODE', PSTP_CODE) AS PSTP_NAME /* 호봉명 */
+                , DURS_CODE                   /* 직책코드 */
+                , SF_GET_COMMNAME('DURS_CODE', DURS_CODE) AS DURS_NAME /* 직책명 */
+                , DUTY_CODE                   /* 직무코드 */
+                , SF_GET_COMMNAME('DUTY_CODE', DUTY_CODE) AS DUTY_NAME /* 직무명 */
+                , OPOS_CODE                   /* 직위코드 */
+                , SF_GET_COMMNAME('OPOS_CODE', OPOS_CODE) AS OPOS_NAME /* 직위명 */
+                , WRKS_CODE                   /* 근무상태코드 */
+                , PYTY_CODE                   /* 급여형태코드 */
+                , DTMN_YSNO                   /* 부서장여부 */
+                , DTMN_DTCD                   /* 부서장부서코드 */
+                , DSPT_YSNO                   /* 파견여부 */
+                , DSPT_DTCD                   /* 파견부서코드 */
+                , SF_GET_DEPTTHNM(DSPT_DTCD) AS DSPT_NAME  /* 파견부서명 */
+                , EXTR_PLDH                   /* 외부파견지 */
+                , LEAV_YSNO                   /* 휴직여부 */
+                , PBNR_YSNO                   /* 수습여부 */
+                , ADJN_DTCD                   /* 겸직부서코드 */
+                , SF_GET_DEPTTHNM(ADJN_DTCD) AS ADJN_NAME   /* 겸직부서명 */
+                , ADDT_CODE                   /* 겸직직책코드 */
+                , SF_GET_COMMNAME('DURS_CODE', ADDT_CODE) AS ADDT_NAME /* 겸직직책명 */
+                , RTTY_CODE                   /* 퇴직구분코드 */
+                , CIBP_ANNU                   /* 경력직위연차 */
+                , APNT_INNM                   /* 발령기관명 */
+                , APNT_ENDD                   /* 발령종료일 */
+                , SEAS_DATE                   /* 소속발령일 */
+                , DEAT_DATE                   /* 부서발령일 */
+                , PRON_DATE                   /* 승진일 */
+                , PARE_DATE                   /* 승급일 */
+                , NETP_DATE                   /* 차기승급일 */
+                , NEPR_DATE                   /* 차기승진일 */
+                , DURS_DATE                   /* 직책일 */
+                , DUTY_DATE                   /* 직무일 */
+                , APAL_YSNO                   /* 발령승인여부 */
+                , DTCH_YSNO                   /* 부서변경여부 */
+                , CLPC_YSNO                   /* 직급변경여부 */
+                , NMCG_YSNO                   /* 호봉변경여부 */
+                , DURC_YSNO                   /* 직책변경여부 */
+                , JOCH_YSNO                   /* 직무변경여부 */
+                , OFPC_YSNO                   /* 직위변경여부 */
+                , PYTC_YSNO                   /* 급여형태변경여부 */
+                , WRKC_YSNO                   /* 근무상태변경여부 */
+                , HDTC_YSNO                   /* 부서장변경여부 */
+                , PBDC_YSNO                   /* 수습변경여부 */
+                , CSPT_YSNO                   /* 증명서출력여부 */
+                , REMK_200X                   /* 비고200 */
+                , APNT_PROW                   /* 발령사유 */
+                , WRDV_CODE                   /* 근무구분코드 */
+                , WRDV_DATE                   /* 근무구분일 */
+                , OPOS_DATE                   /* 직위일 */
+                , EMPL_NUMB || APDN_CODE AS KEYVALUE
+                , SF_GET_COMMNAMEREF('APDN_CODE', APDN_CODE, '2') AS REF2_FILD /* 공통_인사발령사용 */
+                , SF_GET_COMMNAMEREF('APDN_CODE', APDN_CODE, '3') AS REF3_FILD /* 공통_이전발령구분코드 */
+                , SF_GET_COMMNAMEREF('APDN_CODE', APDN_CODE, '4') AS REF4_FILD /* 공통_발령형태 */
+             FROM HR_APPOXD                   /* [발령상세] */
+            WHERE APNT_HOCT = #APNT_HOCT#     /* 발령호수 */
+            ORDER BY APNT_DATE, APDN_CODE, EMPL_NUMB, APNT_SEQN
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 부서리스트 조회
+********************************************************************************/
+-->
+    <select id="HRME0010.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* HRME0010.SEARCH03.부서리스트 조회 */
+               DEPT_CODE
+             , DEPT_NAME
+          FROM VI_DEPTXM
+    ]]>
+	    <isNotEmpty prepend="WHERE" property="DEPT_CODE">
+	           DEPT_CODE = #DEPT_CODE#
+	    </isNotEmpty>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령관리 테이블 저장
+********************************************************************************/
+-->
+    <insert id="HRME0010.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.SAVE00.발령관리 테이블 저장 */
+              v_MINX_VALU NUMBER(15,0);
+              v_MAXX_VALU NUMBER(15,0);
+              v_APNT_HOCT NVARCHAR2(10);
+              v_ROWCNT INT;
+        BEGIN
+            SELECT MINX_VALU
+                 , MAXX_VALU
+              INTO v_MINX_VALU, v_MAXX_VALU
+              FROM TM_SEQUNC
+             WHERE TABLE_NAME = 'HR_APPOXM'
+               AND COLUMN_NAME = 'APNT_HOCT';
+
+            SELECT COUNT(TABLE_NAME)
+              INTO v_ROWCNT
+              FROM TM_SEQDTL
+             WHERE TABLE_NAME = 'HR_APPOXM'
+               AND COLUMN_NAME = 'APNT_HOCT'
+               AND SECH_COND = SUBSTR(#DRFT_DATE#,1,4);
+
+            IF v_ROWCNT > 0 THEN
+
+                  UPDATE TM_SEQDTL
+                     SET  NOWX_VALU = CASE WHEN NVL(NOWX_VALU, v_MINX_VALU) + 1 > v_MAXX_VALU THEN v_MAXX_VALU ELSE NVL(NOWX_VALU, v_MAXX_VALU) + 1 END   /* 현재값 */
+                   WHERE TABLE_NAME  = 'HR_APPOXM'   /* 테이블명 */
+                     AND COLUMN_NAME  = 'APNT_HOCT'   /* 컬럼명 */
+                     AND SECH_COND  = SUBSTR(#DRFT_DATE#,1,4)   /* 조회조건명 */
+                  ;
+
+            ELSE
+                   INSERT INTO TM_SEQDTL (
+                          TABLE_NAME   /* 테이블명 */
+                         ,COLUMN_NAME   /* 컬럼명 */
+                         ,SECH_COND   /* 조회조건명 */
+                         ,NOWX_VALU   /* 현재값 */
+                 ) VALUES (
+                          'HR_APPOXM'   /* 테이블명 */
+                         ,'APNT_HOCT'   /* 컬럼명 */
+                         ,SUBSTR(#DRFT_DATE#,1,4)   /* 조회조건명 */
+                         ,v_MINX_VALU   /* 현재값 */
+                  );
+            END IF;
+
+            SELECT SF_GET_SEQUENCE('HR_APPOXM', 'APNT_HOCT', SUBSTR(#DRFT_DATE#,1,4), SUBSTR(#DRFT_DATE#,1,4))
+              INTO v_APNT_HOCT
+              FROM DUAL
+              ;
+
+                INSERT INTO HR_APPOXM (        /* [발령관리] */
+                            APNT_HOCT          /* 발령호수 */
+                          , DRFT_DATE          /* 기안일 */
+                          , APNT_SBJT          /* 발령제목 */
+                          , APAL_YSNO          /* 발령승인여부 */
+                          , APPK_CODE          /* 발령종류코드 */
+                          , DRFR_DTCD          /* 기안자부서코드 */
+                          , DRFR_EMNR          /* 기안자사원번호 */
+                          , INST_USID          /* 입력작업자 */
+                          , INST_DATE          /* 입력일시 */
+                          , UPDT_USID          /* 수정작업자 */
+                          , UPDT_DATE          /* 수정일시 */
+                 ) VALUES (
+                            v_APNT_HOCT        /* 발령호수 */
+                          , #DRFT_DATE#        /* 기안일 */
+                          , #APNT_SBJT#        /* 발령제목 */
+                          , #APAL_YSNO#        /* 발령승인여부 */
+                          , #APPK_CODE#        /* 발령종류코드 */
+                          , #DRFR_DTCD#        /* 기안자부서코드 */
+                          , #DRFR_EMNR#        /* 기안자사원번호 */
+                          , #UPDT_USID#        /* 입력작업자 */
+                          , SYSDATE            /* 입력일시 */
+                          , #UPDT_USID#        /* 수정작업자 */
+                          , SYSDATE            /* 수정일시 */
+                        );
+        END;
+
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령상세관리 테이블 저장
+********************************************************************************/
+-->
+    <insert id="HRME0010.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.SAVE01.발령상세관리 테이블 저장 */
+            v_ROWCNT INTEGER;
+            v_DSPT_YSNO VARCHAR2(1);   /* 파견여부          */
+            v_DTCH_YSNO VARCHAR2(1);   /* 부서변경여부      */
+            v_CLPC_YSNO VARCHAR2(1);   /* 직급변경여부      */
+            v_NMCG_YSNO VARCHAR2(1);   /* 호봉변경여부      */
+            v_DURC_YSNO VARCHAR2(1);   /* 직책변경여부      */
+            v_JOCH_YSNO VARCHAR2(1);   /* 직무변경여부      */
+            v_OFPC_YSNO VARCHAR2(1);   /* 직위변경여부      */
+            v_PYTC_YSNO VARCHAR2(1);   /* 급여형태변경여부  */
+            v_WRKC_YSNO VARCHAR2(1);   /* 근무상태변경여부  */
+            v_HDTC_YSNO VARCHAR2(1);   /* 부서장변경여부    */
+            v_LEAV_YSNO VARCHAR2(1);   /* 휴직여부          */
+            v_PBNR_YSNO VARCHAR2(1);   /* 수습여부          */
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+               AND APAL_YSNO = '1'
+            ;
+
+            IF v_ROWCNT > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM049','입력'));
+            END IF;
+
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXD
+             WHERE EMPL_NUMB = #EMPL_NUMB#
+               AND APAL_YSNO = '1'
+            ;
+
+            SELECT CASE WHEN v_ROWCNT > 0  AND (DSPT_DTCD = #DSPT_DTCD# OR EXTR_PLDH = #EXTR_PLDH#) THEN '0' ELSE '1' END   /* 파견여부          */
+                 , CASE WHEN v_ROWCNT > 0  AND DEPT_CODE = #DEPT_CODE# THEN '0' ELSE '1' END   /* 부서변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND CPOS_CODE = #CPOS_CODE# THEN '0' ELSE '1' END   /* 직급변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND PSTP_CODE = #PSTP_CODE# THEN '0' ELSE '1' END   /* 호봉변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND DURS_CODE = #DURS_CODE# THEN '0' ELSE '1' END   /* 직책변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND DUTY_CODE = #DUTY_CODE# THEN '0' ELSE '1' END   /* 직무변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND OPOS_CODE = #OPOS_CODE# THEN '0' ELSE '1' END   /* 직위변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND PYTY_CODE = #PYTY_CODE# THEN '0' ELSE '1' END   /* 급여형태변경여부  */
+                 , CASE WHEN v_ROWCNT > 0  AND WRKS_CODE = #WRKS_CODE# THEN '0' ELSE '1' END   /* 근무상태변경여부  */
+                 , CASE WHEN v_ROWCNT > 0  AND DTMN_YSNO = #DTMN_YSNO# THEN '0' ELSE '1' END   /* 부서장변경여부    */
+                 , CASE WHEN v_ROWCNT > 0  AND LEAV_YSNO = #LEAV_YSNO# THEN '0' ELSE '1' END   /* 휴직여부          */ 
+                 , CASE WHEN v_ROWCNT > 0  AND PBNR_YSNO = #PBNR_YSNO# THEN '0' ELSE '1' END   /* 수습여부          */ 
+              INTO v_DSPT_YSNO
+                 , v_DTCH_YSNO
+                 , v_CLPC_YSNO
+                 , v_NMCG_YSNO
+                 , v_DURC_YSNO
+                 , v_JOCH_YSNO
+                 , v_OFPC_YSNO
+                 , v_PYTC_YSNO
+                 , v_WRKC_YSNO
+                 , v_HDTC_YSNO
+                 , v_LEAV_YSNO
+                 , v_PBNR_YSNO
+              FROM HR_MASTXM
+             WHERE EMPL_NUMB = #EMPL_NUMB#
+            ;
+
+                INSERT INTO HR_APPOXD (        /* [발령상세] */
+                            EMPL_NUMB          /* 사원번호 */
+                          , SRAL_NUMB          /* 일련번호 */
+                          , APNT_DATE          /* 발령일 */
+                          , APNT_SEQN          /* 발령일련번호 */
+                          , APNT_HOCT          /* 발령호수 */
+                          , APDN_CODE          /* 발령구분코드 */
+                          , DEPT_CODE          /* 부서코드 */
+                          , CPOS_CODE          /* 직급코드 */
+                          , PSTP_CODE          /* 호봉코드 */
+                          , DURS_CODE          /* 직책코드 */
+                          , DUTY_CODE          /* 직무코드 */
+                          , OPOS_CODE          /* 직위코드 */
+                          , WRKS_CODE          /* 근무상태코드 */
+                          , PYTY_CODE          /* 급여형태코드 */
+                          , DTMN_YSNO          /* 부서장여부 */
+                          , DTMN_DTCD          /* 부서장부서코드 */
+                          , DSPT_YSNO          /* 파견여부 */
+                          , DSPT_DTCD          /* 파견부서코드 */
+                          , EXTR_PLDH          /* 외부파견지 */
+                          , LEAV_YSNO          /* 휴직여부 */
+                          , PBNR_YSNO          /* 수습여부 */
+                          , ADJN_DTCD          /* 겸직부서코드 */
+                          , ADDT_CODE          /* 겸직직책코드 */
+                          , RTTY_CODE          /* 퇴직구분코드 */
+                          , CIBP_ANNU          /* 경력직위연차 */
+                          , APNT_INNM          /* 발령기관명 */
+                          , APNT_ENDD          /* 발령종료일 */
+                          , SEAS_DATE          /* 소속발령일 */
+                          , DEAT_DATE          /* 부서발령일 */
+                          , PRON_DATE          /* 승진일 */
+                          , PARE_DATE          /* 승급일 */
+                          , NETP_DATE          /* 차기승급일 */
+                          , NEPR_DATE          /* 차기승진일 */
+                          , DURS_DATE          /* 직책일 */
+                          , DUTY_DATE          /* 직무일 */
+                          , APAL_YSNO          /* 발령승인여부 */
+                          , DTCH_YSNO          /* 부서변경여부 */
+                          , CLPC_YSNO          /* 직급변경여부 */
+                          , NMCG_YSNO          /* 호봉변경여부 */
+                          , DURC_YSNO          /* 직책변경여부 */
+                          , JOCH_YSNO          /* 직무변경여부 */
+                          , OFPC_YSNO          /* 직위변경여부 */
+                          , PYTC_YSNO          /* 급여형태변경여부 */
+                          , WRKC_YSNO          /* 근무상태변경여부 */
+                          , HDTC_YSNO          /* 부서장변경여부 */
+                          , PBDC_YSNO          /* 수습변경여부 */
+                          , CSPT_YSNO          /* 증명서출력여부 */
+                          , REMK_200X          /* 비고200 */
+                          , APNT_PROW          /* 발령사유 */
+                          , WRDV_CODE          /* 근무구분코드 */
+                          , WRDV_DATE          /* 근무구분일 */
+                          , OPOS_DATE          /* 직위일 */
+                          , INST_USID          /* 입력작업자 */
+                          , INST_DATE          /* 입력일시 */
+                          , UPDT_USID          /* 수정작업자 */
+                          , UPDT_DATE          /* 수정일시 */
+                 ) VALUES (
+                            #EMPL_NUMB#        /* 사원번호 */
+                          , (SELECT NVL(MAX(SRAL_NUMB),0)+1 FROM HR_APPOXD WHERE EMPL_NUMB = #EMPL_NUMB#)  /* 일련번호 */
+                          , #APNT_DATE#        /* 발령일 */
+                          , NVL(#APNT_SEQN#, (SELECT NVL(MAX(APNT_SEQN),0)+1 FROM HR_APPOXD WHERE EMPL_NUMB = #EMPL_NUMB# AND APNT_DATE = #APNT_DATE#))  /* 발령일련번호 */
+                          , #APNT_HOCT#        /* 발령호수 */
+                          , #APDN_CODE#        /* 발령구분코드 */
+                          , #DEPT_CODE#        /* 부서코드 */
+                          , #CPOS_CODE#        /* 직급코드 */
+                          , #PSTP_CODE#        /* 호봉코드 */
+                          , #DURS_CODE#        /* 직책코드 */
+                          , #DUTY_CODE#        /* 직무코드 */
+                          , #OPOS_CODE#        /* 직위코드 */
+                          , #WRKS_CODE#        /* 근무상태코드 */
+                          , #PYTY_CODE#        /* 급여형태코드 */
+                          , #DTMN_YSNO#        /* 부서장여부 */
+                          , #DTMN_DTCD#        /* 부서장부서코드 */
+                          , v_DSPT_YSNO        /* 파견여부 */
+                          , #DSPT_DTCD#        /* 파견부서코드 */
+                          , #EXTR_PLDH#        /* 외부파견지 */
+                          , v_LEAV_YSNO        /* 휴직여부 */
+                          , v_PBNR_YSNO        /* 수습여부 */
+                          , #ADJN_DTCD#        /* 겸직부서코드 */
+                          , #ADDT_CODE#        /* 겸직직책코드 */
+                          , #RTTY_CODE#        /* 퇴직구분코드 */
+                          , #CIBP_ANNU#        /* 경력직위연차 */
+                          , #APNT_INNM#        /* 발령기관명 */
+                          , #APNT_ENDD#        /* 발령종료일 */
+                          , #SEAS_DATE#        /* 소속발령일 */
+                          , #DEAT_DATE#        /* 부서발령일 */
+                          , #PRON_DATE#        /* 승진일 */
+                          , #PARE_DATE#        /* 승급일 */
+                          , #NETP_DATE#        /* 차기승급일 */
+                          , #NEPR_DATE#        /* 차기승진일 */
+                          , #DURS_DATE#        /* 직책일 */
+                          , #DUTY_DATE#        /* 직무일 */
+                          , '0'                /* 발령승인여부 */
+                          , v_DTCH_YSNO        /* 부서변경여부 */
+                          , v_CLPC_YSNO        /* 직급변경여부 */
+                          , v_NMCG_YSNO        /* 호봉변경여부 */
+                          , v_DURC_YSNO        /* 직책변경여부 */
+                          , v_JOCH_YSNO        /* 직무변경여부 */
+                          , v_OFPC_YSNO        /* 직위변경여부 */
+                          , v_PYTC_YSNO        /* 급여형태변경여부 */
+                          , v_WRKC_YSNO        /* 근무상태변경여부 */
+                          , v_HDTC_YSNO        /* 부서장변경여부 */
+                          , #PBDC_YSNO#        /* 수습변경여부 */
+                          , #CSPT_YSNO#        /* 증명서출력여부 */
+                          , #REMK_200X#        /* 비고200 */
+                          , #APNT_PROW#        /* 발령사유 */
+                          , #WRDV_CODE#        /* 근무구분코드 */
+                          , #WRDV_DATE#        /* 근무구분일 */
+                          , #OPOS_DATE#        /* 직위일 */
+                          , #UPDT_USID#        /* 입력작업자 */
+                          , SYSDATE            /* 입력일시 */
+                          , #UPDT_USID#        /* 수정작업자 */
+                          , SYSDATE            /* 수정일시 */
+                        );
+        END;
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령관리 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRME0010.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.UPDATE00.발령관리 테이블 수정 */
+            v_ROWCNT INTEGER;
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+               AND APAL_YSNO = '1'
+            ;
+
+            IF v_ROWCNT > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM049','변경'));
+            END IF;
+
+                UPDATE HR_APPOXM /* [발령관리] */
+                   SET DRFT_DATE = #DRFT_DATE#            /* 기안일 */
+                     , APNT_SBJT = #APNT_SBJT#            /* 발령제목 */
+                     , APAL_YSNO = #APAL_YSNO#            /* 발령승인여부 */
+                     , APPK_CODE = #APPK_CODE#            /* 발령종류코드 */
+                     , DRFR_DTCD = #DRFR_DTCD#            /* 기안자부서코드 */
+                     , DRFR_EMNR = #DRFR_EMNR#            /* 기안자사원번호 */
+                     , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE                /* 수정일시 */
+                 WHERE APNT_HOCT = #APNT_HOCT#            /* 발령호수 */
+             ;
+        END;
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령상세관리 테이블 저장
+********************************************************************************/
+-->
+    <update id="HRME0010.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.UPDATE01.발령상세관리 테이블 저장 */
+            v_ROWCNT INTEGER;
+            v_DSPT_YSNO VARCHAR2(1);   /* 파견여부          */
+            v_DTCH_YSNO VARCHAR2(1);   /* 부서변경여부      */
+            v_CLPC_YSNO VARCHAR2(1);   /* 직급변경여부      */
+            v_NMCG_YSNO VARCHAR2(1);   /* 호봉변경여부      */
+            v_DURC_YSNO VARCHAR2(1);   /* 직책변경여부      */
+            v_JOCH_YSNO VARCHAR2(1);   /* 직무변경여부      */
+            v_OFPC_YSNO VARCHAR2(1);   /* 직위변경여부      */
+            v_PYTC_YSNO VARCHAR2(1);   /* 급여형태변경여부  */
+            v_WRKC_YSNO VARCHAR2(1);   /* 근무상태변경여부  */
+            v_HDTC_YSNO VARCHAR2(1);   /* 부서장변경여부    */
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+               AND APAL_YSNO = '1'
+            ;
+
+            IF v_ROWCNT > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM049','변경'));
+            END IF;
+
+
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXD
+             WHERE EMPL_NUMB = #EMPL_NUMB#
+               AND APAL_YSNO = '1'
+            ;
+
+            SELECT CASE WHEN v_ROWCNT > 0  AND (DSPT_DTCD = #DSPT_DTCD# OR EXTR_PLDH = #EXTR_PLDH#) THEN '0' ELSE '1' END   /* 파견여부          */
+                 , CASE WHEN v_ROWCNT > 0  AND DEPT_CODE = #DEPT_CODE# THEN '0' ELSE '1' END   /* 부서변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND CPOS_CODE = #CPOS_CODE# THEN '0' ELSE '1' END   /* 직급변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND PSTP_CODE = #PSTP_CODE# THEN '0' ELSE '1' END   /* 호봉변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND DURS_CODE = #DURS_CODE# THEN '0' ELSE '1' END   /* 직책변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND DUTY_CODE = #DUTY_CODE# THEN '0' ELSE '1' END   /* 직무변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND OPOS_CODE = #OPOS_CODE# THEN '0' ELSE '1' END   /* 직위변경여부      */
+                 , CASE WHEN v_ROWCNT > 0  AND PYTY_CODE = #PYTY_CODE# THEN '0' ELSE '1' END   /* 급여형태변경여부  */
+                 , CASE WHEN v_ROWCNT > 0  AND WRKS_CODE = #WRKS_CODE# THEN '0' ELSE '1' END   /* 근무상태변경여부  */
+                 , CASE WHEN v_ROWCNT > 0  AND DTMN_YSNO = #DTMN_YSNO# THEN '0' ELSE '1' END   /* 부서장변경여부    */
+              INTO v_DSPT_YSNO
+                 , v_DTCH_YSNO
+                 , v_CLPC_YSNO
+                 , v_NMCG_YSNO
+                 , v_DURC_YSNO
+                 , v_JOCH_YSNO
+                 , v_OFPC_YSNO
+                 , v_PYTC_YSNO
+                 , v_WRKC_YSNO
+                 , v_HDTC_YSNO
+              FROM HR_MASTXM
+             WHERE EMPL_NUMB = #EMPL_NUMB#
+            ;
+                UPDATE HR_APPOXD /* [발령상세] */
+                   SET APNT_DATE = #APNT_DATE#            /* 발령일 */
+                     , APNT_SEQN = NVL(#APNT_SEQN#, (SELECT NVL(MAX(APNT_SEQN),0)+1 FROM HR_APPOXD WHERE EMPL_NUMB = #EMPL_NUMB# AND APNT_DATE = #APNT_DATE#))  /* 발령일련번호 */
+                     , APNT_HOCT = #APNT_HOCT#            /* 발령호수 */
+                     , APDN_CODE = #APDN_CODE#            /* 발령구분코드 */
+                     , DEPT_CODE = #DEPT_CODE#            /* 부서코드 */
+                     , CPOS_CODE = #CPOS_CODE#            /* 직급코드 */
+                     , PSTP_CODE = #PSTP_CODE#            /* 호봉코드 */
+                     , DURS_CODE = #DURS_CODE#            /* 직책코드 */
+                     , DUTY_CODE = #DUTY_CODE#            /* 직무코드 */
+                     , OPOS_CODE = #OPOS_CODE#            /* 직위코드 */
+                     , WRKS_CODE = #WRKS_CODE#            /* 근무상태코드 */
+                     , PYTY_CODE = #PYTY_CODE#            /* 급여형태코드 */
+                     , DTMN_YSNO = #DTMN_YSNO#            /* 부서장여부 */
+                     , DTMN_DTCD = #DTMN_DTCD#            /* 부서장부서코드 */
+                     , DSPT_YSNO = v_DSPT_YSNO            /* 파견여부 */
+                     , DSPT_DTCD = #DSPT_DTCD#            /* 파견부서코드 */
+                     , EXTR_PLDH = #EXTR_PLDH#            /* 외부파견지 */
+                     , LEAV_YSNO = #LEAV_YSNO#            /* 휴직여부 */
+                     , PBNR_YSNO = #PBNR_YSNO#            /* 수습여부 */
+                     , ADJN_DTCD = #ADJN_DTCD#            /* 겸직부서코드 */
+                     , ADDT_CODE = #ADDT_CODE#            /* 겸직직책코드 */
+                     , RTTY_CODE = #RTTY_CODE#            /* 퇴직구분코드 */
+                     , CIBP_ANNU = #CIBP_ANNU#            /* 경력직위연차 */
+                     , APNT_INNM = #APNT_INNM#            /* 발령기관명 */
+                     , APNT_ENDD = #APNT_ENDD#            /* 발령종료일 */
+                     , SEAS_DATE = #SEAS_DATE#            /* 소속발령일 */
+                     , DEAT_DATE = #DEAT_DATE#            /* 부서발령일 */
+                     , PRON_DATE = #PRON_DATE#            /* 승진일 */
+                     , PARE_DATE = #PARE_DATE#            /* 승급일 */
+                     , NETP_DATE = #NETP_DATE#            /* 차기승급일 */
+                     , NEPR_DATE = #NEPR_DATE#            /* 차기승진일 */
+                     , DURS_DATE = #DURS_DATE#            /* 직책일 */
+                     , DUTY_DATE = #DUTY_DATE#            /* 직무일 */
+                     , APAL_YSNO = #APAL_YSNO#            /* 발령승인여부 */
+                     , DTCH_YSNO = v_DTCH_YSNO            /* 부서변경여부 */
+                     , CLPC_YSNO = v_CLPC_YSNO            /* 직급변경여부 */
+                     , NMCG_YSNO = v_NMCG_YSNO            /* 호봉변경여부 */
+                     , DURC_YSNO = v_DURC_YSNO            /* 직책변경여부 */
+                     , JOCH_YSNO = v_JOCH_YSNO            /* 직무변경여부 */
+                     , OFPC_YSNO = v_OFPC_YSNO            /* 직위변경여부 */
+                     , PYTC_YSNO = v_PYTC_YSNO            /* 급여형태변경여부 */
+                     , WRKC_YSNO = v_WRKC_YSNO            /* 근무상태변경여부 */
+                     , HDTC_YSNO = v_HDTC_YSNO            /* 부서장변경여부 */
+                     , PBDC_YSNO = #PBDC_YSNO#            /* 수습변경여부 */
+                     , CSPT_YSNO = #CSPT_YSNO#            /* 증명서출력여부 */
+                     , REMK_200X = #REMK_200X#            /* 비고200 */
+                     , APNT_PROW = #APNT_PROW#            /* 발령사유 */
+                     , WRDV_CODE = #WRDV_CODE#            /* 근무구분코드 */
+                     , WRDV_DATE = #WRDV_DATE#            /* 근무구분일 */
+                     , OPOS_DATE = #OPOS_DATE#            /* 직위일 */
+                     , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE                /* 수정일시 */
+                 WHERE EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+                   AND SRAL_NUMB = #SRAL_NUMB#            /* 일련번호 */
+        ;
+        END;
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령관리 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="HRME0010.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.DELETE00.발령관리 테이블 삭제 */
+            v_ROWCNT INTEGER;
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+               AND APAL_YSNO = '1'
+            ;
+
+            IF v_ROWCNT > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM049','삭제'));
+            END IF;
+
+            DELETE FROM HR_APPOXD
+             WHERE APNT_HOCT = #APNT_HOCT#  /* 발령호수 */
+            ;
+            DELETE FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#  /* 발령호수 */
+            ;
+        END;
+    ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령상세관리 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="HRME0010.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRME0010.DELETE01.발령상세관리 테이블 삭제 */
+            v_ROWCNT INTEGER;
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM HR_APPOXM
+             WHERE APNT_HOCT = #APNT_HOCT#
+               AND APAL_YSNO = '1'
+            ;
+
+            IF v_ROWCNT > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM049','삭제'));
+            END IF;
+
+            DELETE FROM HR_APPOXD
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /* 사원번호 */
+               AND SRAL_NUMB = #SRAL_NUMB#   /* 일련번호 */
+            ;
+        END;
+    ]]>
+    </delete>
+</sqlMap>

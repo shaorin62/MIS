@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="BDMA0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="예산과목등록" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadCheckProcess" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="240" top="107" height="21" cssclass="styFormSearchInfo" taborder="5" usedecorate="true"/>
+        <Grid binddataset="dsTB_BDSBXM"  cellsizingtype="both" enable="true" id="grdTB_BDSBXM" useinputpanel="false" selecttype="row" taborder="2" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" autoenter="none" autofittype="col" left="8" right="25" top="128" bottom="15" cssclass="styGrid01">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="100"/>
+                <Column size="300"/>
+                <Column size="100"/>
+                <Column size="500"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell style="background: ;" cssclass="Cellgrd_WF_essential" text="예산과목코드"/>
+                <Cell col="1" style="background: ;" cssclass="Cellgrd_WF_essential" text="예산과목명"/>
+                <Cell col="2" style="background: ;" cssclass="Cellgrd_WF_edit" text="사용여부"/>
+                <Cell col="3" style="background: ;" cssclass="Cellgrd_WF_edit" text="비고"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="expr:dataset.getRowType(currow) == Dataset.ROWTYPE_INSERT ? &quot;text&quot; : &quot;none&quot;" style="align:center;" text="bind:BDSB_CODE" editlimit="0"/>
+                <Cell col="1" displaytype="text" edittype="text" style="align:left;" text="bind:BDSB_NAME" editlimit="0"/>
+                <Cell col="2" displaytype="checkbox" edittype="checkbox" style="align:center;" text="bind:USEX_YSNO"/>
+                <Cell col="3" displaytype="text" edittype="text" style="align:left;" text="bind:REMK_NOTE" editlimit="0" calendardisplaynulltype="none"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox0" taborder="7" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" onclick="spSearchBox0_onclick"/>
+        <Combo id="cmbUSEX_YSNO" taborder="1" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="364" top="71" height="21" width="100"/>
+        <Static id="Static2" taborder="8" text="사용여부" cssclass="styFormSearchCap" left="295" top="71" height="21" width="76"/>
+        <Edit id="edtBDSB_CODE" taborder="0" imemode="hangul" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="116" top="71" height="21" width="150"/>
+        <Static id="Static1" taborder="11" text="예산과목/명" cssclass="styFormSearchCap" left="28" top="71" width="104" height="21" onclick="imgSearchTitle0_onclick"/>
+        <Static id="st_FormTitle" taborder="13" text="예산과목등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="14" text="홈 &gt; 예산관리 &gt; 예산기준정보" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="15" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="16" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="19" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="20" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="21" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="22" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="23" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="24" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static34" taborder="25" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="26" visible="false" left="108" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="27" text="w 40" visible="false" left="266" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static22" taborder="28" text="h 25" visible="false" left="538" top="103" width="32" height="25" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTB_BDSBXM" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="BDSB_CODE" size="10" type="STRING"/>
+          <Column id="BDSB_NAME" size="100" type="STRING"/>
+          <Column id="USEX_YSNO" size="1" type="STRING"/>
+          <Column id="REMK_NOTE" size="400" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsUSEX_YSNO</Col>
+            <Col id="CODEID">USEX_YSNO</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	BDMA0010 예산과목등록
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.26		안윤준		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+/***************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망     *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF"; 
+this.sPACKAGENAME = "BDMA0010";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fnc_GridSetting(this);
+	this.fn_Search();
+	
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj:Button) {
+	this.close();
+	
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTB_BDSBXM");
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTB_BDSBXM=dsTB_BDSBXM";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTB_BDSBXM.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	var iRow = this.dsTB_BDSBXM.addRow();
+	this.dsTB_BDSBXM.setColumn(iRow, "USEX_YSNO", "1");
+	
+	this.fnc_GridSetCellFocus(this.grdTB_BDSBXM, "BDSB_CODE");
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()) this.dsTB_BDSBXM.deleteRow(this.dsTB_BDSBXM.rowposition);
+	this.grdTB_BDSBXM.setFocus();
+	
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsTB_BDSBXM"); 
+	this.grdTB_BDSBXM.setFocus(); 
+	
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {	
+
+	if (!this.fn_SaveItemCheck()) return;
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTB_BDSBXM=dsTB_BDSBXM:U";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTB_BDSBXM.setFocus(); 
+	
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+	
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function (obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTB_BDSBXM", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+	
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj, e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+	
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	return true;
+	
+}
+
+/*------------------+
+ |  삭제 여부 체크! |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	var sQuestionText = "예산과목코드 (" + this.fnc_Trim(this.dsTB_BDSBXM.getColumn(this.dsTB_BDSBXM.rowposition, "BDSB_CODE")) + ")";
+	return this.fnc_Message("TMM002", sQuestionText);
+	
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	
+	if (!this.fnc_DatasetChangeCheck("dsTB_BDSBXM")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	for (var row = 0; row < this.dsTB_BDSBXM.getRowCount(); row++) 	{
+		
+		if (this.fnc_ToUpper(this.dsTB_BDSBXM.getRowType(row)) == Dataset.ROWTYPE_NORMAL ) continue;
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTB_BDSBXM.getColumn(row, "BDSB_CODE"))) < 1) {		
+			return this.fnc_CheckPostAction("TMM072", "예산과목코드", this.dsTB_BDSBXM, row, this.grdTB_BDSBXM, "BDSB_CODE");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTB_BDSBXM.getColumn(row, "BDSB_NAME"))) < 1) {		
+			return this.fnc_CheckPostAction("TMM072", "예산과목명", this.dsTB_BDSBXM, row, this.grdTB_BDSBXM, "BDSB_NAME");
+		}
+		
+	}
+	
+	return true;
+}
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action="    + this.fnc_Quote(sKind); 
+		sReturnString += " BDSB_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtBDSB_CODE.value)); // 예산과목/명
+		sReturnString += " USEX_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.cmbUSEX_YSNO.value)); // 사용여부
+		
+	} else if (sKind == "SAVE00") {
+	
+		sReturnString  = " pgm="    + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" + this.fnc_Quote(sKind); 
+		
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	
+	if (ErrorCode < 0) 	{
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsTB_BDSBXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTB_BDSBXM.rowcount); 
+		
+	} else if (sMethodName == "SAVE00") {
+	
+		this.fnc_Information(this.stInformation, 0, "SAVE"); 
+		this.fnc_Message("TMM103"); 
+		
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbUSEX_YSNO,dsUSEX_YSNO,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+	}
+	
+}]]></Script>
+  </Form>
+</FDL>

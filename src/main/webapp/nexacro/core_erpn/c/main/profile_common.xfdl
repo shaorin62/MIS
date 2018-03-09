@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="profile_common" onload="fn_FormLoadSetting" position="absolute" left="0" width="285" top="0" height="285" scrollbars="none" titletext="[솔루션]사용자정보/휴가">
+    <Layouts>
+      <Layout>
+        <Static id="staUserName" taborder="3" text="한지민 대리" left="144" top="9" width="140" height="32" cssclass="sta_MF_name"/>
+        <Static id="staDeptName" taborder="4" text="경영지원팀" left="144" top="40" width="140" height="24" cssclass="sta_MF_text1" onclick="Static03_onclick"/>
+        <ImageViewer id="imgProfile" taborder="28" left="0" top="0" width="120" height="120" cssclass="img_MF_photo" image="URL('theme://images/img_WF_user.png')" onclick="ImageViewer00_onclick" stretch="fit"/>
+        <Static id="Static25" taborder="43" text="w25" visible="false" left="120" top="8" width="25" height="104" style="background:#fb7b7b7a;"/>
+        <Button id="btnEditProfile" taborder="52" text="정보수정 &gt;" left="144" top="66" width="88" height="24" cssclass="btn_MF_button1" onclick="btnEditProfile_onclick"/>
+        <Button id="btnChangeProfileImage" taborder="53" text="사진변경 &gt;" cssclass="btn_MF_button1" left="144" top="90" width="88" height="24" onclick="btnChangeProfileImage_onclick"/>
+        <Static id="Static27" taborder="54" text="h 20" visible="false" left="0" top="120" width="162" height="20" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="55" text="연차휴가" cssclass="sta_MF_text2" left="0" top="133" width="80" height="24"/>
+        <Static id="Static07" taborder="56" text="정기휴가" cssclass="sta_MF_text2" left="144" top="133" width="80" height="24"/>
+        <Static id="Static00" taborder="57" text="h 30 // 솔루션" visible="false" left="25" top="190" width="162" height="30" style="background:#fb7b7b7a;"/>
+        <Static id="staRegularDay" taborder="58" text="0&lt;fs v='11'&gt;일&lt;/fs&gt;&lt;ff v='Dotum'&gt;&lt;fc v='#d0d0d0ff'&gt;/&lt;/fc&gt;&lt;/ff&gt;0&lt;fs v='11'&gt;일&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="144" top="152" width="101" height="40"/>
+        <Static id="staNoticeItem2" taborder="59" text="[전체] 시스템 업그레이드 안내드립니다." usedecorate="true" cssclass="sta_MF_text9" left="0" top="236" width="280" height="24" style="padding:0 0 0 22;font:antialias 9 Malgun Gothic;"/>
+        <Static id="staYearlyDay" taborder="60" text="0&lt;fs v='11'&gt;일&lt;/fs&gt;&lt;ff v='Dotum'&gt;&lt;fc v='#d0d0d0ff'&gt;/&lt;/fc&gt;&lt;/ff&gt;0&lt;fs v='11'&gt;일&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="0" top="152" width="129" height="40"/>
+        <Static id="staNoticeItem1" taborder="61" text="[전체] 시스템 업그레이드 안내드립니다." usedecorate="true" cssclass="sta_MF_text9" left="0" top="213" width="280" height="24" style="padding:0 0 0 22;font:antialias 9 Malgun Gothic;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[ /***************************************************************************************************
+ * # Program : 공통 대시보드>상단>사용자정보/휴가일수
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.27		jsh			Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ *****************************************************************************INBUS*CO*KR************/
+
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_dashboard.xjs"
+
+
+
+/**
+ * 화면 로드 時 이벤트 함수(화면 초기화)
+ */
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	// 1. 기본 개인정보 처리(이름, 부서)
+	this.staUserName.set_text(application.GBL_USERNM + " " + application.GBL_OPOSNM);
+	this.staDeptName.set_text(application.GBL_DEPTNM);
+	
+	
+	// 2. 개인 사진 이미지 호출
+	this.fn_LoadProfileImage();
+	
+	// 3. 연차// 정기휴가 잔여일수 조회
+	this.fn_GetHolidayInfo();
+	
+}
+
+
+/**
+ * 정보수정 버튼 클릭 시 인사정보 메뉴로 이동
+ */
+this.btnEditProfile_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.fn_OpenLinkMenu("MHRMB0030");
+}
+
+/**
+ * 사진변경 버튼 클릭 시 이벤트
+ */
+this.btnChangeProfileImage_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.fn_UploadProfileImage("PROFILE", "fn_UploadProfileImageCallback");
+}
+
+
+this.staYearlyDay_onclick = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	
+}
+]]></Script>
+  </Form>
+</FDL>

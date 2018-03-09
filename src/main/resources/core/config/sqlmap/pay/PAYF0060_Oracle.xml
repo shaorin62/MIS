@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PAYF0060">
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 9. 20
+     내    용 : 퇴직소득원천징수영수증 제출자 조회
+********************************************************************************/
+-->
+    <select id="PAYF0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+           SELECT /* PAYF0060.SEARCH00.퇴직소득원천징수영수증 제출자 조회 */
+                  SF_GET_COMMNAME('CNTL_TXOF', A.CNTL_TXOF) AS CNTL_NAME   /* 세무서 */
+                , #PRES_DATE# AS PRES_DATE                  /* 제출년월일 */
+                , '법인' AS PRES_GUBN                        /* 제출자구분(법인) */
+                , A.HTSX_IDXX                               /* 홈택스ID */
+                , A.BSNS_NUMB                               /* 사업자등록번호 */
+                , A.OFFI_NAME                               /* 업체명 */
+                , SF_GET_SECTNAME(B.DEPT_CODE) || ' ' || SF_GET_DEPTNAME(B.DEPT_CODE) AS DEPT_NAME   /* 담당자부서 */
+                , B.EMPL_NAME                               /* 담당자성명 */
+                , C.COMP_TENR AS WORK_TENR                  /* 담당자전화번호 */
+             FROM TM_OFFICE A                               /* [사업장정보] */
+             LEFT OUTER JOIN HR_MASTXM B
+               ON B.EMPL_NUMB = #EMPL_NUMB#
+             LEFT OUTER JOIN HR_MASTXD C
+               ON B.EMPL_NUMB = C.EMPL_NUMB
+            WHERE A.ACCT_GUBN = #ACCT_GUBN#                 /* 회계구분_사업장 */
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 9. 20
+     내    용 : 퇴직소득원천징수영수증 원천징수 의무자별 조회
+********************************************************************************/
+-->
+    <select id="PAYF0060.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+           SELECT /* PAYF0060.SEARCH01.퇴직소득원천징수영수증 원천징수 의무자별 조회 */
+                  SF_GET_COMMNAME('CNTL_TXOF', A.CNTL_TXOF) AS CNTL_NAME       /* 세무서 */
+                , A.BSNS_NUMB                                                  /* 사업자등록번호 */
+                , A.OFFI_NAME                                                  /* 업체명 */
+                , A.OWNR_NAME                                                  /* 대표자 */
+                , A.JURI_NUMB                                                  /* 법인등록번호 */
+                , B.PRES_CONT                                                  /* 주근무처수 */
+                , B.BEFO_CONT                                                  /* 종근무처수 */
+                , B.RETI_INCO                                                  /* 퇴직급여액총계 */
+                , B.STXA_INTX                                                  /* 소득세결정세액총계 */
+                , B.STXA_IHTX                                                  /* 주민세결정세액총계 */
+                , B.STXA_STRD                                                  /* 농특세결정세액총계 */
+                , B.DECI_TAMT                                                  /* 결정세액총계 */
+             FROM TM_OFFICE A
+             LEFT OUTER JOIN (SELECT ENFC_CODE
+                                   , SUM(PRES_CONT) AS PRES_CONT
+                                   , SUM(BEFO_CONT) AS BEFO_CONT
+                                   , SUM(RETI_INCO) AS RETI_INCO, SUM(STXA_INTX) AS STXA_INTX
+                                   , SUM(STXA_IHTX) AS STXA_IHTX, SUM(STXA_STRD) AS STXA_STRD
+                                   , SUM(DECI_TAMT) AS DECI_TAMT
+                                FROM (SELECT B.ENFC_CODE AS ENFC_CODE
+                                           , COUNT(A.EMPL_NUMB) AS PRES_CONT
+                                           , SUM(CASE WHEN LENGTH(TRIM(A.PBUS_NUMB))>0 THEN 1 ELSE 0 END) AS BEFO_CONT
+                                           , SUM(A.TOTL_RPAY) AS RETI_INCO
+                                           , SUM(A.SURE_ITAX) AS STXA_INTX
+                                           , SUM(A.SURE_RTAX) AS STXA_IHTX
+                                           , SUM(A.SURE_FTAX) AS STXA_STRD
+                                           , NVL(SUM(A.SURE_ITAX), 0) + NVL(SUM(A.SURE_RTAX), 0) + NVL(SUM(A.SURE_FTAX), 0) AS DECI_TAMT
+                                        FROM PY_RTPWXM A   /* PY_RTPROC A */
+                                       INNER JOIN PY_RTPCXM B /* PY_RTPROT B */
+                                               ON A.EMPL_NUMB = B.EMPL_NUMB
+                                              AND A.RECE_SEQN = B.RECE_SEQN
+                                       INNER JOIN HR_MASTXM C
+                                               ON A.EMPL_NUMB = C.EMPL_NUMB
+                                       WHERE substr(A.REND_DATE,0,4) = #STDS_YEAR#
+                                         AND B.CLSE_YSNO = '1'
+                                       GROUP BY B.ENFC_CODE
+                                        ) SUB
+                               GROUP BY ENFC_CODE
+                                ) B
+                            ON A.ACCT_GUBN = B.ENFC_CODE
+               WHERE A.ACCT_GUBN = #ACCT_GUBN#
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 9. 20
+     내    용 : 퇴직소득원천징수영수증 주근무처 조회
+********************************************************************************/
+-->
+    <select id="PAYF0060.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* PAYF0060.SEARCH02.퇴직소득원천징수영수증 주근무처 조회 */
+                   A.EMPL_NUMB                      /* 사번 */
+                 , B.EMPL_NAME                      /* 성명 */
+                 , NVL(A.TOTL_RPAY,0) AS RETI_INCO  /* 퇴직급여액 */
+                 , NVL(A.AFRD_AMOT,0) AS RTIN_DEDU  /* 퇴직소득공제 */
+                 , NVL(A.TLST_ASST,0) AS STAN_ASSE  /* 과표 */
+                 , NVL(A.TLYA_STAD,0) AS YEAR_STAN  /* 연평균과표 */
+                 , NVL(A.TLYA_CTAX,0) AS YEAR_TAX   /* 연평균세액 */
+                 , NVL(A.TOTL_CTAX,0) AS CALC_TAX   /* 산출세액 */
+                 , 0 AS FORE_DEDU
+                 , A.SURE_ITAX AS STXA_INTX /* 결정세액소득세 */
+                 , A.SURE_RTAX AS STXA_IHTX /* 결정세액주민세 */
+                 , A.SURE_FTAX AS STXA_STRD /* 결정세액농특세 */
+                 , NVL(A.SURE_ITAX,0) + NVL(A.SURE_RTAX,0) + NVL(A.SURE_FTAX,0) AS DECI_TAMT
+              FROM PY_RTPWXM A   /* PY_RTPROC A */
+                INNER JOIN PY_RTPCXM C /* PY_RTPROT c */
+                   ON A.EMPL_NUMB = C.EMPL_NUMB
+                  AND A.RECE_SEQN = C.RECE_SEQN
+                INNER JOIN HR_MASTXM B
+                   ON A.EMPL_NUMB = B.EMPL_NUMB
+                INNER JOIN TM_OFFICE E
+                   ON C.ENFC_CODE = E.ACCT_GUBN
+             WHERE C.ENFC_CODE  = #ACCT_GUBN#
+               AND SUBSTR(A.REND_DATE, 0, 4) = #STDS_YEAR#
+               AND C.CLSE_YSNO = '1'
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 9. 20
+     내    용 : 퇴직소득원천징수영수증 파일 조회
+********************************************************************************/
+-->
+    <select id="PAYF0060.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT DATA_CNTT AS ROWX_DATA
+              FROM PY_RTFILE
+             ORDER BY RECD_SEQN, SUBSTR(DATA_CNTT, 6, 6), COMD_SEQN
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 9. 6
+     내    용 : 퇴직소득원천징수영수증 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYF0060.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+            BEGIN /* PAYF0060.SAVE00.퇴직소득원천징수영수증 테이블 저장 */
+                /* 자료삭제 */
+                DELETE FROM PY_RTFILE;
+
+                /* 제출자레코드(A레코드) */
+                INSERT INTO PY_RTFILE
+                  SELECT  1    /* 레코드순번 */
+                       , ''   /* 사번 */
+                       , 1    /* 세부순번 */
+                       /* [자료관리번호] */
+                       , 'A'                                                    /* 레코드구분 */
+                      || '25'                                                   /* 자료구분 */
+                      || RPAD(NVL(A.CNTL_TXOF,' '), 3, ' ')                     /* 세무서 */
+                      || #PRES_DATE#                                            /* 제출년월일 */
+                       /* [제출자] */
+                      || '2'                                                    /* 제출자구분(법인) */
+                      || RPAD(' ',6,' ')                                        /* 세무대리인관리번호 */
+                      || RPAD(NVL(A.HTSX_IDXX,' '), 20, ' ')                    /* 홈택스ID */
+                      || '9000'                                                 /* 세무프로그램코드 */
+                      || RPAD(NVL(A.BSNS_NUMB,' '), 10, ' ')                    /* 사업자등록번호 */
+                      || RPAD(NVL(A.OFFI_GUBN,' '), 40, ' ')                    /* 업체명 */
+                      || RPAD(NVL(SF_GET_DEPTNAME(B.DEPT_CODE),' '), 30, ' ')   /* 담당자부서 */
+                      || RPAD(NVL(B.EMPL_NAME,' '), 30, ' ')                    /* 담당자성명 */
+                      || RPAD(NVL(C.COMP_TENR,' '), 15, ' ')                    /* 담당자전화번호 */
+                       /* [제출내역] */
+                      || LPAD('1', 5, '0')                  /* 신고의무자수 */
+                      || '101'                              /* 사용한글코드(2바이트 완성형) */
+                      || RPAD(' ', 932, ' ') AS DATA_CNTT   /*[2016귀속]912->932 공란 [2013귀속]*/
+                    FROM TM_OFFICE A, HR_MASTXM B, HR_MASTXD C
+                   WHERE A.ACCT_GUBN = #ACCT_GUBN#
+                     AND B.EMPL_NUMB = C.EMPL_NUMB
+                     AND B.EMPL_NUMB = #EMPL_NUMB#
+                   ;
+
+		        /* 원천징수의무자별 집계레코드(B레코드) */
+		        INSERT INTO PY_RTFILE
+                SELECT  2    /* 레코드순번 */
+                       ,''   /* 사번 */
+                       ,1    /* 세부순번 */
+                       /* [자료관리번호] */
+                       ,'B'                                                      /* 레코드구분 */
+                       || '25'                                                   /* 자료구분 */
+                       || RPAD(NVL(A.CNTL_TXOF,' '), 3, ' ')                     /* 세무서 */
+                       || LPAD(ROW_NUMBER() OVER (ORDER BY A.ACCT_GUBN), 6, '0') /* 일련번호 */
+                       /* [원천징수의무자] */
+                       || RPAD(NVL(A.BSNS_NUMB,' '), 10, ' ')    /* 사업자등록번호 */
+                       || RPAD(NVL(A.OFFI_NAME,' '), 40, ' ')    /* 업체명 */
+                       || RPAD(NVL(A.OWNR_NAME,' '), 30, ' ')    /* 대표자 */
+                       || RPAD(NVL(A.JURI_NUMB,' '), 13, ' ')    /* 법인등록번호 */
+                       || '1'                                    /* 징수의무자구분(사업장= 1) 2012귀속 추가 */
+                       /* [제출내역] */
+                       || LPAD(NVL(B.PRES_CONT,'0'), 7, '0')     /* 퇴직소득자(C레코드)수 */
+                       || RPAD(' ', 7, ' ')                     /* 공란 */
+                       || LPAD(NVL(B.FITA_RPAY,'0'), 14, '0')   /* 정산-과세대상퇴직급여합계 */
+                       || CASE WHEN B.SURE_ITAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                       || LPAD(NVL(B.SURE_ITAX,'0'), 13, '0')    /* 신고대상소득세합계 */
+                       || LPAD(NVL(B.TAPT_TAMT,'0'), 13, '0')    /* 이연퇴직소득세액합계 */
+                       || CASE WHEN B.DEDU_ITAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                       || LPAD(NVL(B.DEDU_ITAX,'0'), 13, '0')    /* 차감원천징수 - 소득세액 합계 */
+                       || CASE WHEN B.DEDU_RTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                       || LPAD(NVL(B.DEDU_RTAX,'0'), 13, '0')    /* 차감원천징수 - 지방소득세액 합계 */
+                       || CASE WHEN B.DEDU_FTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                       || LPAD(NVL(B.DEDU_FTAX,'0'), 13, '0')    /* 차감원천징수 - 농어촌특별세액 합계 */
+                       || CASE WHEN B.DEDU_TOTL >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                       || LPAD(NVL(B.DEDU_TOTL,'0'), 13, '0')    /* 차감원천징수세액 - 계 합계 */
+                       || RPAD(' ', 893, ' ') AS DATA_CNTT       /* 공란 */
+                  FROM TM_OFFICE A
+                  LEFT OUTER JOIN (SELECT B.ENFC_CODE
+                                        , COUNT(A.EMPL_NUMB) AS PRES_CONT
+                                        , SUM(NVL(A.TOTL_RPAY,0)) AS RETI_WAGE
+                                        , SUM(NVL(A.FITA_RPAY,0)) AS FITA_RPAY  /* 과세대상퇴직급여 */
+                                        , SUM(NVL(A.SURE_ITAX,0)) AS SURE_ITAX
+                                        , SUM(NVL(A.TAPT_TAMT,0)) AS TAPT_TAMT
+                                        , SUM(NVL(A.DEDU_ITAX,0)) AS DEDU_ITAX
+                                        , SUM(NVL(A.DEDU_RTAX,0)) AS DEDU_RTAX
+                                        , SUM(NVL(A.DEDU_FTAX,0)) AS DEDU_FTAX
+                                        , SUM(NVL(A.DEDU_ITAX,0)+NVL(A.DEDU_RTAX,0)+NVL(A.DEDU_FTAX,0)) AS DEDU_TOTL
+                                     FROM PY_RTPWXM A /* PY_RTPROC A */
+                                    INNER JOIN PY_RTPCXM B /* PY_RTPROT E */
+                                       ON A.EMPL_NUMB = B.EMPL_NUMB
+                                      AND A.RECE_SEQN = B.RECE_SEQN
+                                    WHERE SUBSTR(A.REND_DATE,0,4) = #STDS_YEAR#
+                                      AND B.CLSE_YSNO = '1'
+                                    GROUP BY B.ENFC_CODE
+                                   ) B
+                    ON A.ACCT_GUBN=B.ENFC_CODE
+                 WHERE A.ACCT_GUBN = #ACCT_GUBN#
+                 ;
+
+                /* 원천징수의무자별 집계레코드(C레코드) */
+                INSERT INTO PY_RTFILE
+                  SELECT 3            /* 레코드순번 */
+                       , A.EMPL_NUMB  /* 사번 */
+                       , 1            /* 세부순번 */
+                       /* [자료관리번호] */
+                       ,'C'                                                      /* 레코드구분 1 */
+                      || '25'                                                   /* 자료구분 2 */
+                      || RPAD(NVL(D.CNTL_TXOF,' '), 3, ' ')                     /* 세무서 3 */
+                      || LPAD(ROW_NUMBER() OVER (ORDER BY A.EMPL_NUMB, A.REND_DATE), 6, '0') /* 일련번호 4 */
+                       /* [원천징수의무자 및 주(현)근무처] */
+                      || RPAD(NVL(D.BSNS_NUMB,' '),10, ' ') /* 사업자등록번호 5 */
+                      || '1'                                    /* 징수의무자구분(사업장= 1) 2013귀속 추가 6 */
+                       /* [소득자] */
+                      || NVL(C.RECL_CODE,'1')                                               /* 거주자구분코드 7 */
+                      || NVL(C.LFDN_CODE,'1')                                               /* 내외국인구분코드 8 */
+                      || RPAD(NVL(C.DOMC_CODE,' '), 2, ' ')                                 /* 거주지국코드 9 */
+                      || RPAD(NVL(B.EMPL_NAME,' '), 30, ' ')                                /* 성명 10 */
+                      || RPAD(REPLACE(B.RERN_NUMB,'-',''), 13, ' ')             /* 주민등록번호 11 */
+                      
+                      || NVL(DECODE(B.CLSD_CODE, '01', '1', '2'),'2')                      /* 임원여부(여=1, 부=2) 2012귀속 추가 12 */
+                      || LPAD('0', 8, '0')                                                               /* 확정급여형 퇴직연금제도 가입일 2013 추가 */
+                      || LPAD('0', 11, '0')                                                               /* 임원여부 '1'인 경우에만 기재. 2011년 12월 31일에 퇴직할 경우를 가정하여 지급받을 퇴직소득금액 기재 */
+                      || LPAD(NVL(A.RSTR_DATE,'0'), 8, '0')    /* 귀속연도 시작연월일 15 */
+                      || LPAD(NVL(A.REND_DATE,'0'), 8, '0')    /* 귀속연도 종료연월일 16 */
+                      || LPAD(NVL(A.RERE_CODE,'6'), 1, '0')    /* 퇴직사유 17 */
+                       /* 【퇴직급여현황 - 중간지급 등】 */
+                      || RPAD(NVL(A.PFIR_NAME,' '), 40, ' ')   /* 근무처명 18 */
+                      || RPAD(NVL(A.PBUS_NUMB,' '), 10, ' ')   /* 근무처사업자등록번호 19 */
+                      || LPAD(NVL(A.MIDL_RPAY,'0'), 11, '0')   /* 퇴직급여  20 */
+                      || LPAD(NVL(A.MINT_RPAY,'0'), 11, '0')   /* 비과세퇴직급여 21 */
+                      || LPAD(NVL(A.MITA_RPAY,'0'), 11, '0')   /* 과세대상퇴직급여 22 */
+                       /* 【퇴직급여현황 - 최종분】 */
+                      || RPAD(NVL(D.OFFI_NAME,' '), 40, ' ')   /* 근무처명 23 */
+                      || RPAD(NVL(D.BSNS_NUMB,' '), 10, ' ')   /* 근무처사업자등록번호 24 */
+                      || LPAD(NVL(A.FINL_RPAY,'0'), 11, '0')   /* 퇴직급여 25 */
+                      || LPAD(NVL(A.FINT_RPAY,'0'), 11, '0')   /* 비과세퇴직급여 26 */
+                      || LPAD(NVL(A.FITA_RPAY,'0'), 11, '0')   /* 과세대상퇴직급여 27 */
+                       /* 【퇴직급여현황 - 정산】 */
+                      || LPAD(NVL(A.TOTL_RPAY,'0'), 11, '0')   /* 퇴직급여 28 */
+                      || LPAD(NVL(A.TLNT_RPAY,'0'), 11, '0')   /* 비과세퇴직급여 29 */
+                      || LPAD(NVL(A.TLTA_RPAY,'0'), 11, '0')   /* 과세대상퇴직급여 30 */
+                       /* 【근속연수-중산지급 등】 */
+                      || LPAD(NVL(A.MIDL_ISDT,'0'),8, '0')   /* 입사일 31 */
+                      || LPAD(NVL(A.MIDL_STDT,'0'),8, '0')   /* 기산일 32 */
+                      || LPAD(NVL(A.MIDL_ENDT,'0'),8, '0')   /* 퇴사일 33 */
+                      || LPAD(NVL(A.MIDL_PYDT,'0'),8, '0')   /* 지급일 34 */
+                      || LPAD(NVL(A.MICT_MONT,'0'),4, '0') /* 근속월수 35 */
+                      || LPAD(NVL(A.MIEX_MONT,'0'),4, '0')   /* 제외월수 36 */
+                      || LPAD(NVL(A.MIAD_MONT,'0'),4, '0')   /* 가산월수 37 */
+                      || '0000'   /* 중복월수 38 */
+                      || LPAD(NVL(A.MICT_YEAR,'0'),4, '0')   /* 근속연수 39 */
+                       /* 【근속연수-최종】 */
+                      || LPAD(NVL(A.FINL_ISDT,'0'),8, '0')   /* 입사일 40 */
+                      || LPAD(NVL(A.FINL_STDT,'0'),8, '0')   /* 기산일 41 */
+                      || LPAD(NVL(A.FINL_ENDT,'0'),8, '0')   /* 퇴사일 42 */
+                      || LPAD(NVL(A.FINL_PYDT,'0'),8, '0')   /* 지급일 43 */
+                      || LPAD(NVL(A.FICT_MONT,'0'),4, '0')   /* 근속월수 44 */
+                      || LPAD(NVL(A.FIEX_MONT,'0'),4, '0')   /* 제외월수 45 */
+                      || LPAD(NVL(A.FIAD_MONT,'0'),4, '0')   /* 가산월수 46 */
+                      || '0000'   /* 중복월수 47 */
+                      || LPAD(NVL(A.FICT_YEAR,'0'),4, '0')   /* 근속연수 48 */
+                       /* 【근속연수-정산】  */
+                      || '00000000'   /* 입사일 49 */
+                      || LPAD(NVL(A.TOTL_STDT,'0'), 8, '0')   /* 기산일 50 */
+                      || LPAD(NVL(A.TOTL_ENDT,'0'), 8, '0')   /* 퇴사일 51  */
+                      || '00000000'   /* 지급일 52 */
+                      || LPAD(NVL(A.TLCT_MONT,'0'), 4, '0')   /* 근속월수 53 */
+                      || LPAD(NVL(A.TLEX_MONT,'0'), 4, '0')   /* 제외월수 54 */
+                      || LPAD(NVL(A.TLAD_MONT,'0'), 4, '0')   /* 가산월수 55 */
+                      || LPAD(NVL(A.TLOL_MONT,'0'), 4, '0')   /* 중복월수 56 */
+                      || LPAD(NVL(A.TLCT_YEAR,'0'), 4, '0')   /* 근속연수 57 */
+                       /* 【근속연수-안분-2012.12.31이전】 */
+                      || '00000000'   /* 입사일 58 */
+                      || LPAD(NVL(A.BEFO_STDT,'0'), 8, '0') /* 이전입사일 59 */
+                      || LPAD(NVL(A.BEFO_ENDT,'0'), 8, '0') /* 이전퇴사일 60 */
+                      || '00000000'   /* 지급일 61 */
+                      || LPAD(NVL(A.BFCT_MONT,'0'), 4, '0')   /* 근속월수 62 */
+                      || LPAD(NVL(A.BFEX_MONT,'0'), 4, '0')   /* 제외월수 63 */
+                      || LPAD(NVL(A.BFAD_MONT,'0'), 4, '0')   /* 가산월수 64 */
+                      || '0000'   /* 중복월수 65 */
+                      || LPAD(NVL(A.BFCT_YEAR,'0'), 4, '0')   /* 근속연수 66 */
+                       /* 【근속연수-안분-2013.1.1이후】 */
+                      || '00000000' /* 입사일 67 */
+                      ||  LPAD(NVL(A.AFTR_STDT,'0'), 8, '0') /* 이후입사일 68 */
+                      ||  LPAD(NVL(A.AFTR_ENDT,'0'), 8, '0') /* 이후퇴사일 69 */
+                      || '00000000' /* 지급일 70 */
+                      ||  LPAD(NVL(A.AFCT_MONT,'0'), 4, '0') /* 근속월수 71 */
+                      ||  LPAD(NVL(A.AFEX_MONT,'0'), 4, '0') /* 제외월수 72 */
+                      ||  LPAD(NVL(A.AFAD_MONT,'0'), 4, '0') /* 가산월수 73 */
+                      || '0000' /* 중복월수 74 */
+                      ||  LPAD(NVL(AFCT_YEAR,'0'), 4, '0') /* 근속연수 75 */
+                      
+                      /*[2016귀속]추가 개정규정에 따른 계산 방법 - 과세표준계산*/
+                      || LPAD(NVL(A.CALC_REIN,'0'), 11, '0')        /*개정 정산퇴직소득*/
+                      || LPAD(NVL(A.CWYC_DDUC,'0'), 11, '0')        /*개정 근속연수공제*/
+                      || LPAD(NVL(A.CONV_WAGE,'0'), 11, '0')        /*개정 환산급여*/
+                      || LPAD(NVL(A.COWA_DDUC,'0'), 11, '0')        /*개정 환산급여별공제*/
+                      || LPAD(NVL(A.REIN_STAS,'0'), 11, '0')        /*개정 퇴직소득과세표준*/
+                      || LPAD(NVL(A.CONV_CLTX,'0'), 11, '0')        /*개정 환산산출세액*/
+                      || LPAD(NVL(A.CLCR_TXAM,'0'), 11, '0')        /*개정 산출세액*/
+                      
+                       /* 【퇴직소득과세표준계산】 */
+                      || LPAD(NVL(A.TLTA_RPAY,'0'), 11, '0')    /* 퇴직소득 - 정산 78 */
+                      || LPAD(NVL(A.AFRD_AMOT,'0'), 11, '0')    /* 퇴직소득정률공제 - 정산 79 */
+                      || LPAD(NVL(A.CSYD_AMOT,'0'), 11, '0')    /* 근속연수공제 - 정산 80 */
+                      || LPAD(NVL(A.STAN_ASST,'0'), 11, '0')    /* 퇴직소득과세표준 - 정산 81 */
+                       /* 【퇴직소득세액계산-2012.12.31이전】- 정산분 근무기간에 2012.12.31이전분이 있는 경우에만 작성 */
+                      || LPAD(NVL(A.BFST_ASST,'0'), 11, '0')    /* 과세표준안분 82 */
+                      || LPAD(NVL(A.BFYA_STAD,'0'), 11, '0')    /* 연평균과세표준 83 */
+                      || LPAD('0', 11, '0')    /* 환산과세표준 84 */
+                      || LPAD('0', 11, '0')    /* 환산산출세액 85 */
+                      || LPAD(NVL(A.BFYA_CTAX,'0'), 11, '0')    /* 연평균과세표준 86 */
+                      || LPAD(NVL(A.BEFO_CTAX,'0'), 11, '0')    /* 산출세액 87 */
+                      
+                       /* 【퇴직소득세액계산-2013.1.1이후】 - 정산분 근무기간에 2013.1.1이후분이 있는 경우에만 작성 */
+                      || LPAD(NVL(A.AFST_ASST,'0'), 11, '0')    /* 과세표준안분 90 */
+                      || LPAD(NVL(A.AFYA_STAD,'0'), 11, '0')    /* 연평균과세표준 91 */
+                      || LPAD(NVL(A.AFCS_ASST,'0'), 11, '0')    /* 환산과세표준 92 */
+                      || LPAD(NVL(A.AFCC_TAXX,'0'), 11, '0')    /* 환산산출세액 93 */
+                      || LPAD(NVL(A.AFYA_CTAX,'0'), 11, '0')    /* 연평균산출세액 94 */
+                      || LPAD(NVL(A.AFTR_CTAX,'0'), 11, '0')    /* 산출세액 95 */
+                      
+                       /* 【퇴직소득세액계산-합계】 */
+                      || LPAD(NVL(A.TLST_ASST,'0'), 11, '0')    /* 과세표준안분 98 */
+                      || LPAD(NVL(A.TLYA_STAD,'0'), 11, '0')    /* 연평균과세표준 99 */
+                      || LPAD(NVL(A.TLCS_ASST,'0'), 11, '0')    /* 환산과세표준 100 */
+                      || LPAD(NVL(A.TLCC_TAXX,'0'), 11, '0')    /* 환산산출세액 101 */
+                      || LPAD(NVL(A.TLYA_CTAX,'0'), 11, '0')    /* 연평균산출세액 102 */
+                      || LPAD(NVL(A.TOTL_CTAX,'0'), 11, '0')    /* 산출세액 103 */
+                      
+                      || LPAD(NVL(A.TAXX_YEAR,'0'), 4, '0')  /* 퇴직일이 속하는 과세연도 105 */
+                      || LPAD(NVL(A.SPUE_CLTX,'0'), 11, '0')  /* 퇴직소득세산출세액 106 */
+                      || LPAD(NVL(A.TOTL_PPTX, '0'), 11, '0') /* 기납부(또는 기과세이연) 세액 107 */
+                      || CASE WHEN A.TLSR_TAMT >= 0 THEN '0' ELSE '1' END   /* 음수표시 */ 
+                      || LPAD(NVL(A.TLSR_TAMT, '0'), 11, '0') /* 신고대상세액 세액 108 */
+                       /* 【이연퇴직소득세액계산】 */
+                      || CASE WHEN A.TAPS_TAMT >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.TAPS_TAMT,'0'), 11, '0')    /* 신고대상세액 109 */
+                      || LPAD(NVL(A.TAPD_AMOT,'0'), 11, '0')    /* 계좌등록번호 110 */
+                      || LPAD(NVL(A.TAPT_RPAY,'0'), 11, '0')    /* 퇴직급여 111 */
+                      || LPAD(NVL(A.TAPT_TAMT,'0'), 11, '0')    /* 이연퇴직소득세 112 */
+                       /* 【납부명세-신고대상세액】 */
+                      || CASE WHEN A.SURE_ITAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.SURE_ITAX,'0'), 11, '0')    /* 소득세 113 */
+                      || CASE WHEN A.SURE_RTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.SURE_RTAX,'0'), 11, '0')    /* 지방소득세 114 */
+                      || CASE WHEN A.SURE_FTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.SURE_FTAX,'0'), 11, '0')    /* 농어촌특별세 115 */
+                      || CASE WHEN (NVL(A.SURE_ITAX,'0')+NVL(A.SURE_RTAX,'0')+NVL(A.SURE_FTAX,'0')) >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.SURE_ITAX,'0')+NVL(A.SURE_RTAX,'0')+NVL(A.SURE_FTAX,'0'), 11, '0')    /* 계 116 */
+                       /* 【납부명세-이연퇴직소득세】 */
+                      || LPAD(NVL(A.PORE_ITAX,'0'), 11, '0')    /* 소득세 117 */
+                      || LPAD(NVL(A.PORE_RTAX,'0'), 11, '0')    /* 지방소득세 118 */
+                      || LPAD(NVL(A.PORE_FTAX,'0'), 11, '0')    /* 농어촌특별세 119 */
+                      || LPAD(NVL(A.PORE_ITAX,'0')+NVL(A.PORE_RTAX,'0')+NVL(A.PORE_FTAX,'0'), 11, '0')    /* 계 120 */
+                       /* 【납부명세-차감원천징수세액】 */
+                      || CASE WHEN A.DEDU_ITAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.DEDU_ITAX,'0'), 11, '0')    /* 소득세 121 */
+                      || CASE WHEN A.DEDU_RTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.DEDU_RTAX,'0'), 11, '0')    /* 지방소득세  122 */
+                      || CASE WHEN A.DEDU_FTAX >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.DEDU_FTAX,'0'), 11, '0')    /* 농어촌특별세 123 */
+                      || CASE WHEN (NVL(A.DEDU_ITAX,'0')+NVL(A.DEDU_RTAX,'0')+NVL(A.DEDU_FTAX,'0')) >= 0 THEN '0' ELSE '1' END   /* 음수표시 */
+                      || LPAD(NVL(A.DEDU_ITAX,'0')+NVL(A.DEDU_RTAX,'0')+NVL(A.DEDU_FTAX,'0'), 11, '0')    /* 계 124 */
+                      || RPAD(' ',2, ' ') AS DATA_CNTT     /* 공란 126 */
+                    FROM PY_RTPWXM A
+                   INNER JOIN PY_RTPCXM E
+                      ON A.EMPL_NUMB = E.EMPL_NUMB
+                     AND A.RECE_SEQN = E.RECE_SEQN
+                   INNER JOIN HR_MASTXM B
+                      ON A.EMPL_NUMB = B.EMPL_NUMB
+                   INNER JOIN PY_MASTPM C
+                      ON A.EMPL_NUMB = C.EMPL_NUMB
+                   INNER JOIN TM_OFFICE D
+                      ON E.ENFC_CODE = D.ACCT_GUBN
+                   WHERE SUBSTR(A.REND_DATE,0,4) = #STDS_YEAR#
+                     AND E.CLSE_YSNO = '1'
+                     AND E.ENFC_CODE = #ACCT_GUBN#
+                   ;
+              END;
+		]]>
+	</insert>
+</sqlMap>

@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MRPA0010">
+
+<!--  
+ *   프로그램명 : 매체 결산 종합 보고서
+ *   작 성 일 : 2016.11.25(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.25(표준화 완료)
+		내      용  : 세금계산서가 발행된 개별청약서 목록 조회(전파)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드,MEDX_CODE:매체사 코드
+				 , MEDX_FLAG : 매체구분
+	-->
+	<select id="MRPA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* 조회주석ID수정바람 */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , DECODE(A.CUST_CODE,'0000001260',' ',C.CUST_NAME) AS ORD
+                 , A.CUST_CODE
+                 , C.CUST_NAME
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , E.BRND_NAME						/* 브랜드 명 */
+                 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		   /* 매체구분 */
+                 , '' AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , '' AS RMED_CDNM 
+                 , '' AS DTLX_CONT					/*세부내용*/
+                 , SUM(CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)/#MONY_UNIT# AS AMNT_FILD          /* 합계금액 */
+                 , ROUND(SUM(CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)*SF_GET_COMIRATE(A.YEAR_MNTH,A.CUST_CODE,A.MEDX_CODE,A.MEDX_FLAG))/#MONY_UNIT# AS COMI_FILD    /* 수수료금액 */
+                 , SUM(CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)*SF_GET_COMIRATE(A.YEAR_MNTH,A.CUST_CODE,A.MEDX_CODE,A.MEDX_FLAG)/#MONY_UNIT# AS COMI_FILD2    /* 수수료금액 */
+                 , ROUND(SF_GET_COMIRATE(A.YEAR_MNTH,A.CUST_CODE,A.MEDX_CODE,A.MEDX_FLAG),4) AS COMI_RATE                     /* 수수료율 */
+                 , '' AS MEMO_FILD							/*기타*/
+				 , '' AS AORX_FLAG								/*AOR구분*/
+              FROM MD_ETMDXM A         
+              LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+              LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+              LEFT JOIN MD_BRNDXM E ON A.CUST_CODE = E.CUST_CODE AND A.BRND_CODE = E.BRND_CODE
+              LEFT JOIN MD_CODEXM H ON A.MEDX_FLAG = H.COMM_CODE
+              WHERE 
+              A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+              AND A.YEAR_MNTH <= #YEAR_MNTH2#
+              AND A.TRTX_NUMB IS NOT NULL
+              AND A.INPT_PATH = 'C'
+          ]]>
+		<isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드코드 */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+        <![CDATA[ 
+GROUP BY A.YEAR_MNTH, A.CUST_CODE , C.CUST_NAME,A.BRND_CODE,E.BRND_NAME, A.MEDX_FLAG, H.COMM_CDNM , A.MEDX_CODE, D.CUST_NAME
+UNION ALL
+SELECT /* 조회주석ID수정바람 */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , DECODE(A.CUST_CODE,'0000001260',' ',C.CUST_NAME) AS ORD
+                 , A.CUST_CODE
+                 , C.CUST_NAME
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , E.BRND_NAME						/* 브랜드 명 */
+                 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		   /* 매체구분 */
+                 , '' AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , '' AS RMED_CDNM 
+                 , '' AS DTLX_CONT					/*세부내용*/
+                 , (CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)/#MONY_UNIT# AS AMNT_FILD          /* 합계금액 */
+                 , NVL(A.COMI_FILD,(CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)*A.COMI_RATE)/#MONY_UNIT# AS COMI_FILD   /* 수수료금액 */
+                 , NVL(A.COMI_FILD,(CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)*A.COMI_RATE)/#MONY_UNIT# AS COMI_FILD2   /* 수수료금액 */
+                 , A.COMI_RATE                     /* 수수료율 */
+                 , '' AS MEMO_FILD							/*기타*/
+				 , '' AS AORX_FLAG								/*AOR구분*/
+              FROM MD_ETMDXM A         
+              LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+              LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+              LEFT JOIN MD_BRNDXM E ON A.CUST_CODE = E.CUST_CODE AND A.BRND_CODE = E.BRND_CODE
+              LEFT JOIN MD_CODEXM H ON A.MEDX_FLAG = H.COMM_CODE
+              WHERE 
+              A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+              AND A.YEAR_MNTH <= #YEAR_MNTH2#
+              AND A.TRTX_NUMB IS NOT NULL
+              AND A.INPT_PATH != 'C'
+          ]]>
+          <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드코드 */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+        <![CDATA[ 
+        ORDER BY YEAR_MNTH,ORD,CUST_NAME,BRND_NAME,MEDX_FLAG
+        ]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.25(표준화 완료)
+		내      용  : 세금계산서가 발행된 개별청약서 목록 조회(전파 외)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드,MEDX_CODE:매체사 코드
+				 , MEDX_FLAG : 매체구분
+	-->
+	<select id="MRPA0010.SEARCH10" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MRPA0010.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , C.CUST_NAME                        /* 광고주 사업장명 */
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , G.BRND_NAME						/* 브랜드 명 */
+              	 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		/* 매체구분 */
+                 , '' AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , I.CUST_NAME AS RMED_CDNM 
+                 , '' AS DTLX_CONT					/*세부내용*/
+				 , A.AMNT_FILD/#MONY_UNIT#	AMNT_FILD				/*광고료*/
+				 , A.COMI_FILD/#MONY_UNIT#	COMI_FILD					/*수수료*/
+				 , A.COMI_RATE						/*수수료율*/
+				 , A.MEMO_FILD							/*기타*/
+				 , AORX_FLAG								/*AOR구분*/
+              FROM MD_CTMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN MD_BRNDXM G ON A.CUST_CODE = G.CUST_CODE AND A.BRND_CODE = G.BRND_CODE
+                LEFT JOIN MD_CODEXM H ON A.MEDX_FLAG = H.COMM_CODE
+                LEFT JOIN MD_CUSTXM I ON A.RMED_CODE = I.CUST_CODE AND A.MEDX_CODE=I.HIGH_CODE
+                WHERE A.TRTX_NUMB IS NOT NULL
+                AND A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+                AND A.YEAR_MNTH <= #YEAR_MNTH2#
+          ]]>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+			2=1
+		</isEqual>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00C">
+			1=1
+		</isEqual>
+		<isLessEqual prepend="AND" property="MEDX_FLAG" compareValue="A008">
+			A.MEDX_FLAG = #MEDX_FLAG#
+		</isLessEqual>
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+			A.RMED_CODE = #RMED_CODE#			/* 매체코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드 */
+		</isNotEmpty>	
+<![CDATA[ 
+UNION ALL
+SELECT /*  MRPA0010.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , C.CUST_NAME                        /* 광고주 사업장명 */
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , G.BRND_NAME						/* 브랜드 명 */
+              	 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		/* 매체구분 */
+                 , H.COMM_CDNM AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , I.CUST_NAME AS RMED_CDNM 
+                 , A.STDR_STEP||A.STDR_CTMT||' '||A.COLR_DEGR AS DTLX_CONT					/*세부내용*/
+				 , A.AMNT_FILD/#MONY_UNIT#		AMNT_FILD			/*광고료*/
+				 , A.COMI_FILD/#MONY_UNIT#		COMI_FILD				/*수수료*/
+				 , A.COMI_RATE						/*수수료율*/
+				 , A.MEMO_FILD							/*기타*/
+				 , AORX_FLAG								/*AOR구분*/
+              FROM MD_PTMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN MD_BRNDXM G ON A.CUST_CODE = G.CUST_CODE AND A.BRND_CODE = G.BRND_CODE
+                LEFT JOIN MD_CODEXM H ON A.MEDX_FLAG = H.COMM_CODE
+                LEFT JOIN MD_CUSTXM I ON A.RMED_CODE = I.CUST_CODE AND A.MEDX_CODE=I.HIGH_CODE
+                LEFT JOIN MD_CODEXM J ON A.PTAD_FLAG = H.COMM_CODE
+                WHERE A.TRTX_NUMB IS NOT NULL
+                AND A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+                AND A.YEAR_MNTH <= #YEAR_MNTH2#
+          ]]>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+			1=1
+		</isEqual>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00C">
+			1=1
+		</isEqual>
+		<isLessEqual prepend="AND" property="MEDX_FLAG" compareValue="A008">
+			A.MEDX_FLAG = #MEDX_FLAG#
+		</isLessEqual>
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+			A.RMED_CODE = #RMED_CODE#			/* 매체코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드 */
+		</isNotEmpty>	
+        <![CDATA[ 
+UNION ALL
+SELECT /*  MRPA0010.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , C.CUST_NAME                        /* 광고주 사업장명 */
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , G.BRND_NAME						/* 브랜드 명 */
+              	 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		/* 매체구분 */
+                 , '' AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , I.CUST_NAME AS RMED_CDNM 
+                 , A.MATT_NAME AS DTLX_CONT					/*세부내용*/
+				 , A.AMNT_FILD/#MONY_UNIT#	AMNT_FILD				/*광고료*/
+				 , A.COMI_FILD/#MONY_UNIT#	COMI_FILD					/*수수료*/
+				 , A.COMI_RATE						/*수수료율*/
+				 , A.MEMO_FILD							/*기타*/
+				 , AORX_FLAG								/*AOR구분*/
+              FROM MD_ITMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN MD_BRNDXM G ON A.CUST_CODE = G.CUST_CODE AND A.BRND_CODE = G.BRND_CODE
+                LEFT JOIN MD_CODEXM H ON 'A008' = H.COMM_CODE
+                LEFT JOIN MD_CUSTXM I ON A.RMED_CODE = I.CUST_CODE AND A.MEDX_CODE=I.HIGH_CODE
+                WHERE A.TRTX_NUMB IS NOT NULL
+                AND A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+                AND A.YEAR_MNTH <= #YEAR_MNTH2#
+          ]]>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+			2=1
+		</isEqual>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00C">
+			1=1
+		</isEqual>
+		<isLessEqual prepend="AND" property="MEDX_FLAG" compareValue="A008">
+			A.MEDX_FLAG = #MEDX_FLAG#
+		</isLessEqual>
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+			A.RMED_CODE = #RMED_CODE#			/* 매체코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드 */
+		</isNotEmpty>	
+        <![CDATA[ 
+UNION ALL
+SELECT /*  MRPA0010.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , C.CUST_NAME                        /* 광고주 사업장명 */
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , G.BRND_NAME						/* 브랜드 명 */
+              	 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		/* 매체구분 */
+                 , A.MATT_NAME AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , I.CUST_NAME AS RMED_CDNM 
+                 , '' AS DTLX_CONT					/*세부내용*/
+				 , A.AMNT_FILD/#MONY_UNIT#	AMNT_FILD				/*광고료*/
+				 , A.COMI_FILD/#MONY_UNIT#	COMI_FILD					/*수수료*/
+				 , A.COMI_RATE						/*수수료율*/
+				 , A.MEMO_FILD							/*기타*/
+				 , AORX_FLAG								/*AOR구분*/
+              FROM MD_ODMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN MD_BRNDXM G ON A.CUST_CODE = G.CUST_CODE AND A.BRND_CODE = G.BRND_CODE
+                LEFT JOIN MD_CODEXM H ON 'A007' = H.COMM_CODE
+                LEFT JOIN MD_CUSTXM I ON A.RMED_CODE = I.CUST_CODE AND A.MEDX_CODE=I.HIGH_CODE
+                WHERE A.TRTX_NUMB IS NOT NULL
+                AND A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+                AND A.YEAR_MNTH <= #YEAR_MNTH2#
+          ]]>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+			2=1
+		</isEqual>
+		<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00C">
+			1=1
+		</isEqual>
+		<isLessEqual prepend="AND" property="MEDX_FLAG" compareValue="A008">
+			A.MEDX_FLAG = #MEDX_FLAG#
+		</isLessEqual>
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+			A.RMED_CODE = #RMED_CODE#			/* 매체코드 */
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+			A.BRND_CODE = #BRND_CODE#			/* 브랜드 */
+		</isNotEmpty>	
+		ORDER BY TO_NUMBER(YEAR_MNTH),MEDX_FLAG,CUST_CODE,BRND_NAME,MEDX_CODE
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.20(표준화 완료)
+		내      용  : 광고주목록 조회
+		파라미터  : 
+	-->
+	<select id="MRPA0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT                                         /* MRPA0010.SEARCH01 광고주목록 가져오기 */
+                A.CUST_CODE								/* 광고주코드 */
+                , A.CUST_NAME                                 /* 거래처명 */
+                , A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+                , ' ' AS USEX_CODE                          /* NULL */
+                FROM TA_CUSTXM A 
+                LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUCL_CODE = 'FA260110'
+	]]>
+	</select>
+	
+</sqlMap>

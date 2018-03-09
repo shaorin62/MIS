@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMA0110">
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 검색
+********************************************************************************/
+-->
+	<select id="FAMA0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  				/* FAMA0110.SEARCH00 전표유형관리 헤더 */
+				    A.SLIP_GUBN     /*전표유형구분*/
+                   ,A.SLIP_GBNM     /*전표유형구분명*/
+                   ,A.SYST_CODE     /*시스템코드*/
+                   ,A.SLIP_TYCD     /*전표분류코드[SLIP_TYCD]*/
+                   ,A.SLMD_RGCD     /*전표수정범위코드[SLMD_RGCD]*/
+                   ,A.SLAP_GBCD     /*전표결재구분코드[SLAP_GBCD]*/
+                   ,A.SLAP_TYCD     /*전표승인유형코드[SLAP_TYCD]*/
+                   ,A.SLNO_CLNM     /*전표번호분류명*/
+                   ,A.SLCL_TYCD     /*전표마감유형코드[SLCL_TYCD]*/
+                   ,A.SORT_ORDR     /*정렬순서*/
+                   ,A.USEX_YSNO     /*사용여부*/
+                   ,A.SLPP_SPNM     /*전표후처리프로시저명*/
+                   ,A.REMK_NOTE     /*비고메모*/
+                   ,A.UPDT_USID     /*수정작업자*/
+                   ,A.UPDT_DATE     /*수정일시*/
+              FROM TA_SLGBXM A      /*[전표유형구분]*/
+		]]>
+			<dynamic prepend="WHERE">
+				<isNotEmpty property="SYST_CODE" prepend="AND">
+					A.SYST_CODE = #SYST_CODE#  /*시스템코드*/  
+				</isNotEmpty>
+				<isNotEmpty property="SLIP_GUBN" prepend="AND">
+				<![CDATA[
+					(A.SLIP_GUBN LIKE '%' || #SLIP_GUBN# || '%' OR A.SLIP_GBNM LIKE '%' || #SLIP_GUBN# || '%')
+				]]>
+				</isNotEmpty>
+			</dynamic>
+		<![CDATA[
+			 ORDER BY A.SORT_ORDR, A.SLIP_GUBN
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 검색
+********************************************************************************/
+-->
+	<select id="FAMA0110.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  				/* FAMA0110.SEARCH01 전표유형관리 디테일 */
+					SUBSTR(A.JUNL_CODE, LENGTH(A.SLIP_GUBN)+2) AS V_JUNL_CODE /*가상분개코드*/
+                   ,A.JUNL_CODE     /*분개코드*/
+                   ,A.SLIP_GUBN     /*전표유형구분*/
+                   ,A.JUNL_NAME     /*분개명*/
+                   ,A.ACCT_INTL     /*계정과목코드*/
+                   ,(SELECT ACCT_NAME FROM TA_ACCTXM X WHERE A.ACCT_INTL = X.ACCT_INTL) AS ACCT_NAME     /*계정과목명*/
+                   ,A.DRCR_GUBN     /*차대구분*/
+                   ,A.REF1_FILD     /*보조1필드*/
+                   ,A.REF2_FILD     /*보조2필드*/
+                   ,A.REF3_FILD     /*보조3필드*/
+                   ,A.REF4_FILD     /*보조4필드*/
+                   ,A.REF5_FILD     /*보조5필드*/
+                   ,A.REMK_NOTE     /*비고메모*/
+              FROM TA_JUNLXM A      /*[분개코드]*/
+		]]>
+			<dynamic prepend="WHERE">
+				A.SLIP_GUBN = #SLIP_GUBN#     /*전표유형구분*/
+			</dynamic>
+        <![CDATA[
+             ORDER BY A.JUNL_CODE
+        ]]>
+	</select>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 헤더 저장
+********************************************************************************/
+-->
+	<insert id="FAMA0110.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO TA_SLGBXM ( /* FAMA0110.SAVE00 전표유형관리 *//*[전표유형구분]*/
+               SLIP_GUBN        /*전표유형구분*/
+              ,SLIP_GBNM        /*전표유형구분명*/
+              ,SYST_CODE        /*시스템코드*/
+              ,SLIP_TYCD        /*전표분류코드[SLIP_TYCD]*/
+              ,SLMD_RGCD        /*전표수정범위코드[SLMD_RGCD]*/
+              ,SLAP_GBCD        /*전표결재구분코드[SLAP_GBCD]*/
+              ,SLAP_TYCD        /*전표승인유형코드[SLAP_TYCD]*/
+              ,SLNO_CLNM        /*전표번호분류명*/
+              ,SLCL_TYCD        /*전표마감유형코드[SLCL_TYCD]*/
+              ,SORT_ORDR        /*정렬순서*/
+              ,USEX_YSNO        /*사용여부*/
+              ,SLPP_SPNM        /*전표후처리프로시저명*/
+              ,REMK_NOTE        /*비고메모*/
+              ,INST_USID        /*입력작업자*/
+              ,INST_DATE        /*입력일시*/
+              ,UPDT_USID        /*수정작업자*/
+              ,UPDT_DATE        /*수정일시*/
+              )
+       VALUES (
+               #SLIP_GUBN#       /*전표유형구분*/
+              ,#SLIP_GBNM#       /*전표유형구분명*/
+              ,#SYST_CODE#       /*시스템코드*/
+              ,#SLIP_TYCD#       /*전표분류코드[SLIP_TYCD]*/
+              ,#SLMD_RGCD#       /*전표수정범위코드[SLMD_RGCD]*/
+              ,#SLAP_GBCD#       /*전표결재구분코드[SLAP_GBCD]*/
+              ,#SLAP_TYCD#       /*전표승인유형코드[SLAP_TYCD]*/
+              ,#SLNO_CLNM#       /*전표번호분류명*/
+              ,#SLCL_TYCD#       /*전표마감유형코드[SLCL_TYCD]*/
+              ,#SORT_ORDR#       /*정렬순서*/
+              ,#USEX_YSNO#       /*사용여부*/
+              ,#SLPP_SPNM#       /*전표후처리프로시저명*/
+              ,#REMK_NOTE#       /*비고메모*/
+              ,#UPDT_USID#       /*입력작업자*/
+              ,SYSDATE       	 /*입력일시*/
+              ,#UPDT_USID#       /*수정작업자*/
+              ,SYSDATE        	 /*수정일시*/
+              )
+	]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 헤더 수정
+********************************************************************************/
+-->
+	<update id="FAMA0110.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE TA_SLGBXM                 /* FAMA0110.UPDATE00 전표유형관리 */ /*[전표유형구분]*/
+           SET  SLIP_GBNM = #SLIP_GBNM#  /*전표유형구분명*/
+               ,SYST_CODE = #SYST_CODE#  /*시스템코드*/
+               ,SLIP_TYCD = #SLIP_TYCD#  /*전표분류코드[SLIP_TYCD]*/
+               ,SLMD_RGCD = #SLMD_RGCD#  /*전표수정범위코드[SLMD_RGCD]*/
+               ,SLAP_GBCD = #SLAP_GBCD#  /*전표결재구분코드[SLAP_GBCD]*/
+               ,SLAP_TYCD = #SLAP_TYCD#  /*전표승인유형코드[SLAP_TYCD]*/
+               ,SLNO_CLNM = #SLNO_CLNM#  /*전표번호분류명*/
+               ,SLCL_TYCD = #SLCL_TYCD#  /*전표마감유형코드[SLCL_TYCD]*/
+               ,SORT_ORDR = #SORT_ORDR#  /*정렬순서*/
+               ,USEX_YSNO = #USEX_YSNO#  /*사용여부*/
+               ,SLPP_SPNM = #SLPP_SPNM#  /*전표후처리프로시저명*/
+               ,REMK_NOTE = #REMK_NOTE#  /*비고메모*/
+               ,UPDT_USID = #UPDT_USID#  /*수정작업자*/
+               ,UPDT_DATE = SYSDATE  	 /*수정일시*/
+         WHERE SLIP_GUBN  = #SLIP_GUBN#  /*전표유형구분*/
+    ]]>
+	</update>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 헤더 삭제
+********************************************************************************/
+-->
+	<delete id="FAMA0110.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE FROM TA_SLGBXM 			/* FAMA0110.DELETE00 전표유형관리 */ /*[전표유형구분]*/
+         WHERE SLIP_GUBN = #SLIP_GUBN# 	/*전표유형구분*/
+	]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 디테일 저장
+********************************************************************************/
+-->
+	<insert id="FAMA0110.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO TA_JUNLXM ( /* FAMA0110.SAVE01 전표유형관리 */ /*[분개코드]*/
+               JUNL_CODE        /*분개코드*/
+              ,SLIP_GUBN        /*전표유형구분*/
+              ,JUNL_NAME        /*분개명*/
+              ,ACCT_INTL        /*계정과목코드*/
+              ,DRCR_GUBN        /*차대구분*/
+              ,REF1_FILD        /*보조1필드*/
+              ,REF2_FILD        /*보조2필드*/
+              ,REF3_FILD        /*보조3필드*/
+              ,REF4_FILD        /*보조4필드*/
+              ,REF5_FILD        /*보조5필드*/
+              ,REMK_NOTE        /*비고메모*/
+              ,INST_USID        /*입력작업자*/
+              ,INST_DATE        /*입력일시*/
+              ,UPDT_USID        /*수정작업자*/
+              ,UPDT_DATE        /*수정일시*/
+              )
+       VALUES (
+               #JUNL_CODE#       /*분개코드*/
+              ,#SLIP_GUBN#       /*전표유형구분*/
+              ,#JUNL_NAME#       /*분개명*/
+              ,#ACCT_INTL#       /*계정과목코드*/
+              ,#DRCR_GUBN#       /*차대구분*/
+              ,#REF1_FILD#       /*보조1필드*/
+              ,#REF2_FILD#       /*보조2필드*/
+              ,#REF3_FILD#       /*보조3필드*/
+              ,#REF4_FILD#       /*보조4필드*/
+              ,#REF5_FILD#       /*보조5필드*/
+              ,#REMK_NOTE#       /*비고메모*/
+              ,#UPDT_USID#       /*입력작업자*/
+              ,SYSDATE           /*입력일시*/
+              ,#UPDT_USID#       /*수정작업자*/
+              ,SYSDATE           /*수정일시*/
+              )
+	]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 디테일 수정
+********************************************************************************/
+-->
+	<update id="FAMA0110.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+        
+		UPDATE TA_JUNLXM 				/* FAMA0110.UPDATE01 전표유형관리 */ /*[분개코드]*/
+           SET  SLIP_GUBN = #SLIP_GUBN# /*전표유형구분*/
+               ,JUNL_NAME = #JUNL_NAME# /*분개명*/
+               ,ACCT_INTL = #ACCT_INTL# /*계정과목코드*/
+               ,DRCR_GUBN = #DRCR_GUBN# /*차대구분*/
+               ,REF1_FILD = #REF1_FILD# /*보조1필드*/
+               ,REF2_FILD = #REF2_FILD# /*보조2필드*/
+               ,REF3_FILD = #REF3_FILD# /*보조3필드*/
+               ,REF4_FILD = #REF4_FILD# /*보조4필드*/
+               ,REF5_FILD = #REF5_FILD# /*보조5필드*/
+               ,REMK_NOTE = #REMK_NOTE# /*비고메모*/
+               ,UPDT_USID = #UPDT_USID# /*수정작업자*/
+               ,UPDT_DATE = SYSDATE     /*수정일시*/
+         WHERE JUNL_CODE  = #JUNL_CODE# /*분개코드*/
+    ]]>
+	</update>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 안윤준
+   작 성 일 : 2016.07.20
+   내    용 : 전표유형관리 디테일 삭제
+********************************************************************************/
+-->
+	<delete id="FAMA0110.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TA_JUNLXM 			/* FAMA0110.DELETE01 전표유형관리 */ /*[분개코드]*/
+         WHERE JUNL_CODE = #JUNL_CODE# 	/*분개코드*/
+	]]>
+	</delete>
+	
+</sqlMap>

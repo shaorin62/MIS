@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                           
+                                                    
+<sqlMap namespace="FAMG0020">
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 저장내역 INCLUDE
+********************************************************************************/
+-->
+	<sql id="CSFS_SA_fragment00">
+	<![CDATA[
+		FROM    TA_SLIPXM A1 INNER JOIN TA_SLIPNT A2      	  ON A1.SLIP_NUMB = A2.SLIP_NUMB /*전표헤더테이블*/
+			                     LEFT OUTER JOIN TA_SLIPRF A3 ON A2.SLIP_NUMB = A3.SLIP_NUMB /*전표라인테이블*/
+			                                                 AND A2.SLIP_LINE = A3.SLIP_LINE 
+			                     LEFT OUTER JOIN TA_CUSTXM A4 ON A3.COND_VACD = A4.CUST_CODE /*거래처마스터테이블*/
+			                     LEFT OUTER JOIN TM_CODEXD A5 ON A4.RETY_CODE = A5.COMD_CODE /*공통코드테이블(관계사)*/
+		WHERE   A1.APPS_CODE = 'FA1' 	   /*승인여부*/
+		AND     A2.ACCT_DATE BETWEEN #ACCOUNT_PERIOD1# AND #ACCOUNT_PERIOD2#
+		AND     A3.COND_CODE = '0002'	   /*거래처*/
+		AND     A5.COMM_CODE = 'RETY_CODE' /*관계사*/
+		AND     A5.REF1_FILD IS NOT NULL
+		AND     EXISTS (
+	                        SELECT   *
+	                        FROM     TM_CODEXD
+	                        WHERE    COMM_CODE = #CMCD_CSFS#  /*공통코드구분*/
+	                        AND      REF1_FILD = 'I'          /*포함계정*/
+	                        AND      REF2_FILD IS NOT NULL    /*계정FROM*/
+	                        AND      A2.ACCT_INTL BETWEEN REF2_FILD AND NVL(REF3_FILD, REF2_FILD)
+                       )
+		AND     NOT EXISTS (
+		                    SELECT   *
+		                    FROM     TM_CODEXD
+		                    WHERE    COMM_CODE = #CMCD_CSFS#  /*공통코드구분*/
+		                    AND      REF1_FILD = 'E'          /*제외계정*/
+		                    AND      REF2_FILD IS NOT NULL    /*계정FROM*/
+		                    AND      A2.ACCT_INTL BETWEEN REF2_FILD AND NVL(REF3_FILD, REF2_FILD)
+		                   )
+	]]>	                   	
+	</sql>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 마스터 조회
+********************************************************************************/
+-->
+	<select id="FAMG0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[		
+        SELECT  /* FAMG0020.SEARCH00 연결재무제표 IF 마스터 조회 */
+        		A.*
+        	 ,  DECODE(A.CSFS_TRST, 'TRWT', 1, 0) AS CSFS_TRST_ENABLE
+        	 ,	SF_GET_EMPLNAME(A.UPDT_USID) AS UPDT_USNM
+        	 ,	SF_GET_EMPLNAME(A.TRAN_USID) AS TRAN_USNM
+		FROM    NS_CFS_DATA_M A
+		WHERE   1=1
+		AND		FILE_ID  		= #FILE_ID#    		/*파일ID*/
+		AND		ACCOUNT_PERIOD 	= #ACCOUNT_PERIOD#  /*회계년월*/
+		AND		COMP_CODE 		= #COMP_CODE# 		/*법인코드*/
+	]]>
+	<isEmpty prepend="AND" property="TRAN_SEQ">
+		<![CDATA[
+				TRAN_SEQ = (
+							SELECT 	MAX(TRAN_SEQ)
+							FROM 	NS_CFS_DATA_M
+							WHERE	FILE_ID  	   = #FILE_ID# 		  /*파일ID*/
+							AND		ACCOUNT_PERIOD = #ACCOUNT_PERIOD# /*회계년월*/
+							AND		COMP_CODE 	   = #COMP_CODE# 	  /*법인코드*/
+						   ) 						/*전송순번*/
+		]]>	
+	</isEmpty>
+	<isNotEmpty prepend="AND" property="TRAN_SEQ">
+		<![CDATA[
+				TRAN_SEQ = #TRAN_SEQ#
+		]]>	
+	</isNotEmpty>
+	</select>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 상세 조회
+********************************************************************************/
+-->
+	<select id="FAMG0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[		
+        SELECT  /* FAMG0020.SEARCH01 연결재무제표 IF 상세 조회 */
+        		 A.TRAN_SEQ         /*IF순번            */
+				,A.FILE_ID          /*파일ID            */
+				,A.ACCOUNT_PERIOD   /*회계연월          */
+				,A.COMP_CODE        /*법인코드          */
+				,A.SOURCE           /*SOURCE            */
+				,A.SEQ              /*순번              */
+				,A.INSERTED_FLAG    /*인터페이스FLAG    */
+				,A.IF_REG_DATE      /*인터페이스등록일자*/
+				,A.MODE_FLAG        /*MODE FLAG         */
+				,A.EAI_FLAG         /*EAI FLAG          */
+				,A.EAI_DATE         /*EAI 일자          */
+				,A.ATTRIBUTE1       /*인터페이스DATA1   */
+				,A.ATTRIBUTE2       /*인터페이스DATA2   */
+				,A.ATTRIBUTE3 		/*인터페이스DATA3   */
+				,A.ATTRIBUTE4       /*인터페이스DATA4   */
+				,A.ATTRIBUTE5       /*인터페이스DATA5   */
+				,TO_NUMBER(A.ATTRIBUTE6) AS ATTRIBUTE6 /*인터페이스DATA6   */
+				,A.ATTRIBUTE7       /*인터페이스DATA7   */
+				,A.ATTRIBUTE8       /*인터페이스DATA8   */
+				,A.ATTRIBUTE9       /*인터페이스DATA9   */
+				,A.ATTRIBUTE10      /*인터페이스DATA10  */
+				,A.ATTRIBUTE11      /*인터페이스DATA11  */
+				,A.ATTRIBUTE12      /*인터페이스DATA12  */
+				,A.ATTRIBUTE13      /*인터페이스DATA13  */
+				,A.ATTRIBUTE14      /*인터페이스DATA14  */
+				,A.ATTRIBUTE15      /*인터페이스DATA15  */
+				,A.ATTRIBUTE16      /*인터페이스DATA16  */
+				,A.INST_USID        /*입력작업자        */
+				,A.INST_DATE        /*입력일시          */
+				,A.UPDT_USID        /*수정작업자        */
+				,A.UPDT_DATE        /*수정일시          */
+				,B.CUST_NAME	  	/*거래처명		    */
+				,C.ACCT_NAME      	/*계정명			*/
+				,D.COMD_CDNM AS CCOMP_NAME		/*법인코드명		*/
+		FROM    NS_CFS_DATA_D A LEFT OUTER JOIN TA_CUSTXM B ON A.ATTRIBUTE13 = B.CUST_CODE
+								LEFT OUTER JOIN TA_ACCTXM C ON A.ATTRIBUTE1  = C.ACCT_INTL	
+								LEFT OUTER JOIN TM_CODEXD D ON A.ATTRIBUTE3  = D.REF1_FILD
+														   AND D.COMM_CODE   = 'RETY_CODE' /*관계사*/
+		WHERE   A.TRAN_SEQ       = #TRAN_SEQ#
+		AND     A.FILE_ID        = #FILE_ID#
+		AND     A.ACCOUNT_PERIOD = #ACCOUNT_PERIOD#
+		AND     A.COMP_CODE      = #COMP_CODE#
+		AND     A.SOURCE         = #SOURCE#
+		ORDER
+		BY		A.SEQ
+	]]>	
+	</select>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 특정상태 존재여부 내역 조회
+********************************************************************************/
+-->
+	<select id="FAMG0020.SEARCH02" parameterClass="hashmap" resultClass="Integer">
+	<![CDATA[		
+        SELECT  /* FAMG0020.SEARCH02 연결재무제표 IF 특정상태 존재여부 내역 조회 */
+        		COUNT(*) AS CNT
+		FROM    NS_CFS_DATA_M
+		WHERE   FILE_ID        = #FILE_ID#
+		AND     ACCOUNT_PERIOD = #ACCOUNT_PERIOD#
+		AND     COMP_CODE      = #COMP_CODE#
+		AND		CSFS_TRST	   = #CSFS_TRST#
+	]]>		
+	<isNotEmpty prepend="AND" property="TRAN_SEQ">
+		<![CDATA[
+				TRAN_SEQ = #TRAN_SEQ#
+		]]>	
+	</isNotEmpty>
+	</select>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 전송데이터 존재여부
+********************************************************************************/
+
+-->
+	<select id="FAMG0020.SEARCH03" parameterClass="hashmap" resultClass="Integer">
+	<![CDATA[		
+        SELECT  /*FAMG0020.SEARCH03 연결재무제표 IF 전송데이터 존재여부*/
+        		COUNT(*) AS CNT
+	]]>	
+		<include refid="CSFS_SA_fragment00" />
+	</select>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 자료생성
+********************************************************************************/
+-->
+	<select id="FAMG0020.CREATE_DATA" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	SELECT  /* FAMG0020.CREATE_DATA 연결재무제표 IF 자료생성 */
+			ROWNUM  	AS TRAN_SEQ
+	      , #FILE_ID#   AS FILE_ID
+	      , #ACCOUNT_PERIOD# AS ACCOUNT_PERIOD
+	      , #COMP_CODE# AS COMP_CODE
+	      , #SOURCE#    AS SOURCE
+	      , ROWNUM      AS SEQ
+	      , 'N' 		AS INSERTED_FLAG
+	      , ''          AS IF_REG_DATE
+	      , ''          AS MODE_FLAG
+	      , ''          AS EAI_FLAG
+	      , ''          AS EAI_DATE
+	      , B.ACCT_NAME AS ACCT_NAME
+	      , A.CUST_NAME
+	      , A.CCOMP_NAME
+	      , A.ACCT_INTL AS ATTRIBUTE1
+	      , 'Z9999'     AS ATTRIBUTE2
+	      , A.CCOMP_CODE AS ATTRIBUTE3
+	      , A.CURR_GUBN AS ATTRIBUTE4
+	      , A.FORI_AMNT AS ATTRIBUTE5
+	      , A.SLIP_AMNT AS ATTRIBUTE6
+	      , ''          AS ATTRIBUTE7
+	      , ''          AS ATTRIBUTE8
+	      , ''          AS ATTRIBUTE9
+	      , A.SLIP_NUMB AS ATTRIBUTE10
+	      , A.SLIP_DATE AS ATTRIBUTE11
+	      , A.ACCT_DATE AS ATTRIBUTE12
+	      , A.COND_VACD AS ATTRIBUTE13
+	      , A.REMK_NAME AS ATTRIBUTE14
+	      , ''          AS ATTRIBUTE15
+	      , ''          AS ATTRIBUTE16
+		FROM
+		(
+			SELECT  A2.ACCT_INTL /*계정코드*/
+			      , A5.REF1_FILD AS CCOMP_CODE /*거래처법인코드*/ 
+			      , A5.COMD_CDNM AS CCOMP_NAME /*거래처법인명*/
+			      , A2.CURR_GUBN /*통화구분*/
+			      , ( CASE WHEN A2.DRCR_GUBN = 'D' THEN A2.FORI_AMNT*-1 ELSE A2.FORI_AMNT END ) AS FORI_AMNT /*거래통화*/
+			      , ( CASE WHEN A2.DRCR_GUBN = 'D' THEN A2.SLIP_AMNT*-1 ELSE A2.SLIP_AMNT END ) AS SLIP_AMNT /*장부통화*/
+			      , A2.SLIP_NUMB /*전표번호*/
+			      , A1.ACCT_DATE AS SLIP_DATE /*거래일자*/
+			      , A1.ACCT_DATE /*전기일자*/
+			      , A3.COND_VACD /*거래처코드*/
+			      , SF_GET_CUSTNAME( A3.COND_VACD ) AS CUST_NAME /*거래처법인명*/
+			      , A2.REMK_NAME /*적요*/ 
+		]]>		      
+			<include refid="CSFS_SA_fragment00" />
+		<![CDATA[	
+			ORDER
+			BY		A5.REF1_FILD, A3.COND_VACD, A2.ACCT_INTL, A2.SLIP_NUMB
+		) A
+		, TA_ACCTXM B
+		WHERE   A.ACCT_INTL = B.ACCT_INTL(+)
+		AND     A.SLIP_AMNT <> 0	/* 금액은 0이 아니어야 함 */
+		]]>
+	</select>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 마스터 자료생성
+********************************************************************************/
+-->
+	<insert id="FAMG0020.SAVE00" parameterClass="hashmap">
+	
+	<selectKey keyProperty="TRAN_SEQ" resultClass="String">
+			<![CDATA[
+       		SELECT  NVL(MAX(TRAN_SEQ),0) + 1 AS TRAN_SEQ
+			FROM    NS_CFS_DATA_M
+		   ]]>
+   	</selectKey>
+	
+	<![CDATA[
+        INSERT INTO NS_CFS_DATA_M (  /* FAMG0020.SAVE00 연결재무제표 IF 마스터 자료생성  */
+             TRAN_SEQ       /*IF순번              */
+			,FILE_ID        /*파일ID              */
+			,ACCOUNT_PERIOD /*회계연월            */
+			,COMP_CODE      /*법인코드            */
+			,CSFS_TRST      /*연결재무제표전송상태*/
+			,INST_USID      /*입력작업자          */
+			,INST_DATE      /*입력일시            */
+			,UPDT_USID      /*수정작업자          */
+			,UPDT_DATE      /*수정일시            */
+           ) 
+        VALUES 
+            ( 
+             #TRAN_SEQ#       /*IF순번              */
+			,#FILE_ID#        /*파일ID              */
+			,#ACCOUNT_PERIOD# /*회계연월            */
+			,#COMP_CODE#      /*법인코드            */
+			,#CSFS_TRST#      /*연결재무제표전송상태*/
+			,#GBL_EMPLNO#     /*입력작업자          */
+			,SYSDATE      	  /*입력일시            */
+			,#GBL_EMPLNO#     /*수정작업자          */
+			,SYSDATE          /*수정일시            */
+            ) 
+	]]>
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 전송데이터 조회 INCLUDE
+********************************************************************************/
+-->
+	<insert id="FAMG0020.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO NS_CFS_DATA_D (  /* FAMG0020.SAVE01 연결재무제표 IF 상세 자료생성  */
+             TRAN_SEQ         /* IF순번            */
+			,FILE_ID          /* 파일ID            */
+			,ACCOUNT_PERIOD   /* 회계연월          */
+			,COMP_CODE        /* 법인코드          */
+			,SOURCE           /* SOURCE            */
+			,SEQ              /* 순번              */
+			,INSERTED_FLAG    /* 인터페이스FLAG    */
+			,IF_REG_DATE      /* 인터페이스등록일자*/
+			,MODE_FLAG        /* MODE FLAG         */
+			,EAI_FLAG         /* EAI FLAG          */
+			,EAI_DATE         /* EAI 일자          */
+			,ATTRIBUTE1       /* 인터페이스DATA1   */
+			,ATTRIBUTE2       /* 인터페이스DATA2   */
+			,ATTRIBUTE3       /* 인터페이스DATA3   */
+			,ATTRIBUTE4       /* 인터페이스DATA4   */
+			,ATTRIBUTE5       /* 인터페이스DATA5   */
+			,ATTRIBUTE6       /* 인터페이스DATA6   */
+			,ATTRIBUTE7       /* 인터페이스DATA7   */
+			,ATTRIBUTE8       /* 인터페이스DATA8   */
+			,ATTRIBUTE9       /* 인터페이스DATA9   */
+			,ATTRIBUTE10      /* 인터페이스DATA10  */
+			,ATTRIBUTE11      /* 인터페이스DATA11  */
+			,ATTRIBUTE12      /* 인터페이스DATA12  */
+			,ATTRIBUTE13      /* 인터페이스DATA13  */
+			,ATTRIBUTE14      /* 인터페이스DATA14  */
+			,ATTRIBUTE15      /* 인터페이스DATA15  */
+			,ATTRIBUTE16      /* 인터페이스DATA16  */
+			,INST_USID        /* 입력작업자        */
+			,INST_DATE        /* 입력일시          */
+			,UPDT_USID        /* 수정작업자        */
+			,UPDT_DATE        /* 수정일시          */
+           ) 
+       VALUES
+           (
+             #TRAN_SEQ#         /* IF순번            */
+			,#FILE_ID#          /* 파일ID            */
+			,#ACCOUNT_PERIOD#   /* 회계연월          */
+			,#COMP_CODE#        /* 법인코드          */
+			,#SOURCE#           /* SOURCE            */
+			,#SEQ#              /* 순번              */
+			,#INSERTED_FLAG#    /* 인터페이스FLAG    */
+			,SYSDATE      	    /* 인터페이스등록일자*/
+			,''        		    /* MODE FLAG         */
+			,''         		/* EAI FLAG          */
+			,''         		/* EAI 일자          */
+			,#ATTRIBUTE1#       /* 인터페이스DATA1   */
+			,#ATTRIBUTE2#       /* 인터페이스DATA2   */
+			,#ATTRIBUTE3#       /* 인터페이스DATA3   */
+			,#ATTRIBUTE4#       /* 인터페이스DATA4   */
+			,#ATTRIBUTE5#       /* 인터페이스DATA5   */
+			,#ATTRIBUTE6#       /* 인터페이스DATA6   */
+			,#ATTRIBUTE7#       /* 인터페이스DATA7   */
+			,#ATTRIBUTE8#       /* 인터페이스DATA8   */
+			,#ATTRIBUTE9#       /* 인터페이스DATA9   */
+			,#ATTRIBUTE10#      /* 인터페이스DATA10  */
+			,#ATTRIBUTE11#      /* 인터페이스DATA11  */
+			,#ATTRIBUTE12#      /* 인터페이스DATA12  */
+			,#ATTRIBUTE13#      /* 인터페이스DATA13  */
+			,#ATTRIBUTE14#      /* 인터페이스DATA14  */
+			,#ATTRIBUTE15#      /* 인터페이스DATA15  */
+			,#ATTRIBUTE16#      /* 인터페이스DATA16  */
+			,#GBL_EMPLNO#       /* 입력작업자        */
+			,SYSDATE        	/* 입력일시          */
+			,#GBL_EMPLNO#       /* 수정작업자        */
+			,SYSDATE        	/* 수정일시          */
+          )
+	]]>	          
+	</insert>	
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 자료전송테이블 저장
+********************************************************************************/
+ -->
+	<insert id="FAMG0020.SAVE02" parameterClass="hashmap">
+	<![CDATA[   
+		INSERT INTO /*FAMG0020.SAVE02 연결재무제표 IF 자료전송테이블 저장*/
+		TBFM_IF_DATA_ALL_NEW ( 
+			      TRAN_SEQ         /* IF순번            */
+				, FILE_ID          /* 파일ID            */
+				, ACCOUNT_PERIOD   /* 회계연월          */
+				, COMP_CODE        /* 법인코드          */
+				, SOURCE           /* SOURCE            */
+				, SEQ              /* 순번              */
+				, INSERTED_FLAG    /* 인터페이스FLAG    */
+				, IF_REG_DATE      /* 인터페이스등록일자*/
+				, MODE_FLAG        /* MODE FLAG         */
+				, EAI_FLAG         /* EAI FLAG          */
+				, EAI_DATE         /* EAI 일자          */
+				, ATTRIBUTE1       /* 인터페이스DATA1   */
+				, ATTRIBUTE2       /* 인터페이스DATA2   */
+				, ATTRIBUTE3       /* 인터페이스DATA3   */
+				, ATTRIBUTE4       /* 인터페이스DATA4   */
+				, ATTRIBUTE5       /* 인터페이스DATA5   */
+				, ATTRIBUTE6       /* 인터페이스DATA6   */
+				, ATTRIBUTE7       /* 인터페이스DATA7   */
+				, ATTRIBUTE8       /* 인터페이스DATA8   */
+				, ATTRIBUTE9       /* 인터페이스DATA9   */
+				, ATTRIBUTE10      /* 인터페이스DATA10  */
+				, ATTRIBUTE11      /* 인터페이스DATA11  */
+				, ATTRIBUTE12      /* 인터페이스DATA12  */
+				, ATTRIBUTE13      /* 인터페이스DATA13  */
+				, ATTRIBUTE14      /* 인터페이스DATA14  */
+				, ATTRIBUTE15      /* 인터페이스DATA15  */
+				, ATTRIBUTE16      /* 인터페이스DATA16  */
+		)
+		SELECT  TRAN_SEQ
+		      , FILE_ID
+		      , ACCOUNT_PERIOD
+		      , COMP_CODE
+		      , SOURCE
+		      , SEQ
+		      , INSERTED_FLAG
+		      , SYSDATE
+		      , MODE_FLAG
+		      , EAI_FLAG
+		      , EAI_DATE
+		      , ATTRIBUTE1
+		      , ATTRIBUTE2
+		      , ATTRIBUTE3
+		      , ATTRIBUTE4
+		      , ATTRIBUTE5
+		      , ATTRIBUTE6
+		      , ATTRIBUTE7
+		      , ATTRIBUTE8
+		      , ATTRIBUTE9
+		      , ATTRIBUTE10
+		      , ATTRIBUTE11
+		      , ATTRIBUTE12
+		      , ATTRIBUTE13
+		      , ATTRIBUTE14
+		      , ATTRIBUTE15
+		      , ATTRIBUTE16
+		FROM   NS_CFS_DATA_D
+		WHERE  TRAN_SEQ = #TRAN_SEQ#
+   	]]>
+	</insert>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 자료생성 마스터 삭제
+********************************************************************************/
+ -->
+	<delete id="FAMG0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE /* FAMG0020.DELETE00 연결재무제표 IF 자료생성 마스터 삭제  */
+        FROM	NS_CFS_DATA_M  
+        WHERE	FILE_ID			= #FILE_ID#			/*파일ID*/
+		AND		COMP_CODE		= #COMP_CODE#		/*회사코드*/
+        AND		ACCOUNT_PERIOD 	= #ACCOUNT_PERIOD#	/*회계년월*/
+        AND		CSFS_TRST		= #CSFS_TRST#		/*연결재무제표전송상태*/
+   	]]>
+	</delete>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 자료생성 상세 삭제
+********************************************************************************/
+ -->
+	<delete id="FAMG0020.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+        DELETE /* FAMG0020.DELETE01 연결재무제표 IF 자료생성 상세 삭제  */
+          FROM	NS_CFS_DATA_D
+         WHERE	TRAN_SEQ	IN (
+         						SELECT	TRAN_SEQ
+         						FROM	NS_CFS_DATA_M  
+						        WHERE	ACCOUNT_PERIOD 	= #ACCOUNT_PERIOD#	/*회계년월*/
+						        AND		CSFS_TRST		= #CSFS_TRST#		/*연결재무제표전송상태*/
+						        AND		FILE_ID			= #FILE_ID#			/*파일ID*/
+						        AND		COMP_CODE		= #COMP_CODE#		/*회사코드*/
+         					)
+   	]]>
+	</delete>
+
+<!-- 
+/*******************************************************************************
+   작 성 자 : 김기환
+   작 성 일 : 2016.09.27
+   내    용 : 연결재무제표 IF 상태 변경
+********************************************************************************/
+ -->
+	<update id="FAMG0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE  /* FAMG0020.UPDATE00 연결재무제표 IF 상태 변경  */
+        		NS_CFS_DATA_M
+         SET	CSFS_TRST = #CSFS_TRST#				/*상태변경*/
+              , TRAN_USID = #GBL_EMPLNO#			/*전송자*/
+              , TRAN_DATE = SYSDATE					/*전송일자*/
+         WHERE	ACCOUNT_PERIOD 	= #ACCOUNT_PERIOD#	/*회계년월*/
+         AND	TRAN_SEQ		= #TRAN_SEQ#		/*IF순번*/
+         AND	FILE_ID			= #FILE_ID#			/*파일ID*/
+         AND	COMP_CODE		= #COMP_CODE#		/*회사코드*/
+   	]]>
+	</update>
+</sqlMap>

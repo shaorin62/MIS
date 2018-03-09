@@ -1,0 +1,725 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMA0010">
+
+<!--  
+ *   프로그램명 : 전파 일괄청약
+ *   작 성 일 : 2016.11.01(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+
+<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.01(표준화 완료)
+		내      용  : 소재별운행현황,  광고신탁집계표 조인 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 광고주코드, CTIM_CODE : 광고주팀코드, BROD_FLAG : 방송구분, MEDX_CODE : 청구지코드, CONT_FORM : 계약형태	
+	-->
+	<select id="MDMA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 		
+		SELECT /*  MDMA0010.SEARCH00 소재별운행현황과 광고신탁집계표 조인 조회 */
+                DISTINCT
+                '0' CHEK_FILD                    /*선택*/
+                 , A.NUMB_NUMB              /* 번호 */
+                 , E.BROD_CDNM AS RMED_NAME /* 매체지 */
+                 , A.PRGM_NAME              /* 편성명 */
+                 , A.DAYY_WEEK              /* 요일 */
+                 , F.COMM_CDNM AS HOUR_TYPE  /* 시급 */
+                 , A.STAR_TIME              /* 시작시간 */
+                 , A.ENDD_TIME              /* 종료시간 */
+                 , L.CUST_CODE              /* 광고주코드 */
+                 , M.CUST_NAME              /* 광고주명 */
+                 , A.STAR_DATE              /* 소재시작일 */
+                 , A.ENDD_DATE              /* 소재종료일 */
+                 , K.BRND_NAME             /* 품목 */
+                 , A.SECD_FILD              /* 초수 */
+                 , A.CONT_FILD              /* 회수 */
+                 , A.PRIC_FILD              /* 단가 */
+                 , A.AMNT_FILD              /* 금액 */
+                 , C.COMM_CODE AS RBRO_FLAG              /* 운행구분코드 */
+                 , C.COMM_CDNM AS BROD_NAME              /* 운행구분명 */
+                 , D.COMM_CODE AS RSUB_FLAG              /* 청약형태코드 */ 
+                 , D.COMM_CDNM AS SUBS_NAME              /* 청약형태 */
+                 , N.OFIC_CDNM AS OFIC_CDNM              /* 본지사명 */
+                 , A.BROD_CODE              /* 방송사코드 */
+                 , A.SEQX_CODE              /* 청약일련번호 */
+                 , A.MDIM_CODE              /* 매체코드 */
+                 , A.PSEQ_CODE              /* 품목일련번호 */
+                 , A.OPER_YEAR              /* 편성년도 */
+                 , A.ISEQ_CODE              /* 대표소재일련번호 */
+                 , A.OSEQ_CODE              /* 편성일련번호 */
+                 , A.OPER_FLAG              /* 운행구분코드 */
+                 , A.OFER_FLAG              /* 청약구분코드 */
+                 , A.OFIC_CODE              /* 본지사코드 */
+                 , J.COMM_CODE AS RARE_FLAG  /* 지역코드 */
+                 , A.AREA_FLAG              /* 지역코드 */
+                 , G.COMM_CODE AS RADD_FORM  /* 광고형태코드 */
+                 , A.ADVR_FLAG              /* 광고형태코드 */
+                 , I.COMM_CODE AS RADD_TYPE  /* 광고유형코드 */
+                 , A.ADVR_TYPE              /* 광고유형코드 */
+                 , A.COLM_FLAG              /* 단구분 */
+                 , A.LCAL_FLAG              /* 로컬구분코드 */
+                 , A.HOUR_CODE              /* 시급코드 */
+                 , A.AREA_NAME              /* 지역 */
+                 , A.MSEQ_CODE              /* 운행일련번호 */
+                 , A.OSTA_DATE              /* 운행시작일 */
+                 , A.OEND_DATE              /* 운행종료일 */
+                 , A.KBNT_ITSQ              /* 코바넷소재일련번호 */
+                 , TO_CHAR(SYSDATE,'YYYYMM') AS YEAR_MNTH  /* 입력년월 */
+                 , A.FAIL_NAME				/* 오류내역 */
+                 , E.HIGH_CODE AS MEDX_CODE /* 매체사코드 */
+                 , E.CUST_CODE AS RMED_CODE  /* 매체지코드 */
+                 , F.COMM_CODE AS RHOU_TYPE /* 시급코드 */
+                 , H.COMM_CDNM AS CONT_FORM /* 계약형태 */
+                 , H.COMM_CODE AS RCON_FORM /*계약형태코드*/  
+                 , K.BRND_CODE							/*브랜드코드*/
+                 , K.DEPT_CODE							/*부서코드*/
+              FROM MD_MTTPXM A             /* [소재별운행현황 TEMP] */
+              LEFT JOIN MD_SBTPXM B ON A.SEQX_CODE=B.SEQX_CODE AND A.OSEQ_CODE=B.OSEQ_CODE AND A.CUST_CODE = B.CUST_CODE
+              LEFT JOIN MD_CODEXM C ON A.OPER_FLAG = C.KBNT_CODE AND C.GRUP_CODE = 'D'  
+              LEFT JOIN MD_CODEXM D ON A.OFER_FLAG = D.KBNT_CODE AND D.GRUP_CODE = 'F'
+              LEFT JOIN MD_RMEDXM E ON A.BROD_CODE = E.BROD_CODE AND A.MDIM_CODE=E.MDIM_CODE 
+              AND A.OFIC_CODE = E.OFIC_CODE AND GUBN_FLAG IS NULL
+              LEFT JOIN MD_CODEXM F ON A.HOUR_CODE = F.KBNT_CODE AND F.GRUP_CODE = 'C'
+              LEFT JOIN MD_CODEXM G ON A.ADVR_FLAG = G.KBNT_CODE AND G.GRUP_CODE = 'E'
+              LEFT JOIN MD_CODEXM H ON B.CONT_FORM = H.COMM_CDNM AND H.GRUP_CODE = 'G'
+              LEFT JOIN MD_CODEXM I ON A.ADVR_TYPE = I.KBNT_CODE AND I.GRUP_CODE = 'B'
+              LEFT JOIN MD_CODEXM J ON A.AREA_NAME = J.COMM_CDNM AND J.GRUP_CODE = 'H'
+              LEFT JOIN MD_KBNTXM L ON A.CUST_CODE = L.KBNT_CODE
+              LEFT JOIN MD_BRNDXM K ON A.PSEQ_CODE = K.KBNT_CODE AND L.CUST_CODE = K.CUST_CODE
+              LEFT JOIN TA_CUSTXM M ON L.CUST_CODE = M.CUST_CODE
+              LEFT JOIN MD_RMEDXM N ON A.OFIC_CODE = N.OFIC_CODE
+              ORDER BY TO_NUMBER(NUMB_NUMB) ASC
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.11(표준화 완료)
+		내      용  : 등록된 일괄청약 목록
+		파라미터  : YEAR_MNTH : 년월	
+	-->
+	<select id="MDMA0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	/* MDMA0010.SEARCH01 등록된 일괄청약 목록 조회 */ 
+					'0' CHEK_FILD		/*선택*/
+					,A.YEAR_MNTH		/*년월*/
+				    ,A.SEQX_FILD		/*일련번호*/
+				    ,A.CUST_CODE		/*광고주코드*/
+				    ,B.CUST_NAME		/*광고주명*/
+				    ,A.CTIM_CODE		/*광고주팀코드*/
+				    ,H.CUST_NAME CTIM_NAME	/*광고주팀명*/
+				    ,A.BRND_CODE		/*브랜드코드*/
+				    ,C.BRND_NAME		/*브랜드명*/
+				    ,A.MEDX_CODE	/*청구지코드*/
+				    ,D.CUST_NAME MEDX_NAME	/*청구지명*/
+				    ,A.RMED_CODE		/*매체코드*/
+				    ,E.CUST_NAME RMED_NAME	/*매체명*/
+				    ,A.MEDX_FLAG		/*매체구분*/
+				    ,F.COMM_CDNM	/*매체구분명*/
+				    ,P.COMM_CDNM RINP_PATH /*투입경로*/
+				    ,A.INPT_PATH		/*투입경로*/
+				    ,A.PLAN_FLAG		/*계획치구분*/
+				    ,A.APLY_DATE		/*적용일자*/
+				    ,A.PRGM_NAME	/*프로그램명*/
+				    ,A.EMPL_CODE		/*사원코드*/
+				    ,SF_GET_EMPLNAME(A.EMPL_CODE) AS EMPL_NAME	/*사원명*/
+				    ,A.DEPT_CODE		/*부서코드*/
+				    ,G.DEPT_NAME		/*부서명*/
+				    ,I.COMM_CDNM RHOU_TYPE  /*시급*/
+				    ,A.HOUR_TYPE		/*시급*/
+				    ,A.BROD_MOND	/*월*/
+				    ,A.BROD_TUES		/*화*/
+				    ,A.BROD_WEDN	/*수*/
+				    ,A.BROD_THUR		/*목*/
+				    ,A.BROD_FRID		/*금*/
+				    ,A.BROD_SATU		/*토*/
+				    ,A.BROD_SUND		/*일*/
+				    ,A.STAR_TIME		/*방송시작시간*/
+				    ,A.ENDD_TIME		/*방송종료시간*/
+				    ,A.TTST_DATE		/*총광고시작일*/
+				    ,A.TTED_DATE		/*총광고종료일*/
+				    ,J.COMM_CDNM RBRO_FLAG	/*방송구분*/
+				    ,A.BROD_FLAG 	/*방송구분*/
+				    ,A.ATCT_FLAG		/*자동계산*/
+				    ,A.CONT_FILD		/*회수*/
+				    ,A.PRCE_FILD		/*단가*/
+				    ,A.AMNT_FILD		/*광고비*/
+				    ,A.SECD_FILD		/*초수*/
+				    ,L.COMM_CDNM RSUB_FLAG /*청약구분*/
+				    ,A.SUBS_FLAG		/*청약구분*/
+				    ,M.COMM_CDNM RADD_FORM /*광고형태*/
+				    ,A.ADDX_FORM	/*광고형태*/
+				    ,O.COMM_CDNM RCON_FORM /*계약형태*/
+				    ,A.CONT_FORM	/*계약형태*/
+				    ,N.COMM_CDNM RADD_TYPE /*광고유형*/
+				    ,A.ADDX_TYPE		/*광고유형*/
+				    ,K.COMM_CDNM RARE_FLAG  /*지역구분*/
+				    ,A.AREA_FLAG		/*지역구분*/
+				    ,A.COMI_RATE		/*수수료율*/
+				    ,A.TRTX_FLAG		/*위수탁부가세유무*/
+				    ,A.CMTX_FLAG		/*수수료부가세유무*/
+				    ,A.TRTR_NUMB		/*위수탁거래명세서번호*/
+				    ,A.TRTX_NUMB		/*위수탁세금계산서번호*/
+				    ,A.TRCH_NUMB		/*위수탁임시전표번호*/
+				    ,A.CMTR_NUMB	/*수수료거래명세서번호*/
+				    ,A.CMTX_NUMB	/*수수료세금계산서번호*/
+				    ,A.CMCH_NUMB	/*수수료임시전표번호*/
+				    ,A.CNMD_CODE	/*연계매체*/
+				    ,A.PRMN_SEQX		/*전월 이월 순번*/
+				    ,A.KBNT_YEAR		/*코바넷편성년도*/
+				    ,A.KBNT_OSEQ		/*코바넷편성일련번호*/
+				    ,A.KBNT_SSEQ		/*코바넷청약일련번호*/
+				    ,A.KBNT_MSEQ		/*코바넷운행일련번호*/
+				    ,A.EDIT_WKDY		/*편집요일*/
+				    ,A.MEMO_FILD		/*비고*/
+				    ,A.BRST_DATE		/*코바넷소재시작일*/
+				    ,A.BRED_DATE		/*코바넷소재종료일*/
+				    ,A.MNST_DATE		/*금월광고시작일*/
+				    ,A.MNED_DATE		/*금월광고종료일*/
+				    ,A.KBNT_ITEM		/*코바넷소재*/
+				    ,A.KBNT_BRSQ		/*코바넷품목일련번호*/
+				    ,A.KBNT_DISQ		/*코바넷대표소재일련번호*/
+				    ,A.KBNT_ITSQ		/*코바넷소재일련번호*/
+				    ,A.TRNS_FLAG		/*매체통신용코드*/
+				    ,A.AORX_FLAG		/*AOR구분*/
+				    ,A.INST_USID		/*입력자*/
+				    ,A.INST_DATE		/*입력일*/
+				    ,A.UPDT_USID		/*수정자*/
+				    ,A.UPDT_DATE		/*수정일*/
+				FROM MD_ETMDXM A
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				LEFT JOIN MD_BRNDXM C ON A.BRND_CODE = C.BRND_CODE AND A.CUST_CODE = C.CUST_CODE 
+				LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+				LEFT JOIN MD_CUSTXM E ON A.RMED_CODE = E.CUST_CODE
+				LEFT JOIN MD_CODEXM F ON A.MEDX_FLAG = F.COMM_CODE
+				LEFT JOIN TM_DEPTXM G ON A.DEPT_CODE = G.DEPT_CODE
+				LEFT JOIN MD_CUSTXM H ON A.CTIM_CODE = H.CUST_CODE
+				LEFT JOIN MD_CODEXM I ON A.HOUR_TYPE = I.COMM_CODE
+				LEFT JOIN MD_CODEXM J ON A.BROD_FLAG = J.COMM_CODE   
+				LEFT JOIN MD_CODEXM K ON A.AREA_FLAG = K.COMM_CODE
+				LEFT JOIN MD_CODEXM L ON A.SUBS_FLAG = L.COMM_CODE 
+				LEFT JOIN MD_CODEXM M ON A.ADDX_FORM = M.COMM_CODE 
+				LEFT JOIN MD_CODEXM N ON A.ADDX_TYPE = N.COMM_CODE 
+				LEFT JOIN MD_CODEXM O ON A.CONT_FORM = O.COMM_CODE    
+				LEFT JOIN MD_CODEXM P ON A.INPT_PATH = P.COMM_CODE 
+				WHERE A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'		/* 년월 */
+				AND A.INPT_PATH = 'C'
+		 		ORDER BY TO_NUMBER(A.SEQX_FILD)
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.01(표준화 완료)
+		내      용 : 소재별운행현황 저장 처리
+	-->
+	<insert id="MDMA0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_MTTPXM (  /*MDMA0010.SAVE00 소재별운행현황 저장*/
+                NUMB_NUMB        /* 번호 */
+               ,PRGM_NAME        /* 편성명 */
+               ,DAYY_WEEK        /* 요일 */
+               ,STAR_TIME        /* 시작시간 */
+               ,ENDD_TIME        /* 종료시간 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,STAR_DATE        /* 소재시작일 */
+               ,ENDD_DATE        /* 소재종료일 */
+               ,SECD_FILD        /* 초수 */
+               ,CONT_FILD        /* 회수 */
+               ,PRIC_FILD        /* 단가 */
+               ,AMNT_FILD        /* 금액 */
+               ,BROD_FLAG        /* 운행구분코드 */
+               ,SUBS_FLAG        /* 청약형태코드 */
+               ,BROD_CODE        /* 방송사코드 */
+               ,SEQX_CODE        /* 청약일련번호 */
+               ,MDIM_CODE        /* 매체코드 */
+               ,PSEQ_CODE        /* 품목일련번호 */
+               ,OPER_YEAR        /* 편성년도 */
+               ,ISEQ_CODE        /* 대표소재일련번호 */
+               ,OSEQ_CODE        /* 편성일련번호 */
+               ,OPER_FLAG        /* 운행구분코드 */
+               ,OFER_FLAG        /* 청약구분코드 */
+               ,OFIC_CODE        /* 본지사코드 */
+               ,AREA_FLAG        /* 지역코드 */
+               ,ADVR_FLAG        /* 광고형태코드 */
+               ,ADVR_TYPE        /* 광고유형코드 */
+               ,COLM_FLAG        /* 단구분 */
+               ,LCAL_FLAG        /* 로컬구분코드 */
+               ,HOUR_CODE        /* 시급코드 */
+               ,AREA_NAME        /* 지역 */
+               ,MSEQ_CODE        /* 운행일련번호 */
+               ,OSTA_DATE        /* 운행시작일 */
+               ,OEND_DATE        /* 운행종료일 */
+               ,KBNT_ITSQ        /* 코바넷소재일련번호 */
+              )
+       VALUES (
+               #NUMB_NUMB#       /* 번호 */
+              ,#PRGM_NAME#       /* 편성명 */
+              ,#DAYY_WEEK#       /* 요일 */
+              ,#STAR_TIME#       /* 시작시간 */
+              ,#ENDD_TIME#       /* 종료시간 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#STAR_DATE#       /* 소재시작일 */
+              ,#ENDD_DATE#       /* 소재종료일 */
+              ,#SECD_FILD#       /* 초수 */
+              ,#CONT_FILD#       /* 회수 */
+              ,#PRIC_FILD#       /* 단가 */
+              ,#AMNT_FILD#       /* 금액 */
+              ,#BROD_FLAG#       /* 운행구분코드 */
+              ,#SUBS_FLAG#       /* 청약형태코드 */
+              ,#BROD_CODE#       /* 방송사코드 */
+              ,#SEQX_CODE#       /* 청약일련번호 */
+              ,#MDIM_CODE#       /* 매체코드 */
+              ,#PSEQ_CODE#       /* 품목일련번호 */
+              ,#OPER_YEAR#       /* 편성년도 */
+              ,#ISEQ_CODE#       /* 대표소재일련번호 */
+              ,#OSEQ_CODE#       /* 편성일련번호 */
+              ,#OPER_FLAG#       /* 운행구분코드 */
+              ,#OFER_FLAG#       /* 청약구분코드 */
+              ,#OFIC_CODE#       /* 본지사코드 */
+              ,#AREA_FLAG#       /* 지역코드 */
+              ,#ADVR_FLAG#       /* 광고형태코드 */
+              ,#ADVR_TYPE#       /* 광고유형코드 */
+              ,#COLM_FLAG#       /* 단구분 */
+              ,#LCAL_FLAG#       /* 로컬구분코드 */
+              ,#HOUR_CODE#       /* 시급코드 */
+              ,#AREA_NAME#       /* 지역 */
+              ,#MSEQ_CODE#       /* 운행일련번호 */
+              ,#OSTA_DATE#       /* 운행시작일 */
+              ,#OEND_DATE#       /* 운행종료일 */
+              ,#KBNT_ITSQ#       /* 코바넷소재일련번호 */
+              )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.01(표준화 완료)
+		내      용 : 광고신탁집계표 저장 처리
+	-->
+	<insert id="MDMA0010.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO MD_SBTPXM (  /*MDMA0010.SAVE01 광고신탁집계표 저장*/
+                NUMB_NUMB        /* 번호 */
+               ,CUST_NAME        /* 광고주명 */
+               ,BROD_CDNM        /* 방송국 */
+               ,MDIM_CDNM        /* 매체 */
+               ,PRGM_NAME        /* 프로그램명 */
+               ,HOUR_TYPE        /* 시급 */
+               ,DAYY_WEEK        /* 요일 */
+               ,STAR_TIME        /* 시작시간 */
+               ,ENDD_TIME        /* 종료시간 */
+               ,CONT_FILD        /* 횟수 */
+               ,PRIC_FILD        /* 단가 */
+               ,AMNT_FILD        /* 금액 */
+               ,STAR_DATE        /* 시작일자 */
+               ,ENDD_DATE        /* 종료일자 */
+               ,BROD_FLAG        /* 운행구분코드 */
+               ,BROD_NAME        /* 운행구분 */
+               ,SECD_FILD        /* 초수 */
+               ,OFIC_CDNM        /* 본지사 */
+               ,SUBS_FLAG        /* 광고형태코드 */
+               ,SUBS_NAME        /* 광고형태 */
+               ,ADVR_TYPE        /* 판매시장 */
+               ,CONT_CODE        /* 판매경로코드 */
+               ,CONT_FORM		/* 판매형태 */
+               ,ADDX_TYPE        /* 광고유형코드 */
+               ,ADDX_NAME        /* 광고유형 */
+               ,INST_DATE        /* 입력일자 */
+               ,AREA_NAME        /* 지역 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,OPER_YEAR        /* 편성년도 */
+               ,OSEQ_CODE        /* 편성일련번호 */
+               ,SEQX_CODE        /* 청약일련번호 */
+               ,OSEQ_FLAG        /* 운행일련번호 */
+              )
+       VALUES (
+               #NUMB_NUMB#       /* 번호 */
+              ,#CUST_NAME#       /* 광고주명 */
+              ,#BROD_CDNM#       /* 방송국 */
+              ,#MDIM_CDNM#       /* 매체 */
+              ,#PRGM_NAME#       /* 프로그램명 */
+              ,#HOUR_TYPE#       /* 시급 */
+              ,#DAYY_WEEK#       /* 요일 */
+              ,#STAR_TIME#       /* 시작시간 */
+              ,#ENDD_TIME#       /* 종료시간 */
+              ,#CONT_FILD#       /* 횟수 */
+              ,#PRIC_FILD#       /* 단가 */
+              ,#AMNT_FILD#       /* 금액 */
+              ,#STAR_DATE#       /* 시작일자 */
+              ,#ENDD_DATE#       /* 종료일자 */
+              ,#BROD_FLAG#       /* 운행구분코드 */
+              ,#BROD_NAME#       /* 운행구분 */
+              ,#SECD_FILD#       /* 초수 */
+              ,#OFIC_CDNM#       /* 본지사 */
+              ,#SUBS_FLAG#       /* 광고형태코드 */
+              ,#SUBS_NAME#       /* 광고형태 */
+              ,#ADVR_TYPE#       /* 판매시장 */
+              ,#CONT_CODE#       /* 판매경로코드 */
+              ,#CONT_FORM#			/* 판매형태 */
+              ,#ADDX_TYPE#       /* 광고유형코드 */
+              ,#ADDX_NAME#       /* 광고유형 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 입력일자 */
+              ,#AREA_NAME#       /* 지역 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#OPER_YEAR#       /* 편성년도 */
+              ,#OSEQ_CODE#       /* 편성일련번호 */
+              ,#SEQX_CODE#       /* 청약일련번호 */
+              ,#OSEQ_FLAG#       /* 운행일련번호 */
+              )
+
+	]]>
+	</insert>
+	
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용 : 일괄청약 저장 처리
+	-->
+	<insert id="MDMA0010.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO MD_ETMDXM (  /*MDMA0010.SAVE02 일괄청약 */
+                YEAR_MNTH        /* 년월 */
+               ,SEQX_FILD        /* 순번 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,CTIM_CODE        /* 광고주팀코드 */
+               ,BRND_CODE        /* 브랜드코드 */
+               ,MEDX_CODE        /* 청구지(매체사)코드 */
+               ,RMED_CODE        /* 매체지코드 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,INPT_PATH        /* 투입경로 */
+               ,PLAN_FLAG        /* 계획치구분 */
+               ,APLY_DATE        /* 적용일자 */
+               ,PRGM_NAME        /* 프로그램명 */
+               ,EMPL_CODE        /* 담당사원 */
+               ,DEPT_CODE        /* 담당부서 */
+               ,HOUR_TYPE        /* 시급 */
+               ,BROD_MOND        /* 방송요일_월 */
+               ,BROD_TUES        /* 방송요일_화 */
+               ,BROD_WEDN        /* 방송요일_수 */
+               ,BROD_THUR        /* 방송요일_목 */
+               ,BROD_FRID        /* 방송요일_금 */
+               ,BROD_SATU        /* 방송요일_토 */
+               ,BROD_SUND        /* 방송요일_일 */
+               ,STAR_TIME        /* 방송시작시간 */
+               ,ENDD_TIME        /* 방송종료시간 */
+               ,MNST_DATE        /* 금월방송시작일 */
+               ,MNED_DATE        /* 금월방송종료일 */
+               ,TTST_DATE        /* 총광고시작일 */
+               ,TTED_DATE        /* 총광고종료일 */
+               ,BROD_FLAG        /* 방송구분 */
+               ,ATCT_FLAG        /* 자동계산유무 */
+               ,CONT_FILD        /* 회수 */
+               ,PRCE_FILD        /* 단가 */
+               ,AMNT_FILD        /* 금액 */
+               ,SECD_FILD        /* 초수 */
+               ,SUBS_FLAG        /* 청약구분 */
+               ,ADDX_FORM        /* 광고형태 */
+               ,CONT_FORM        /* 계약형태 */
+               ,ADDX_TYPE        /* 광고유형 */
+               ,AREA_FLAG        /* 지역구분 */
+               ,COMI_RATE        /* 수수료율 */
+               ,TRTX_FLAG        /* 위수탁 VAT 유무 */
+               ,CMTX_FLAG        /* 수수료 VAT 유무 */
+               ,TRTR_NUMB        /* 위수탁거래명세서번호 */
+               ,TRTX_NUMB        /* 위수탁세금계산서번호 */
+               ,TRCH_NUMB        /* 위수탁임시전표번호 */
+               ,CMTR_NUMB        /* 수수료거래명세서번호 */
+               ,CMTX_NUMB        /* 수수료세금계산서번호 */
+               ,CMCH_NUMB        /* 수수료임시전표번호 */
+               ,CNMD_CODE        /* 연계매체 */
+               ,PRMN_SEQX        /* 전월 이월 순번 */
+               ,KBNT_YEAR        /* 코바넷 편성년도 */
+               ,KBNT_OSEQ        /* 코바넷 편성일련번호 */
+               ,KBNT_SSEQ        /* 코바넷 청약일련번호 */
+               ,KBNT_MSEQ        /* 코바넷 운행일련번호 */
+               ,EDIT_WKDY        /* 편집요일 */
+               ,MEMO_FILD        /* 비고 */
+               ,BRST_DATE        /* 코바넷 소재시작일 */
+               ,BRED_DATE        /* 코바넷 소재종료일 */
+               ,KBNT_ITEM        /* 코바넷 소재 */
+               ,KBNT_BRSQ        /* 코바넷 품목일련번호 */
+               ,KBNT_DISQ        /* 코바넷 대표소재일련번호 */
+               ,KBNT_ITSQ        /* 코바넷 소재일련번호 */
+               ,TRNS_FLAG        /* 매체통신용 코드 */
+               ,AORX_FLAG        /* AOR 구분 */
+               ,INST_USID        /* 입력자 */
+               ,INST_DATE        /* 입력일 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일 */
+               ,TRAN_NUMB        /* 거래명세서번호 */
+               ,COMI_FILD        /* 수수료금액 */
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 년월 */
+              ,#SEQX_FILD#       /* 순번 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#CTIM_CODE#       /* 광고주팀코드 */
+              ,#BRND_CODE#       /* 브랜드코드 */
+              ,#MEDX_CODE#       /* 청구지(매체사)코드 */
+              ,#RMED_CODE#       /* 매체지코드 */
+              ,DECODE(#MDIM_CODE#,'01','A001','02','A002','A002')       /* 매체구분 */
+              ,'C'       /* 투입경로 */
+              ,#PLAN_FLAG#       /* 계획치구분 */
+              ,TO_CHAR(SYSDATE,'YYMMDD')       /* 적용일자 */
+              ,#PRGM_NAME#       /* 프로그램명 */
+              ,#EMPL_CODE#       /* 담당사원 */
+              ,#DEPT_CODE#       /* 담당부서 */
+              ,#RHOU_TYPE#       /* 시급 */
+              ,#BROD_MOND#       /* 방송요일_월 */
+              ,#BROD_TUES#       /* 방송요일_화 */
+              ,#BROD_WEDN#       /* 방송요일_수 */
+              ,#BROD_THUR#       /* 방송요일_목 */
+              ,#BROD_FRID#       /* 방송요일_금 */
+              ,#BROD_SATU#       /* 방송요일_토 */
+              ,#BROD_SUND#       /* 방송요일_일 */
+              ,#STAR_TIME#       /* 방송시작시간 */
+              ,#ENDD_TIME#       /* 방송종료시간 */
+              ,#OSTA_DATE#       /* 금월방송시작일 */
+              ,#OEND_DATE#       /* 금월방송종료일 */
+              ,#OSTA_DATE#       /* 총광고시작일 */
+              ,#OEND_DATE#       /* 총광고종료일 */
+              ,#RBRO_FLAG#       /* 방송구분 */
+              ,'F'       /* 자동계산유무 */
+              ,#CONT_FILD#       /* 회수 */
+              ,#PRIC_FILD#       /* 단가 */
+              ,#AMNT_FILD#       /* 금액 */
+              ,#SECD_FILD#       /* 초수 */
+              ,#RSUB_FLAG#       /* 청약구분 */
+              ,#RADD_FORM#       /* 광고형태 */
+              ,#RCON_FORM#       /* 계약형태 */
+              ,#RADD_TYPE#       /* 광고유형 */
+              ,DECODE(#RARE_FLAG#,'','H001',#RARE_FLAG#)       /* 지역구분 */
+              ,#COMI_RATE#       /* 수수료율 */
+              ,#TRTX_FLAG#       /* 위수탁 VAT 유무 */
+              ,#CMTX_FLAG#       /* 수수료 VAT 유무 */
+              ,#TRTR_NUMB#       /* 위수탁거래명세서번호 */
+              ,#TRTX_NUMB#       /* 위수탁세금계산서번호 */
+              ,#TRCH_NUMB#       /* 위수탁임시전표번호 */
+              ,#CMTR_NUMB#       /* 수수료거래명세서번호 */
+              ,#CMTX_NUMB#       /* 수수료세금계산서번호 */
+              ,#CMCH_NUMB#       /* 수수료임시전표번호 */
+              ,#CNMD_CODE#       /* 연계매체 */
+              ,#PRMN_SEQX#       /* 전월 이월 순번 */
+              ,#OPER_YEAR#       /* 코바넷 편성년도 */
+              ,#OSEQ_CODE#       /* 코바넷 편성일련번호 */
+              ,#SEQX_CODE#       /* 코바넷 청약일련번호 */
+              ,#MSEQ_CODE#       /* 코바넷 운행일련번호 */
+              ,#EDIT_WKDY#       /* 편집요일 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#STAR_DATE#       /* 코바넷 소재시작일 */
+              ,#ENDD_DATE#       /* 코바넷 소재종료일 */
+              ,#KBNT_ITEM#       /* 코바넷 소재 */
+              ,#PSEQ_CODE#       /* 코바넷 품목일련번호 */
+              ,#ISEQ_CODE#       /* 코바넷 대표소재일련번호 */
+              ,#KBNT_ITSQ#       /* 코바넷 소재일련번호 */
+              ,#TRNS_FLAG#       /* 매체통신용 코드 */
+              ,#AORX_FLAG#       /* AOR 구분 */
+              ,#UPDT_USID#       /* 입력자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 입력일 */
+              ,#UPDT_USID#       /* 수정자 */
+              ,#UPDT_DATE#       /* 수정일 */
+              ,#TRAN_NUMB#       /* 거래명세서번호 */
+              ,#COMI_FILD#       /* 수수료금액 */
+              )
+
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.02(표준화 완료)
+		내      용 : 소재별운행현황테스트 마지막행 삭제
+	-->
+	<delete id="MDMA0010.DELETE10" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_MTTPXM	/* MDMA0010.DELETE10 소재별운행현황테스트 마지막행 삭제 */
+			WHERE RMED_NAME IS NULL	 /* 방송사 */ 
+			AND PRGM_NAME IS NULL /* 프로그램명 */
+	]]>
+	</delete>
+	
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.02(표준화 완료)
+		내      용 : 광고신탁집계표 마지막행 삭제
+	-->
+	<delete id="MDMA0010.DELETE11" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_SBTPXM	/* MDMA0010.DELETE11 소재별운행현황테스트 마지막행 삭제 */
+			WHERE BROD_CDNM IS NULL	 /* 방송사 */ 
+			AND PRGM_NAME IS NULL /* 프로그램명 */
+	]]>
+	</delete>
+	
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.11(표준화 완료)
+		내      용 : 전파 개별청약 수정 처리
+	-->
+	<update id="MDMA0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_ETMDXM	/* MDMA0010.UPDATE00 전파 개별청약 수정 */
+			SET    
+					 YEAR_MNTH	=	#YEAR_MNTH#	/*년월*/
+					,CUST_CODE	=	#CUST_CODE#	/*광고주코드*/
+					,CTIM_CODE	=	#CTIM_CODE#		/*광고주팀코드*/
+					,BRND_CODE	=	#BRND_CODE#		/*브랜드코드*/
+					,MEDX_CODE	=	#MEDX_CODE#	/*청구지코드*/
+					,RMED_CODE	=	#RMED_CODE#	/*매체코드*/
+					,MEDX_FLAG	=	#MEDX_FLAG#		/*매체구분*/
+					,INPT_PATH		=	#INPT_PATH#		/*투입경로*/
+					,PLAN_FLAG		=	#PLAN_FLAG#		/*계획치구분*/
+					,APLY_DATE		=	#APLY_DATE#		/*적용일자*/
+					,PRGM_NAME	=	#PRGM_NAME#	/*프로그램명*/
+					,EMPL_CODE	=	#EMPL_CODE#		/*사원코드*/
+					,DEPT_CODE	=	#DEPT_CODE#		/*부서코드*/
+					,HOUR_TYPE	=	#HOUR_TYPE#		/*시급*/
+					,BROD_MOND	=	#BROD_MOND#	/*월*/
+					,BROD_TUES	=	#BROD_TUES#		/*화*/
+					,BROD_WEDN	=	#BROD_WEDN#	/*수*/
+					,BROD_THUR	=	#BROD_THUR#		/*목*/
+					,BROD_FRID		=	#BROD_FRID#		/*금*/
+					,BROD_SATU	=	#BROD_SATU#		/*토*/
+					,BROD_SUND	=	#BROD_SUND#		/*일*/
+					,STAR_TIME	=	#STAR_TIME#		/*방송시작시간*/
+					,ENDD_TIME	=	#ENDD_TIME#		/*방송종료시간*/
+					,MNST_DATE	=	#MNST_DATE#	/*금월광고시작일*/
+					,MNED_DATE	=	#MNED_DATE#		/*금월광고종료일*/
+					,TTST_DATE	=	#TTST_DATE#		/*총광고시작일*/
+					,TTED_DATE	=	#TTED_DATE#		/*총광고종료일*/
+					,BROD_FLAG	=	#BROD_FLAG#		/*방송구분*/
+					,ATCT_FLAG	=	#ATCT_FLAG#		/*자동계산*/
+					,CONT_FILD		=	#CONT_FILD#		/*회수*/
+					,PRCE_FILD		=	#PRCE_FILD#		/*단가*/
+					,AMNT_FILD	=	#AMNT_FILD#		/*광고비*/
+					,SECD_FILD		=	#SECD_FILD#		/*초수*/
+					,SUBS_FLAG	=	#SUBS_FLAG#		/*청약구분*/
+					,ADDX_FORM	=	#ADDX_FORM#	/*광고형태*/
+					,CONT_FORM	=	#CONT_FORM#	/*계약형태*/
+					,ADDX_TYPE	=	#ADDX_TYPE#		/*광고유형*/
+					,AREA_FLAG	=	#AREA_FLAG#		/*지역구분*/
+					,COMI_RATE	=	#COMI_RATE#		/*수수료율*/
+					,TRTX_FLAG	=	#TRTX_FLAG#		/*위수탁부가세*/
+					,CMTX_FLAG	=	#CMTX_FLAG#		/*수수료부가세*/
+					,TRTR_NUMB	=	#TRTR_NUMB#		/*위수탁거래명세서번호*/
+					,TRTX_NUMB	=	#TRTX_NUMB#	/*위수탁세금계산서번호*/
+					,TRCH_NUMB	=	#TRCH_NUMB#	/*위수탁임시전표번호*/
+					,CMTR_NUMB	=	#CMTR_NUMB#	/*수수료거래명세서번호*/
+					,CMTX_NUMB	=	#CMTX_NUMB#	/*수수료세금계산서번호*/
+					,CMCH_NUMB	=	#CMCH_NUMB#	/*수수료임시전표번호*/
+					,CNMD_CODE	=	#CNMD_CODE#	/*연계매체*/
+					,PRMN_SEQX	=	#PRMN_SEQX#	/*전월 이월 순번*/
+					,KBNT_YEAR	=	#KBNT_YEAR#		/*코바넷편성년도*/
+					,KBNT_OSEQ	=	#KBNT_OSEQ#		/*코바넷편성일련번호*/
+					,KBNT_SSEQ	=	#KBNT_SSEQ#		/*코바넷청약일련번호*/
+					,KBNT_MSEQ	=	#KBNT_MSEQ#	/*코바넷운행일련번호*/
+					,EDIT_WKDY	=	#EDIT_WKDY#		/*편집요일*/
+					,MEMO_FILD	=	#MEMO_FILD#		/*비고*/
+					,BRST_DATE	=	#BRST_DATE#		/*코바넷소재시작일*/
+					,BRED_DATE	=	#BRED_DATE#		/*코바넷소재종료일*/
+					,KBNT_ITEM	=	#KBNT_ITEM#		/*코바넷소재*/
+					,KBNT_BRSQ	=	#KBNT_BRSQ#		/*코바넷품목일련번호*/
+					,KBNT_DISQ	=	#KBNT_DISQ#		/*코바넷대표소재일련번호*/
+					,KBNT_ITSQ	=	#KBNT_ITSQ#		/*코바넷소재일련번호*/
+					,TRNS_FLAG	=	#TRNS_FLAG#		/*매체통신용코드*/
+					,AORX_FLAG	=	#AORX_FLAG#		/*AOR구분*/
+					,INST_USID		=	#INST_USID#		/*입력자*/
+					,INST_DATE		=	#INST_DATE#		/*입력일*/
+					,UPDT_USID	=	#UPDT_USID#		/*수정자*/
+					,UPDT_DATE	=	TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')	/*수정일*/
+         WHERE SEQX_FILD 	= #SEQX_FILD#			/*일련번호*/
+         AND YEAR_MNTH	=	#YEAR_MNTH#			 /* 년월 */
+	]]>
+	</update>
+	
+
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.11(표준화 완료)
+		내      용  : 신규 일련번호 코드 채번
+		파라미터  : 
+	-->
+	<select id="MDMA0010.NEW_SEQX_FILD" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MDMA0010.NEW_SEQX_FILD 신규 일련번호 채번  */
+						NVL(MAX(TO_NUMBER(SEQX_FILD)),0)+1		/* 신규 일련번호 */
+		FROM MD_ETMDXM
+		WHERE YEAR_MNTH	=	#YEAR_MNTH# /* 년월 */
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용  : 소재별운행현황테이블에 데이터가 있는지 확인
+		파라미터  : 
+	-->
+	<select id="MDMA0010.GET_MTTP_COUNT" parameterClass="hashmap" resultClass="int">
+	<![CDATA[ 
+		SELECT  /*  MDMA0010.GET_MTTP_COUNT 데이터유무 확인  */
+			COUNT(NUMB_NUMB)		/* 번호 */
+		FROM MD_MTTPXM
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용 : 소재별운행현황테이블 데이터 삭제
+	-->
+	<delete id="MDMA0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_MTTPXM	/* MDMA0010.DELETE00 소재별운행현황테이블 데이터삭제 */
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용 : 소재별운행현황테이블 데이터 삭제
+	-->
+	<delete id="MDMA0010.DELETE12" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_MTTPXM	/* MDMA0010.DELETE12 소재별운행현황테이블 데이터 삭제 */
+			WHERE SEQX_CODE = #SEQX_CODE#	 /* 청약일련번호 */ 
+			AND OSEQ_CODE	=	#OSEQ_CODE# /* 편성일련번호 */
+			AND MSEQ_CODE = #MSEQ_CODE# /*운행일련번호*/
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용 : 광고신탁집계표테이블 데이터삭제
+	-->
+	<delete id="MDMA0010.DELETE13" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_SBTPXM	/* MDMA0010.DELETE13 광고신탁집계표테이블 데이터삭제 */
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.10(표준화 완료)
+		내      용 : 오류내역 입력
+	-->
+	<update id="MDMA0010.UPDATE10" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_MTTPXM	/* MDMA0010.UPDATE10 오류내역입력 */
+			SET    
+				FAIL_NAME=#FAIL_NAME#
+         WHERE SEQX_CODE = #SEQX_CODE#	 /* 청약일련번호 */ 
+			AND OSEQ_CODE	=	#OSEQ_CODE# /* 편성일련번호 */
+			AND MSEQ_CODE = #MSEQ_CODE# /*운행일련번호*/
+	]]>
+	</update>
+
+</sqlMap>

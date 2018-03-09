@@ -1,0 +1,2772 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                 
+           "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+                              
+                                                                                                                      
+<sqlMap namespace="FSMB0020">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 조회 처리
+ 2014.09. 분리되어 있던 승인 화면을 합쳤기때문에  변동승인 조회조건 기준으로 변경함.
+********************************************************************************/
+ -->
+	<select id="FSMB0020.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+		   SELECT /*FSMB0020.SEARCH00.자산변동관리 조회 처리*/
+                  '0' AS CHEK_YSNO                           /*선택*/
+                 ,A.CHNG_DATE    /*변동일*/
+                 ,A.ASCH_GUBN    /*변동구분[ASCH_GUBN]*/
+                 ,CASE WHEN A.CHNG_GUBN='CHNG' THEN '일괄변동'
+                  ELSE ''   END AS CHNG_GUBN  /*일괄변동유무*/
+                 ,A.ASST_NUMB    /*자산번호*/
+                 ,B.ASST_NAME    /*자산명*/
+                 ,A.SEQN_NUMB    /*일련번호*/
+                 ,A.ASST_STAT    /*자산상태[ASST_STAT]*/
+                 ,A.DEPT_CODE    /*부서코드*/
+                 ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME /*부서명*/
+                 ,A.EMPL_NUMB    /*사원번호*/
+                 ,SF_GET_EMPLNAME(A.EMPL_NUMB) AS EMPL_NAME /*사원명*/
+                 ,A.ACQU_ENDX    /*취득가_기말잔액*/
+                 ,A.DPCT_ENDX    /*충당금_기말잔액*/
+                 ,A.UNDP_BALE    /*미상각잔액*/
+                 ,A.CHNG_AMOT    /*변동금액*/
+                 ,A.DSPS_AMOT    /*처분가액*/
+                 ,A.DSPS_GILS    /*처분손익*/
+                 ,A.DPCT_GRDC    /*충당금가감액*/
+                 ,A.ACCT_INTL    /*계정과목코드*/
+                 ,SF_GET_ACCTNAME(A.ACCT_INTL) AS ACCT_NAME /*계정과목명*/
+                 ,A.CUST_CODE    /*거래처코드*/
+                 ,SF_GET_CUSTNAME(A.CUST_CODE) AS CUST_NAME /*거래처명*/
+                 ,A.RCGN_YSNO    /*승인여부*/
+                 ,A.APPV_DATE    /*승인일시*/
+                 ,A.APPR_EMPL    /*승인자*/
+                 ,SF_GET_EMPLNAME(A.APPR_EMPL) AS APPV_EMNM /*승인자명*/
+                 ,A.SLIP_NUMB    /*전표번호*/
+                 ,A.SLIP_LINE    /*전표순번*/
+                 ,A.DESC_REMK    /*비고(100)*/
+                 ,C.ASCL_NAME  /* 자산 분류명*/
+                 ,C.SMAL_NAME AS CLSF_NAME   /*품목분류*/
+                 ,B.ACQS_DATE   /*취득일*/
+                 ,B.ASST_STAT AS ASST_STAT2    /*자산상태2[ASST_STAT]*/
+                 ,B.ACCT_UNIT       /*회계단위*/
+                 ,E.REF1_FILD                               /*자산처리단위*/
+                 ,A.VATX_AMNT        /*부가세액*/
+            FROM FS_ASCHXM A INNER JOIN FS_ASSTXM B
+                                     ON A.ASST_NUMB = B.ASST_NUMB
+                             INNER JOIN VI_ASSETCLASS C
+                                     ON B.CLSF_CODE = C.SMAL_CODE
+                             INNER JOIN TM_CODEXD E
+                                     ON A.ASCH_GUBN = E.COMD_CODE
+                                    AND E.COMM_CODE = 'ASCH_GUBN'
+                                    AND E.REF1_FILD != 'MOVE'
+                                    AND E.REF1_FILD = 'ASCH'   /*ASCH(변동)인 항목만 표시*/
+           WHERE A.CHNG_DATE >= #CHNG_DAT1#                    /*조회 시작일*/
+             AND A.CHNG_DATE <= #CHNG_DAT2#                    /*조회 종료일*/
+       ]]>      
+             
+          <isNotEmpty prepend="AND" property="ASCH_GUBN">
+                A.ASCH_GUBN = NVL(#ASCH_GUBN#, A.ASCH_GUBN)   /*변동구분*/
+          </isNotEmpty> 
+          <isNotEmpty prepend="AND" property="RCGN_YSNO">
+                A.RCGN_YSNO =  NVL(#RCGN_YSNO#, A.RCGN_YSNO)  /*승인여부*/
+          </isNotEmpty>
+          <isNotEmpty prepend="AND" property="CLSF_CODE">
+                B.CLSF_CODE =  NVL(#CLSF_CODE#, B.CLSF_CODE)  /*품목분류*/
+          </isNotEmpty>
+          <isNotEmpty prepend="AND" property="ASST_NUMB">
+                A.ASST_NUMB =  NVL(#ASST_NUMB#, A.ASST_NUMB)  /*자산번호*/
+          </isNotEmpty>
+          <isNotEmpty prepend="AND" property="DEPT_CODE">
+                A.DEPT_CODE =  NVL(#DEPT_CODE#, A.DEPT_CODE)  /*부서코드 파레메터 CHBF_DEPT를 DEPT_CODE로 변경*/
+          </isNotEmpty>
+        
+        <![CDATA[
+                ORDER BY A.CHNG_DATE DESC     
+        ]]>
+
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0020.SAVE00.자산변동관리 저장 처리*/
+			iCNT                    DECIMAL(15,0);   /*상각여부*/
+	
+	    BEGIN
+	
+	        /*자산상각 체크*/
+	        SELECT 0 INTO iCNT FROM DUAL;
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동입력이 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 변동 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 이력(변동,이동) 있습니다.\n\n확정(변동, 이동) 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 변경일 이후의 자료 존재 여부 체크(굳이 두번 한 이유:오류 메시지의 구분을 위해)*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND CHNG_DATE > #CHNG_DATE#;  /*변경 일 이후 변동 자료 존재 여부*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 변동확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 분할내역이 있습니다.\n\n자산분할 확정 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND SPLT_DATE > #CHNG_DATE#;  /*변경일 이후의 분할 자료*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 분할 확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /* 변동구분이 부분매각이거나 부분폐기일때는 변동금액이 취득가 보가 클수 없음.*/
+	        IF (#ASCH_GUBN# = 'SAPA' OR #ASCH_GUBN# = 'DSPT') AND (#CHNG_AMOT# > #ACQU_ENDX#) THEN  /*부분매각 이거나 부분폐기*/
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변동금액(취득가)이 취득가 기말잔액보다 클수 없습니다.\n\n변동입력이 불가 합니다!');
+	        END IF;
+	        
+	        /************************************+
+	        | 추가
+	        +************************************/
+            SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+	        
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동 입력이 불가 합니다!');
+	        END IF;
+	
+	
+	        INSERT INTO FS_ASCHXM (
+	               CHNG_DATE   /*변동일*/
+	              ,ASST_NUMB   /*자산번호*/
+	              ,SEQN_NUMB   /*일련번호*/
+	              ,ASCH_NUMB   /*자산인괄변동번호*/
+	              ,CHNG_GUBN   /*일괄변동구분*/
+	              ,ASCH_GUBN   /*변동구분[ASCH_GUBN]*/
+	              ,ASST_STAT   /*자산상태[ASST_STAT]*/
+	              ,CHBF_DEPT   /*변경전부서코드*/
+	              ,CHBF_EMPL   /*변경전사원번호*/
+	              ,DEPT_CODE   /*부서코드*/
+	              ,EMPL_NUMB   /*사원번호*/
+	              ,ACQU_ENDX   /*취득가_기말잔액*/
+	              ,DPCT_ENDX   /*충당금_기말잔액*/
+	              ,UNDP_BALE   /*미상각잔액*/
+	              ,CHNG_AMOT   /*변동금액*/
+	              ,DSPS_AMOT   /*처분가액*/
+	              ,DSPS_GILS   /*처분손익*/
+	              ,DPCT_GRDC   /*충당금가감액*/
+	              ,ACCT_INTL   /*계정과목코드*/
+	              ,CUST_CODE   /*거래처코드*/
+	              ,RCGN_YSNO   /*승인여부*/
+	              ,APPV_DATE   /*승인일시*/
+	              ,APPR_EMPL   /*승인자*/
+	              ,SLIP_NUMB   /*전표번호*/
+	              ,DESC_REMK   /*비고(100)*/
+	              ,INST_DATE   /*등록일시*/
+	              ,INST_USID   /*등록자*/
+	              ,UPDT_DATE   /*수정일시*/
+	              ,UPDT_USID   /*수정자*/
+	              ,ACCT_UNIT    /*회계단위*/
+	              ,VATX_AMNT    /*부가세액*/
+	              )
+	       VALUES (
+	               #CHNG_DATE#   /*변동일*/
+	              ,#ASST_NUMB#   /*자산번호*/
+	              ,(SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+	                  FROM FS_ASCHXM
+	                 WHERE ASST_NUMB = #ASST_NUMB#)
+                  ,#ASCH_NUMB#   /*자산인괄변동번호*/
+                  ,#CHNG_GUBN#   /*일괄변동구분*/	                 
+	              ,#ASCH_GUBN#   /*변동구분[ASCH_GUBN]*/
+	              ,#ASST_STAT#   /*자산상태[ASST_STAT]*/
+	              ,#DEPT_CODE#   /*변경전부서코드*/
+	              ,#EMPL_NUMB#   /*변경전사원번호*/
+	              ,#DEPT_CODE#   /*부서코드*/
+	              ,#EMPL_NUMB#   /*사원번호*/
+	              ,#ACQU_ENDX#   /*취득가_기말잔액*/
+	              ,#DPCT_ENDX#   /*충당금_기말잔액*/
+	              ,#UNDP_BALE#   /*미상각잔액*/
+	              ,#CHNG_AMOT#   /*변동금액*/
+	              ,#DSPS_AMOT#   /*처분가액*/
+	              ,#DSPS_GILS#   /*처분손익*/
+	              ,#DPCT_GRDC#   /*충당금_기말잔액*/
+	              ,#ACCT_INTL#   /*계정과목코드*/
+	              ,#CUST_CODE#   /*거래처코드*/
+	              ,#RCGN_YSNO#   /*승인여부*/
+	              ,#APPV_DATE#   /*승인일시*/
+	              ,#APPR_EMPL#   /*승인자*/
+	              ,#SLIP_NUMB#   /*전표번호*/
+	              ,#DESC_REMK#   /*비고(100)*/
+	              ,SYSDATE   /*등록일시*/
+	              ,#UPDT_USID#   /*등록자*/
+	              ,SYSDATE   /*수정일시*/
+	              ,#UPDT_USID#   /*수정자*/
+	              ,#ACCT_UNIT#
+	              ,#VATX_AMNT#
+	              );         
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 수정 처리
+********************************************************************************/
+ -->
+ 
+	<update id="FSMB0020.UPDATE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0020.UPDATE00.자산변동관리 수정 처리*/
+			sRCGN_YSNO FS_ASCHXM.RCGN_YSNO%TYPE; /*변동이력 승인여부*/
+	
+	    BEGIN
+	
+		   /************************************************
+		          변동, 분할, 감가상각 여부는 체크 하지 않음
+		          미확정 자료가 존재하면 신규 입력이 불가하고
+		          수정 가능 자료는 미확정 자료만 가능함으로
+		   *************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO  /*승인여부*/
+	          FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#     /*변동일*/
+	           AND ASST_NUMB = #ASST_NUMB#     /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#;    /*일련번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ' ' || #ASST_NAME# || '의 변동이력이\n\n' || '이미 승인 되었습니다. ' ||
+	                                           '수정이 불가 합니다!');
+	        END IF;
+	
+	        UPDATE FS_ASCHXM                 /*[자산변동이력]*/
+	           SET  ASCH_GUBN = #ASCH_GUBN#  /*변동구분[ASCH_GUBN]*/
+	               ,ASST_STAT = #ASST_STAT#  /*자산상태[ASST_STAT]*/
+	               ,CHBF_DEPT = #DEPT_CODE#  /*변경전부서코드*/
+	               ,CHBF_EMPL = #EMPL_NUMB#  /*변경전사원번호*/
+	               ,DEPT_CODE = #DEPT_CODE#  /*부서코드*/
+	               ,EMPL_NUMB = #EMPL_NUMB#  /*사원번호*/
+	               ,ACQU_ENDX = #ACQU_ENDX#  /*취득가_기말잔액*/
+	               ,DPCT_ENDX = #DPCT_ENDX#  /*충당금_기말잔액*/
+	               ,UNDP_BALE = #UNDP_BALE#  /*미상각잔액*/
+	               ,CHNG_AMOT = #CHNG_AMOT#  /*변동금액*/
+	               ,DSPS_AMOT = #DSPS_AMOT#  /*처분가액*/
+	               ,DSPS_GILS = #DSPS_GILS#  /*처분손익*/
+	               ,DPCT_GRDC = #DPCT_GRDC#  /*충당금가감액*/
+	               ,ACCT_INTL = #ACCT_INTL#  /*계정과목코드*/
+	               ,CUST_CODE = #CUST_CODE#  /*거래처코드*/
+	               ,RCGN_YSNO = #RCGN_YSNO#  /*승인여부*/
+	               ,APPV_DATE = #APPV_DATE#  /*승인일시*/
+	               ,APPR_EMPL = #APPR_EMPL#  /*승인자*/
+	               ,SLIP_NUMB = #SLIP_NUMB#  /*전표번호*/
+	               ,DESC_REMK = #DESC_REMK#  /*비고(100)*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	               ,VATX_AMNT = #VATX_AMNT#  /*부가세액*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#  /*변동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#  /*일련번호*/
+	           ;                        
+	
+	    END;
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 삭제 처리
+********************************************************************************/
+ -->
+	<delete id="FSMB0020.DELETE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0020.DELETE00.자산변동관리 삭제 처리*/
+			sRCGN_YSNO FS_ASCHXM.RCGN_YSNO%TYPE; /*변동이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          삭제 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO  /*승인여부*/
+	          FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#     /*변동일*/
+	           AND ASST_NUMB = #ASST_NUMB#     /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#;    /*일련번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ' ' || #ASST_NAME# || '의 변동이력이\n\n' || '이미 승인 되었습니다. ' ||
+	                                           '삭제가 불가 합니다!');
+	        END IF;
+	
+	        DELETE FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#   /*변동일*/
+	           AND ASST_NUMB = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#;  /*일련번호*/
+	                                  
+	    END;
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 변동확정 - 전표처리 분리 ,최초 자산등록시 자산등록화면에서 신규취득으로 update
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.PERMIT00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	       /*FSMB0020.PERMIT00.변동확정 - 전표처리 분리 ,최초 자산등록시 자산등록화면에서 신규취득으로 update*/
+			sRCGN_YSNO                 FS_ASCHXM.RCGN_YSNO%TYPE;   /*승인여부*/
+			sACTY_CODE                 VARCHAR2(15);   /*전표유형코드*/
+			iCNT                    DECIMAL(15,0);   /*상각여부*/
+	
+	    BEGIN
+	
+	        /***********************************************+
+	        | 1.변동 승인처리를 할수 있는 변동구분인지 체크 |
+	        +***********************************************/
+	        IF (#REF1_FILD# != 'ASCH' AND #ASCH_GUBN# != 'ACQU') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '승인할 수 있는 변동구분이 아닙니다.!!');
+	        END IF;
+	
+	        /*****************************+
+	        | 2.이미 승인된 자료인지 체크 |
+	        +*****************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASCHXM WHERE CHNG_DATE = #CHNG_DATE# AND ASST_NUMB = #ASST_NUMB# AND SEQN_NUMB = #SEQN_NUMB#;
+	
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '이미 승인된 자료가 존재합니다!!');
+	        END IF;
+	        
+	         /************************************+
+	        | 감가상각체크
+	        +************************************/
+            SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+             
+             IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동 승인확정 불가 합니다!');
+	        END IF;
+	
+	        /***************************************************************************************************************************************************+
+			|===================================================================================================================================================+
+	        |                                   3.변동구분에 따른 자산 마스터 업데이트 하기 및 전표유형 코드 정하기                                             |
+	        |===================================================================================================================================================+
+	        |               |        취득금액          |                         미상각잔액                             |     자산상태      |     상각상태      |
+	        |===================================================================================================================================================+
+	        | *.신 규 취 득 |     업데이트사항 없음    |                        업데이트사항 없음                       |       사용중      | 업데이트사항 없음 |
+	        | *.자본적 지출 |  원 취득금액 + 변동금액  |                    원 미상각잔액 + 변동금액                    | 업데이트사항 없음 | 업데이트사항 없음 |
+	        | *.매       각 |            0             |                                  0                             |      매각         |    미상각         |
+	        | *.부 분 매 각 |  원 취득금액 - 변동금액  |  ((원취득가-변동금액) - (원취득가-원미상각잔액) - 충당금가감액)| 업데이트사항 없음 | 업데이트사항 없음 |
+	        | *.폐       기 |            0             |                                  0                             |      폐기         |    미상각         |
+	        | *.부 분 폐 기 |  원 취득금액 - 변동금액  |  ((원취득가-변동금액) - (원취득가-원미상각잔액) - 충당금가감액)| 업데이트사항 없음 | 업데이트사항 없음 |
+	        | *.불       용 |     업데이트사항 없음    |                       업데이트사항 없음                        |      불용         | 업데이트사항 없음 |
+	        | *.기       증 |            0             |                                  0                             |      기증         |    미상각         |
+	        |===================================================================================================================================================+
+	        |                                                                                                                                                   |
+	        +***************************************************************************************************************************************************/
+	
+	        IF (#ASCH_GUBN# = 'ACQU') THEN        /* 신규취득[자산등록화면에서 취득시 진행]*/
+	
+	            UPDATE FS_ASSTXM A                          /*[자산마스터]*/
+	               SET ASST_STAT = 'USIG'                   /*상각상태[DPCT_STAT]*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;            /*자산번호*/
+	
+	            sACTY_CODE := 'FS001';                      /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'CAPI') THEN     /* 자본적 지출*/
+	
+	            UPDATE FS_ASSTXM A                            /*[자산마스터]*/
+	               SET ACQU_PRIC = A.ACQU_PRIC + #CHNG_AMOT#  /*취득금액*/
+	                   ,UNDP_BALE = A.UNDP_BALE + #CHNG_AMOT# /*미상각잔액*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS005';                        /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'SAAL') THEN  /* 매각*/
+	
+	            UPDATE FS_ASSTXM                             /*[자산마스터]*/
+	               SET  /*ACQU_PRIC = 0                        취득금액//2014.12 매각해도 최초 취득금액확인을 위함.*/
+	                    UNDP_BALE = 0                        /*미상각잔액*/
+	                   ,ASST_STAT = #ASST_STAT#               /*자산상태[ASST_STAT]*/
+	                   ,DPCT_STAT = 'NOTG'                   /*상각상태[DPCT_STAT]*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS006';                       /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'SAPA') THEN  /* 부분매각*/
+	
+	            UPDATE FS_ASSTXM A                           /*[자산마스터]*/
+	               SET  ACQU_PRIC = A.ACQU_PRIC - #CHNG_AMOT# /*취득금액*/
+	                   ,UNDP_BALE = ((A.ACQU_PRIC - #CHNG_AMOT#) - (A.ACQU_PRIC - A.UNDP_BALE) - #DPCT_GRDC#) /*미상각잔액*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS006';                       /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'DSAL') THEN  /* 폐기*/
+	
+	            UPDATE FS_ASSTXM                             /*[자산마스터]*/
+	               SET  /*ACQU_PRIC = 0                        취득금액*/
+	                    UNDP_BALE = 0                        /*미상각잔액*/
+	                   ,ASST_STAT = #ASST_STAT#               /*자산상태[ASST_STAT]*/
+	                   ,DPCT_STAT = 'NOTG'                   /*상각상태[DPCT_STAT]*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS007';                       /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'DSPT') THEN  /* 부분폐기*/
+	
+	            UPDATE FS_ASSTXM A                           /*[자산마스터]*/
+	               SET  ACQU_PRIC = A.ACQU_PRIC - #CHNG_AMOT# /*취득금액*/
+	                   ,UNDP_BALE = ((A.ACQU_PRIC - #CHNG_AMOT#) - (A.ACQU_PRIC - A.UNDP_BALE) - #DPCT_GRDC#) /*미상각잔액*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS007';                       /*전표유형코드*/
+	
+	        ELSIF (#ASCH_GUBN# = 'USLS') THEN  /* 불용(전표처리 안 함) */
+	
+	            UPDATE FS_ASSTXM                             /*[자산마스터]*/
+	               SET  ASST_STAT = #ASST_STAT#               /*자산상태[ASST_STAT]*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	        ELSIF (#ASCH_GUBN# = 'DONA') THEN  /* 기증*/
+	
+	            UPDATE FS_ASSTXM                             /*[자산마스터]*/
+	               SET  /*ACQU_PRIC = 0                        취득금액*/
+	                    UNDP_BALE = 0                        /*미상각잔액*/
+	                   ,ASST_STAT = #ASST_STAT#               /*자산상태[ASST_STAT]*/
+	                   ,DPCT_STAT = 'NOTG'                   /*상각상태[DPCT_STAT]*/
+	             WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	            sACTY_CODE := 'FS008';                       /*전표유형코드*/
+	
+	        END IF;
+	
+	
+	        /*****************************+
+	        |  6.자산변동 내역 업데이트   |
+	        +*****************************/
+	        UPDATE FS_ASCHXM                  /*[자산변동이력]*/
+	           SET  RCGN_YSNO = '1'           /*승인여부*/
+	               ,APPV_DATE = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')   /*승인일시*/
+	               ,APPR_EMPL = #UPDT_USID#   /*승인자*/
+	               ,ACCT_UNIT = #ACCT_UNIT#   /*회계단위[ACCT_UNIT]*/
+	               ,SLIP_NUMB = NULL          /*전표번호*/
+	               ,SLIP_LINE = NULL          /*전표순번*/
+	               /*,SLIP_NUMB = sSLIP_NUMB*//*전표번호*/
+	               /*,SLIP_LINE = '1'       *//*전표순번*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#   /*변동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#   /*일련번호*/
+	           ;
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 확정취소
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.CANCEL00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0020.CANCEL00. 확정취소 분리*/
+			sRCGN_YSNO                  FS_ASCHXM.RCGN_YSNO%TYPE;   /*승인여부*/
+	    	iCNT                       DECIMAL(15,0);              /*상각여부*/
+	    	sACCT_UNIT                  FS_ASSTXM.ACCT_UNIT%TYPE;   /*회계단위[ACCT_UNIT]*/
+	    	sASST_STAT                  FS_ASCHXM.ASST_STAT%TYPE;   /*원복자산상태[ASST_STAT]*/
+	    	sASCH_GUBN                  FS_ASCHXM.ASCH_GUBN%TYPE;   /*원복자산변동구분*/
+	
+	    BEGIN
+	
+	        /***************************************************+
+	        | 1.변동 승인취소처리를 할수 있는 변동구분인지 체크 |
+	        +***************************************************/
+	        IF (#REF1_FILD# != 'ASCH' AND #ASCH_GUBN# != 'ACQU') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '승인취소할 변동구분이 아닙니다.!!');
+	        END IF;
+	
+	        /*************************+
+	        | 2. 미승인 자료인지 체크 |
+	        +*************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASCHXM WHERE CHNG_DATE = #CHNG_DATE# AND ASST_NUMB = #ASST_NUMB# AND SEQN_NUMB = #SEQN_NUMB#;
+	
+	        IF (sRCGN_YSNO = '0') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '이미 승인되지 않은 자료가 존재합니다!!');
+	        END IF;
+	
+	        /************************************+
+	        | 3. 해당년월의 감가상각 데이터 체크 |
+	        +************************************/
+            SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+	        
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동 승인취소가 불가 합니다!');
+	        END IF;
+	
+	        /**********************************************************+
+	        | 4. 승인취소하려는 자산에 대한 이후 내역(변동, 이동) 체크 |
+	        +**********************************************************/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /* 똑같은 자산의 */
+	           AND SEQN_NUMB > #SEQN_NUMB#;  /* 현재 시퀀스보다 큰 시퀸스(이후의 변동입력된 것)*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 승인 이후의 내역(변동,이동)이 존재합니다.\n\n변동 승인취소가 불가 합니다!');
+	        END IF;
+	
+	        /**************************************************+
+	        | 5. 승인취소하려는 자산에 대한 이후 분할내역 체크 |
+	        +**************************************************/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*똑같은 자산이*/
+	           AND SPLT_DATE > #CHNG_DATE#;  /*변동일 이후에 분할이력이 있으면 안됨*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 승인 이후의 분할내역이 존재합니다.\n\n변동 승인취소가 불가 합니다!');
+	        END IF;
+	
+	
+	        /***********************************************************************************************+
+	        | 6. 원복할 자산상태 구하기(예외 : 신규취득은 전데이터가 없기때문에 자산상태를 대기로 넣어준다) |
+	        +***********************************************************************************************/
+	
+	        IF #ASCH_GUBN# = 'ACQU' THEN
+	
+	            sASST_STAT := 'WAIT';
+	
+	        ELSE
+	
+	            SELECT A.ASCH_GUBN, A.ASST_STAT INTO sASCH_GUBN, sASST_STAT
+	              FROM FS_ASCHXM A
+	             WHERE A.ASST_NUMB = #ASST_NUMB#
+	               AND A.SEQN_NUMB = (SELECT MAX(B.SEQN_NUMB) FROM FS_ASCHXM B WHERE B.ASST_NUMB = #ASST_NUMB# AND B.SEQN_NUMB < #SEQN_NUMB#)
+	               AND A.ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD  WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD != 'MOVE')     /* 자산구분: 이동인것 제외*/
+	               ;
+	            IF sASCH_GUBN = 'ACQU' THEN /* 전데이터가 신규취득이면 자산상태가 대기임으로 사용중으로 바꿔준다.*/
+	
+	                sASST_STAT := 'USIG';
+	
+	            END IF;
+	
+	        END IF;
+	
+	        /************************+
+	        | 7. 자산상태 원복해주기 |
+	        +************************/
+	        UPDATE FS_ASSTXM                              /*[자산마스터]*/
+	           SET  ACQU_PRIC = #ACQU_ENDX#               /*취득금액*/
+	               ,UNDP_BALE = #UNDP_BALE#               /*미상각잔액*/
+	               ,ASST_STAT = sASST_STAT                /*자산상태[ASST_STAT]*/
+	               ,DPCT_STAT = 'INPR'                    /*상각상태[DPCT_STAT] INPR:상각중*/
+	         WHERE ASST_NUMB  = #ASST_NUMB#;              /*자산번호*/
+	
+	
+	        /*****************************+
+	        |  9.자산변동 내역 업데이트   |
+	        +*****************************/
+	        UPDATE FS_ASCHXM                /*[자산변동이력]*/
+	           SET  RCGN_YSNO = '0'         /*승인여부*/
+	               ,APPV_DATE = NULL        /*승인일시*/
+	               ,APPR_EMPL = NULL        /*승인자*/
+	               ,ACCT_UNIT = NULL        /*회계단위[ACCT_UNIT]*/
+	               ,SLIP_NUMB = NULL        /*전표번호*/
+	               ,SLIP_LINE = NULL        /*전표순번*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#  /*변동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#; /*일련번호*/
+	
+	    END;
+
+		
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산등록 전표 헤더처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.PROC00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		
+		CURSOR CUR_FS_ASCHXM (
+			             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+			            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+			            ,P_SLIP_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+			            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+			        ) IS
+			          SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+			                   ,A.CHNG_DATE     /*변동일   PK2*/
+			                   ,A.SEQN_NUMB     /*일련번호 PK3*/
+			                   ,A.CUST_CODE     /*구매처코드*/
+			                   ,A.DEPT_CODE     /*부서코드*/
+			                   ,A2.ASST_NAME    /*자산명*/
+			                   ,DE.ACCT_GUBN    /* 사업장*/
+			                   ,B.DPCT_ACT1     /*자산계정과목*/
+			                   ,B.DPCT_ACT2     /*상각누계계정과목*/
+			                   ,B.DPCT_ACT5     /*자산처분 이익계정*/
+			                   /*,B.DPCT_ACT6 *//*자산처분 손실계정*/
+			                   /* 기증: 기부금-비지정기부금*/
+			                   ,DECODE(A.ASCH_GUBN, 'DONA', '7214003', B.DPCT_ACT6) AS DPCT_ACT6      /*자산처분 손실계정*/
+			                   ,NVL(A.UNDP_BALE, 0) AS  UNDP_BALE    /*미상각잔액*/
+			                   ,NVL(A.ACQU_ENDX, 0) AS  ACQU_ENDX    /*취득가_기말잔액*/
+			                   ,NVL(A.DSPS_GILS, 0) AS  DSPS_GILS    /*처분손익*/
+			                   ,NVL(A.DPCT_ENDX, 0) AS  DPCT_ENDX    /*충당금_기말잔액*/
+			                   ,NVL(A.CHNG_AMOT, 0) AS  CHNG_AMOT    /*변동금액*/
+			                   ,NVL(A.DSPS_AMOT, 0) AS  DSPS_AMOT    /*처분가액*/
+			                   ,NVL(A.DPCT_GRDC, 0) AS  DPCT_GRDC    /*충당금가감액*/
+			                   ,A.DESC_REMK     /*[대표적요]*/
+			                   ,A.SLIP_NUMB     /*전표번호*/
+			                   ,A.ASCH_GUBN     /*변동구분 // 매각일경우 매출부가세 차,대변 설정을 위함 */
+			                   ,'1161001' AS ASCH_GUBN_D      /*차변*/
+			                   ,'3164001' AS ASCH_GUBN_C      /*대변*/
+			                   ,NVL(A.VATX_AMNT, 0) AS  VATX_AMNT   /*부가세액*/
+			            FROM FS_ASCHXM A
+			                  INNER JOIN FS_ASSTXM A2
+			                      ON A.ASST_NUMB = A2.ASST_NUMB
+			                  INNER JOIN FS_ASCLXM B
+			                      ON B.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+			                  LEFT JOIN VI_DEPTXM DE
+			                      ON  DE.DEPT_CODE = A.DEPT_CODE
+			                INNER JOIN TM_CODEXD E
+			                        ON A.ASCH_GUBN = E.COMD_CODE
+			                       AND E.COMM_CODE = 'ASCH_GUBN'
+			                       AND E.REF1_FILD != 'MOVE'
+			            WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+			                AND A.ASST_NUMB = P_ASST_NUMB          /*자산번호*/
+			                AND A.CHNG_DATE = P_SLIP_DATE          /*변동일*/
+			                AND A.SEQN_NUMB = P_SEQN_NUMB          /*일련번호*/
+			               
+			
+			        ;
+			
+			        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+			        
+			
+			        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+			        sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+			        sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /*전표번호*/
+			        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+			        sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;   /*전표순번*/
+			        
+			        sCOND_CODE      TA_ACCTXD.COND_CODE%TYPE;	
+	                sCOND_VACD      FS_ASSTXM.CUST_CODE%TYPE;	
+	                
+	                
+	                sSEQ            DECIMAL(15,0);
+			
+	    BEGIN
+	
+	       
+			     
+			        BEGIN
+			            /*[자산등록정보]*/
+			            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+			                               ,#ASST_NUMB#     /*자산번호*/
+			                               ,#CHNG_DATE#     /*변동일=전표일자*/
+			                               ,#SEQN_NUMB#     /*일련번호*/
+			                               );         
+			            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+			            CLOSE CUR_FS_ASCHXM;
+			
+			            EXCEPTION
+			                WHEN OTHERS THEN
+			                    RAISE_APPLICATION_ERROR(-20000, '자산등록 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+			        END;
+			        
+			        
+	       
+				     BEGIN
+				           
+				           	SELECT TO_CHAR(SYSDATE, 'YYYYMMDD')
+				           	INTO  sSLIP_DATE
+				           	FROM DUAL; 
+				         
+				         EXCEPTION
+				                WHEN OTHERS THEN
+				                    RAISE_APPLICATION_ERROR(-20000, '날자 파라메터 에러 '||chr(13)||chr(10)||SQLERRM);
+				         
+				     END;
+				     
+				        BEGIN
+	           
+				          	SELECT MIN(A.EMPL_NUMB) 
+				          	INTO   sEMPL_NUMB
+				          	FROM HR_MASTXM A WHERE A.DEPT_CODE = #DEPT_CODE#;
+				          	
+				        EXCEPTION
+				                WHEN NO_DATA_FOUND THEN
+				                    RAISE_APPLICATION_ERROR(-20000, '입력자에 대한 정보를 찾을 수 없습니다.'||chr(13)||chr(10)||SQLERRM);
+				        END;
+				        
+				        
+				        BEGIN
+						        SELECT TO_NUMBER(NVL(MAX(SUBSTR(SOUS_LNKY, 22)), '0')) + 1
+								    INTO sSEQ
+									FROM TA_SLIPXM A
+								 WHERE SLIP_GUBN = 'FS0011'
+								   AND ACCT_DATE = sSLIP_DATE; 
+				        
+				        
+				        EXCEPTION
+				                WHEN NO_DATA_FOUND THEN
+				                    RAISE_APPLICATION_ERROR(-20000, '출처연결정보.순번추출 에러'||chr(13)||chr(10)||SQLERRM);
+				        END;
+	         
+	         
+				     
+				     
+	  IF rFS_ASCHXM.ASCH_GUBN != 'CAPI' THEN
+	         
+	       
+	        sTITL_NAME := '[자산변동관리]' || rFS_ASCHXM.ASST_NAME;
+	        
+        /*=============================================================
+	            전표 > 1 HEADER 추가
+        =============================================================*/
+        	    BEGIN
+        	    
+        	      
+				        
+					PKG_FAMIFSLIP.SP_MASTER_SAVE(#SYST_LNCD#,      /* ●시스템언어코드*/
+												 #UPDT_USID#,      /* ●수정작업자*/
+												 #ACCT_UNIT#,      /* ●회계단위 */
+												 #ACCT_GUBN#,      /* ●회계구분_사업장 */
+												 sSLIP_DATE,       /* ●전표일자(회계일자) */ 
+												 'FS002',          /* SLIP_GUBN*/      /* ●전표유형구분 */
+												 sTITL_NAME,       /* ●제목 */
+												 sEMPL_NUMB,      /* ●사원번호 */
+												 rFS_ASCHXM.DEPT_CODE,	   /* ●부서코드 */ 						 
+												 sSLIP_DATE || '-' || #ASST_NUMB# || '-' || sSEQ,   /* ●출처연결키 */
+												 NULL,
+												 NULL,
+												 NULL,
+												 NULL,
+												 NULL,
+												 sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+
+
+            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'HEADER 추가 에러'||chr(13)||chr(10)||SQLERRM);
+	        END;	
+	        
+	       
+	
+	       
+	        nSLIP_LINE := 1; /* 라인넘버 1 로 시작 */
+	       
+	        /*===============================================================
+	            2-1-1. 자산등록 전표 > LINE 추가 > 관리계정과목(차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.UNDP_BALE > 0 THEN                /*미상각잔액*/
+	             
+	             
+	             
+	
+	            BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT2,  /* 계정코드  상각누계계정과목 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.DPCT_ENDX,
+	                                        rFS_ASCHXM.DPCT_ENDX,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 추가 에러 차변 상각누계계정과목 '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	                                        
+	            
+	          END IF;
+	          
+	        /*===============================================================
+	            2-1-2. 자산등록 전표 > LINE 추가 > 미지급금고정자산(대변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ACQU_ENDX > 0 THEN            /*취득가_기말잔액*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT1,  /* 자산계정과목 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.ACQU_ENDX,
+	                                        rFS_ASCHXM.ACQU_ENDX,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 추가 에러 대변 자산계정과목'||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+	          
+            END IF;
+            
+            
+          /*===============================================================
+	            2-1-3. 자산등록 전표 > LINE 추가 > 자산처분이익(대변) 또는 손실(차변)
+	      ===============================================================*/
+	        IF rFS_ASCHXM.DSPS_GILS > 0 THEN                /* 처분손익 금액*/
+	            
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT5,  /* 자산처분 이익계정 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.DSPS_GILS,
+	                                        rFS_ASCHXM.DSPS_GILS,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 추가 에러 대변 자산처분 이익계정 '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	        ELSE
+ 	        
+ 	          nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT6,  /* 자산처분 손실 계정 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        ABS(rFS_ASCHXM.DSPS_GILS),
+	                                        ABS(rFS_ASCHXM.DSPS_GILS),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 추가 에러 대변 자산처분 손실계정 '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+	          
+	          
+	                 
+	          
+            END IF;
+	            
+	            
+	        /*===============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-1. 자산등록 전표 > LINE 추가 > 미수금-고정자산매각대(차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.DSPS_AMOT > 0  THEN                /*매각 & 처분가액>0 인경우*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.ASCH_GUBN_D,  /* 수금-고정자산매각대(차변) */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.DSPS_AMOT + rFS_ASCHXM.VATX_AMNT,
+	                                        rFS_ASCHXM.DSPS_AMOT + rFS_ASCHXM.VATX_AMNT,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 미수금-고정자산매각대(차변) '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+	          
+            END IF;
+	            	        	
+	        /*===============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-2. 자산등록 전표 > LINE 추가 > 부가세예수금-매출세액(대변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.VATX_AMNT > 0 THEN      /* 매각 & 부가세액>0 인경우만*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	            BEGIN
+	            
+	             PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT1,  /* 부가세예수금-매출세액(대변) */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.VATX_AMNT,
+	                                        rFS_ASCHXM.VATX_AMNT,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 부가세예수금-매출세액(대변) '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+	          
+            END IF;
+            /*=============================================================
+		       4. 부가세 
+		    ===============================================================*/
+		    /* IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.VATX_AMNT> 0 THEN
+		     
+		      nSLIP_LINE := nSLIP_LINE - 1;
+		            BEGIN 
+		       
+		            PKG_FAMIFSLIP.SP_LINEVAT_SAVE(
+								          SYST_LNCD,
+						                  UPDT_USID,
+						                  sSLIP_NUMB, 
+						                  lpad(nSLIP_LINE , '4', '0'),
+						      			  '',         
+						      			  '',         
+						                  sSLIP_DATE, 
+						                  'FA200010', 
+						                  'FA210010', 
+						                  'FA220010', 
+						                  '',        
+									      0,         
+									      rFS_ASCHXM.CUST_CODE,      
+									      rFS_ASCHXM.ASST_NAME,      
+									      rFS_ASCHXM.DSPS_AMOT,      
+									      rFS_ASCHXM.VATX_AMNT,      
+									      rFS_ASCHXM.DSPS_AMOT + rFS_ASCHXM.VATX_AMNT,   
+									      rFS_ASCHXM.ASST_NAME,         
+									      0,             
+									      '',            
+									      ''                                            
+		                               );
+        
+	       
+	                 EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '부가세 저잔 에러'||chr(13)||chr(10)||SQLERRM);
+ 	                END;
+	       
+	       END IF;*/
+	       
+	       
+            
+             /*=============================================================
+		       5. FINISH 
+		    ===============================================================*/
+			/*  IF rFS_ASCHXM.ACQU_PRIC > 0 THEN*/
+			     
+					   BEGIN
+					    
+				         PKG_FAMIFSLIP.SP_FINISH(
+						        #SYST_LNCD# /* ●시스템언어코드*/
+						       ,#UPDT_USID#   /* ●수정작업자*/
+							   ,sSLIP_NUMB   /* ●전표번호 */
+						    );
+						    
+					   EXCEPTION
+		               WHEN OTHERS THEN
+		                   RAISE_APPLICATION_ERROR(-20000, 'FINISH 에러'||chr(13)||chr(10)||SQLERRM);
+	 	               END;
+		       
+		      /* END IF;*/
+    
+           
+	         
+	         
+	        /*======================================================================================
+	                6. 자산등록 전표번호 업데이트[
+	                     	   전표 마지막행에 TB 업데이트
+            ======================================================================================*/	         
+	         IF rFS_ASCHXM.UNDP_BALE  > 0 THEN
+	         
+                    UPDATE FS_ASCHXM                /*[자산변동이력]*/
+	                   SET  SLIP_NUMB = sSLIP_NUMB  /*전표번호*/
+	                       ,SLIP_LINE = lpad(nSLIP_LINE , '4', '0')  /*전표순번*/
+	                       ,UPDT_DATE = SYSDATE           /*수정일시*/
+	                       ,UPDT_USID = #UPDT_USID#      /*수정자*/
+	                 WHERE ASST_NUMB  = #ASST_NUMB#      /*자산번호*/	                   
+					   AND CHNG_DATE  = #CHNG_DATE#     /*변동일=전표일자*/
+					   AND SEQN_NUMB  = #SEQN_NUMB#
+					   ;                 
+			                             
+			                                
+		    END IF;
+	         
+	         
+            
+         END IF;   
+	        
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산등록 전표 처리[1건 전표처리임]
+                  이익[폐기, 기증],
+                  매각// ASCH_GUBN=SAAL 매각일경우 기존분개로직+ 매출부가세 추가
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.PROC01" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0020.PROC01.자산등록 전표 처리*/
+			CURSOR CUR_FS_ASCHXM (
+			             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+			            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+			            ,P_SLIP_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+			            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+			        ) IS
+			            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+			                   ,A.CHNG_DATE     /*변동일   PK2*/
+			                   ,A.SEQN_NUMB     /*일련번호 PK3*/
+			                   ,A.CUST_CODE     /*구매처코드*/
+			                   ,A.DEPT_CODE     /*부서코드*/
+			                   ,A2.ASST_NAME    /*자산명*/
+			                   ,DE.ACCT_GUBN    /* 사업장*/
+			                   ,B.DPCT_ACT1     /*자산계정과목*/
+			                   ,B.DPCT_ACT2     /*상각누계계정과목*/
+			                   ,B.DPCT_ACT5     /*자산처분 이익계정*/
+			                   /*,B.DPCT_ACT6 *//*자산처분 손실계정*/
+			                   /* 기증: 기부금-비지정기부금*/
+			                   ,DECODE(A.ASCH_GUBN, 'DONA', DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','7216078','7214003'), B.DPCT_ACT6) AS DPCT_ACT6      /*자산처분 손실계정*/
+			                   ,NVL(A.UNDP_BALE, 0) AS  UNDP_BALE    /*미상각잔액*/
+			                   ,NVL(A.ACQU_ENDX, 0) AS  ACQU_ENDX    /*취득가_기말잔액*/
+			                   ,NVL(A.DSPS_GILS, 0) AS  DSPS_GILS    /*처분손익*/
+			                   ,NVL(A.DPCT_ENDX, 0) AS  DPCT_ENDX    /*충당금_기말잔액*/
+			                   ,NVL(A.CHNG_AMOT, 0) AS  CHNG_AMOT    /*변동금액*/
+			                   ,NVL(A.DSPS_AMOT, 0) AS  DSPS_AMOT    /*처분가액*/
+			                   ,NVL(A.DPCT_GRDC, 0) AS  DPCT_GRDC    /*충당금가감액*/
+			                   ,A.DESC_REMK     /*[대표적요]*/
+			                   ,A.SLIP_NUMB     /*전표번호*/
+			                   ,A.ASCH_GUBN     /*변동구분 // 매각일경우 매출부가세 차,대변 설정을 위함 */
+			                   ,DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','1117029','1161001') AS ASCH_GUBN_D      /*차변*/
+			                   ,DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','3122018','3164001') AS ASCH_GUBN_C      /*대변*/
+			                   ,NVL(A.VATX_AMNT, 0) AS  VATX_AMNT   /*부가세액*/
+			            FROM FS_ASCHXM A
+			                  INNER JOIN FS_ASSTXM A2
+			                      ON A.ASST_NUMB = A2.ASST_NUMB
+			                  INNER JOIN FS_ASCLXM B
+			                      ON B.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+			                  LEFT JOIN VI_DEPTXM DE
+			                      ON  DE.DEPT_CODE = A.DEPT_CODE
+			                INNER JOIN TM_CODEXD E
+			                        ON A.ASCH_GUBN = E.COMD_CODE
+			                       AND E.COMM_CODE = 'ASCH_GUBN'
+			                       AND E.REF1_FILD != 'MOVE'
+			            WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+			                AND A.ASST_NUMB = P_ASST_NUMB          /*자산번호*/
+			                AND A.CHNG_DATE = P_SLIP_DATE          /*변동일*/
+			                AND A.SEQN_NUMB = P_SEQN_NUMB          /*일련번호*/
+			
+			        ;
+			
+			        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+			        SLIP_ROW        TA_TEMP_SLIPNT%ROWTYPE;         /*팝업전표를 위함*/
+			
+			        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+			        sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;   /*입력자*/
+			        sDEPT_CODE      TA_SLIPXM.DEPT_CODE%TYPE;   /*입력부서*/
+			        sACCT_GUBN      TA_SLIPXM.ACCT_GUBN%TYPE;   /*사업장*/
+			        sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+			        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+			
+	
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산등록 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산등록정보]*/
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#SLIP_DATE#     /*변동일=전표일자*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산등록 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	        	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산등록 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 2. 자산등록 전표 생성
+	        ======================================================================================*/
+	
+	        /*===============================================================
+	            2-1.자산등록 전표 > LINE 추가[차>대>차변 순서대로 SLIP_LINE저장요망]
+	        ===============================================================*/
+	        nSLIP_LINE := 0;
+	
+	        /*===============================================================
+	            2-1-1. 자산등록 전표 > LINE 추가 > 관리계정과목(차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.UNDP_BALE > 0 THEN                /*미상각잔액*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');       /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;         /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT2;         /* 계정코드  상각누계계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;         /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'D';                          /* 차대구분 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                            /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.DPCT_ENDX;         /* 충당금기말 잔액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                            /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                           /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                      /* 상대전표번호 ? */
+	            SLIP_ROW.OSLI_LINE             := '';                      /* 상대전표순번 ? */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;                 /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;                 /* 거래처코드 */
+	            /*       SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;    */             /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                             /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                             /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';           */                  /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	
+	            /*KEY값은 한번만 설정*/
+	            SLIP_ROW.TABL_KEY1             := rFS_ASCHXM.ASST_NUMB;                   /* 키값 자산번호 PK1*/
+	            SLIP_ROW.TABL_KEY2             := rFS_ASCHXM.CHNG_DATE;                   /* 키값 변동일   PK2 */
+	            SLIP_ROW.TABL_KEY3             := rFS_ASCHXM.SEQN_NUMB;                   /* 키값 승일련번호 PK3*/
+	            /*SLIP_ROW.TABL_KEY4             := iAPPR_GUBN ||iUSEX_DATE ; */    /* 키값 승인구분 승인일자*/
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	            /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*===============================================================
+	            2-1-2. 자산등록 전표 > LINE 추가 > 미지급금고정자산(대변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ACQU_ENDX > 0 THEN            /*취득가_기말잔액*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');        /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;          /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT1;         /* 자산계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;           /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'C';                             /* 차대구분 대변 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.ACQU_ENDX;          /* 취득가_기말잔액(취득금액) */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                              /* 상대전표번호 */
+	            SLIP_ROW.OSLI_LINE             := '';                              /* 상대전표순번 */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;          /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;           /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;      */           /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                     /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                     /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';            */                 /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	            /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /*SP_TMP_SLIP_ROW_INSERT_S 의 필수값이 한정되어 있어 추가적인건 UPDATE_S로 따로 빼서 업뎃*/
+	            /*SP_TMP_SLIP_ROW_UPDATE_S(iSLIP_LINE, '0001', iBABR_CODE, SF_GET_BABRNAME(iBABR_CODE)); *//* 은행지점코드  */
+	
+	        END IF;
+	
+	        /*RAISE_APPLICATION_ERROR(-20000, '업데이트 iSLIP_NUMB: '|| iSLIP_NUMB);*/
+	
+	     /*===============================================================
+	            2-1-3. 자산등록 전표 > LINE 추가 > 자산처분손실-- 이익계정-- (대변)
+	      ===============================================================*/
+	        IF rFS_ASCHXM.DSPS_GILS > 0 THEN                /* 처분손익 금액*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');        /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;          /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT5;         /* 자산처분 이익계정 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;           /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'C';                             /* 차대구분 대변 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.DSPS_GILS;          /* 처분손익 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                              /* 상대전표번호 */
+	            SLIP_ROW.OSLI_LINE             := '';                              /* 상대전표순번 */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;          /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;           /* 거래처코드 */
+	            /*       SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;  */               /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                     /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                     /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';            */                 /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	            /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*===============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-1. 자산등록 전표 > LINE 추가 > 미수금-고정자산매각대(차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.DSPS_AMOT > 0 THEN                /*매각 & 처분가액>0 인경우*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');       /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;                   /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.ASCH_GUBN_D;        /* 계정코드  미수금-고정자산매각 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;                   /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'D';                             /* 차대구분 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.DSPS_AMOT + rFS_ASCHXM.VATX_AMNT ;       /* 처분가액+매출부가세 잔액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                      /* 상대전표번호 ? */
+	            SLIP_ROW.OSLI_LINE             := '';                      /* 상대전표순번 ? */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;                 /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;                 /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;   */              /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                             /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                             /* 계좌번호 */
+	         /*        SLIP_ROW.ACNT_MANM             := '';               */              /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	            /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*===============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-2. 자산등록 전표 > LINE 추가 > 부가세예수금-매출세액(대변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.VATX_AMNT > 0 THEN      /* 매각 & 부가세액>0 인경우만*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');        /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;          /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT1;         /* 자산계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;           /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'C';                             /* 차대구분 대변 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.VATX_AMNT;          /* 매출부가세액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                              /* 상대전표번호 */
+	            SLIP_ROW.OSLI_LINE             := '';                              /* 상대전표순번 */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;           /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := rFS_ASCHXM.DPCT_ACT5;           /* 적요3 (2015.02.27.PIH : 발생계정과목을 임시로 보낸다!) */
+	
+	            SLIP_ROW.EVID_DOCU             := 'FA180010';                     /* 증빙종류 세금계산서*/
+	            SLIP_ROW.VATX_GUBN             := 'FA200020';                     /* 매입매출구분 매출  */
+	            SLIP_ROW.VATX_TYPE             := 'FA210010';                     /* 부가세종류 과세*/
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분  */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '0';                             /* 전자발행여부 0-미발행 */
+	            SLIP_ROW.TRNS_DATE             := rFS_ASCHXM.CHNG_DATE;          /* 발행일자=변동일자 */
+	            SLIP_ROW.SUPP_AMNT             := rFS_ASCHXM.CHNG_AMOT;            /* 변동금액=공급가액 */
+	            SLIP_ROW.VATX_AMNT             := rFS_ASCHXM.VATX_AMNT;           /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := rFS_ASCHXM.ASST_NAME;           /* 품목 */
+	            SLIP_ROW.VATX_REMK             := rFS_ASCHXM.DESC_REMK;          /* 적요 */
+	
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;           /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;       */          /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                     /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                     /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';             */                /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	            /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /*SP_TMP_SLIP_ROW_INSERT_S 의 필수값이 한정되어 있어 추가적인건 UPDATE_S로 따로 빼서 업뎃*/
+	            /*SP_TMP_SLIP_ROW_UPDATE_S(iSLIP_LINE, '0001', iBABR_CODE, SF_GET_BABRNAME(iBABR_CODE));*/ /* 은행지점코드  */
+	
+	        END IF;
+	
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산등록 전표 처리[1건 전표처리임]
+                  손실 [폐기, 기증]
+                        매각// ASCH_GUBN=SAAL 매각일경우 기존분개로직+ 매출부가세 추가
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.PROC02" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0020.PROC02.자산등록 전표 처리*/
+			CURSOR CUR_FS_ASCHXM (
+			             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+			            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+			            ,P_SLIP_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+			            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+			        ) IS
+			            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+			                   ,A.CHNG_DATE     /*변동일   PK2*/
+			                   ,A.SEQN_NUMB     /*일련번호 PK3*/
+			                   ,A.CUST_CODE     /*구매처코드*/
+			                   ,A.DEPT_CODE     /*부서코드*/
+			                   ,A2.ASST_NAME    /*자산명*/
+			                   ,DE.ACCT_GUBN    /* 사업장*/
+			                   ,B.DPCT_ACT1     /*자산계정과목*/
+			                   ,B.DPCT_ACT2     /*상각누계계정과목*/
+			                   ,B.DPCT_ACT5     /*자산처분 이익계정*/
+			                   /*,B.DPCT_ACT6*/     /*자산처분 손실계정*/
+			                   ,DECODE(A.ASCH_GUBN, 'DONA', DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','7216078','7214003'), B.DPCT_ACT6) AS DPCT_ACT6      /*자산처분 손실계정*/
+			                   ,NVL(A.UNDP_BALE, 0) AS UNDP_BALE     /*미상각잔액*/
+			                   ,NVL(A.ACQU_ENDX, 0) AS ACQU_ENDX     /*취득가_기말잔액*/
+			                   ,NVL(A.DSPS_GILS, 0) AS DSPS_GILS     /*처분손익*/
+			                   ,NVL(A.DPCT_ENDX, 0) AS DPCT_ENDX     /*충당금_기말잔액*/
+			                   ,NVL(A.CHNG_AMOT, 0) AS CHNG_AMOT     /*변동금액*/
+			                   ,NVL(A.DSPS_AMOT, 0) AS DSPS_AMOT     /*처분가액*/
+			                   ,NVL(A.DPCT_GRDC, 0) AS DPCT_GRDC     /*충당금가감액*/
+			                   ,A.DESC_REMK     /*[대표적요]*/
+			                   ,A.SLIP_NUMB     /*전표번호*/
+			                   ,A.ASCH_GUBN     /*변동구분 // 매각일경우 매출부가세 차,대변 설정을 위함*/
+			                   ,DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','1117029','1161001') AS ASCH_GUBN_D      /*차변*/
+			                   ,DECODE(SUBSTR(#SLIP_DATE#,1,4),'2014','3122018','3164001') AS ASCH_GUBN_C      /*대변*/
+			                   ,NVL(A.VATX_AMNT, 0) AS  VATX_AMNT   /*부가세액*/
+			            FROM FS_ASCHXM A
+			                  INNER JOIN FS_ASSTXM A2
+			                      ON A.ASST_NUMB = A2.ASST_NUMB
+			                  INNER JOIN FS_ASCLXM B
+			                      ON B.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+			                  LEFT JOIN VI_DEPTXM DE
+			                      ON  DE.DEPT_CODE = A.DEPT_CODE
+			                INNER JOIN TM_CODEXD E
+			                        ON A.ASCH_GUBN = E.COMD_CODE
+			                       AND E.COMM_CODE = 'ASCH_GUBN'
+			                       AND E.REF1_FILD != 'MOVE'
+			            WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+			                AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+			                AND A.CHNG_DATE = P_SLIP_DATE           /*변동일*/
+			                AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/
+			
+			        ;
+			
+			        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+			        SLIP_ROW        TA_TEMP_SLIPNT%ROWTYPE;         /*팝업전표를 위함*/
+			
+			        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+			        sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;   /*입력자*/
+			        sDEPT_CODE      TA_SLIPXM.DEPT_CODE%TYPE;   /*입력부서*/
+			        sACCT_GUBN      TA_SLIPXM.ACCT_GUBN%TYPE;   /*사업장*/
+			        sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+			        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+			
+	
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산등록 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산등록정보]*/
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#SLIP_DATE#     /*변동일=전표일자*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산등록 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산등록 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 2. 자산등록 전표 생성
+	        ======================================================================================*/
+	
+	        /*==============================================================
+	            2-1.자산등록 전표 > LINE 추가[차>대>차변 순서대로 SLIP_LINE저장요망]
+	        ==============================================================*/
+	        nSLIP_LINE := 0;
+	
+	        /*==============================================================
+	            2-1-1. 자산등록 전표 > LINE 추가 > 관리계정과목(차변)
+	        ==============================================================*/
+	        IF rFS_ASCHXM.UNDP_BALE > 0 THEN                /*미상각잔액*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');       /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;                   /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT2;        /* 계정코드  상각누계계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;                   /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'D';                             /* 차대구분 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.DPCT_ENDX;       /* 충당금_기말잔액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                       /* 상대전표번호 ? */
+	            SLIP_ROW.OSLI_LINE             := '';                       /* 상대전표순번 ? */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;                 /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;                 /* 거래처코드 */
+	    /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;      */           /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                             /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                             /* 계좌번호 */
+	    /*        SLIP_ROW.ACNT_MANM             := '';                */             /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	                                                   
+	            SLIP_ROW.TABL_KEY1             := rFS_ASCHXM.ASST_NUMB;                   /* 키값 자산번호 PK1*/
+	            SLIP_ROW.TABL_KEY2             := rFS_ASCHXM.CHNG_DATE;                   /* 키값 변동일   PK2 */
+	            SLIP_ROW.TABL_KEY3             := rFS_ASCHXM.SEQN_NUMB;                   /* 키값 승일련번호 PK3*/
+	            /*SLIP_ROW.TABL_KEY4             := iAPPR_GUBN ||iUSEX_DATE ; */    /* 키값 승인구분 승인일자*/
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	    /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*==============================================================
+	            2-1-2. 자산등록 전표 > LINE 추가 > 미지급금고정자산(대변)
+	        ==============================================================*/
+	        IF rFS_ASCHXM.ACQU_ENDX > 0 THEN            /*취득가_기말잔액*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');        /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;          /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT1;         /* 자산계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;           /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'C';                             /* 차대구분 대변 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.ACQU_ENDX;          /* 취득가_기말잔액(취득금액) */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                              /* 상대전표번호 */
+	            SLIP_ROW.OSLI_LINE             := '';                              /* 상대전표순번 */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;          /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;           /* 거래처코드 */
+	    /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;      */           /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                     /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                     /* 계좌번호 */
+	    /*        SLIP_ROW.ACNT_MANM             := '';              */               /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	                                                   
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	            /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /*SP_TMP_SLIP_ROW_UPDATE_S(iSLIP_LINE, '0001', iBABR_CODE, SF_GET_BABRNAME(iBABR_CODE)); *//* 은행지점코드 ? */
+	
+	        END IF;
+	
+	        /*RAISE_APPLICATION_ERROR(-20000, '업데이트 iSLIP_NUMB: '|| iSLIP_NUMB);*/
+	
+	       /*==============================================================
+	            2-1-3. 자산등록 전표 > LINE 추가 > 자산처분손실(차변)
+	        ==============================================================*/
+	        IF rFS_ASCHXM.DSPS_GILS < 0 THEN                /* 마이너스 금액(전표는 마이너스가 없어서 절대값적용)*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');       /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;                   /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT6;        /* 계정코드  상각누계계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;         /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'D';                             /* 차대구분 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := ABS(rFS_ASCHXM.DSPS_GILS);        /* 처분손익 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                            /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                      /* 상대전표번호 ? */
+	            SLIP_ROW.OSLI_LINE             := '';                      /* 상대전표순번 ? */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;                 /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;                 /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;       */          /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                             /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                             /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';         */                    /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	                                                   
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	            /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*==============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-1. 자산등록 전표 > LINE 추가 > 미수금-고정자산매각대(차변)
+	        ==============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.DSPS_AMOT > 0 THEN                /*매각 & 처분가액>0 인경우*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');       /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;                   /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.ASCH_GUBN_D;        /* 계정코드  미수금-고정자산매각 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;                   /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'D';                             /* 차대구분 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.DSPS_AMOT + rFS_ASCHXM.VATX_AMNT ;       /* 처분가액+매출부가세 잔액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                      /* 상대전표번호 ? */
+	            SLIP_ROW.OSLI_LINE             := '';                      /* 상대전표순번 ? */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;                 /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := '';                             /* 적요3 */
+	            SLIP_ROW.EVID_DOCU             := 'FA180090';                     /* 증빙종류 해당사항 없음*/
+	            SLIP_ROW.VATX_GUBN             := '';                             /* 매입매출구분 */
+	            SLIP_ROW.VATX_TYPE             := '';                             /* 부가세종류 */
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분 */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '';                             /* 전자발행여부 */
+	            SLIP_ROW.TRNS_DATE             := '';                             /* 발행일자 */
+	            SLIP_ROW.SUPP_AMNT             := 0;                              /* 공급가액 */
+	            SLIP_ROW.VATX_AMNT             := 0;                              /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := '';                             /* 품목 */
+	            SLIP_ROW.VATX_REMK             := '';                             /* 적요 */
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;                 /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB; */                /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                             /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                             /* 계좌번호 */
+	         /*        SLIP_ROW.ACNT_MANM             := '';            */                 /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	                                                   
+	            /*SLIP_ROW.TABL_KEY4             := iAPPR_GUBN ||iUSEX_DATE ; */    /* 키값 승인구분 승인일자*/
+	
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	                /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /* 전표 라인별 정합성 체크*/
+	            /*            SP_SLIP_INSERT_CHECK(iSLIP_NUMB,iSLIP_LINE);*/
+	
+	
+	        END IF;
+	
+	
+	        /*==============================================================
+		            자산변동구분: 매각 전용 필드
+		            3-1-2. 자산등록 전표 > LINE 추가 > 부가세예수금-매출세액(대변)
+	        ==============================================================*/
+	        IF rFS_ASCHXM.ASCH_GUBN='SAAL' AND rFS_ASCHXM.VATX_AMNT > 0 THEN      /* 매각 & 부가세액>0 인경우만*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	
+	            SLIP_ROW := NULL;
+	
+	            SLIP_ROW.FORM_IDXX             := #FORM_IDXX#;                   /* 화면ID */
+	            SLIP_ROW.TABL_EMPL             := #UPDT_USID#;                   /* 입력자 */
+	
+	            SLIP_ROW.SLIP_LINE             := LPad(nSLIP_LINE,4,'0');        /* 전표순번 */
+	            SLIP_ROW.ACCT_GUBN             := rFS_ASCHXM.ACCT_GUBN;          /* 회계구분_사업장 */
+	            SLIP_ROW.ACCT_GUB2             := '';                           /* 브랜드 농심 사용안함 */
+	            SLIP_ROW.ACCT_INTL             := rFS_ASCHXM.DPCT_ACT1;         /* 자산계정과목 */
+	
+	            SLIP_ROW.USEX_DEPT             := rFS_ASCHXM.DEPT_CODE;           /* 사용부서 */
+	            SLIP_ROW.DRCR_GUBN             := 'C';                             /* 차대구분 대변 */
+	            SLIP_ROW.CURR_GUBN             := 'KRW';                   /* 통화구분 */
+	            SLIP_ROW.CURR_AMNT             := 0;                             /* 환율 */
+	
+	            SLIP_ROW.SLIP_AMNT             := rFS_ASCHXM.VATX_AMNT;          /* 매출부가세액 */
+	
+	            SLIP_ROW.FORI_AMNT             := 0;                             /* 외화금액 */
+	            SLIP_ROW.OSLI_DATE             := '';                             /* 상대전표일자 */
+	            SLIP_ROW.OSLI_NUMB             := '';                              /* 상대전표번호 */
+	            SLIP_ROW.OSLI_LINE             := '';                              /* 상대전표순번 */
+	            SLIP_ROW.BUDG_GUBN             := '';                               /* 예산구분 */
+	            SLIP_ROW.PROJ_CODE             := '';                             /* 프로젝트코드 */
+	            SLIP_ROW.BGRQ_NUMB             := '';                             /* 예산품의번호 */
+	            SLIP_ROW.BUDG_DEPT             := '';                             /* 예산부서 */
+	            SLIP_ROW.BUDG_YYMM             := SUBSTR(#SLIP_DATE#, 1, 4);       /* 예산년월 ? */
+	            SLIP_ROW.DETL_CODE             := '';                             /* 과목코드 */
+	            SLIP_ROW.SMOK_CODE             := '';                             /* 예산세목 */
+	            SLIP_ROW.REMK_NAME             := rFS_ASCHXM.DESC_REMK;           /* 적요1 */
+	            SLIP_ROW.REMK_NAM2             := '';                             /* 적요2 */
+	            SLIP_ROW.REMK_NAM3             := rFS_ASCHXM.DPCT_ACT1;           /* 적요3 (2015.02.27.PIH : 발생계정과목을 임시로 보낸다!) */
+	
+	            SLIP_ROW.EVID_DOCU             := 'FA180010';                     /* 증빙종류 세금계산서*/
+	            SLIP_ROW.VATX_GUBN             := 'FA200020';                     /* 매입매출구분 매출  */
+	            SLIP_ROW.VATX_TYPE             := 'FA210010';                     /* 부가세종류 과세*/
+	            SLIP_ROW.PURC_GUBN             := '';                             /* 매입구분  */
+	            SLIP_ROW.BULG_GUBN             := '';                             /* 불공제구분 */
+	            SLIP_ROW.EBIL_GUBN             := '0';                             /* 전자발행여부 0-미발행 */
+	            SLIP_ROW.TRNS_DATE             := rFS_ASCHXM.CHNG_DATE;          /* 발행일자=변동일자 */
+	            SLIP_ROW.SUPP_AMNT             := rFS_ASCHXM.CHNG_AMOT;            /* 변동금액=공급가액 */
+	            SLIP_ROW.VATX_AMNT             := rFS_ASCHXM.VATX_AMNT;           /* 세액 */
+	            SLIP_ROW.ITEM_NAME             := rFS_ASCHXM.ASST_NAME;           /* 품목 */
+	            SLIP_ROW.VATX_REMK             := rFS_ASCHXM.DESC_REMK;          /* 적요 */
+	
+	            SLIP_ROW.CUST_CODE             := rFS_ASCHXM.CUST_CODE;           /* 거래처코드 */
+	            /*        SLIP_ROW.BSNS_NUMB             := iCHIN_NUMB;         */        /* 사업자등록번호 */
+	            SLIP_ROW.CARD_NUMB             := '';                 /* 카드번호 ? */
+	            SLIP_ROW.CARD_APPR             := '';                 /* 카드승인번호 ? */
+	            SLIP_ROW.CARD_DATE             := '';                 /* 카드승인일자 ? */
+	            SLIP_ROW.PAYX_YSNO             := '';                             /* 출납처리여부 */
+	            SLIP_ROW.PAYX_DATE             := '';                             /* 지출일자 */
+	            SLIP_ROW.LEDG_GUBN             := '';                             /* 출납방법 */
+	            SLIP_ROW.BANK_INOU             := '';                             /* 입출구분 */
+	            SLIP_ROW.BANK_GUBN             := '';                     /* 금융기관 */
+	            SLIP_ROW.ACNT_NUMB             := '';                     /* 계좌번호 */
+	            /*        SLIP_ROW.ACNT_MANM             := '';                     */        /* 예금주 */
+	            SLIP_ROW.INST_USID             := #UPDT_USID#;                   /* 등록자 */
+	            SLIP_ROW.INST_DATE             := SYSDATE;                   /* 등록일시 */
+	            SLIP_ROW.UPDT_USID             := #UPDT_USID#;                   /* 수정자 */
+	            SLIP_ROW.UPDT_DATE             := SYSDATE;                   /* 수정일시 */
+	                                                   
+	            SP_TMP_SLIP_ROW_INSERT (SLIP_ROW);
+	
+	            /*관리항목 저장*/
+	            SP_TMP_SLIP_ROW_INSERT_S(#SLIP_DATE#, SLIP_ROW);
+	
+	            /*SP_TMP_SLIP_ROW_INSERT_S 의 필수값이 한정되어 있어 추가적인건 UPDATE_S로 따로 빼서 업뎃*/
+	            /*SP_TMP_SLIP_ROW_UPDATE_S(iSLIP_LINE, '0001', iBABR_CODE, SF_GET_BABRNAME(iBABR_CODE)); *//* 은행지점코드  */
+	
+	        END IF;
+	
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+			
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 최인철
+     작  성  일 : 2016. 10. 12
+     내      용 : 자본적지출 자동전표처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0020.PROC10" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0020.PROC10.자본적지출 자동전표처리*/
+			CURSOR CUR_FS_ASCHXM (
+			             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+			            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+			            ,P_SLIP_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+			            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+			        ) IS
+			            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+			                   ,A.CHNG_DATE     /*변동일   PK2*/
+			                   ,A.SEQN_NUMB     /*일련번호 PK3*/
+			                   ,A2.ASST_NAME     /*자산명*/
+			                   ,A.CUST_CODE     /*구매처코드*/
+			                   ,A.DEPT_CODE     /*부서코드*/
+			                   ,DE.ACCT_GUBN    /* 사업장*/
+			                   ,B.DPCT_ACT1     /*자산계정과목*/
+			                   ,NVL(A.UNDP_BALE, 0) AS  UNDP_BALE    /*미상각잔액*/
+			                   ,NVL(A.ACQU_ENDX, 0) AS  ACQU_ENDX    /*취득가_기말잔액*/
+			                   ,NVL(A.DSPS_GILS, 0) AS  DSPS_GILS    /*처분손익*/
+			                   ,NVL(A.DPCT_ENDX, 0) AS  DPCT_ENDX    /*충당금_기말잔액*/
+			                   ,NVL(A.CHNG_AMOT, 0) AS  CHNG_AMOT    /*변동금액*/
+			                   ,NVL(A.DSPS_AMOT, 0) AS  DSPS_AMOT    /*처분가액*/
+			                   ,NVL(A.DPCT_GRDC, 0) AS  DPCT_GRDC    /*충당금가감액*/
+			                   ,A.DESC_REMK     /*[대표적요]*/
+			                   ,A.SLIP_NUMB     /*전표번호*/
+			                   ,A.ASCH_GUBN     /*변동구분 // 자본적지출전용*/
+			                   ,'3221300' AS VATX_ACCT      /*부가세액계정과목*/
+			                   ,'3141100' AS PRIC_ACCT      /*미지급금고정자산*/
+			                   ,NVL(A.VATX_AMNT, 0) AS  VATX_AMNT   /*부가세액*/
+			            FROM FS_ASCHXM A
+			                  INNER JOIN FS_ASSTXM A2
+			                     ON A.ASST_NUMB = A2.ASST_NUMB
+			                  INNER JOIN FS_ASCLXM B
+			                     ON B.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+			                   LEFT JOIN VI_DEPTXM DE
+			                     ON  DE.DEPT_CODE = A.DEPT_CODE
+			                  INNER JOIN TM_CODEXD E
+			                     ON A.ASCH_GUBN = E.COMD_CODE
+			                    AND E.COMM_CODE = 'ASCH_GUBN'
+			                    AND E.REF1_FILD != 'MOVE'
+			            WHERE A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+			              AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+			              AND A.CHNG_DATE = P_SLIP_DATE           /*변동일*/
+			              AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/			            
+			
+			        ;
+			
+			        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+			      
+		
+			        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+			        sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;   /*발의일자*/
+			        sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+			        sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /*전표번호*/
+			        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+			        
+			        
+			        sCOND_CODE      TA_ACCTXD.COND_CODE%TYPE;	
+	                sCOND_VACD      FS_ASSTXM.CUST_CODE%TYPE;	
+	                
+	                 sSEQ            DECIMAL(15,0);
+			
+			
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산등록 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산등록정보]*/
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#CHNG_DATE#     /*변동일=전표일자*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산등록 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	        
+    IF rFS_ASCHXM.ASCH_GUBN = 'CAPI' THEN	        
+	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산등록 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	        
+	        		
+	        		
+       		  BEGIN
+		           
+		           	SELECT TO_CHAR(SYSDATE, 'YYYYMMDD')
+		           	INTO  sSLIP_DATE
+		           	FROM DUAL; 
+		         
+		         EXCEPTION
+		                WHEN OTHERS THEN
+		                    RAISE_APPLICATION_ERROR(-20000, '날자 파라메터 에러 '||chr(13)||chr(10)||SQLERRM);
+		         
+		     END;
+		     
+		     			  BEGIN
+	           
+				          	SELECT MIN(A.EMPL_NUMB) 
+				          	INTO   sEMPL_NUMB
+				          	FROM HR_MASTXM A WHERE A.DEPT_CODE = #DEPT_CODE#;
+				          	
+				            EXCEPTION
+				                WHEN NO_DATA_FOUND THEN
+				                    RAISE_APPLICATION_ERROR(-20000, '입력자에 대한 정보를 찾을 수 없습니다.'||chr(13)||chr(10)||SQLERRM);
+				        END;
+				        
+				        
+				          BEGIN
+						        SELECT TO_NUMBER(NVL(MAX(SUBSTR(SOUS_LNKY, 22)), '0')) + 1
+								    INTO sSEQ
+									FROM TA_SLIPXM A
+								 WHERE SLIP_GUBN = 'FS0011'
+								   AND ACCT_DATE = sSLIP_DATE; 
+				        
+				        
+				        EXCEPTION
+				                WHEN NO_DATA_FOUND THEN
+				                    RAISE_APPLICATION_ERROR(-20000, '출처연결정보.순번추출 에러'||chr(13)||chr(10)||SQLERRM);
+				        END;
+				     
+				     
+	        
+	 
+	         
+	       
+	        sTITL_NAME := '[자산변동관리]' || rFS_ASCHXM.ASST_NAME;
+	        
+		        /*=============================================================
+			            전표 > 1 HEADER 추가
+		        =============================================================*/
+        	    BEGIN
+        	    
+        	      
+				        
+					PKG_FAMIFSLIP.SP_MASTER_SAVE(#SYST_LNCD#,      /* ●시스템언어코드*/
+												 #UPDT_USID#,      /* ●수정작업자*/
+												 #ACCT_UNIT#,      /* ●회계단위 */
+												 #ACCT_GUBN#,      /* ●회계구분_사업장 */
+												 sSLIP_DATE,       /* ●전표일자(회계일자) */ 
+												 'FS002',          /* SLIP_GUBN*/      /* ●전표유형구분 */
+												 sTITL_NAME,       /* ●제목 */
+												 sEMPL_NUMB,      /* ●사원번호 */
+												 rFS_ASCHXM.DEPT_CODE,	   /* ●부서코드 */ 						 
+												 sSLIP_DATE || '-' || #ASST_NUMB# || '-' || sSEQ,   /* ●출처연결키 */
+												 NULL,
+												 NULL,
+												 NULL,
+												 NULL,
+												 NULL,
+												 sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+
+
+            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'HEADER 추가 에러'||chr(13)||chr(10)||SQLERRM);
+	        END;	
+	        
+	       	        
+	        
+	
+	        /*======================================================================================
+	            STEP 2. 자산등록 전표 생성
+	        ======================================================================================*/
+	
+	        /*===============================================================
+	            2-1.자산등록 전표 > LINE 추가[차>대>차변 순서대로 SLIP_LINE저장요망]
+	        ===============================================================*/
+	        nSLIP_LINE := 0;
+	
+	        /*===============================================================
+	            2-1-1. 자산등록 전표 > LINE 추가 > 자본적지출 (차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.CHNG_AMOT > 0 THEN                /* 변동금액*/
+	          
+	          nSLIP_LINE := nSLIP_LINE + 1;
+	          
+	           BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.DPCT_ACT1,   /* 계정코드  관리계정과목 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.CHNG_AMOT,       /* 변동금액 잔액 */
+	                                        rFS_ASCHXM.CHNG_AMOT,       /* 변동금액 잔액 */
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 자본적지출 (차변) '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	                                        
+	            
+	         
+	        END IF;   
+	        
+	        
+	        
+	        /*===============================================================
+	            2-1-2. 자산등록 전표 > LINE 추가 > 미지급금고정자산(대변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.CHNG_AMOT > 0 THEN            /*변동금액*/
+	
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.PRIC_ACCT,  /*  미지급금 고정자산 */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.CHNG_AMOT + rFS_ASCHXM.VATX_AMNT,          /* 변동금액+ 부가세액 */
+	                                        rFS_ASCHXM.CHNG_AMOT + rFS_ASCHXM.VATX_AMNT,          /* 변동금액+ 부가세액 */
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 자본적 지출 미지급금고정자산(대변)'||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	          /*관리항목 저장 start*/
+	          BEGIN 
+	          
+				    SELECT B.COND_CODE	                      
+	                      ,DECODE( B.COND_CODE , '0002' ,rFS_ASCHXM.CUST_CODE, '') AS COND_VACD	                      
+                   INTO 	sCOND_CODE , sCOND_VACD														
+	                 FROM   TA_ACCTXM A,
+	                        TA_ACCTXD B
+	                WHERE B.ACCT_INTL = rFS_ASCHXM.PRIC_ACCT	
+	                  AND A.ACCT_INTL = B.ACCT_INTL;
+            
+    						EXCEPTION 				
+    						WHEN OTHERS THEN	 
+								 sCOND_CODE := NULL;
+								 sCOND_VACD := NULL;		
+    						
+    						END;
+	
+	          
+					IF sCOND_VACD IS NOT NULL THEN
+	            
+	                BEGIN
+	                
+	                PKG_FAMIFSLIP.SP_LINERF_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+						                    '0002',   /*관리항목코드 : 재무>기본정보>관리항목 참조*/
+						                    rFS_ASCHXM.CUST_CODE,   /*항목값*/
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    ''
+	                );
+	                
+	                 EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000,  '관리항목입력에러'||chr(13)||chr(10)||SQLERRM);
+ 	                END;	 
+	
+	              END IF;
+	              /*관리항목 저장 end*/
+	            
+	        END IF;    
+	        
+	        /*===============================================================
+	            2-1-3. 자산등록 전표 > LINE 추가 > 부가세 계정 (차변)
+	        ===============================================================*/
+	        IF rFS_ASCHXM.VATX_AMNT > 0 THEN                /* 부가세 금액*/
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            
+	             BEGIN 
+	            
+	            PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        #ACCT_UNIT#,
+	                                        #ACCT_GUBN#,
+	                                        rFS_ASCHXM.VATX_ACCT,  /* 수금-고정자산매각대(차변) */
+	                                        rFS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        rFS_ASCHXM.VATX_AMNT,  /* 부가세액 */
+	                                        rFS_ASCHXM.VATX_AMNT,  /* 부가세액 */
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        sTITL_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 자본적 지출 부가세 차변  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	                /*관리항목 저장 start*/
+	          BEGIN 
+	          
+				    SELECT B.COND_CODE	                      
+	                      ,DECODE( B.COND_CODE , '0002' ,rFS_ASCHXM.CUST_CODE, '') AS COND_VACD	                      
+                   INTO 	sCOND_CODE , sCOND_VACD														
+	                 FROM   TA_ACCTXM A,
+	                        TA_ACCTXD B
+	                WHERE B.ACCT_INTL = rFS_ASCHXM.PRIC_ACCT	
+	                  AND A.ACCT_INTL = B.ACCT_INTL;
+            
+    						EXCEPTION 				
+    						WHEN OTHERS THEN	 
+								 sCOND_CODE := NULL;
+								 sCOND_VACD := NULL;		
+    						
+    						END;
+	
+	          
+					IF sCOND_VACD IS NOT NULL THEN
+	            
+	                BEGIN
+	                
+	                PKG_FAMIFSLIP.SP_LINERF_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+						                    '0002',   /*관리항목코드 : 재무>기본정보>관리항목 참조*/
+						                    rFS_ASCHXM.CUST_CODE,   /*항목값*/
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    '',
+						                    '', 
+						                    ''
+	                );
+	                
+	                 EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000,  '관리항목입력에러'||chr(13)||chr(10)||SQLERRM);
+ 	                END;	 
+	
+	              END IF;
+	              /*관리항목 저장 end*/
+	              
+	            
+	        END IF;
+	        
+	        /*=============================================================
+		       2-1-4. FINISH 
+		    ===============================================================*/
+		     IF rFS_ASCHXM.CHNG_AMOT > 0 THEN
+		     
+				   BEGIN
+				    
+			         PKG_FAMIFSLIP.SP_FINISH(
+					        #SYST_LNCD# /* ●시스템언어코드*/
+					       ,#UPDT_USID#   /* ●수정작업자*/
+						   ,sSLIP_NUMB   /* ●전표번호 */
+					    );
+					    
+				   EXCEPTION
+	               WHEN OTHERS THEN
+	                   RAISE_APPLICATION_ERROR(-20000, 'FINISH 에러'||chr(13)||chr(10)||SQLERRM);
+ 	               END;
+	       
+	         END IF;
+	         
+	         /*======================================================================================
+	                STEP 3. 자산등록 전표번호 업데이트[
+	                     	   전표 마지막행에 TB 업데이트
+            ======================================================================================*/	         
+	         IF rFS_ASCHXM.CHNG_AMOT > 0 THEN
+	         
+                    UPDATE FS_ASCHXM                /*[자산변동이력]*/
+	                   SET  SLIP_NUMB = sSLIP_NUMB  /*전표번호*/
+	                       ,SLIP_LINE = lpad(nSLIP_LINE , '4', '0')  /*전표순번*/
+	                       ,UPDT_DATE = SYSDATE           /*수정일시*/
+	                       ,UPDT_USID = #UPDT_USID#      /*수정자*/
+	                 WHERE ASST_NUMB  = #ASST_NUMB#      /*자산번호*/	                   
+					   AND CHNG_DATE  = #CHNG_DATE#     /*변동일=전표일자*/
+					   AND SEQN_NUMB  = #SEQN_NUMB#
+					   ;                 
+			                             
+			                                
+		    END IF;
+	       
+	       
+	
+	 END IF;
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+			
+		]]>
+	</insert>
+	
+	
+	
+	
+</sqlMap>

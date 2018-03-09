@@ -1,0 +1,1622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="PDMC0030" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="제작관리" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadProcess" left="0" width="1187" top="0" height="717">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" taborder="188" cssclass="styFormSearchBox" left="7" top="60" right="25" height="69"/>
+        <Grid binddataset="dsPD_JOBNXM" cellsizingtype="both" enable="true" id="grdPD_JOBNXM" useinputpanel="false" selecttype="row" taborder="3" tabstop="true" tooltiptype="inplace" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" autofittype="none" position="absolute" left="8" right="25" top="154" cssclass="styGrid01" bottom="388" onheadclick="grdPD_CONTXH_onheadclick" oncellclick="grdPD_ESTIMH_oncellclick" ondropdown="grdPD_JOBNXM_ondropdown">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100"/>
+                <Column size="68"/>
+                <Column size="130"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="180"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="normal" edittype="normal" text="의뢰일"/>
+                <Cell col="1" style="background: ;" text="진행상태"/>
+                <Cell col="2" style="background: ;" text="제작명"/>
+                <Cell col="3" style="background: ;" text="제작번호"/>
+                <Cell col="4" style="background: ;" text="광고주코드"/>
+                <Cell col="5" style="background: ;" text="광고주명"/>
+                <Cell col="6" style="background: ;" text="제작내용"/>
+                <Cell col="7" style="background: ;" text="제작종류"/>
+                <Cell col="8" style="background: ;" text="제작용도"/>
+                <Cell col="9" style="background: ;" text="청구일"/>
+                <Cell col="10" style="background: ;" text="견적금액"/>
+                <Cell col="11" style="background: ;" text="청구금액"/>
+                <Cell col="12" style="background: ;" text="정산금액"/>
+                <Cell col="13" style="background: ;" text="견적번호"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="normal" edittype="none" text="bind:REQU_DATE"/>
+                <Cell col="1" displaytype="combo" edittype="none" text="bind:STAT_FLAG"/>
+                <Cell col="2" displaytype="normal" edittype="none" text="bind:JOBN_NAME"/>
+                <Cell col="3" displaytype="normal" edittype="none" text="bind:JOBN_NUMB"/>
+                <Cell col="4" displaytype="normal" edittype="none" text="bind:CUST_CODE"/>
+                <Cell col="5" displaytype="normal" edittype="none" text="bind:CUST_NAME"/>
+                <Cell col="6" displaytype="combo" edittype="none" text="bind:MEDA_CODE" editdisplay="edit" combodisplay="edit"/>
+                <Cell col="7" displaytype="combo" edittype="none" text="bind:HIGH_LEVL" combodataset="dsPD_COMBO" combocodecol="COMB_CODE" combodatacol="COMB_NAME" combodisplay="edit"/>
+                <Cell col="8" displaytype="combo" edittype="none" text="bind:USEX_TYPE" combodisplay="edit"/>
+                <Cell col="9" displaytype="date" edittype="none" text="bind:DEND_DATE" calendardisplaynulltype="nulltext"/>
+                <Cell col="10" displaytype="number" edittype="none" style="align:right;" text="bind:ESTI_AMTX"/>
+                <Cell col="11" displaytype="number" edittype="none" style="align:right;" text="bind:DEND_AMTX"/>
+                <Cell col="12" displaytype="number" edittype="none" style="align:right;" text="bind:SUJU_AMTX"/>
+                <Cell col="13" displaytype="normal" edittype="none" text="bind:PREE_CODE"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <MPFileDialog id="fdCOMP_MEDI" taborder="21" position="absolute" left="504" width="24" top="56" height="24"/>
+        <MPFile id="flCOMP_MEDI" taborder="22" position="absolute" left="531" width="24" top="56" height="24"/>
+        <Static id="stInformation" taborder="93" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="8" top="133" height="21" width="271" usedecorate="true"/>
+        <Static id="st_FormTitle" taborder="111" text="제작관리" cssclass="styFormTitle" left="10" top="0" right="441" height="29"/>
+        <Static id="st_FormLocation" taborder="112" text="홈 &gt; 제작시스템&gt;제작관리&gt;견적관리&gt;제작관리" cssclass="styFormLocation" top="0" height="29" width="825" right="24"/>
+        <Div id="div_ButtonList" taborder="114" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" height="23" scrollbars="none" cssclass="styFormButtonList" width="579"/>
+        <Static id="Static09" taborder="115" text="h 60" visible="false" left="581" top="0" height="60" style="background:#fb7b7b7a;" width="37"/>
+        <Static id="Static05" taborder="116" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" left="97.89%" top="0" right="0%" height="717"/>
+        <Static id="Static17" taborder="124" text="h25" visible="false" left="581" top="129" height="25" style="background:#fb7b7b7a;" width="81"/>
+        <Static id="Static12" taborder="158" text="h37" visible="false" left="629" top="329" right="477" height="37" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="160" text="h 15" visible="false" left="1.18%" right="2.61%" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="imgSearchTYPE_NAME" taborder="161" text="제작의뢰일" onclick="imgSearchTitle1_onclick" cssclass="styFormSearchCap" left="29" top="71" height="21" width="95"/>
+        <Static id="imgSearchMEDA_CODE" taborder="162" text="제작내용" onclick="imgSearchTitle1_onclick" cssclass="styFormSearchCap" left="149" top="97" height="21" width="95"/>
+        <Static id="imgSearchHIGH_LEVL" taborder="163" text="제작종류" onclick="imgSearchTitle1_onclick" cssclass="styFormSearchCap" left="357" top="97" height="21" width="75"/>
+        <Static id="Static3" taborder="164" text="광고주" cssclass="styFormSearchCap" left="357" top="71" height="21" width="75"/>
+        <Edit id="edtSHRCUST_CODE" taborder="165" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="425" top="71" height="21" width="80"/>
+        <Static id="imgHelpSHRCUST_NAME" taborder="166" onclick="fn_HelpDialogeSHRCUST_CODE" cssclass="sytHelpPopup" left="507" top="71" height="21" width="21"/>
+        <Edit id="edtSHRCUST_NAME" taborder="167" imemode="hangul" maxlength="50" autoselect="true" onkillfocus="fn_HelpDialogeSHRCUST_CODE" cssclass="styFormSearchItem" left="530" top="71" height="21" width="140"/>
+        <Static id="Static06" taborder="168" text="제작명" cssclass="styFormSearchCap" left="701" top="71" height="21" width="84"/>
+        <Edit id="edtSHRJOBN_NUMB" taborder="169" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="768" top="71" height="21" width="80"/>
+        <Static id="imgHelpSHRJOBN_NAME" taborder="170" onclick="fn_HelpDialogeJOBN_NUMB" cssclass="sytHelpPopup" left="850" top="71" height="21" width="21"/>
+        <Edit id="edtSHRJOBN_NAME" taborder="171" imemode="hangul" maxlength="50" autoselect="true" onkillfocus="fn_HelpDialogeJOBN_NUMB" cssclass="styFormSearchItem" left="873" top="71" height="21" width="200"/>
+        <Static id="imgSearchUSEX_TYPE" taborder="172" text="제작용도" onclick="imgSearchTitle1_onclick" cssclass="styFormSearchCap" left="510" top="97" height="21" width="70"/>
+        <Combo id="cmbSHRUSEX_TYPE" taborder="173" displaynulltext="전체" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="577" top="97" height="21" width="92"/>
+        <Static id="imgSearchSTAT_FLAG" taborder="174" text="진행상태" onclick="imgSearchTitle1_onclick" cssclass="styFormSearchCap" left="698" top="97" height="21" width="69"/>
+        <Combo id="cmbSHRSTAT_FLAG" taborder="175" displaynulltext="전체" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="766" top="97" height="21" width="100" innerdataset="@dsSTAT_FLAG" datacolumn="STAT_NAME" codecolumn="STAT_FLAG"/>
+        <Combo id="cmbSHRMEDA_CODE" taborder="176" displaynulltext="전체" oncloseup="cmbSHRMEDA_CODE_oncloseup" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="229" top="97" height="21" width="100"/>
+        <Combo id="cmbSHRHIGH_LEVL" taborder="177" displaynulltext="전체" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="425" top="97" height="21" width="87"/>
+        <Static id="Static34" taborder="178" text="w30" visible="false" left="8" top="61" height="67" style="background:#fb7b7b7a;" width="31"/>
+        <Static id="Static36" taborder="179" visible="false" left="101" top="61" height="67" style="background:#fb7b7b7a;" width="8"/>
+        <Calendar id="edtSHRFROM_REQD" taborder="180" dateformat="yyyy-MM-dd" left="109" top="71" height="21" width="100"/>
+        <Calendar id="edtSHRTO_REQD" taborder="181" dateformat="yyyy-MM-dd" left="227" top="71" height="21" width="100"/>
+        <Static id="Static55" taborder="182" text="~" left="213" top="71" height="21" width="14"/>
+        <Static id="Static03" taborder="183" text="w40" visible="false" left="327" top="61" height="67" style="background:#fb7b7b7a;" width="41"/>
+        <Static id="Static01" taborder="184" visible="false" left="35.13%" top="61" right="64.2%" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="185" text="w40" visible="false" left="668" top="61" height="67" style="background:#fb7b7b7a;" width="41"/>
+        <Static id="Static02" taborder="186" visible="false" left="759" top="61" height="67" style="background:#fb7b7b7a;" width="9"/>
+        <Static id="Static07" taborder="190" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Button id="btn_favorite" taborder="193" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Tab id="tabIndex" taborder="194" left="8" right="25" bottom="15" height="363" onchanged="tabIndex_onchanged" tabindex="0" scrollbars="autoboth" style="showextrabutton:false;">
+          <Tabpages>
+            <Tabpage id="tabpage1" text="견적">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation00" taborder="41" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="4" right="881" height="21"/>
+                  <Static id="Static11" taborder="42" text="h 25" visible="false" left="580" top="0" right="491" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static15" taborder="43" text="w&#13;&#10;10" visible="false" left="0%" top="75" right="99.13%" height="67" style="background:#fb7b7b7a;"/>
+                  <Grid id="grdPD_ESTIMH" taborder="44" binddataset="dsPD_ESTIMH" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" oncellclick="tabIndex_tabpage1_grdPD_ESTIMH_oncellclick" left="10" top="25" right="10" bottom="10">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="제작구분"/>
+                          <Cell col="1" style="background: ;" text="견적일자"/>
+                          <Cell col="2" style="background: ;" text="제작명"/>
+                          <Cell col="3" style="background: ;" text="제작번호"/>
+                          <Cell col="4" style="background: ;" text="견적명"/>
+                          <Cell col="5" style="background: ;" text="견적금액"/>
+                          <Cell col="6" style="background: ;" text="견적번호"/>
+                          <Cell col="7" style="background: ;" text="청구구분"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="normal" edittype="none" text="bind:PREE_FLAG"/>
+                          <Cell col="1" displaytype="date" edittype="none" text="bind:ESTI_DATE" calendardisplaynulltype="nulltext"/>
+                          <Cell col="2" displaytype="normal" edittype="none" text="bind:JOBN_NAME"/>
+                          <Cell col="3" displaytype="normal" edittype="none" text="bind:JOBN_NUMB"/>
+                          <Cell col="4" displaytype="normal" edittype="none" text="bind:PREE_NAME"/>
+                          <Cell col="5" displaytype="normal" edittype="none" style="align:right;" text="bind:ESTI_AMTX"/>
+                          <Cell col="6" displaytype="normal" edittype="none" text="bind:PREE_CODE"/>
+                          <Cell col="7" displaytype="normal" edittype="none" text="bind:DEND_FLAG"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static16" taborder="45" text="w&#13;&#10;10" visible="false" left="99.13%" top="75" right="0%" height="75" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabpage2" text="견적상세">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation00" taborder="39" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="4" right="881" height="21"/>
+                  <Grid id="grdPD_ESTIMD" taborder="40" binddataset="dsPD_ESTIMD" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" onexpanddown="fn_HelpDialoge" left="10" top="25" right="10" bottom="10">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="순번"/>
+                          <Cell col="1" style="background: ;" text="대분류"/>
+                          <Cell col="2" style="background: ;" text="중분류"/>
+                          <Cell col="3" style="background: ;" text="견적항목명"/>
+                          <Cell col="4" style="background: ;" text="견적번호"/>
+                          <Cell col="5" style="background: ;" text="내역"/>
+                          <Cell col="6" style="background: ;" text="수량"/>
+                          <Cell col="7" style="background: ;" text="단가"/>
+                          <Cell col="8" style="background: ;" text="금액"/>
+                          <Cell col="9" style="background: ;" text="제작사"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="normal" edittype="none" text="bind:PREE_IDXX"/>
+                          <Cell col="1" displaytype="normal" edittype="none" text="bind:HIGH_NAME"/>
+                          <Cell col="2" displaytype="normal" edittype="none" text="bind:MIDD_NAME"/>
+                          <Cell col="3" displaytype="normal" edittype="none" text="bind:SUBX_NAME"/>
+                          <Cell col="4" displaytype="normal" edittype="none" text="bind:PREE_CODE"/>
+                          <Cell col="5" displaytype="normal" edittype="none" text="bind:MEMO_FILD"/>
+                          <Cell col="6" displaytype="normal" edittype="none" style="align:right;" text="bind:TYPE_QTYX"/>
+                          <Cell col="7" displaytype="normal" edittype="none" style="align:right;" text="bind:ESTI_PRCE"/>
+                          <Cell col="8" displaytype="normal" edittype="none" style="align:right;" text="bind:ESTI_AMTX"/>
+                          <Cell col="9" displaytype="normal" edittype="none" text="bind:CUST_NAME"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell displaytype="text"/>
+                          <Cell col="1" colspan="4" style="align: center;" text="합계"/>
+                          <Cell col="5"/>
+                          <Cell col="6"/>
+                          <Cell col="6" displaytype="number" style="align: right;" expr="expr:dataset.getSum(&quot;TYPE_QTYX&quot;)"/>
+                          <Cell col="7" displaytype="number" style="align: right;" expr="expr:dataset.getSum(&quot;ESTI_PRCE&quot;)"/>
+                          <Cell col="8" displaytype="number" style="align: right;" expr="expr:dataset.getSum(&quot;ESTI_AMTX&quot;)"/>
+                          <Cell col="9"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static16" taborder="41" text="w&#13;&#10;10" visible="false" left="1143" top="83" width="10" height="75" style="background:#fb7b7b7a;"/>
+                  <Static id="Static11" taborder="42" text="h 25" visible="false" left="580" top="0" right="491" height="25" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabpage3" text="외주정산">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation00" taborder="40" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="4" right="881" height="21"/>
+                  <Grid id="grdPD_ESTIMD02" taborder="41" binddataset="dsPD_ESTIMD02" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" left="10" top="25" width="389" height="299">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="견적번호"/>
+                          <Cell col="1" style="background: ;" text="제작번호"/>
+                          <Cell col="2" style="background: ;" text="제작항목"/>
+                          <Cell col="3" style="background: ;" text="견적금액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="normal" edittype="none" text="bind:PREE_CODE"/>
+                          <Cell col="1" displaytype="normal" edittype="none" text="bind:JOBN_NUMB"/>
+                          <Cell col="2" displaytype="normal" edittype="none" text="bind:SUBX_NAME"/>
+                          <Cell col="3" displaytype="normal" edittype="none" text="bind:ESTI_AMTX"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell displaytype="text"/>
+                          <Cell col="1" style="align: center;" text="합계"/>
+                          <Cell col="2"/>
+                          <Cell col="3" displaytype="number" style="align: right;" expr="expr:dataset.getSum(&quot;ESTI_AMTX&quot;)"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdPD_SUJUMD02" taborder="42" binddataset="dsPD_SUJUMD02" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" left="419" top="25" right="10" bottom="10">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="제작사코드"/>
+                          <Cell col="1" style="background: ;" text="제작사명"/>
+                          <Cell col="2" style="background: ;" text="제작항목"/>
+                          <Cell col="3" style="background: ;" text="내역"/>
+                          <Cell col="4" style="background: ;" text="정산금액"/>
+                          <Cell col="5" style="background: ;" text="정산일자"/>
+                          <Cell col="6" style="background: ;" text="계약서번호"/>
+                          <Cell col="7" style="background: ;" text="계약명"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="normal" edittype="none" text="bind:OUTS_CODE"/>
+                          <Cell col="1" displaytype="normal" edittype="none" text="bind:CUST_NAME"/>
+                          <Cell col="2" displaytype="normal" edittype="none" text="bind:SUBX_NAME"/>
+                          <Cell col="3" displaytype="normal" edittype="none" text="bind:MEMO_FILD"/>
+                          <Cell col="4" displaytype="normal" edittype="none" text="bind:SUJU_AMTX"/>
+                          <Cell col="5" displaytype="normal" edittype="none" text="bind:SUJU_DATE"/>
+                          <Cell col="6" displaytype="normal" edittype="none" text="bind:CONT_NUMB"/>
+                          <Cell col="7" displaytype="normal" edittype="none" text="bind:CONT_NAME"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell displaytype="text"/>
+                          <Cell col="1" colspan="3" style="align: center;" text="합계"/>
+                          <Cell col="4" displaytype="number" style="align: right;" expr="expr:dataset.getSum(&quot;SUJU_AMTX&quot;)"/>
+                          <Cell col="5"/>
+                          <Cell col="6"/>
+                          <Cell col="7"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static11" taborder="43" text="h 25" visible="false" left="580" top="0" right="491" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static00" taborder="44" text="W20" visible="false" left="399" top="102" width="20" height="55" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabpage4" text="제작의뢰">
+              <Layouts>
+                <Layout>
+                  <Static id="spSearchBox03" taborder="99" cssclass="styFormItemBoxOut" left="10" right="10" bottom="151" height="168" radiusy="10" radiusx="10" type="roundrectangle"/>
+                  <Static id="staCTIM_CODE" taborder="100" text="광고주 팀" cssclass="styFormItemCap" left="423" top="24" width="82" height="21" style="color:#515151ff;"/>
+                  <Static id="staPLAN_DEPT" taborder="101" text="기획 담당팀" cssclass="styFormItemCapBE" left="423" top="50" width="82" height="21"/>
+                  <Static id="staPLAN_EMPL" taborder="102" text="기획 담당자" cssclass="styFormItemCapBE" left="791" top="50" width="98" height="21"/>
+                  <Static id="Static1" taborder="103" text="광고주 담당자" cssclass="styFormItemCapBE" left="791" top="24" width="98" height="21" style="color:#515151ff;"/>
+                  <Static id="staREQU_DATE" taborder="104" text="제작의뢰일" cssclass="styFormItemCapBE" left="34" bottom="237" width="102" height="21"/>
+                  <Static id="staPROD_DEPT" taborder="105" text="제작 담당팀" cssclass="styFormItemCapBE" left="423" top="76" width="82" height="21"/>
+                  <Static id="staPROD_EMPL" taborder="106" text="제작 담당자" cssclass="styFormItemCapBE" left="791" top="76" width="98" height="21"/>
+                  <Edit id="edtCUST_EMPL" taborder="107" inputmode="upper" readonly="true" lengthunit="ascii" maxlength="10" autoselect="true" cssclass="styFormItemText" left="893" top="24" width="230" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Static id="imgHelpCUST_CODE" taborder="108" onclick="fn_HelpDialogeCUST_CODE" cssclass="sytHelpPopup" left="223" top="24" width="21" height="21"/>
+                  <Static id="staCOMP_DATE" taborder="109" text="제작완료희망일" cssclass="styFormItemCapBE" left="34" bottom="211" width="102" height="21"/>
+                  <Static id="staMEMO_FILD" taborder="110" text="비고" cssclass="styFormItemCap" left="34" right="1016" bottom="185" height="21"/>
+                  <Static id="Static10" taborder="111" cssclass="styFormItemCap" left="34" right="1016" bottom="168" height="21"/>
+                  <Static id="staMEDA_CODE" taborder="112" text="제작내용" cssclass="styFormItemCapBE" left="423" top="102" width="82" height="21"/>
+                  <Static id="staHIGH_LEVL" taborder="113" text="제작종류" cssclass="styFormItemCapBE" left="423" top="128" width="82" height="21"/>
+                  <Static id="staUSEX_TYPE" taborder="114" text="제작용도" cssclass="styFormItemCapBE" left="791" right="263" bottom="186" height="21"/>
+                  <Static id="staJOBN_SIZE" taborder="115" text="규격" cssclass="styFormItemCap" left="791" top="102" width="98" height="21"/>
+                  <Static id="imgHelpPLAN_EMPL" taborder="116" onclick="fn_HelpDialogePLAN_EMPL" cssclass="sytHelpPopup" left="975" top="50" width="21" height="21"/>
+                  <Static id="imgHelpPROD_EMPL" taborder="117" onclick="fn_HelpDialogePROD_EMPL" cssclass="sytHelpPopup" left="975" bottom="237" width="21" height="21"/>
+                  <Edit id="edtJOBN_NAME" taborder="118" imemode="hangul" readonly="true" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="141" top="50" width="245" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtCUST_CODE" taborder="119" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="141" top="24" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtCUST_NAME" taborder="120" imemode="hangul" readonly="true" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeCUST_CODE" cssclass="styFormItemText" left="246" top="24" width="140" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtCTIM_CODE" taborder="121" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="509" top="24" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtCTIM_NAME" taborder="122" imemode="hangul" readonly="true" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeCTIM_CODE" cssclass="styFormItemText" left="614" top="24" width="140" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPLAN_DEPT" taborder="123" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="509" top="50" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPLAN_NAME" taborder="124" imemode="hangul" readonly="true" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogePLAN_DEPT" cssclass="styFormItemText" left="614" top="50" width="140" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPLAN_EMPL" taborder="125" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="893" top="50" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPLAN_EMPN" taborder="126" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogePLAN_EMPL" cssclass="styFormItemText" left="998" top="50" width="125" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Calendar id="calREQU_DATE" taborder="127" readonly="true" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="141" top="76" width="103" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPROD_DEPT" taborder="128" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="509" top="76" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPROD_NAME" taborder="129" imemode="hangul" readonly="true" lengthunit="ascii" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogePROD_DEPT" cssclass="styFormItemText" left="614" top="76" width="140" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPROD_EMPL" taborder="130" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="893" bottom="237" width="80" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtPROD_EMPN" taborder="131" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogePROD_EMPL" cssclass="styFormItemText" left="998" top="76" width="125" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Calendar id="calCOMP_DATE" taborder="132" readonly="true" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="141" top="102" width="103" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Combo id="cmbMEDA_CODE" taborder="133" readonly="true" displaynulltext="선택" type="search" oncloseup="cmbMEDA_CODE_oncloseup" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="509" top="102" width="245" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Combo id="cmbHIGH_LEVL" taborder="134" readonly="true" displaynulltext="선택" innerdataset="dsPD_COMBO" codecolumn="COMB_CODE" datacolumn="COMB_NAME" type="search" cssclass="styFormItemCombo" left="509" bottom="185" width="245" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Combo id="cmbUSEX_TYPE" taborder="135" readonly="true" displaynulltext="선택" type="search" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="892" bottom="186" width="231" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtJOBN_SIZE" taborder="136" readonly="true" autoselect="true" cssclass="styFormItemText" left="893" top="102" width="230" height="21" binddataset="dsPD_JOBNXM03"/>
+                  <Edit id="edtMEMO_FILD" taborder="137" readonly="true" autoselect="true" cssclass="styFormItemText" left="141" bottom="160" width="245" height="46" binddataset="dsPD_JOBNXM03"/>
+                  <Static id="staJOBN_NAME" taborder="138" text="제작명" cssclass="styFormItemCapBE" left="34" bottom="263" width="102" height="21"/>
+                  <Static id="staselectCUST_NAME" taborder="139" text="광고주" cssclass="styFormItemCapBE" left="34" bottom="289" width="102" height="21" style="color:#515151ff;"/>
+                  <Static id="Static34" taborder="140" text="w30" visible="false" left="11" right="1107" bottom="138" height="152" style="background:#fb7b7b7a;"/>
+                  <Static id="Static11" taborder="141" text="h 15" visible="false" left="580" top="0" right="491" height="15" style="background:#fb7b7b7a;"/>
+                  <Static id="Static00" taborder="142" text="w30" visible="false" left="0" bottom="138" width="10" height="152" style="background:#fb7b7b7a;"/>
+                  <Static id="imgHelpPLAN_DEPT" taborder="143" onclick="fn_HelpDialogePLAN_DEPT" cssclass="sytHelpPopup" left="591" top="50" width="21" height="21"/>
+                  <Static id="imgHelpPROD_DEPT" taborder="144" onclick="fn_HelpDialogePROD_DEPT" cssclass="sytHelpPopup" left="591" top="76" width="21" height="21"/>
+                  <Static id="imgHelpCTIM_CODE" taborder="145" onclick="fn_HelpDialogeCTIM_CODE" cssclass="sytHelpPopup" left="591" top="24" width="21" height="21"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabpage5" text="제작물">
+              <Layouts>
+                <Layout>
+                  <Button id="btn_FileSave" taborder="113" text="저장" onclick="tabIndex_tabpage5_btn_FileSave_onclick" cssclass="btn_WF_Module" top="5" right="96" width="80" height="21"/>
+                  <Grid id="grdPD_FILEXH04" taborder="114" binddataset="dsPD_FILEXH04" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" oncellclick="tabIndex_tabpage5_grdPD_FILEXH04_oncellclick" left="10" top="30" right="10" bottom="10">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                          <Column size="80"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="파일번호"/>
+                          <Cell col="1" text="제작번호"/>
+                          <Cell col="2" text="등록일"/>
+                          <Cell col="3" text="파일명"/>
+                          <Cell col="4" text="기타 URL"/>
+                          <Cell col="5" text="업로드"/>
+                          <Cell col="6" text="다운로드"/>
+                          <Cell col="7" text="비고"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="normal" edittype="none" text="bind:FILE_NUMB"/>
+                          <Cell col="1" displaytype="normal" edittype="none" text="bind:JOBN_NUMB"/>
+                          <Cell col="2" displaytype="date" edittype="date" text="bind:REGI_DATE"/>
+                          <Cell col="3" displaytype="normal" edittype="none" text="bind:FILE_NAME"/>
+                          <Cell col="4" displaytype="normal" edittype="text" text="bind:URLX_NAME"/>
+                          <Cell col="5" displaytype="button" edittype="button" text="파일 업로드"/>
+                          <Cell col="6" displaytype="expr:DOWNLOAD == '파일 다운로드' ? 'button' : 'none'" edittype="expr:DOWNLOAD == '파일 다운로드' ? 'button' : 'none'" text="expr:DOWNLOAD == '파일 다운로드' ? DOWNLOAD : ''"/>
+                          <Cell col="7" displaytype="normal" edittype="text" text="bind:MEMO_FILD"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Button id="btn_AddRow" taborder="115" text="행추가" onclick="tabIndex_tabpage5_btn_AddRow_onclick" cssclass="btn_WF_Module" top="5" right="176" width="80" height="21"/>
+                  <Static id="Static15" taborder="116" text="w&#13;&#10;10" visible="false" left="0%" top="75" right="99.13%" height="67" style="background:#fb7b7b7a;"/>
+                  <Static id="Static11" taborder="117" text="h30" visible="false" left="580" top="0" right="491" height="30" style="background:#fb7b7b7a;"/>
+                  <Static id="Static16" taborder="118" text="w&#13;&#10;10" visible="false" left="99.13%" top="75" right="0%" height="75" style="background:#fb7b7b7a;"/>
+                  <Button id="btn_FileDelete" taborder="119" text="삭제" cssclass="btn_WF_Module" top="5" right="16" width="80" height="21" onclick="tabIndex_tabpage5_btn_FileDelete_onclick"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <Radio id="rdoCODE_TIME" taborder="195" index="0" codecolumn="codecolumn" datacolumn="datacolumn" value="0" direction="vertical" onitemchanged="rdoCODE_TIME_onitemchanged" left="38" top="97" width="116" height="21">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">0</Col>
+                <Col id="datacolumn">신규</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">1</Col>
+                <Col id="datacolumn">전체</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Radio>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRCLAS_CODE</Col>
+            <Col id="CODEID">CLAS_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPD_ESTIMH" onrowposchanged="dsPD_ESTIMH_onrowposchanged">
+        <ColumnInfo>
+          <Column id="PREE_CODE" type="STRING" size="256"/>
+          <Column id="PREE_NAME" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="JOBN_NAME" type="STRING" size="256"/>
+          <Column id="ESTI_DATE" type="STRING" size="256"/>
+          <Column id="ESTI_AMTX" type="STRING" size="256"/>
+          <Column id="DEND_FLAG" type="STRING" size="256"/>
+          <Column id="STAT_FLAG" type="STRING" size="256"/>
+          <Column id="PLPT_FLAG" type="STRING" size="256"/>
+          <Column id="PDPT_FLAG" type="STRING" size="256"/>
+          <Column id="PMPT_FLAG" type="STRING" size="256"/>
+          <Column id="CUST_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="DEND_DATE" type="STRING" size="256"/>
+          <Column id="MEDA_CODE" type="STRING" size="256"/>
+          <Column id="HIGH_LEVL" type="STRING" size="256"/>
+          <Column id="USEX_TYPE" type="STRING" size="256"/>
+          <Column id="REQU_DATE" type="STRING" size="256"/>
+          <Column id="COMP_DATE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsSTAT_FLAG" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="STAT_FLAG" type="STRING" size="256"/>
+          <Column id="STAT_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="STAT_FLAG">SF01</Col>
+            <Col id="STAT_NAME">의뢰</Col>
+          </Row>
+          <Row>
+            <Col id="STAT_FLAG">SF02</Col>
+            <Col id="STAT_NAME">완료</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPD_JOBNXM" onrowposchanged="dsPD_JOBNXM_onrowposchanged">
+        <ColumnInfo>
+          <Column id="REQU_DATE" type="STRING" size="256"/>
+          <Column id="STAT_FLAG" type="STRING" size="256"/>
+          <Column id="JOBN_NAME" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="CUST_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="MEDA_CODE" type="STRING" size="256"/>
+          <Column id="HIGH_LEVL" type="STRING" size="256"/>
+          <Column id="USEX_TYPE" type="STRING" size="256"/>
+          <Column id="DEND_DATE" type="STRING" size="256"/>
+          <Column id="ESTI_AMTX" type="STRING" size="256"/>
+          <Column id="DEND_AMTX" type="STRING" size="256"/>
+          <Column id="SUJU_AMTX" type="STRING" size="256"/>
+          <Column id="PREE_CODE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_ESTIMD" oncolumnchanged="dsPD_ESTIMD_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="CHK" type="STRING" size="256"/>
+          <Column id="ESTI_DATE" type="STRING" size="256"/>
+          <Column id="PREE_NAME" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="PREE_CODE" type="STRING" size="256"/>
+          <Column id="ITEM_CODE" type="STRING" size="256"/>
+          <Column id="HIGH_NAME" type="STRING" size="256"/>
+          <Column id="MIDD_NAME" type="STRING" size="256"/>
+          <Column id="SUBX_NAME" type="STRING" size="256"/>
+          <Column id="MEMO_FILD" type="STRING" size="256"/>
+          <Column id="TYPE_QTYX" type="STRING" size="256"/>
+          <Column id="ESTI_PRCE" type="STRING" size="256"/>
+          <Column id="ESTI_AMTX" type="STRING" size="256"/>
+          <Column id="OUTS_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="PREE_IDXX" type="STRING" size="256"/>
+          <Column id="SORT_ORDR" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_JOBNXM03">
+        <ColumnInfo>
+          <Column id="CHK" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="CUST_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="CTIM_CODE" type="STRING" size="256"/>
+          <Column id="CTIM_NAME" type="STRING" size="256"/>
+          <Column id="JOBN_NAME" type="STRING" size="256"/>
+          <Column id="REQU_DATE" type="STRING" size="256"/>
+          <Column id="CUST_EMPL" type="STRING" size="256"/>
+          <Column id="PLAN_DEPT" type="STRING" size="256"/>
+          <Column id="PLAN_NAME" type="STRING" size="256"/>
+          <Column id="PLAN_EMPL" type="STRING" size="256"/>
+          <Column id="PLAN_EMPN" type="STRING" size="256"/>
+          <Column id="PROD_DEPT" type="STRING" size="256"/>
+          <Column id="PROD_NAME" type="STRING" size="256"/>
+          <Column id="PROD_EMPL" type="STRING" size="256"/>
+          <Column id="PROD_EMPN" type="STRING" size="256"/>
+          <Column id="MEDA_CODE" type="STRING" size="256"/>
+          <Column id="HIGH_LEVL" type="STRING" size="256"/>
+          <Column id="USEX_TYPE" type="STRING" size="256"/>
+          <Column id="JOBN_SIZE" type="STRING" size="256"/>
+          <Column id="COMP_DATE" type="STRING" size="256"/>
+          <Column id="MEMO_FILD" type="STRING" size="256"/>
+          <Column id="DEND_DATE" type="STRING" size="256"/>
+          <Column id="STAT_FLAG" type="STRING" size="256"/>
+          <Column id="PLPT_FLAG" type="STRING" size="256"/>
+          <Column id="PDPT_FLAG" type="STRING" size="256"/>
+          <Column id="PMPT_FLAG" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_COMBO" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CLAS_TYPE" type="STRING" size="256" prop="default"/>
+          <Column id="COMB_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="COMB_NAME" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_ESTIMD02" oncolumnchanged="dsPD_ESTIMD_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="PREE_CODE" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="SUBX_NAME" type="STRING" size="256"/>
+          <Column id="ESTI_AMTX" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_SUJUMD02" oncolumnchanged="dsPD_ESTIMD_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="OUTS_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="SUBX_NAME" type="STRING" size="256"/>
+          <Column id="MEMO_FILD" type="STRING" size="256"/>
+          <Column id="SUJU_AMTX" type="STRING" size="256"/>
+          <Column id="SUJU_DATE" type="STRING" size="256"/>
+          <Column id="CONT_NUMB" type="STRING" size="256"/>
+          <Column id="CONT_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_PDELEC05" oncolumnchanged="dsPD_ESTIMD_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+          <Column id="PDCM_FLAG" type="STRING" size="256"/>
+          <Column id="PLPT_FLAG" type="STRING" size="256"/>
+          <Column id="PDPT_FLAG" type="STRING" size="256"/>
+          <Column id="PMPT_FLAG" type="STRING" size="256"/>
+          <Column id="CUST_FLAG" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsFL_ATTACH04" updatecontrol="false">
+        <ColumnInfo>
+          <Column id="FILE_IDXX" type="STRING" size="256"/>
+          <Column id="FILE_PATH" type="STRING" size="256"/>
+          <Column id="PFIL_NAME" type="STRING" size="256"/>
+          <Column id="LFIL_NAME" type="STRING" size="256"/>
+          <Column id="FILE_SIZE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPD_FILEXH04">
+        <ColumnInfo>
+          <Column id="FILE_NUMB" type="STRING" size="256"/>
+          <Column id="REGI_DATE" type="STRING" size="256"/>
+          <Column id="FILE_NAME" type="STRING" size="256"/>
+          <Column id="URLX_NAME" type="STRING" size="256"/>
+          <Column id="MEMO_FILD" type="STRING" size="256"/>
+          <Column id="FILE_IDXX" type="STRING" size="256"/>
+          <Column id="FILE_PATH" type="STRING" size="256"/>
+          <Column id="PFIL_NAME" type="STRING" size="256"/>
+          <Column id="LFIL_NAME" type="STRING" size="256"/>
+          <Column id="DOWNLOAD" type="STRING" size="256"/>
+          <Column id="EXTN_NAME" type="STRING" size="256"/>
+          <Column id="JOBN_NUMB" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <InitValue/>
+    <Bind>
+      <BindItem id="item3" compid="tabIndex.tabpage4.edtCUST_EMPL" propid="value" datasetid="dsPD_JOBNXM03" columnid="CUST_EMPL"/>
+      <BindItem id="item4" compid="tabIndex.tabpage4.edtCUST_EMPL" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="CUST_EMPL"/>
+      <BindItem id="edtBUTY_NAME_value" compid="tabIndex.tabpage4.edtJOBN_NAME" propid="value" datasetid="dsPD_JOBNXM03" columnid="JOBN_NAME"/>
+      <BindItem id="item7" compid="tabIndex.tabpage4.edtJOBN_NAME" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="JOBN_NAME"/>
+      <BindItem id="edtDTL1_ADDR_value" compid="tabIndex.tabpage4.edtCUST_CODE" propid="value" datasetid="dsPD_JOBNXM03" columnid="CUST_CODE"/>
+      <BindItem id="item11" compid="tabIndex.tabpage4.edtCUST_CODE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="CUST_CODE"/>
+      <BindItem id="item0" compid="tabIndex.tabpage4.edtCUST_NAME" propid="value" datasetid="dsPD_JOBNXM03" columnid="CUST_NAME"/>
+      <BindItem id="item10" compid="tabIndex.tabpage4.edtCUST_NAME" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="CUST_NAME"/>
+      <BindItem id="item1" compid="tabIndex.tabpage4.edtCTIM_CODE" propid="value" datasetid="dsPD_JOBNXM03" columnid="CTIM_CODE"/>
+      <BindItem id="item9" compid="tabIndex.tabpage4.edtCTIM_CODE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="CTIM_CODE"/>
+      <BindItem id="item2" compid="tabIndex.tabpage4.edtCTIM_NAME" propid="value" datasetid="dsPD_JOBNXM03" columnid="CTIM_NAME"/>
+      <BindItem id="item8" compid="tabIndex.tabpage4.edtCTIM_NAME" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="CTIM_NAME"/>
+      <BindItem id="item5" compid="tabIndex.tabpage4.edtPLAN_DEPT" propid="value" datasetid="dsPD_JOBNXM03" columnid="PLAN_DEPT"/>
+      <BindItem id="item6" compid="tabIndex.tabpage4.edtPLAN_DEPT" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PLAN_DEPT"/>
+      <BindItem id="item12" compid="tabIndex.tabpage4.edtPLAN_NAME" propid="value" datasetid="dsPD_JOBNXM03" columnid="PLAN_NAME"/>
+      <BindItem id="item13" compid="tabIndex.tabpage4.edtPLAN_NAME" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PLAN_NAME"/>
+      <BindItem id="item14" compid="tabIndex.tabpage4.edtPLAN_EMPL" propid="value" datasetid="dsPD_JOBNXM03" columnid="PLAN_EMPL"/>
+      <BindItem id="item15" compid="tabIndex.tabpage4.edtPLAN_EMPL" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PLAN_EMPL"/>
+      <BindItem id="item16" compid="tabIndex.tabpage4.edtPLAN_EMPN" propid="value" datasetid="dsPD_JOBNXM03" columnid="PLAN_EMPN"/>
+      <BindItem id="item17" compid="tabIndex.tabpage4.edtPLAN_EMPN" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PLAN_EMPN"/>
+      <BindItem id="calESTA_DATE_value" compid="tabIndex.tabpage4.calREQU_DATE" propid="value" datasetid="dsPD_JOBNXM03" columnid="REQU_DATE"/>
+      <BindItem id="item18" compid="tabIndex.tabpage4.calREQU_DATE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="REQU_DATE"/>
+      <BindItem id="item19" compid="tabIndex.tabpage4.edtPROD_DEPT" propid="value" datasetid="dsPD_JOBNXM03" columnid="PROD_DEPT"/>
+      <BindItem id="item20" compid="tabIndex.tabpage4.edtPROD_DEPT" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PROD_DEPT"/>
+      <BindItem id="item21" compid="tabIndex.tabpage4.edtPROD_NAME" propid="value" datasetid="dsPD_JOBNXM03" columnid="PROD_NAME"/>
+      <BindItem id="item22" compid="tabIndex.tabpage4.edtPROD_NAME" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PROD_NAME"/>
+      <BindItem id="item23" compid="tabIndex.tabpage4.edtPROD_EMPL" propid="value" datasetid="dsPD_JOBNXM03" columnid="PROD_EMPL"/>
+      <BindItem id="item24" compid="tabIndex.tabpage4.edtPROD_EMPL" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PROD_EMPL"/>
+      <BindItem id="item25" compid="tabIndex.tabpage4.edtPROD_EMPN" propid="value" datasetid="dsPD_JOBNXM03" columnid="PROD_EMPN"/>
+      <BindItem id="item26" compid="tabIndex.tabpage4.edtPROD_EMPN" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="PROD_EMPN"/>
+      <BindItem id="item27" compid="tabIndex.tabpage4.calCOMP_DATE" propid="value" datasetid="dsPD_JOBNXM03" columnid="COMP_DATE"/>
+      <BindItem id="item28" compid="tabIndex.tabpage4.calCOMP_DATE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="COMP_DATE"/>
+      <BindItem id="cmbPBGN_CODE_value" compid="tabIndex.tabpage4.cmbMEDA_CODE" propid="value" datasetid="dsPD_JOBNXM03" columnid="MEDA_CODE"/>
+      <BindItem id="item29" compid="tabIndex.tabpage4.cmbMEDA_CODE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="MEDA_CODE"/>
+      <BindItem id="item30" compid="tabIndex.tabpage4.cmbHIGH_LEVL" propid="value" datasetid="dsPD_JOBNXM03" columnid="HIGH_LEVL"/>
+      <BindItem id="item31" compid="tabIndex.tabpage4.cmbHIGH_LEVL" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="HIGH_LEVL"/>
+      <BindItem id="item32" compid="tabIndex.tabpage4.cmbUSEX_TYPE" propid="value" datasetid="dsPD_JOBNXM03" columnid="USEX_TYPE"/>
+      <BindItem id="item33" compid="tabIndex.tabpage4.cmbUSEX_TYPE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="USEX_TYPE"/>
+      <BindItem id="item34" compid="tabIndex.tabpage4.edtJOBN_SIZE" propid="value" datasetid="dsPD_JOBNXM03" columnid="JOBN_SIZE"/>
+      <BindItem id="item35" compid="tabIndex.tabpage4.edtJOBN_SIZE" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="JOBN_SIZE"/>
+      <BindItem id="item36" compid="tabIndex.tabpage4.edtMEMO_FILD" propid="value" datasetid="dsPD_JOBNXM03" columnid="MEMO_FILD"/>
+      <BindItem id="item37" compid="tabIndex.tabpage4.edtMEMO_FILD" propid="binddataset" datasetid="dsPD_JOBNXM03" columnid="MEMO_FILD"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	PDMA0030 제작 계약서 관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.26		오세훈		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST 	= "TTFFFFTF"; //공통기능정의(버튼순으로 T or F)
+this.sPACKAGENAME 	= "PDMC0030"; //해당 Form에서 사용 할 Package 명
+this.sFILE_NAME   	= "";			//파일명
+this.sFILE_PATH   	= "";			//파일경로
+
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+
+	//Quick View 실행 시 설정
+	this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	this.sFORMCAPTION  = "";   //Form의 Title 정보
+	this.sFORMLOCATION = "";   //Form의 Location 정보
+	this.sUSERLAVEL    = "";   //Form의 Location 정보
+
+} else {
+
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	
+	//최초 날짜 세팅
+	this.edtSHRFROM_REQD.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,6 )+'01');
+	this.edtSHRTO_REQD.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,6 ) + this.fnc_GetLastDayOfMonth(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"))));
+	//제작종류 콤보 데이터셋 가져오기
+	this.fn_getHigh_codeCombo();
+	
+	this.fn_Search();
+
+} 
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsPD_JOBNXM");
+
+	//상단 계약서 데이터 조회
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsPD_JOBNXM=dsPD_JOBNXM";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME,sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	var iRow = this.dsPD_ESTIMH.insertRow(this.dsPD_ESTIMH.rowposition + 1);
+	this.dsPD_ESTIMH.set_rowposition(iRow);
+	
+	this.dsPD_ESTIMH.setCellPos(this.fnc_GridColumnIndex(this.grdPD_CONTXH, 0));	
+
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	//기능없음
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+	
+//기능없음
+	
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function (obj:Form,  e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("",this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e); //2016 06 22 변경
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	// 조회 시 검색 조건이 반드시 있어야 하는 경우 해당 조건을 나열하여 체크 한다.
+	if ((this.fnc_DatasetChangeCheck("dsPD_ESTIMH")) && (this.fnc_Message("TMM023") == false) ) {
+		return false;
+	}
+	if ((this.fnc_DatasetChangeCheck("dsPD_ESTIMD")) && (this.fnc_Message("TMM023") == false) ) {
+		return false;
+	}
+
+	return true;
+	// 모든 조회 조건이 입력 되면 True를 반환 한다.
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	if (this.dsPD_FILEXH04.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var sQuestionText = "(" + this.fnc_Trim(this.dsPD_FILEXH04.getColumn(this.dsPD_FILEXH04.rowposition, "FILE_NAME")) + ") 파일";
+	return this.fnc_Message("TMM002", sQuestionText);
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+// 기능없음
+}
+
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " FROM_REQD=" + this.fnc_Quote(this.edtSHRFROM_REQD.value); //제작의뢰검색시작일
+		sReturnString += " TO_REQD=" + this.fnc_Quote(this.edtSHRTO_REQD.value);     //제작의뢰검색종료일
+		sReturnString += " CUST_CODE=" + this.fnc_Quote(this.edtSHRCUST_CODE.value); //광고주코드
+		sReturnString += " CUST_NAME=" + this.fnc_Quote(this.edtSHRCUST_NAME.value); //광고주명
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.edtSHRJOBN_NUMB.value); //제작번호
+		sReturnString += " JOBN_NAME=" + this.fnc_Quote(this.edtSHRJOBN_NAME.value); //제작명
+		sReturnString += " MEDA_CODE=" + this.fnc_Quote(this.cmbSHRMEDA_CODE.value); //제작내용
+		sReturnString += " HIGH_LEVL=" + this.fnc_Quote(this.cmbSHRHIGH_LEVL.value); //제작종류
+		sReturnString += " USEX_TYPE=" + this.fnc_Quote(this.cmbSHRUSEX_TYPE.value); //제작용도
+		sReturnString += " STAT_FLAG=" + this.fnc_Quote(this.cmbSHRSTAT_FLAG.value); //진행상태
+		
+	
+	} else if (sKind == "SEARCH01") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB")); //헤더의 견적번호
+	
+	} else if (sKind == "SEARCH02") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB")); //헤더의 제작번호
+		sReturnString += " PREE_CODE=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "PREE_CODE")); //헤더의 견적번호
+	
+	} else if (sKind == "SEARCH03_1" || sKind == "SEARCH03_2") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB")); //헤더의 제작번호
+		sReturnString += " PREE_CODE=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "PREE_CODE")); //헤더의 견적번호
+	
+	} else if (sKind == "SEARCH04") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB")); //헤더의 견적번호
+	
+	} else if (sKind == "SEARCH05") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+		sReturnString += " JOBN_NUMB=" + this.fnc_Quote(this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB")); //헤더의 견적번호
+	
+	}  else if (sKind == "SEARCH07") {
+	
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+	
+	} else if (sKind == "SAVE00" || sKind == "SAVE01") {
+		sReturnString = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		
+	}
+	
+	return sReturnString;
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.alert("session error");
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+		this.fnc_Information(this.stInformation, this.dsPD_JOBNXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+	} else if (sMethodName == "SEARCH01") {
+	
+		this.fnc_Information(this.tabIndex.tabpage1.stInformation00, this.dsPD_ESTIMH.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+	} else if (sMethodName == "SEARCH02") {
+	
+		this.fnc_Information(this.tabIndex.tabpage2.stInformation00, this.dsPD_ESTIMD.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+	} else if (sMethodName == "SEARCH03_1") {
+	
+		this.fnc_Information(this.tabIndex.tabpage3.stInformation00, this.dsPD_ESTIMD02.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+	} else if (sMethodName == "SEARCH05") {	
+		
+	} else if (sMethodName == "SAVE00") {
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+	
+	} else if (sMethodName == "GetCommCode") {
+		//콤보 일경우 
+		var arrParam = new Array();
+		arrParam[0] = "COMBO,cmbSHRMEDA_CODE,dsSHRCLAS_CODE,0";
+		
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+		//----------------------------------------------------		
+		// 제작내용 조회용
+		//this.fnc_GetComboSearchMEDA_CODE();
+		// 제작용도 조회용
+		this.fnc_GetComboSearchUSEX_TYPE();
+		// 진행상태 조회용
+		this.fnc_GetComboSearchSTAT_FLAG();
+		
+		// 제작내용 입력용
+		this.fnc_GetComboMEDA_CODE();
+		// 제작종류 조회용 내용을 선택하면 종류 선택 가능
+		//this.fnc_GetComboHIGH_LEVL();		
+		// 제작용도 입력용
+		this.fnc_GetComboUSEX_TYPE();
+		
+		// 제작내용 그리드용
+		this.fnc_GetComboGrdMEDA_CODE();
+		// 제작용도 그리드용
+		this.fnc_GetComboGrdUSEX_TYPE();
+		// 진행상태 그리드용
+		this.fnc_GetComboGrdSTAT_FLAG();
+//-----------------------------------------------------
+		
+		
+	}	
+
+}
+
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+ /*------------------------------------+
+ |  null 체크
+ +-------------------------------------*/
+ this.fn_nullChk = function(sValue)
+{
+	if (new String(sValue).valueOf() == "undefined") sValue = "";
+	if (sValue == null) sValue = "";
+	if (("x" + sValue == "xNaN") && (new String(sValue.length).valueOf() == "undefined")) sValue = "";
+	if (sValue.length == 0) sValue = "";
+	return sValue;
+}
+
+
+//콤보 데이터 셋 가져오기 
+this.fn_getHigh_codeCombo = function (obj) {
+
+	this.fnc_DatasetClear("dsPD_COMBO");
+
+	var sMethodName = "SEARCH07";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsPD_COMBO=dsPD_COMBO";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME,sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+
+//상단의 속성이 변경되면 하단의 탭 활성화를 확인하고 조회한다.
+this.dsPD_JOBNXM_onrowposchanged = function(obj:Dataset, e:nexacro.DSRowPosChangeEventInfo)
+{
+
+	var tab_index = this.tabIndex.tabindex;
+	this.fn_validation(tab_index);
+}
+
+this.tabIndex_onchanged = function(obj:Tab, e:nexacro.TabIndexChangeEventInfo)
+{
+	var tab_index = this.tabIndex.tabindex;
+	this.fn_validation(tab_index);
+}
+
+/*-----------------------------+
+ | 활성화된 탭 체크 후 조회 |
+ +-----------------------------*/
+this.fn_validation = function(tab_index){
+	//하단그리드
+	if(tab_index == '0'){
+		// 견적헤더 조회
+		if (!this.fn_SearchItemDTLCheck(tab_index)) return;
+		this.fnc_DatasetClear("dsPD_ESTIMH");
+
+		var sMethodName = "SEARCH01";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_ESTIMH=dsPD_ESTIMH";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+		
+	}
+	else if(tab_index == '1'){
+		// 견적상세
+		if (!this.fn_SearchItemDTLCheck(tab_index)) return;
+		this.fnc_DatasetClear("dsPD_ESTIMD");
+
+		var sMethodName = "SEARCH02";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_ESTIMD=dsPD_ESTIMD";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	}
+	else if(tab_index == '2'){
+		// 외주정산
+		if (!this.fn_SearchItemDTLCheck(tab_index)) return;
+		
+		this.fnc_DatasetClear("dsPD_ESTIMD02");
+		
+		var sMethodName = "SEARCH03_1";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_ESTIMD02=dsPD_ESTIMD02";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+		
+		this.fnc_DatasetClear("dsPD_SUJUMD02");
+		
+		var sMethodName = "SEARCH03_2";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_SUJUMD02=dsPD_SUJUMD02";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	}
+	else if(tab_index == '3'){
+		// 제작의뢰 조회
+		if (!this.fn_SearchItemDTLCheck(tab_index)) return;
+		this.fnc_DatasetClear("dsPD_JOBNXM03");
+
+		var sMethodName = "SEARCH04";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_JOBNXM03=dsPD_JOBNXM03";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	}
+	else if(tab_index == '4'){
+		// 제작물 조회
+		if (!this.fn_SearchItemDTLCheck(tab_index)) return;
+		this.fnc_DatasetClear("dsPD_FILEXH04");
+
+		var sMethodName = "SEARCH05";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPD_FILEXH04=dsPD_FILEXH04";
+		var sArgument   = this.fn_CreateArgument(sMethodName);
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	}
+}
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemDTLCheck = function () {
+	// 조회 시 검색 조건이 반드시 있어야 하는 경우 해당 조건을 나열하여 체크 한다.
+	if ((this.fnc_DatasetChangeCheck("dsPD_JOBNXM")) && (this.fnc_Message("TMM023") == false) ) {
+		return false;
+	}
+	
+	return true;
+	// 모든 조회 조건이 입력 되면 True를 반환 한다.
+}
+
+
+
+/*-----------------------+
+ |조회를 위한 제작내용 콤보박스
+ +------------------------*/
+this.fnc_GetComboSearchMEDA_CODE = function()
+{
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsSHRMEDA_CODE"; 			   //받을 Dataset명
+			arrParam1[1] = "PCM0010"; 	  			   //조회 콤보 ID
+			arrParam1[2] = "ALL"; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""						   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,cmbSHRMEDA_CODE,dsSHRMEDA_CODE,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+//제작내용 콤보 선택시 제작 종류 선택
+this.cmbSHRMEDA_CODE_oncloseup = function(obj:Combo, e:nexacro.ComboCloseUpEventInfo)
+{
+	this.fnc_GetComboSearchHIGH_LEVL();
+}
+
+/*-----------------------+
+ |조회를 위한 제작종류
+ +------------------------*/
+this.fnc_GetComboSearchHIGH_LEVL = function()
+{
+		//제작내용 선택에 따른 대분류 선택
+		var SHRCLAS_TYPE = this.cmbSHRMEDA_CODE.value
+		
+		//신코드 또는 구코드 포함 여부
+		if(this.rdoCODE_TIME.index == "0"){
+			var sCOMBO_ID = "PCM0001";
+		}else{
+			var sCOMBO_ID = "PCM0002";
+		}
+
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsSHRHIGH_LEVL"; 			   //받을 Dataset명
+			arrParam1[1] = sCOMBO_ID; 	  			   //조회 콤보 ID
+			arrParam1[2] = "ALL"; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = SHRCLAS_TYPE	   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,cmbSHRHIGH_LEVL,dsSHRHIGH_LEVL,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+
+/*-----------------------+
+ |조회를 위한 제작용도 콤보
+ +------------------------*/
+this.fnc_GetComboSearchUSEX_TYPE = function()
+{
+	
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsSHRUSEX_TYPE"; 			   //받을 Dataset명
+			arrParam1[1] = "PDM0001"; 	  			   //조회 콤보 ID
+			arrParam1[2] = "ALL"; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""					   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,cmbSHRUSEX_TYPE,dsSHRUSEX_TYPE,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+
+/*-----------------------+
+ |조회를 위한 진행상태 콤보
+ +------------------------*/
+this.fnc_GetComboSearchSTAT_FLAG = function()
+{
+	
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsSHRSTAT_FLAG"; 			   //받을 Dataset명
+			arrParam1[1] = "PDM0002"; 	  			   //조회 콤보 ID
+			arrParam1[2] = "ALL"; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""					   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,cmbSHRSTAT_FLAG,dsSHRSTAT_FLAG,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+/*-----------------------+
+ |제작내용 콤보박스
+ +------------------------*/
+this.fnc_GetComboMEDA_CODE = function()
+{
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsMEDA_CODE"; 			   //받을 Dataset명
+			arrParam1[1] = "PCM0010"; 	  			   //조회 콤보 ID
+			arrParam1[2] = ""; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""						   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,tabIndex.tabpage4.cmbMEDA_CODE,dsMEDA_CODE,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+/*-----------------------+
+ |제작용도 콤보
+ +------------------------*/
+this.fnc_GetComboUSEX_TYPE = function()
+{	
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsUSEX_TYPE"; 			   //받을 Dataset명
+			arrParam1[1] = "PDM0001"; 	  			   //조회 콤보 ID
+			arrParam1[2] = ""; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""					   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "COMBO,tabIndex.tabpage4.cmbUSEX_TYPE,dsUSEX_TYPE,0";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+
+/*-----------------------+
+ |그리드 제작내용 콤보박스
+ +------------------------*/
+this.fnc_GetComboGrdMEDA_CODE = function()
+{
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsGRDMEDA_CODE"; 			   //받을 Dataset명
+			arrParam1[1] = "PCM0010"; 	  			   //조회 콤보 ID
+			arrParam1[2] = ""; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""						   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "GRID,grdPD_JOBNXM,dsGRDMEDA_CODE,MEDA_CODE";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+		
+}
+
+/*-----------------------+
+ |그리드 제작용도 콤보
+ +------------------------*/
+this.fnc_GetComboGrdUSEX_TYPE = function()
+{
+
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsGRDUSEX_TYPE"; 			   //받을 Dataset명
+			arrParam1[1] = "PDM0001"; 	  			   //조회 콤보 ID
+			arrParam1[2] = ""; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""					   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "GRID,grdPD_JOBNXM,dsGRDUSEX_TYPE,USEX_TYPE";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+/*-----------------------+
+ |그리드 진행상태  콤보
+ +------------------------*/
+this.fnc_GetComboGrdSTAT_FLAG = function()
+{
+	
+		var arrParam1 = new Array();
+			arrParam1[0] = "dsGRDSTAT_FLAG"; 			   //받을 Dataset명
+			arrParam1[1] = "PDM0002"; 	  			   //조회 콤보 ID
+			arrParam1[2] = ""; 			  			   //Head Flags
+			arrParam1[3] = "0"; 		  			   //사용여부
+			arrParam1[4] = ""					   //조회 조건
+
+		// Bind 처리
+		var arrParam2 = new Array();
+			arrParam2[0] = "GRID,grdPD_JOBNXM,dsGRDSTAT_FLAG,STAT_FLAG";
+		this.fnc_GetUserComboSingle(arrParam1, arrParam2);
+}
+
+
+
+//그리드 콤보 오픈
+this.grdPD_JOBNXM_ondropdown = function(obj:Grid, e:nexacro.GridEditEventInfo)
+{
+    var sMEDA_CODE = this.dsPD_JOBNXM.getColumn(e.row, "MEDA_CODE");
+
+	this.dsPD_COMBO.filter("CLAS_TYPE == '" + sMEDA_CODE + "'");
+}
+
+
+/*-----------------------+
+ |콤보 변경시
+ +------------------------*/
+this.cmbMEDA_CODE_oncloseup = function(obj:Combo, e:nexacro.ComboCloseUpEventInfo)
+{
+	var sMEDA_CODE = this.cmbMEDA_CODE.value;
+	this.dsPD_COMBO.filter("CLAS_TYPE == '" + sMEDA_CODE + "'");
+	
+	var iRow = this.dsPD_JOBNXM.rowposition;
+	var sMEDA_CODE = this.dsPD_JOBNXM.getColumn(iRow, "MEDA_CODE");
+	var sHIGH_LEVL = this.dsPD_JOBNXM.getColumn(iRow, "HIGH_LEVL");
+	
+	
+	if (sMEDA_CODE != this.dsPD_COMBO.lookup("COMB_CODE", sHIGH_LEVL, "CLAS_TYPE"))
+	{
+        this.dsPD_JOBNXM.setColumn(iRow, "HIGH_LEVL", "");
+	}
+	this.dsPD_COMBO.filter("");
+}
+
+
+
+/*------------------------------------+
+ |  광고주코드 조회팝업
+ +-------------------------------------*/
+this.fn_HelpDialogeSHRCUST_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+
+	// 조회조건 - 제작항목명
+	if ((obj.name == 'imgHelpSHRCUST_NAME') || (obj.name == 'edtSHRCUST_NAME')) {
+
+		arrParam[0] = 'PDM0001';                                 //Popup ID
+		arrParam[1] = '';                                        //조건구분에 대응되는 조회조건 값
+		arrParam[2] = this.fnc_Trim(this.edtSHRCUST_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+		arrParam[3] = 'N';                                       //사용 여부 구분 포함 여부 값
+		arrParam[4] = 'edtSHRCUST_NAME';                         //현재 포커스 Componect명
+		arrParam[5] = 'edtSHRCUST_CODE,edtSHRCUST_NAME';         //초기화 및 결과 Mapping Column
+		arrParam[6] = '0,1';                                     //Mapping Column Index
+		
+		this.fnc_HelpDialogeAction(this, obj, arrParam);                                //Mapping Column Index
+	}
+	
+}
+
+/*------------------------------------+
+ |  제작번호 조회팝업
+ +-------------------------------------*/
+this.fn_HelpDialogeJOBN_NUMB = function(obj:Edit, e:nexacro.KillFocusEventInfo)
+{
+	var arrParam = new Array();
+
+	if ((obj.name == 'imgHelpSHRJOBN_NAME') || (obj.name == 'edtSHRJOBN_NAME')) {
+
+		arrParam[0] = 'PDM0005';                                 //Popup ID
+		arrParam[1] = '';                                        //조건구분에 대응되는 조회조건 값
+		arrParam[2] = this.fnc_Trim(this.edtSHRJOBN_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+		arrParam[3] = 'N';                                       //사용 여부 구분 포함 여부 값
+		arrParam[4] = 'edtSHRJOBN_NAME';                         //현재 포커스 Componect명
+		arrParam[5] = 'edtSHRJOBN_NUMB,edtSHRJOBN_NAME';         //초기화 및 결과 Mapping Column
+		arrParam[6] = '0,1';                                     //Mapping Column Index
+		
+		this.fnc_HelpDialogeAction(this, obj, arrParam);                                //Mapping Column Index
+	}
+}
+
+/*------------------------------------+
+ |  제작물탭 추가버튼 클릭시
+ +-------------------------------------*/
+this.tabIndex_tabpage5_btn_AddRow_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	var iRow = this.dsPD_FILEXH04.insertRow(this.dsPD_FILEXH04.rowposition + 1);
+	this.dsPD_FILEXH04.set_rowposition(iRow);
+
+	this.dsPD_FILEXH04.setColumn(iRow, "JOBN_NUMB", this.dsPD_JOBNXM.getColumn(this.dsPD_JOBNXM.rowposition, "JOBN_NUMB"));
+	this.dsPD_FILEXH04.setColumn(iRow, "REGI_DATE", this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,10 ));
+
+	this.tabIndex.tabpage5.grdPD_FILEXH04.setCellPos(this.fnc_GridColumnIndex(this.tabIndex.tabpage5.grdPD_FILEXH04,0));
+}
+
+/*------------------------------------+
+ |  제작물탭 제작물 파일 저장버튼
+ +-------------------------------------*/
+this.tabIndex_tabpage5_btn_FileSave_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	if (!this.fn_SaveItemCheckDTL()) return;
+
+	var sMethodName = "SAVE00";
+	var sInDataSet = "dsPD_FILEXH04=dsPD_FILEXH04:U dsFL_ATTACH04=dsFL_ATTACH04:U";
+	var sOutDataSet = "";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+}
+
+/*------------------------------------+
+ |  제작물탭 제작물 파일 삭제버튼
+ +-------------------------------------*/
+ 
+this.tabIndex_tabpage5_btn_FileDelete_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	if (this.fn_DeleteCheck()) this.dsPD_FILEXH04.deleteRow(this.dsPD_FILEXH04.rowposition);
+	this.tabIndex.tabpage5.grdPD_FILEXH04.setFocus();
+}
+
+
+
+/*------------------+
+ |  파일저장 탭 파일저장체크
+ +-------------------*/
+this.fn_SaveItemCheckDTL = function () {
+	// 공통 Head & 상세 변경 체크
+	if (this.fnc_DatasetChangeCheck("dsPD_FILEXH04") == false && this.fnc_DatasetChangeCheck("dsPD_FILEXH04") == false) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 공통 Head 정보 필수 입력 항목 체크
+	for (var i = 0; i < this.dsPD_FILEXH04.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsPD_FILEXH04.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsPD_FILEXH04.getColumn(i, "JOBN_NUMB"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "제작번호", this.dsPD_FILEXH04, i, '', '');
+		}
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  제작물관리탭 파일저장 클릭시
+ +-------------------*/
+this.tabIndex_tabpage5_grdPD_FILEXH04_oncellclick = function(obj:Grid, e:nexacro.GridClickEventInfo)
+{
+
+	if(this.tabIndex.tabpage5.grdPD_FILEXH04.getCellText(e.row,e.col)=="파일 업로드") {
+	
+		//그리드 셀 이미지 클릭시 그리드로우와 데이타셋 로우가 같은지 확인(같음)
+		//파일업로드 팝업창 호출
+		this.fnc_CallFileUplod(3,"doc,docx,ppt,pptx,xls,xlsx,pdf,hwp,txt,jpg,gif,bmp,dwg,dwf,zip,png,xml,tif","fn_CallFileUplodCallback");
+		
+	} else if(this.tabIndex.tabpage5.grdPD_FILEXH04.getCellText(e.row,e.col)=="파일 다운로드") {
+		//다운로드 펑션
+		var filePath   = this.dsPD_FILEXH04.getColumn(e.row,"FILE_PATH");
+		var phyFileNm  = this.dsPD_FILEXH04.getColumn(e.row,"PFIL_NAME");
+		var realFileNm = this.dsPD_FILEXH04.getColumn(e.row,"LFIL_NAME");
+
+		if (this.fnc_Length(filePath) > 0) {
+			this.fnc_FileDownLoad(filePath, phyFileNm, realFileNm);
+		}		
+	}
+}
+
+
+
+//공통함수 페이지에서 업무화면을 호출하면 form 컨텍스트를 찾지 못해 에러 발생.
+//form 새로 꺼내야 한다.
+this.fn_CallFileUplodCallback = function(robjds,form) {
+
+	//dataset이 없으면 이 함수가 실행되지 않는다.
+	//tmp에 업로드된 파일리스트가 담긴 dataset object 
+	
+	//기존의 데이터를 삭제해야 하는데.
+	 
+	//var objds = form.components["dsFL_ATTACH04"];
+	var objds = form.dsFL_ATTACH04;
+	//var objmainds =form.components["dsTM_EXCLXM"];
+	var objmainds =form.dsPD_FILEXH04;
+
+	var objmaingrd = form.tabIndex.tabpage5.grdPD_FILEXH04;
+	
+	//기존에 등록된 데이터는 삭제로 등록한다.
+	if((objmainds.getColumn(objmainds.rowposition, "PFIL_NAME") != "") && (objmainds.getColumn(objmainds.rowposition, "PFIL_NAME") != null )){
+		
+		var preFileName = objmainds.getColumn(objmainds.rowposition, "PFIL_NAME");
+		
+		// 만약 기존에 등록된 데이터가 이전 업로드에 업로드 하였다면(이전에 파일 업로드 후 저장하지는 않았다면...)
+		// dsFL_ATTACH04 데이터셋에도 존재한다. 방금 업로드 했기에...
+		var findRow = objds.findRow("PFIL_NAME", preFileName);
+		
+		if (findRow == -1) {
+
+			// 기존에 엑셀양식파일이 업로드 데이터셋에 존재하지 않는 경우(업로드를 한 것이 아니었다면...)
+			var iRow = objds.addRow();
+			objds.setColumn(iRow, "FILE_IDXX", objmainds.getColumn(objmainds.rowposition, "FILE_IDXX"));
+			objds.setColumn(iRow, "PFIL_NAME", objmainds.getColumn(objmainds.rowposition, "PFIL_NAME"));
+			objds.setColumn(iRow, "FILE_PATH", objmainds.getColumn(objmainds.rowposition, "FILE_PATH"));
+			
+			if(objds.updatecontrol){
+				//웹스퀘어 버전은 임의로 로우데이터를 등록해서 상태값을 변경했는데
+				//넥사크로는 ds프로퍼티에 updatecontrol 를 false로 했을 때만 setRowType 이 적용된다.
+				//그래서 addRow deleteRow로 변경함.	
+				objds.deleteRow(iRow);
+			}else{
+				//첨부파일 리스트가 바인드 되지 않은 화면은  
+				////addRow 후 deleteRow를 하면 로우가 제거 되서
+				//updatecontrol: false로 하고    setRowType 로 설정한다.
+				objds.setRowType(iRow, Dataset.ROWTYPE_DELETE);
+			}
+		
+		} else {
+			
+			if(objds.updatecontrol){
+				//웹스퀘어 버전은 임의로 로우데이터를 등록해서 상태값을 변경했는데
+				//넥사크로는 ds프로퍼티에 updatecontrol 를 false로 했을 때만 setRowType 이 적용된다.
+				//그래서 addRow deleteRow로 변경함.	
+				objds.deleteRow(findRow);
+			}else{
+				//첨부파일 리스트가 바인드 되지 않은 화면은  
+				////addRow 후 deleteRow를 하면 로우가 제거 되서
+				//updatecontrol: false로 하고    setRowType 로 설정한다.
+				objds.setRowType(findRow, Dataset.ROWTYPE_DELETE);
+			}
+			
+		}
+	}
+	
+	//업무테이블에 해당 컬럼을 저장할 때만 갱신함, 보통 FILE_IDXX만 있으면 된다.
+	objmainds.setColumn(objmainds.rowposition, "FILE_IDXX", robjds.getColumn(0, "FILE_IDXX"));
+	objmainds.setColumn(objmainds.rowposition, "FILE_NAME", robjds.getColumn(0, "LFIL_NAME"));
+	
+	//현재 첨부파일이 tmp 폴더에 있는 상태에서 다운로드 버튼을 활성화 시킨다. (다운로드를 하려면 FILE_PATH,PFIL_NAME,LFIL_NAME 가 필요함.
+	objmainds.setColumn(objmainds.rowposition, "FILE_PATH", robjds.getColumn(0, "FILE_PATH"));
+	objmainds.setColumn(objmainds.rowposition, "PFIL_NAME", robjds.getColumn(0, "PFIL_NAME"));
+	objmainds.setColumn(objmainds.rowposition, "LFIL_NAME", robjds.getColumn(0, "LFIL_NAME"));
+
+	objmainds.setColumn(objmainds.rowposition, "DOWNLOAD", "파일 다운로드");
+
+	//저장버튼을 누르게 되면 tmp폴더에 있는 파일이 실제 폴더로 옮겨지기 때문에 FILE_PATH를 갱신하기 위해서 검색을 다시 해야 한다.
+	
+	//팝업창에서 추가된 파일리스트를 추가상태로 복사한다.(copyData를 사용하면 초기상태가된다)
+	for(i = 0; i < robjds.rowcount; i++){
+		var iRow = objds.addRow();
+		objds.copyRow(iRow, robjds, i);
+
+		if(objds.updatecontrol){
+			//copyRow 시
+			//updatecontrol 속성의 값이 'true'이면 복사된 행의 타입은 ROWTYPE_UPDATE가 되고, 'false'이면 ROWTYPE_NORMAL
+		}else{
+			objds.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+		}
+	}
+}
+
+
+
+this.rdoCODE_TIME_onitemchanged = function(obj:Radio, e:nexacro.ItemChangeEventInfo)
+{
+	this.fnc_GetComboSearchHIGH_LEVL();
+}
+]]></Script>
+  </Form>
+</FDL>

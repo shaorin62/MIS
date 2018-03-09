@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ComPostPopup">
+<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+
+<select id="PKG_POSTPOPUP.SP_POSTPOPUP_SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+<![CDATA[
+          
+SELECT /* PKG_POSTPOPUP.SP_POSTPOPUP_SEARCH00 우편번호 검색(도로명 검색) */
+       B.ZIPCODE  AS POST_VIEW
+     , A.SIDO_NM  AS SIDO
+     , A.SIGUNGU_NM AS SIGUNGU
+     , A.UM_NM AS UPMYUN
+     , A.RD_NM || ' ' || B.BLD_MAIN_NO ||DECODE(B.BLD_SUB_NO,0,'', '-'||B.BLD_SUB_NO)  
+       || CASE WHEN B.BLD_NM IS NOT NULL THEN ' ('||B.BLD_NM||')' ELSE  '' END    AS DORONAME 
+     , (SELECT DISTINCT X.CITYPROVIN FROM TM_CITYCD X WHERE SUBSTR(X.CITY_CODE,1,5) = SUBSTR(A.RD_NM_CD,1,5)) ||
+       ' ' || B.SIGUNGU_NM || ' ' || A.RD_NM || ' ' || B.BLD_MAIN_NO ||DECODE(B.BLD_SUB_NO,0,'', '-'||B.BLD_SUB_NO) AS ADDR_VIEW
+     , CASE WHEN B.BLD_NM IS NOT NULL THEN ' ('||B.BLD_NM||')' ELSE  '' END AS ADDR_VIEW2                
+ FROM INSUAP.KTCU00_RDNM_MAST A, INSUAP.KTCU00_RDNM_DTL B
+WHERE A.RD_NM_CD = B.RD_NM_CD
+  AND A.DISPLAY_YN = 'Y'       
+  AND B.UNQ_BLD_MNO LIKE #cmbSHRSIGUNGU# ||'%'
+]]>
+<isNotEmpty property="edtSHRDORONAME" prepend="AND">
+	  A.RD_NM LIKE '%' || #edtSHRDORONAME#||'%'  
+</isNotEmpty>
+<isNotEmpty property="edtSHRBDLNAME" prepend="AND">
+     BLD_NM LIKE '%' || #edtSHRBDLNAME#||'%'
+</isNotEmpty>
+  
+                       
+ORDER BY SUBSTR(a.RD_NM_CD,1,5), a.RD_NM , TO_NUMBER(b.BLD_MAIN_NO),TO_NUMBER(b.BLD_SUB_NO)
+  
+
+</select>
+
+</sqlMap>

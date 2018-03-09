@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMB0020">
+    <typeAlias alias="egovMap"
+        type="egovframework.rte.psl.dataaccess.util.EgovMap" />                          
+
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 임선빈
+     작  성  일 : 2014.10.17
+     내       용 : 프로그램정보관리조회
+******************************************************************************* */
+-->
+    <select id="PKG_TMMB0020.SP_TMMB0020_SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+        <![CDATA[
+            SELECT /* PKG_TMMB0020.SP_TMMB0020_SEARCH00.프로그램정보관리조회 */ 
+                   PROG_IDXX   /* 프로그램ID */
+                 , PROG_NAME   /* 프로그램명 */
+                 , SYST_CODE   /* 시스템코드_SYST_CODE */
+                 , PGGB_CODE   /* 프로그램구분_PGGB_CODE */
+                 , PROG_PATH   /* 프로그램경로 */
+                 , USEX_YSNO   /* 사용여부 */
+              FROM TM_PROGXM
+             WHERE SYST_CODE = DECODE(#cmbSHRSYST_CODE#, NULL, SYST_CODE, #cmbSHRSYST_CODE#)
+               AND PGGB_CODE = DECODE(#cmbSHRPGGB_CODE#, NULL, PGGB_CODE, #cmbSHRPGGB_CODE#)
+               AND UPPER(PROG_NAME||PROG_IDXX)  LIKE UPPER('%'||#edtSHRPROG_NAME#||'%')
+             ORDER BY PROG_IDXX
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 임선빈
+     작  성  일 : 2014.10.17
+     내       용 : 프로그램정보관리 저장
+******************************************************************************* */
+-->
+    <insert id="PKG_TMMB0020.SP_TMMB0020_SAVE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+	        INSERT INTO TM_PROGXM ( /* PKG_TMMB0020.SP_TMMB0020_SAVE00.프로그램정보관리 저장 */
+	               PROG_IDXX        /* 프로그램ID */
+	              ,PROG_NAME        /* 프로그램명 */
+	              ,SYST_CODE        /* 시스템코드[SYST_CODE] */
+	              ,PGGB_CODE        /* 프로그램구분[PGGB_CODE] */
+	              ,PROG_PATH        /* 프로그램경로 */
+	              ,USEX_YSNO        /* 사용여부 */
+	              ,INST_DATE        /* 등록일시 */
+	              ,INST_USID        /* 등록자 */
+	              ,UPDT_DATE        /* 수정일시 */
+	              ,UPDT_USID        /* 수정자 */
+	              )
+	       VALUES (
+	               #PROG_IDXX#       /* 프로그램ID */
+	              ,#PROG_NAME#       /* 프로그램명 */
+	              ,#SYST_CODE#       /* 시스템코드[SYST_CODE] */
+	              ,#PGGB_CODE#       /* 프로그램구분[PGGB_CODE] */
+	              ,#PROG_PATH#       /* 프로그램경로 */
+	              ,#USEX_YSNO#       /* 사용여부 */
+	              ,SYSDATE           /* 등록일시 */
+	              ,#UPDT_USID#       /* 등록자 */
+	              ,SYSDATE           /* 수정일시 */
+	              ,#UPDT_USID#       /* 수정자 */
+	              )
+        ]]>
+    </insert>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 임선빈
+     작  성  일 : 2014.10.17
+     내       용 : 프로그램정보관리 수정
+******************************************************************************* */
+-->
+    <update id="PKG_TMMB0020.SP_TMMB0020_UPDATE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+	        UPDATE TM_PROGXM   /* PKG_TMMB0020.SP_TMMB0020_UPDATE00.프로그램정보관리 수정 */
+	           SET  PROG_NAME = #PROG_NAME#  /* 프로그램명 */
+	               ,SYST_CODE = #SYST_CODE#  /* 시스템코드[SYST_CODE] */
+	               ,PGGB_CODE = #PGGB_CODE#  /* 프로그램구분[PGGB_CODE] */
+	               ,PROG_PATH = #PROG_PATH#  /* 프로그램경로 */
+	               ,USEX_YSNO = #USEX_YSNO#  /* 사용여부 */
+	               ,UPDT_DATE = SYSDATE      /* 수정일시 */
+	               ,UPDT_USID = #UPDT_USID#  /* 수정자 */
+	         WHERE PROG_IDXX  = #PROG_IDXX#  /* 프로그램ID */
+        ]]>
+    </update>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 임선빈
+     작  성  일 : 2014.10.17
+     내       용 : 프로그램정보관리 삭제
+******************************************************************************* */
+-->
+    <delete id="PKG_TMMB0020.SP_TMMB0020_DELETE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+	        DELETE FROM TM_PROGXM           /* PKG_TMMB0020.SP_TMMB0020_DELETE00.프로그램정보관리 삭제 */
+	         WHERE PROG_IDXX = #PROG_IDXX#   /* 프로그램ID */
+        ]]>
+    </delete>
+
+</sqlMap>

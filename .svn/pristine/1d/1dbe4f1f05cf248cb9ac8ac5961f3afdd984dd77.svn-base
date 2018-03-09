@@ -1,0 +1,467 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PCMA0040">
+
+<!--  
+ *   프로그램명 : 제작 제작사 관리
+ *   작 성 일 : 2016.09.06
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+	
+	
+	<!-- 검색 조건 -->
+	<sql id="search">
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			  A.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="BIZR_NUMB">
+			  A.BIZR_NUMB LIKE '%' || REPLACE(#BIZR_NUMB#,'-','') || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUCL_CODE">
+			  B.CUCL_CODE = #CUCL_CODE#
+		</isNotEmpty>
+	</sql>
+	
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 제작사 조회
+     파라미터   : 
+     -->
+	<select id="PCMA0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		              SELECT					/* PCMA0040.SEARCH00.제작제작사 조회 */  
+						DISTINCT
+						A.CUST_CODE     		/* 거래처코드 */
+						,A.CUST_NAME     	/* 거래처명 */
+						,A.CUTY_CODE     	/* 거래처구분코드 */
+						,CASE WHEN A.RETY_CODE  IS NOT NULL THEN 1 ELSE 0 END AS RETY_CODE    /* 관계사구분코드 */
+						,A.BIZR_NUMB     		/* 사업자번호 */
+						,A.RERN_NUMB     	/* 주민등록번호 */
+						,A.OWNR_NAME       /* 대표자명 */
+						,CASE A.CITY_CODE WHEN TO_NCHAR(1) THEN '법인' ELSE '개인' END CITY_CODE    /* 법인개인구분코드 */
+						,A.BSNS_STAT     	/* 업태 */
+						,A.BSNS_TYPE     	/* 업종 */
+						,A.POST_NUMB     	/* 우편번호 */
+						,A.ADDR_DESC     	/* 주소 */
+						,A.DTL1_ADDR     	/* 상세1주소 */
+						,A.DTL2_ADDR     	/* 상세2주소 */
+						,A.TELE_NUMB     	/* 전화번호 */
+						,A.USEX_YSNO     	/* 사용여부 */
+						,A.CITY_CODE
+						FROM TA_CUSTXM A 
+						LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+						AND B.CUCL_CODE IN ('FA260110','FA260130')   
+						WHERE 1=1 
+						AND CUCL_CODE IS NOT NULL
+			]]>
+				<include refid="search" />	
+			<![CDATA[
+			
+						ORDER BY  A.CITY_CODE, 
+						CASE WHEN SUBSTR(A.CUST_NAME,1,3)= '(주)' THEN SUBSTR(A.CUST_NAME,4,100)
+						WHEN SUBSTR(A.CUST_NAME,1,3)= '(사)' THEN SUBSTR(A.CUST_NAME,4,100)
+						WHEN SUBSTR(A.CUST_NAME,1,3)= '(유)' THEN SUBSTR(A.CUST_NAME,4,100)
+						WHEN SUBSTR(A.CUST_NAME,1,3)= '(재)' THEN SUBSTR(A.CUST_NAME,4,100)
+						WHEN SUBSTR(A.CUST_NAME,1,3)= '(학교법인)' THEN SUBSTR(A.CUST_NAME,4,100)
+						ELSE A.CUST_NAME END  ASC
+						
+			]]>
+	</select>
+	
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.06
+     내      용 : 제작 제작사하단 업종분류 조회 
+     파라미터   : 상단의 사업자 번호로 조회 하여 무조건 1건은 조회 됨.
+     -->
+	<select id="PCMA0040.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		        SELECT					/* PCMA0040.SEARCH01.제작제작사 조회 하단 업종분류조회 */
+				B.CUST_CODE   		/* 거래처코드 */
+				, B.CUST_NAME
+				, CASE WHEN NVL(B.BIZR_NUMB,' ') = ' ' THEN B.RERN_NUMB ELSE B.BIZR_NUMB END BIZR_NUMB		/* 사업자번호 */
+				, A.CLAS_CODE  		/* 업종현황 */
+				, A.ITEM_CODE  		/* 업종상세 */
+				, CASE A.AGCY_YSNO WHEN 'Y' THEN '1' ELSE '0' END AGCY_YSNO  /*에이전시구분*/
+                FROM PD_CLASXM A 
+                RIGHT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUST_CODE = #CUST_CODE#
+			]]>
+	</select>
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.06
+     내      용 : 제작 제작사하단 광고주 팀 조회 
+     파라미터   : 
+     			  	
+     -->
+	<select id="PCMA0040.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+          	 SELECT											/* PCMA0040.SEARCH02.제작제작사 조회 하단 광고주팀 조회 */
+                 '0' CHK										/* 선택 */
+                 ,NVL(A.GUBN_FLAG,0) GUBN_FLAG /* 사업부구분 */
+                 ,A.SUBX_CODE                           /* 사업부코드 */
+                 ,C.CUST_NAME SUBX_NAME         /* 사업부명 */
+                 ,A.CUST_NAME                          /* 광고주팀명 */
+                 ,A.CUST_CODE                          /* 광고주팀코드 */
+                 ,A.HIGH_CODE                           /* 거래처코드 */
+                 ,B.CUST_NAME HIGH_NAME          /* 거래처명 */
+                 ,CASE A.USEX_YSNO WHEN 'Y' THEN '1' ELSE '0' END USEX_YSNO  /*사용유무*/
+                 ,A.BIZR_NUMB                           /* 사업자번호 */
+                FROM PD_CUSTXM A 
+                LEFT JOIN TA_CUSTXM B ON A.BIZR_NUMB = B.BIZR_NUMB AND A.HIGH_CODE = B.CUST_CODE
+                LEFT JOIN PD_CUSTXM C ON A.SUBX_CODE = C.CUST_CODE
+                WHERE 1=1 
+                AND A.HIGH_CODE = #CUST_CODE#
+			]]>
+	</select>
+	
+	
+		<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.11
+     내      용 : 제작 모든 거래처 가져오기 
+     파라미터   : 
+     			  	
+     -->
+	<select id="PCMA0040.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+          	  	SELECT                                		 /* PCMA0040.SEARCH03.제작 모든 거래처 가져오기 */
+				A.CUST_NAME                    			 /* 거래처명 */
+				, A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+				, ' ' AS USEX_CODE                 		 /* NULL */
+				FROM TA_CUSTXM A 
+				LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+				WHERE 1=1
+				AND B.CUCL_CODE IN ('FA260110','FA260130')
+				AND B.CUCL_CODE IS NOT NULL
+				group by A.CUST_NAME
+			]]>
+	</select>
+	
+	
+	
+			<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작 계약서 담당자 등록을 위한 조회 
+     파라미터   : 
+     			  	
+     -->
+	<select id="PCMA0040.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[           	  	
+				SELECT 
+				0 CHK
+				,A.CUST_CODE 
+				,B.CUST_NAME
+				,A.IDXX_NUMB
+				,A.EMPL_NAME
+				,A.PHON_NUMB
+				,A.EMAL_ADDR
+				,A.MEMO_FILD
+				,A.REPR_EMPL
+				FROM PD_EMPLMX A 
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				WHERE 1=1
+				AND A.CUST_CODE = #CUST_CODE#
+				ORDER BY A.REPR_EMPL, A.IDXX_NUMB
+			]]>
+	</select>
+	
+
+	<!-- 
+      작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 업종분류관리 저장
+     파라미터   :  			  	
+     -->
+	<insert id="PCMA0040.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+
+              INSERT INTO PD_CLASXM ( 					/* PCMA0040.SAVE00.제작제작사 제작업종분류관리 저장 */	
+               CUST_CODE        								/* 제작사코드 */
+              ,BIZR_NUMB        								/* 제작사사업자번호 */
+              ,CLAS_CODE        								/* 업종현황 */
+              ,ITEM_CODE        								/* 업종상세 */
+              ,AGCY_YSNO        								/* 에이전시구분 */
+              ,INST_USID        								/* 입력자 */
+              ,INST_DATE        								/* 입력일자 */
+              ,UPDT_USID        								/* 수정자 */
+              ,UPDT_DATE        								/* 수정일자 */
+              )
+       VALUES (
+               #CUST_CODE#       							/* 제작사코드 */
+              ,#BIZR_NUMB#       							/* 제작사사업자번호 */
+              ,#CLAS_CODE#       							/* 업종현황 */
+              ,#ITEM_CODE#       							/* 업종상세 */
+              ,#AGCY_YSNO#       							/* 에이전시구분 */
+              ,#UPDT_USID#   								/* 입력작업자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+              ,#UPDT_USID#   								/* 수정작업자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              )
+	]]>
+	</insert>
+	
+	<!-- 
+  	 작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 업종분류관리  수정
+     파라미터   :  			  	
+     -->
+	<update id="PCMA0040.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        
+            UPDATE PD_CLASXM                				/* PCMA0040.UPDATE00.제작제작사 제작업종분류관리 수정 */
+              SET CLAS_CODE = #CLAS_CODE#   		/* 업종현황 */
+               ,ITEM_CODE = #ITEM_CODE#  			/* 업종상세 */
+               ,AGCY_YSNO = #AGCY_YSNO#  			/* 에이전시구분 */
+               ,UPDT_USID = #UPDT_USID#   			/* 수정작업자 */
+               ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+           WHERE 1=1
+           AND CUST_CODE = #CUST_CODE#  			/* 제작사코드 */
+         
+         
+	]]>
+	</update>
+	
+		<!-- 
+      작  성  자 : 오세훈
+     작  성  일 : 2016.09.07
+     내      용 : 광고주 팀 저장
+     파라미터   :  			  	
+     -->
+	<insert id="PCMA0040.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+	
+          INSERT INTO PD_CUSTXM ( 				/* PCMA0040.SAVE01.광고주팀 저장 */
+               CUST_CODE        						/* 광고주팀코드 */
+              ,BIZR_NUMB        						/* 사업자번호 */
+              ,CUST_NAME        						/* 광고주팀명 */
+              ,SUBX_CODE        						/* 사업부코드 */
+              ,HIGH_CODE        						/* 거래처코드 */
+              ,USEX_YSNO        						/* 사용유무 */
+              ,GUBN_FLAG        						/* 사업부/팁구분 */
+              ,INST_USID        						/* 입력자 */
+              ,INST_DATE        						/* 입력일자 */
+              ,UPDT_USID        						/* 수정자 */
+              ,UPDT_DATE        						/* 수정일자 */
+              )
+       VALUES (
+               #CUST_CODE#       					/* 광고주팀코드 */
+              ,#BIZR_NUMB#      					/* 사업자번호 */
+              ,#CUST_NAME#       					/* 광고주팀명 */
+              ,#SUBX_CODE#       					/* 사업부코드 */
+              ,#HIGH_CODE#       					/* 거래처코드 */
+              ,#USEX_YSNO#       					/* 사용유무 */
+              ,#GUBN_FLAG#       					/* 사업부/팁구분 */
+               ,#UPDT_USID#   						/* 입력작업자 */
+               ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+               ,#UPDT_USID#   						/* 수정작업자 */
+               ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              )
+   
+	]]>
+	</insert>
+
+
+
+		<!-- 
+      작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 계약 담당자 등록 저장
+     파라미터   :  			  	
+     -->
+	<insert id="PCMA0040.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+	
+                 INSERT INTO PD_EMPLMX (  /* PCMA0040.SAVE02 *//* [제작사 계약관리 담당자 정보] */
+                CUST_CODE        /* 광고주코드 */
+               ,IDXX_NUMB        /* 순번 */
+               ,EMPL_NAME        /* 계약담당자명 */
+               ,PHON_NUMB        /* 계약 담당자전화번호 */
+               ,EMAL_ADDR        /* 계약담당자 이메일 */
+               ,MEMO_FILD        /* 비고 */
+               ,REPR_EMPL        /* 대표담당자 */
+               ,REF1_FILD        /* 여분1 */
+               ,REF2_FILD        /* 여분2 */
+               ,REF3_FILD        /* 여분3 */
+               ,REF4_FILD        /* 여분4 */
+               ,REF5_FILD        /* 여분5 */
+               ,INST_USID        /* 입력자 */
+               ,INST_DATE        /* 입력일자 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일자 */
+              )
+       VALUES (
+               #CUST_CODE#       /* 광고주코드 */
+              ,#IDXX_NUMB#       /* 순번 */
+              ,#EMPL_NAME#       /* 계약담당자명 */
+              ,#PHON_NUMB#       /* 계약담당자 전화번호 */
+              ,#EMAL_ADDR#       /* 계약담당자 이메일주소 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#REPR_EMPL#       /* 대표담당자 */
+              ,#REF1_FILD#       /* 여분1 */
+              ,#REF2_FILD#       /* 여분2 */
+              ,#REF3_FILD#       /* 여분3 */
+              ,#REF4_FILD#       /* 여분4 */
+              ,#REF5_FILD#       /* 여분5 */
+              ,#UPDT_USID#   						/* 생성작업자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+               ,#UPDT_USID#   						/* 수정작업자 */
+               ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              )
+   
+	]]>
+	</insert>
+
+
+
+
+<!-- 
+  	 작  성  자 : 오세훈
+     작  성  일 : 2016.09.07
+     내      용 : 제작 하단 광고주 팀 코드 수정
+     파라미터   :  			  	
+     -->
+	<update id="PCMA0040.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+                UPDATE PD_CUSTXM               			/* PCMA0040.UPDATE01.광고주팀 수정 */
+               SET  BIZR_NUMB = #BIZR_NUMB#  		/* 사업자번호 */
+               ,CUST_NAME = #CUST_NAME#  			/* 광고주팀명 */
+               ,SUBX_CODE = #SUBX_CODE#  			/* 사업부코드 */
+               ,HIGH_CODE = #HIGH_CODE#  			/* 거래처코드 */
+               ,USEX_YSNO = #USEX_YSNO#  			/* 사용유무 */
+               ,SORT_ORDR = #SORT_ORDR#  			/* 정렬구분 */
+               ,GUBN_FLAG = #GUBN_FLAG#  			/* 사업부/팁구분 */
+               ,UPDT_USID = #UPDT_USID#   			/* 수정작업자 */
+               ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+               WHERE CUST_CODE = #CUST_CODE#  /* 광고주팀코드 */
+           
+         
+	]]>
+	</update>
+	
+	
+	<!-- 
+  	 작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작 하단 견적서 담당자 등록 화면
+     파라미터   :  			  	
+     -->
+	<update id="PCMA0040.UPDATE02" parameterClass="hashmap">
+	<![CDATA[
+                        UPDATE PD_EMPLMX    /* PCMA0040.UPDATE02 *//* [제작 계약서 담당자 수정] */
+           SET EMPL_NAME = #EMPL_NAME#  /* 계약 담당자 이름 */
+             , PHON_NUMB = #PHON_NUMB#  /* 담당자 전화번호 */
+             , EMAL_ADDR = #EMAL_ADDR#  /* 담당자 이메일주소 */
+             , MEMO_FILD = #MEMO_FILD#  /* 비고 */
+             , REPR_EMPL = #REPR_EMPL#  /* 대표담당자 구분 */
+             , REF1_FILD = #REF1_FILD#  /* 여분1 */
+             , REF2_FILD = #REF2_FILD#  /* 여분2 */
+             , REF3_FILD = #REF3_FILD#  /* 여분3 */
+             , REF4_FILD = #REF4_FILD#  /* 여분4 */
+             , REF5_FILD = #REF5_FILD#  /* 여분5 */
+              ,UPDT_USID = #UPDT_USID#   			/* 수정작업자 */
+              ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              WHERE CUST_CODE = #CUST_CODE#  /* 광고주팀코드 */
+              AND IDXX_NUMB = #IDXX_NUMB#  /* 광고주팀코드 */
+           
+         
+	]]>
+	</update>
+	
+	
+	<!-- 
+        작  성  자 : 오세훈
+	     작  성  일 : 2016.08.30
+	     내      용 : 제작 업종분류관리 삭제 
+	     파라미터   :  			  	
+     -->
+	<delete id="PCMA0040.DELETE00" parameterClass="hashmap">
+	<![CDATA[		
+			DELETE FROM PD_CLASXM           /* PCMA0040.DELETE00.제작업종분류 삭제 */
+             WHERE 1=1
+             AND CUST_CODE = #CUST_CODE#  /*제작사코드*/
+	]]>		
+	</delete>
+	
+		<!-- 
+        작  성  자 : 오세훈
+	     작  성  일 : 2016.09.07
+	     내      용 : 제작 제작사 하단 광고주 팀 관리 탭 관리 삭제 
+	     파라미터   :  			  	
+     -->
+	<delete id="PCMA0040.DELETE01" parameterClass="hashmap">
+	<![CDATA[		
+			 DECLARE
+				BEGIN
+				
+			    DELETE FROM PD_CUSTXM
+                WHERE CUST_CODE = #CUST_CODE#;
+                
+		       	END; 
+	]]>		
+	</delete>
+	
+	
+			<!-- 
+        작  성  자 : 오세훈
+	     작  성  일 : 2016.12.23
+	     내      용 : 제작 제작사 하단 광고주 팀 관리 탭 관리 삭제 
+	     파라미터   :  			  	
+     -->
+	<delete id="PCMA0040.DELETE02" parameterClass="hashmap">
+	<![CDATA[		
+			 DECLARE
+				BEGIN
+				
+				    DELETE PD_EMPLMX
+					WHERE 1=1
+					AND CUST_CODE = #CUST_CODE#
+					AND IDXX_NUMB = #IDXX_NUMB#
+                ;
+		       	END; 
+	]]>		
+	</delete>
+	
+	
+	
+	
+	
+	<!-- 업종분류 저장 방식 선택 -->
+	<select id="PCMA0040.getROW_TYPE" resultClass="int">			
+		        SELECT COUNT(*) FROM PD_CLASXM
+        		WHERE CUST_CODE = #CUST_CODE#
+	</select>
+	
+	<!-- 광고주 팀 코드 생성-->
+	<select id="PCMA0040.getCUST_CODE" resultClass="String">			
+		        
+                SELECT 
+		        'A' || LPAD(MAX(CAST(SUBSTR(CUST_CODE,2,6) AS INTEGER))+1,5,'0') 
+		        FROM PD_CUSTXM
+		        WHERE 1=1
+	</select>
+	
+		<!-- 제작 계약 담당자 순번 생성-->
+	<select id="PCMA0040.getIDXX_NUMB" resultClass="String">			
+		        
+                SELECT 
+				NVL(MAX(CAST(IDXX_NUMB AS NUMBER)),0) + 1 
+				FROM PD_EMPLMX
+				WHERE CUST_CODE = #CUST_CODE#
+
+	</select>
+	
+
+	
+	
+</sqlMap>

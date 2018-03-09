@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="TXMA0015">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용 : 부가세자료집계처리 조회
+********************************************************************************/
+-->
+    <select id="TXMA0015.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+            SELECT /* TXMA0015.SEARCH00.부가세자료집계처리 조회 */
+                   #ACCT_GUBN# AS BRANCH_CD
+                 , #VAT_YYYY# AS VAT_YYYY
+                 , A.CODD_VALU AS VAT_QUARTER
+                 , A.CODD_DESC
+                 , B.CLSE_YSNO
+                 , B.REMK_200X                                                                   
+                 , SF_GET_EMPLNAME(B.INST_USID) AS INST_USID
+                 , TO_CHAR(B.INST_DATE, 'YYYYMMDDHH24MISS') AS INST_DATE
+                 , SF_GET_EMPLNAME(B.UPDT_USID) AS UPDT_USID
+                 , TO_CHAR(B.UPDT_DATE, 'YYYYMMDDHH24MISS') AS UPDT_DATE
+              FROM VI_TM_CODEXD A
+         LEFT JOIN TA_VATCLS B
+                ON B.BRANCH_CD = #ACCT_GUBN#
+               AND B.VAT_YYYY = #VAT_YYYY#
+               AND A.CODD_VALU = B.VAT_QUARTER
+             WHERE A.CODH_FLNM = 'VATX_QUTR'
+          ORDER BY A.SORT_ORDE
+    ]]> 
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용  : 부가세 마감 여부 체크
+********************************************************************************/
+--> 
+    <select id="TXMA0015.SEARCHXX" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        DECLARE
+            /* TXMA0015.SEARCHXX.부가세 마감 여부 체크 */
+            sCLSE_YSNO VARCHAR2(1);
+            sVAT_NM VARCHAR2(12);
+        BEGIN
+             BEGIN
+                 SELECT NVL(A.CLSE_YSNO, '0')
+                   INTO sCLSE_YSNO
+                   FROM TA_VATCLS A
+                  WHERE BRANCH_CD = #BRANCH_CD#
+                    AND VAT_YYYY = #VAT_YYYY#
+                    AND VAT_QUARTER = #VAT_QUARTER# 
+                      ;
+                  
+             EXCEPTION 
+                  WHEN NO_DATA_FOUND THEN sCLSE_YSNO := '0';
+             END;
+              
+             IF sCLSE_YSNO = '1' THEN
+             
+                 IF #VAT_QUARTER# = '1' THEN
+                    sVAT_NM := '1기예정';
+                 ELSIF #VAT_QUARTER# = '2' THEN
+                    sVAT_NM := '1기확정';
+                 ELSIF #VAT_QUARTER# = '3' THEN
+                    sVAT_NM := '2기예정';
+                 ELSIF #VAT_QUARTER# = '4' THEN
+                    sVAT_NM := '2기확정';
+                 ELSE
+                    sVAT_NM := '';
+                 END IF;
+                 
+                 RAISE_APPLICATION_ERROR(-20000, #VAT_YYYY# || '년도 ' || sVAT_NM || '부가세는 마감되었습니다!');
+             END IF;
+        END;
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용  : 부가세자료집계처리 저장
+********************************************************************************/
+--> 
+    <insert id="TXMA0015.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE
+            /* TXMA0015.SAVE00.부가세자료집계처리 저장 */
+            v_ROWCNT INT;
+        BEGIN
+            SELECT COUNT(0) INTO v_ROWCNT
+              FROM TA_VATCLS
+             WHERE BRANCH_CD = #BRANCH_CD#
+               AND VAT_YYYY = #VAT_YYYY#
+               AND VAT_QUARTER = #VAT_QUARTER#
+               ;
+
+            IF v_ROWCNT = 0 THEN
+             INSERT INTO TA_VATCLS (
+                         BRANCH_CD
+                       , VAT_YYYY
+                       , VAT_QUARTER
+                       , CLSE_YSNO
+                       , REMK_200X
+                       , INST_USID
+                       , INST_DATE
+                       , UPDT_USID
+                       , UPDT_DATE
+                ) VALUES (
+                         #BRANCH_CD#
+                       , #VAT_YYYY#
+                       , #VAT_QUARTER#
+                       , #CLSE_YSNO#
+                       , #REMK_200X#
+                       , #UPDT_USID#
+                       , SYSDATE
+                       , #UPDT_USID#
+                       , SYSDATE
+                );
+            ELSE
+                UPDATE TA_VATCLS
+                   SET CLSE_YSNO = #CLSE_YSNO#
+                     , REMK_200X = #REMK_200X#
+                     , UPDT_USID = #UPDT_USID#
+                     , UPDT_DATE = SYSDATE
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#
+                   ;
+            END IF;
+        END;
+
+    ]]>
+    </insert>
+</sqlMap>

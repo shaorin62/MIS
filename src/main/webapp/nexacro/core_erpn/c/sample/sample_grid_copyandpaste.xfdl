@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="frm_type08" classname="frm_type08" position="absolute" titletext="Grid 복사&amp;붙여넣기" inheritanceid="comp_workFrm" left="0" width="761" top="0" height="430" onload="fn_FormLoadSetting">
+    <Layouts>
+      <Layout>
+        <Grid id="grd_copy_paste" taborder="0" position="absolute" binddataset="Dataset00" selecttype="multirow" cellsizingtype="none" onkeydown="grd_copy_paste_onkeydown" autofittype="col" left="15" width="732" top="56" height="169" autosizingtype="none">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="161"/>
+                <Column size="159"/>
+                <Column size="159"/>
+                <Column size="160"/>
+                <Column size="149"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="항목1"/>
+                <Cell col="1" text="항목2"/>
+                <Cell col="2" text="항목3"/>
+                <Cell col="3" text="항목4"/>
+                <Cell col="4" text="항목5"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="none" text="bind:Column0" autosizerow="default"/>
+                <Cell col="1" edittype="none" text="bind:Column1"/>
+                <Cell col="2" edittype="none" text="bind:Column2"/>
+                <Cell col="3" edittype="none" text="bind:Column3"/>
+                <Cell col="4" edittype="none" text="bind:Column4"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="grd_copy_paste00" taborder="1" binddataset="Dataset01" selecttype="multirow" cellsizingtype="col" autofittype="col" onkeydown="grd_copy_paste_onkeydown" position="absolute" left="15" width="732" top="246" height="169">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="161"/>
+                <Column size="159"/>
+                <Column size="159"/>
+                <Column size="160"/>
+                <Column size="149"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="항목1"/>
+                <Cell col="1" text="항목2"/>
+                <Cell col="2" text="항목3"/>
+                <Cell col="3" text="항목4"/>
+                <Cell col="4" text="항목5"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="none" text="bind:Column0"/>
+                <Cell col="1" edittype="none" text="bind:Column1"/>
+                <Cell col="2" edittype="none" text="bind:Column2"/>
+                <Cell col="3" edittype="none" text="bind:Column3"/>
+                <Cell col="4" edittype="none" text="bind:Column4"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static02" text="row, multrow 만 지원" position="absolute" left="15" width="360" top="15" height="15" cssclass="sta_WF_subtitle"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset00" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+          <Column id="Column2" type="STRING" size="256"/>
+          <Column id="Column3" type="STRING" size="256"/>
+          <Column id="Column4" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="Column0">111111111111111111111111111111111111111111</Col>
+            <Col id="Column1">2222</Col>
+            <Col id="Column2">3333</Col>
+            <Col id="Column3">4</Col>
+            <Col id="Column4">5</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">a</Col>
+            <Col id="Column1">b</Col>
+            <Col id="Column2">c</Col>
+            <Col id="Column3">d</Col>
+            <Col id="Column4">e</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">aa</Col>
+            <Col id="Column1">bbb</Col>
+            <Col id="Column2">cc</Col>
+            <Col id="Column3">dd</Col>
+            <Col id="Column4">ee</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="Dataset01" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+          <Column id="Column2" type="STRING" size="256"/>
+          <Column id="Column3" type="STRING" size="256"/>
+          <Column id="Column4" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+            <Col id="Column2">3</Col>
+            <Col id="Column3">4</Col>
+            <Col id="Column4">5</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">a</Col>
+            <Col id="Column1">b</Col>
+            <Col id="Column2">c</Col>
+            <Col id="Column3">d</Col>
+            <Col id="Column4">e</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[include "script::lib_script_common.xjs"
+
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_GridSetting(this);
+
+}
+
+/* Grid 키다운 이벤트 */
+this.grd_copy_paste_onkeydown = function (obj:Grid, e:KeyEventInfo)
+{
+	// 복사(Ctrl + C), 붙여넣기(Ctrl + V) 키입력처리 공통함수 호출
+	this.fnc_GrdCopy_Paste(obj, e);
+}
+
+
+/**
+ * Grid/Excel간 Copy & Paste
+ * @param : obj	- Grid Object
+ * @param e		- Event Info
+ * @return : N/A
+ * @example : fnc_GrdCopy_Paste(obj, e)
+ */
+this.arrClipboard = "";
+this.fnc_GrdCopy_Paste = function (obj, e)
+{
+	if (e.ctrlKey) 
+	{
+		if (e.keycode == 67) 
+		{
+		
+		//trace("start : " + obj.selectstartrow + " / end : " + obj.selectendrow);
+			// Grid Binddataset
+			var strGrdDsNm = obj.binddataset;
+			var v_clip = "";
+			var strSeperate = "	";
+			for (var i = obj.selectstartrow; i <= obj.selectendrow; i++) 
+			{
+				for (var j = 0; j <= 4; j++) 
+				{
+					if (j < obj.selectendcol) 
+					{
+						v_clip += obj.getCellValue(i, j) + strSeperate;
+					}
+					else 
+					{
+						v_clip += obj.getCellValue(i, j) + strSeperate;
+					}
+				}
+				if (i < obj.selectendrow) 
+				{
+					v_clip += "\r\n";
+				}
+			}
+			v_clip += "\r\n";
+
+			system.clearClipboard();
+			system.setClipboard("CF_TEXT", v_clip);
+			//this.arrClipboard = v_clip;		
+		}
+		else if (e.keycode == 86) 
+		{
+			
+			var bAddrow = true;
+			if (!this.IsNull(this.fnc_GrdCopy_Paste.arguments[2])) 
+			{
+				bAddrow = this.fnc_GrdCopy_Paste.arguments[2];
+			}
+			// Grid Binddataset
+			var strGrdDsNm = obj.binddataset;
+			// cell count
+			var nGrdCellCnt = obj.getCellCount("body");
+			// cell position
+			var nGrdCellPos = obj.getCellPos();
+			// row position   			  
+			var nRowPos = this.Dataset01.rowposition;
+			// arrText2 index
+			var k = 0;
+			// Dataset rowcount
+			var nDsRowCnt = this.Dataset01.getRowCount();
+
+
+			var t_clip = system.getClipboard("CF_TEXT");
+			//var t_clip = this.arrClipboard;
+			//trace("["+t_clip+"]");
+			var strText = new String(t_clip);
+			var arrText = new Array();
+			var arrText2 = new Array();
+			arrText = strText.split("\r\n");
+			if (nDsRowCnt < (arrText.length + nRowPos - 1)) 
+			{
+				if (bAddrow) 
+				{
+				}
+				else 
+				{
+					return false;
+				}
+			}
+			// 복사한 Row만큼
+			for (var i = 0; i < arrText.length; i++) 
+			{
+				if (this.IsNull(arrText[i])) 
+				{
+					return;
+				}
+				arrText2 = arrText[i].split("	");
+
+				// 기존 dataset갯수보다 많은 경우
+				if (nDsRowCnt <= nRowPos) 
+				{
+					var nAddrow = eval("this."+strGrdDsNm).addRow();
+				}
+
+				var nLoopCnt = (nGrdCellPos + arrText2.length);
+				if (nLoopCnt > nGrdCellCnt) 
+				{
+					nLoopCnt = nGrdCellCnt;
+				}
+				// Dataset setcolumn
+				for (var j = 0; j < arrText2.length; j++) 
+				{
+					this.Dataset01.setColumn(nRowPos, j, arrText2[j]);
+					// 
+				}
+				nRowPos++;
+
+				eval("this."+strGrdDsNm).set_rowposition(eval("this."+strGrdDsNm).rowposition);
+				k = 0;
+			}
+			return true;
+		}
+	}
+}
+
+ 
+]]></Script>
+  </Form>
+</FDL>

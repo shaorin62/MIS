@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="sample_chart" classname="sample_chart" left="0" top="0" width="1024" height="768" titletext="highchart" onload="sample_chart_onload">
+    <Layouts>
+      <Layout>
+        <WebBrowser id="WebBrowser00" left="16" top="24" taborder="0" right="66" bottom="26" onloadcompleted="WebBrowser00_onloadcompleted" onusernotify="WebBrowser00_onusernotify"/>
+        <Button id="Button00" taborder="1" text="Button00" left="973" top="59" width="32" height="32" onclick="Button00_onclick"/>
+      </Layout>
+    </Layouts>
+    <InitValue/>
+    <Script type="xscript5.0"><![CDATA[
+this.sample_chart_onload = function(obj:Form, e:nexacro.LoadEventInfo)
+{
+	this.WebBrowser00.set_url("http://localhost:9040/NSCOM_MIS/Highcharts/examples/3d-column-interactive/test_highchart.htm");
+}
+
+this.WebBrowser00_onloadcompleted = function(obj:WebBrowser, e:nexacro.WebLoadCompEventInfo)
+{
+	trace("WebBrowser00_onloadcompleted");
+	var arrData = [10,20,30,40,50,60,70,80,90,100,10,20];
+	this.WebBrowser00.callMethod("fn_drawChart",arrData);
+}
+
+this.WebBrowser00_onusernotify = function(obj:WebBrowser, e:nexacro.WebTitleChangeEventInfo)
+{
+	trace("WebBrowser00_onusernotify");
+}
+
+
+
+this.Button00_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	trace("WebBrowser00_onloadcompleted");
+	var arrData = [10,20,30,40,50,60,70,80,90,100,10,20];
+	this.WebBrowser00.callMethod("fn_drawChart",arrData);
+}
+]]></Script>
+  </Form>
+</FDL>

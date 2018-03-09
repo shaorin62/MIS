@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TMMA0110" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="자료조회관리" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Shape1" position="absolute" left="296" cssclass="styFormItemBoxOut" right="25" taborder="39" top="128" height="162"/>
+        <Grid autoenter="TRUE" binddataset="dsTM_VICDXL" cellsizingtype="both" enable="true" id="grdTM_VICDXL" useinputpanel="false" selecttype="row" taborder="38" tabstop="false" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="296" height="136" cssclass="styGrid01" bottom="15" right="25" autofittype="col" fillareatype="none">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="100"/>
+                <Column size="80"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="80"/>
+                <Column size="150"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell style="background: ;" cssclass="Cellgrd_WF_essential" text="조건명"/>
+                <Cell col="1" style="background: ;" cssclass="Cellgrd_WF_essential" text="조건컬럼"/>
+                <Cell col="2" style="background: ;" cssclass="Cellgrd_WF_essential" text="입력헝태"/>
+                <Cell col="3" style="background: ;" cssclass="Cellgrd_WF_essential" text="팝업/콤보XDA"/>
+                <Cell col="4" cssclass="Cellgrd_WF_edit" text="코드ID"/>
+                <Cell col="5" cssclass="Cellgrd_WF_edit" text="코드명"/>
+                <Cell col="6" cssclass="Cellgrd_WF_edit" text="초기값"/>
+                <Cell col="7" cssclass="Cellgrd_WF_edit" text="필수입력"/>
+                <Cell col="8" cssclass="Cellgrd_WF_edit" text="입력도움말"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="text" text="bind:SECH_COND"/>
+                <Cell col="1" edittype="text" text="bind:SECN_CLID"/>
+                <Cell col="2" displaytype="combo" edittype="combo" text="bind:CDIT_CODE"/>
+                <Cell col="3" edittype="text" style="align:left;" text="bind:POPP_XDAX"/>
+                <Cell col="4" edittype="text" text="bind:CODE_IDXX"/>
+                <Cell col="5" edittype="text" style="align:left;" text="bind:CODE_NAME"/>
+                <Cell col="6" edittype="text" text="bind:INIT_DATA"/>
+                <Cell col="7" displaytype="checkbox" edittype="checkbox" text="bind:CDRI_YSNO"/>
+                <Cell col="8" edittype="text" style="align:left;" text="bind:CDIS_HELP"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid autoenter="TRUE" binddataset="dsTM_VIMNXM" cellsizingtype="both" enable="true" id="grdTM_VIMNXM" useinputpanel="false" selecttype="row" taborder="2" tabstop="false" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="132" cssclass="styGrid01" bottom="15" autofittype="col" width="280">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="90"/>
+                <Column size="190"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="양식코드"/>
+                <Cell col="1" text="양식명"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:VIEW_CODE"/>
+                <Cell col="1" style="align:left;" text="bind:VIEW_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="240" top="111" height="21" cssclass="styFormSearchInfo" taborder="22" usedecorate="true"/>
+        <Static id="staXxxx0" text="양식코드" left="316" width="94" height="21" cssclass="styFormItemCapBE" taborder="23" top="137"/>
+        <Static id="staXxxx1" text="소계컬럼" position="absolute" left="316" width="94" height="21" cssclass="styFormItemCap" taborder="28" top="189"/>
+        <Combo binddataset="dsTM_VIMNXM" id="cmbSYST_CODE" type="dropdown" taborder="5" position="absolute" left="958" height="21" cssclass="styFormItemCombo" index="-1" top="137" width="150"/>
+        <Static id="Static7" text="업무내용" position="absolute" left="316" width="94" height="21" cssclass="styFormItemCapBE" taborder="26" top="163"/>
+        <Div id="divButtonList" taborder="40" tabstop="false" text="" position="absolute" scrollbars="none" left="8" width="573" top="71" height="27"/>
+        <Button id="btnAddRowSub" onclick="fn_AddRow" taborder="17" position="absolute" width="62" height="21" bottom="155" right="90" text="행추가" cssclass="btn_WF_Module"/>
+        <Button id="btnDelRowSub" onclick="fn_DeleteRow" taborder="18" width="62" height="21" bottom="155" right="25" text="행삭제" cssclass="btn_WF_Module"/>
+        <Static id="staXxxx02" taborder="31" text="집계여부" cssclass="styFormItemCap" left="316" top="215" width="94" height="21" position="absolute"/>
+        <Static id="staXxxx12" taborder="24" text="양식명" cssclass="styFormItemCapBE" left="619" top="137" width="65" height="21" position="absolute"/>
+        <Static id="staXxxx13" taborder="25" text="시스템" cssclass="styFormItemCapBE" left="890" top="137" width="64" height="21" position="absolute"/>
+        <Static id="Static00" taborder="27" text="사용여부" cssclass="styFormItemCapBE" left="890" top="163" width="64" height="21" position="absolute"/>
+        <Static id="Static01" taborder="30" text="고정컬럼" cssclass="styFormItemCap" left="890" top="189" width="64" height="21" position="absolute"/>
+        <Static id="Static02" taborder="32" text="소유자명" cssclass="styFormItemCapBE" left="619" top="215" width="65" height="21" position="absolute"/>
+        <Static id="staXxxx09" taborder="33" text="CENTER : ^, LEFT : &lt;, RIGHT : &gt;, 숫자 : N, 날짜 : D, 년월 : M, 주민등록번호 : S" cssclass="sta_WF_Info" left="417" top="266" right="285" height="21"/>
+        <Static id="staXxxx14" taborder="35" text="Table" cssclass="styFormItemCap" top="300" width="52" height="21" right="635"/>
+        <Combo id="cmbUSEX_YSNO" taborder="7" cssclass="styFormItemCombo" left="958" top="163" height="21" binddataset="dsTM_VIMNXM" position="absolute" index="-1" width="150"/>
+        <Combo id="cmbAGGR_YSNO" taborder="11" cssclass="styFormItemCombo" left="416" top="215" height="21" binddataset="dsTM_VIMNXM" width="150" position="absolute"/>
+        <Static id="Static03" taborder="29" text="머지컬럼" cssclass="styFormItemCap" left="619" top="189" width="65" height="21" position="absolute"/>
+        <Edit autoselect="true" binddataset="dsTM_VIMNXM" lengthunit="ascii" id="edtVIEW_CODE" maxlength="10" taborder="3" position="absolute" left="416" height="21" cssclass="styFormItemText" imemode="hangul" top="137" width="150"/>
+        <Edit id="edtSEBU_CNTT" taborder="6" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" cssclass="styFormItemText" left="416" top="163" height="21" binddataset="dsTM_VIMNXM" width="421" position="absolute"/>
+        <Edit id="edtVIEW_NAME" taborder="4" imemode="hangul" lengthunit="ascii" maxlength="100" autoselect="true" cssclass="styFormItemText" left="687" top="137" height="21" binddataset="dsTM_VIMNXM" width="150" position="absolute"/>
+        <Edit id="edtOWNN_NAME" taborder="12" imemode="hangul" lengthunit="ascii" maxlength="30" autoselect="true" cssclass="styFormItemText" left="687" top="215" height="21" binddataset="dsTM_VIMNXM" width="150" position="absolute"/>
+        <Edit id="edtHEAD_CNTT" taborder="13" imemode="hangul" lengthunit="ascii" maxlength="2000" autoselect="true" cssclass="styFormItemText" left="416" top="241" height="21" binddataset="dsTM_VIMNXM" right="79"/>
+        <Edit id="edtTABLE_NAME" taborder="36" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" top="300" width="100" height="21" right="534" tabstop="false" readonly="true" style="align:center middle;"/>
+        <Static id="imgHelpTABLE_NAME" taborder="41" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="300" width="22" height="21" right="510"/>
+        <Edit id="edtTABLE_COMMENT" taborder="14" imemode="hangul" maxlength="20" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" top="300" height="21" inputmode="upper" width="140" right="369"/>
+        <Button id="btnAddFile" taborder="37" text="쿼리생성" top="300" width="74" height="21" onclick="btnAddFile_onclick" right="270"/>
+        <Static id="stGROP_LIST02" taborder="34" text="Query" left="296" top="304" width="97" height="21" cssclass="sta_WF_Subtitle"/>
+        <Grid autoenter="TRUE" binddataset="dsTM_VILVXL" cellsizingtype="both" enable="true" id="grdTM_VILVXL" useinputpanel="false" selecttype="row" taborder="16" tabstop="false" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" width="225" top="325" cssclass="styGrid01" right="25" bottom="186" autofittype="col">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="150"/>
+                <Column size="30"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="권한그룹명"/>
+                <Cell col="1" cssclass="Cellgrd_WF_edit" text="선택"/>
+              </Band>
+              <Band id="body">
+                <Cell style="align:left;" text="bind:GRUP_NAME"/>
+                <Cell col="1" displaytype="checkbox" edittype="checkbox" text="bind:CHK_SEL"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <TextArea id="txtSRCH_CNTT" taborder="15" imemode="hangul" lengthunit="ascii" maxlength="2000" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="296" right="270" bottom="186" binddataset="dsTM_NOTICE" top="325" style="font:9 굴림체,Dotum;"/>
+        <Static id="spSearchBox0" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" taborder="19"/>
+        <Static id="imgSearchTitle0" taborder="20" text="시스템" cssclass="styFormSearchCap" left="28" top="71" width="47" height="21"/>
+        <Edit id="edtSHRVIEW_NAME" taborder="1" imemode="hangul" lengthunit="ascii" maxlength="40" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="350" top="71" width="200" height="21"/>
+        <Combo id="cmbSHRSYST_CODE" taborder="0" cssclass="styFormSearchCombo" left="83" top="71" width="150" height="21"/>
+        <Static id="Image0" taborder="21" text="양식코드/명" cssclass="styFormSearchCap" left="262" top="71" width="82" height="21"/>
+        <Static id="st_FormTitle" taborder="42" text="자료조회관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="43" text="홈 &gt; 공통관리 &gt; 공통관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="44" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="45" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static05" taborder="46" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="47" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="48" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="49" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="50" visible="false" left="75" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="51" text="w 40" visible="false" left="233" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="52" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="53" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static10" taborder="54" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static11" taborder="55" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="56" text="h 35" visible="false" left="573" top="531" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="57" text="w30" visible="false" left="297" top="130" width="30" height="105" style="background:#fb7b7b7a;"/>
+        <Static id="staXxxx03" taborder="58" text="GRID항목정의" cssclass="styFormItemCap" left="316" top="241" width="94" height="21"/>
+        <Static id="Static13" taborder="59" text="h 35" visible="false" left="1015" top="290" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static14" taborder="60" text="w20" visible="false" left="917" top="334" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static93" taborder="61" text="조회조건" cssclass="sta_WF_Subtitle" left="296" bottom="151" width="97" height="21"/>
+        <Static id="stGROP_LIST00" taborder="62" text="권한그룹" cssclass="sta_WF_Subtitle" top="304" width="97" height="21" right="153"/>
+        <Static id="stInformation02" taborder="63" cssclass="sta_WF_line" top="299" right="350" width="7" height="21"/>
+        <Static id="Static18" taborder="64" text="w&#13;&#10;12" visible="false" left="831" top="285" width="12" height="23" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="65" text="w&#13;&#10;12" visible="false" left="818" top="285" width="12" height="23" style="background:#fb7b7b7a;"/>
+        <MaskEdit id="mskFXCL_INDX" taborder="10" tabstop="false" readonly="false" mask="##" onsetfocus="fn_EditFocus" top="189" height="21" style=":disabled {align:right;}" binddataset="dsTA_GITAGETA" limitbymask="integer" left="958" width="150"/>
+        <MaskEdit id="mskCBCL_INDX" taborder="9" tabstop="false" mask="##" limitbymask="integer" onsetfocus="fn_EditFocus" left="687" top="189" width="150" height="21" style=":disabled {align:right;}" binddataset="dsTA_GITAGETA"/>
+        <Edit id="edtSUTR_IDXX" taborder="8" imemode="alpha" lengthunit="ascii" maxlength="10" autoselect="true" cssclass="styFormItemText" left="416" top="189" width="150" height="21" binddataset="dsTM_VIMNXM" inputmode="upper"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTM_VIMNXM" onrowposchanged="fn_KeyFieldDisible_Head" canrowposchange="dsTM_VIMNXM_canrowposchange" oncolumnchanged="dsTM_VIMNXM_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="VIEW_CODE" type="STRING" size="256"/>
+          <Column id="VIEW_NAME" type="STRING" size="256"/>
+          <Column id="SYST_CODE" type="STRING" size="256"/>
+          <Column id="SEBU_CNTT" type="STRING" size="256"/>
+          <Column id="HEAD_CNTT" type="STRING" size="256"/>
+          <Column id="SRCH_CNTT" type="STRING" size="256"/>
+          <Column id="FXCL_INDX" type="STRING" size="256"/>
+          <Column id="AGGR_YSNO" type="STRING" size="256"/>
+          <Column id="CBCL_INDX" type="STRING" size="256"/>
+          <Column id="SUTR_IDXX" type="STRING" size="256"/>
+          <Column id="USEX_YSNO" type="STRING" size="256"/>
+          <Column id="ATHR_LEVL" type="STRING" size="256"/>
+          <Column id="OWNN_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTM_VICDXL" oncolumnchanged="dsTM_VICDXL_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="VIEW_CODE" type="STRING" size="256"/>
+          <Column id="SRAL_NUMB" type="STRING" size="256"/>
+          <Column id="SECH_COND" type="STRING" size="256"/>
+          <Column id="SECN_CLID" type="STRING" size="256"/>
+          <Column id="CDIT_CODE" type="STRING" size="256"/>
+          <Column id="POPP_XDAX" type="STRING" size="256"/>
+          <Column id="CODE_IDXX" type="STRING" size="256"/>
+          <Column id="CODE_NAME" type="STRING" size="256"/>
+          <Column id="INIT_DATA" type="STRING" size="256"/>
+          <Column id="CDRI_YSNO" type="STRING" size="256"/>
+          <Column id="CDIS_HELP" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTM_VILVXL">
+        <ColumnInfo>
+          <Column id="GRUP_IDXX" type="STRING" size="256"/>
+          <Column id="GRUP_NAME" type="STRING" size="256"/>
+          <Column id="VIEW_CODE" type="STRING" size="256"/>
+          <Column id="CHK_SEL" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYN" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRSYST_CODE</Col>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYN">Y</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsSYST_CODE</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYN">Y</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">USEX_YSNO</Col>
+            <Col id="DSNAME">dsUSEX_YSNO</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYN">Y</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">CDIT_CODE</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="DSNAME">dsCDIT_CODE</Col>
+            <Col id="USEYN">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsHEADER">
+        <ColumnInfo>
+          <Column id="TITLE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsQUERY">
+        <ColumnInfo>
+          <Column id="QUERY" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="edtOWNE_NAME_value" compid="edtVIEW_CODE" propid="value" datasetid="dsTM_VIMNXM" columnid="VIEW_CODE"/>
+      <BindItem id="cmbATHR_LEVL_value" compid="cmbSYST_CODE" propid="value" datasetid="dsTM_VIMNXM" columnid="SYST_CODE"/>
+      <BindItem id="item0" compid="cmbUSEX_YSNO" propid="value" datasetid="dsTM_VIMNXM" columnid="USEX_YSNO"/>
+      <BindItem id="item1" compid="cmbAGGR_YSNO" propid="value" datasetid="dsTM_VIMNXM" columnid="AGGR_YSNO"/>
+      <BindItem id="item2" compid="edtSEBU_CNTT" propid="value" datasetid="dsTM_VIMNXM" columnid="SEBU_CNTT"/>
+      <BindItem id="item4" compid="edtVIEW_NAME" propid="value" datasetid="dsTM_VIMNXM" columnid="VIEW_NAME"/>
+      <BindItem id="item6" compid="edtOWNN_NAME" propid="value" datasetid="dsTM_VIMNXM" columnid="OWNN_NAME"/>
+      <BindItem id="item7" compid="edtHEAD_CNTT" propid="value" datasetid="dsTM_VIMNXM" columnid="HEAD_CNTT"/>
+      <BindItem id="txtREMK_100X_value" compid="txtSRCH_CNTT" propid="value" datasetid="dsTM_VIMNXM" columnid="SRCH_CNTT"/>
+      <BindItem id="item9" compid="mskFXCL_INDX" propid="value" datasetid="dsTM_VIMNXM" columnid="FXCL_INDX"/>
+      <BindItem id="item8" compid="mskCBCL_INDX" propid="value" datasetid="dsTM_VIMNXM" columnid="CBCL_INDX"/>
+      <BindItem id="item3" compid="edtSUTR_IDXX" propid="value" datasetid="dsTM_VIMNXM" columnid="SUTR_IDXX"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TMMA0110 자료조회 관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.26		김준수		주석 수정.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTFF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "TMMA0110"; //해당 Form에서 사용 할 Package 명
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fn_Search();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_searchItemCheck()) return;
+	this.fnc_DatasetClear('dsTM_VIMNXM,dsTM_VILVXL,dsTM_VICDXL');
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsTM_VIMNXM=dsTM_VIMNXM";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_VIMNXM.setFocus();
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+
+	//변경된 내역이 있는지 확인하고(권한디테일, 특히 조회조건 디테일)
+	//1main 2detail 관계
+	//신규 데이터가 또 있는지 확인해야 되는데. (조회조건 디테일이 날아가기 때문에)
+	//입력버튼은 저장 할 때까지 1번만 누를수 있게 하고
+	 
+	 var IsInsert = false;
+	 for(i=0;i<this.dsTM_VIMNXM.getRowCount();i++){
+		if(this.dsTM_VIMNXM.getRowType(i)==Dataset.ROWTYPE_INSERT){
+			IsInsert = true;
+			break;
+		}
+	 }
+	 	 
+	 if (this.fnc_DatasetChangeCheck("dsTM_VIMNXM,dsTM_VICDXL,dsTM_VILVXL")||IsInsert) {
+		//변경된 내역이 있을 때 진행 할 것인지.
+		if(this.fnc_Message("TMM006")){
+			this.fnc_DataSetCancel("dsTM_VIMNXM,dsTM_VICDXL,dsTM_VILVXL");
+		}else{
+			return;
+		}
+	}
+
+	var iRow = this.dsTM_VIMNXM.addRow();
+	this.dsTM_VIMNXM.setColumn(iRow, "USEX_YSNO", "1");
+	this.dsTM_VIMNXM.setColumn(iRow, "AGGR_YSNO", "0");
+	this.edtVIEW_CODE.setFocus();
+
+}
+
+/*------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+
+	if (this.fn_DeleteCheck()) {
+		this.dsTM_VIMNXM.deleteRow(this.dsTM_VIMNXM.rowposition);
+	}
+
+	this.grdTM_VIMNXM.setFocus();
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+
+	this.fnc_DataSetCancel("dsTM_VIMNXM,dsTM_VILVXL,dsTM_VICDXL");
+	this.grdTM_VIMNXM.setFocus();
+
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTM_VIMNXM=dsTM_VIMNXM:U dsTM_VILVXL=dsTM_VILVXL:U dsTM_VICDXL=dsTM_VICDXL:U";
+	var sOutDataSet = "";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능없음.
+}
+
+/*--------------------------------------+
+ |  10.최초 화면 UnLoad時 처리 할 사항  |
+ +--------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTM_VIMNXM,dsTM_VILVXL,dsTM_VICDXL", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj,e);
+	
+} 
+
+/*------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+
+}
+
+/*------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------+
+ |  조회 필수 체크!  |
+ +-------------------*/
+this.fn_searchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck('dsTM_VIMNXM,dsTM_VICDXL,dsTM_VILVXL')) {
+		return this.fnc_Message("TMM023");
+	}
+
+	return true;
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+
+	if (this.dsTM_VIMNXM.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+
+	var sQuestionText = '양식(' + this.fnc_Trim(this.dsTM_VIMNXM.getColumn(this.dsTM_VIMNXM.rowposition, "VIEW_NAME")) + ')';
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function (dsobj) {
+
+	// 자료양식 및 조회조건, 권한 변경 체크
+	if (this.fnc_DatasetChangeCheck("dsTM_VIMNXM,dsTM_VILVXL,dsTM_VICDXL") == false) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	/* 저장필수 체크 컬럼
+		TM_VIMNXM 자료조회양식
+			VIEW_CODE 양식코드
+			VIEW_NAME 양식명
+			SYST_CODE 시스템코드
+			HEAD_CNTT 헤더내용
+			SRCH_CNTT 검색내용	 
+			
+		TM_VICDXL 자료조회조건
+			SECH_COND 조회조건명
+			SECN_CLID 조회조건컬럼ID
+			CDIT_CODE 조건입력형태코드
+			
+			(* 조건입력형태가 공통코드를 사용하는 것만)POPP_XDAX 팝업XDA
+	
+		TM_VICDXL의 로우에서
+		공통코드 CDIT_CODE 의 보조필드 1이 체크된 값을 선택하면 POPP_XDAX 이 필수이다.
+	*/
+
+	// 자료조회양식 정보 필수 입력 항목 체크
+	for (var i = 0; i < this.dsTM_VIMNXM.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsTM_VIMNXM.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "VIEW_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "양식코드", this.dsTM_VIMNXM, i, this.edtVIEW_CODE, "");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "VIEW_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "양식명", this.dsTM_VIMNXM, i, this.edtVIEW_NAME, "");
+		}
+				
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "SYST_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "시스템코드", this.dsTM_VIMNXM, i, this.cmbSYST_CODE, "");
+		}
+				
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "HEAD_CNTT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "헤더내용", this.dsTM_VIMNXM, i, this.edtHEAD_CNTT, "");
+		}
+				
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "SRCH_CNTT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "검색내용", this.dsTM_VIMNXM, i, this.edtSRCH_CNTT, "");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(i, "OWNN_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "소유자명", this.dsTM_VIMNXM, i, this.edtOWNN_NAME, "");
+		}
+		
+	}
+
+	// 자료조회조건 정보 필수 입력 항목 체크
+	for (var i = 0; i < this.dsTM_VICDXL.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsTM_VICDXL.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VICDXL.getColumn(i, "SECH_COND"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "조회조건명", this.dsTM_VICDXL, i, this.grdTM_VICDXL, "SECH_COND");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VICDXL.getColumn(i, "SECN_CLID"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "조회조건컬럼ID", this.dsTM_VICDXL, i, this.grdTM_VICDXL, "SECN_CLID");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_VICDXL.getColumn(i, "CDIT_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "조건입력형태코드", this.dsTM_VICDXL, i, this.grdTM_VICDXL, "CDIT_CODE");
+		}		
+		
+		if (	(this.dsCDIT_CODE.lookup("COMD_CODE",this.dsTM_VICDXL.getColumn(i, "CDIT_CODE"), "REF1_FILD") == "1") 
+			 && (this.dsTM_VICDXL.getColumn(i, "POPP_XDAX") == "COMB")) {
+			 
+			if (this.fnc_Length(this.fnc_Trim(this.dsTM_VICDXL.getColumn(i, "COMB_IDXX"))) < 1) {
+				return this.fnc_CheckPostAction("TMM072", "팝업/콤보ID", this.dsTM_VICDXL, i, this.grdTM_VICDXL, "COMB_IDXX");
+			}
+		}
+	}
+
+	return true;
+}
+
+/*--------------------------------+
+ |  자료조회조건 삭제 여부 체크!  |
+ +--------------------------------*/
+this.fn_DeleteCheckSub = function () {
+
+	var sQuestionText = "조건명"
+						+ this.fnc_Trim(this.dsTM_VICDXL.getColumn(this.dsTM_VICDXL.rowposition, "SECH_COND"))
+						+" (" + this.fnc_Trim(this.dsTM_VICDXL.getColumn(this.dsTM_VICDXL.rowposition, "SECN_CLID")) + ")";
+	return this.fnc_Message("TMM002", sQuestionText);
+	
+}
+
+/*------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	//메인
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " SYST_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRSYST_CODE.value)); //시스템 코드
+		sReturnString += " VIEW_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRVIEW_NAME.value)); //양식코드
+
+	//디테일
+	} else if (sKind == "SEARCH01") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " VIEW_CODE=" + this.fnc_Quote(this.fnc_Trim(this.dsTM_VIMNXM.getColumn(this.dsTM_VIMNXM.rowposition, "VIEW_CODE"))); //양식코드
+		
+	//쿼리생성
+	} else if (sKind == "SEARCH02") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " TABLE_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtTABLE_NAME.value)); //테이블명
+		
+	// 공통코드 및 세부코드 저장
+	} else if (sKind == "SAVE00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		
+	}
+
+	return sReturnString;
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+	
+		this.fnc_Information(this.stInformation1, this.dsTM_VIMNXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+	
+	} else if (sMethodName == "SEARCH01") {
+	
+	
+	//쿼리생성버튼 클릭
+	} else if (sMethodName == "SEARCH02") {
+	
+		//HEADER 스타일정보 Display
+		var strHeader = "";
+		
+		for (var i = 0; i < this.dsHEADER.getRowCount(); i++) {
+			strHeader += this.dsHEADER.getColumn( i, "TITLE");			
+		}
+		
+		this.edtHEAD_CNTT.set_value(strHeader);
+	
+		//QUERY Display
+		var strQuery = "";
+		
+		for (var i = 0; i < this.dsQUERY.getRowCount(); i++) {
+			strQuery += this.dsQUERY.getColumn( i, "QUERY")+ "\n";			
+		}
+		
+		this.txtSRCH_CNTT.set_value(strQuery);	
+	
+	} else if (sMethodName == "SAVE00") {
+	
+		this.fnc_Message("TMM103");
+		this.fn_KeyFieldDisible_Head(this.dsTM_VIMNXM);
+		this.fnc_Information(this.stInformation1, 0, "SAVE");
+	
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+		arrParam[0] = "GRID,grdTM_VICDXL,dsCDIT_CODE,CDIT_CODE";
+		arrParam[1] = "COMBO,cmbSHRSYST_CODE,dsSHRSYST_CODE,0";	//combo 아니면 grid 둘중 하나
+		arrParam[2] = "COMBO,cmbSYST_CODE,dsSYST_CODE,0";	//combo 아니면 grid 둘중 하나
+		arrParam[3] = "COMBO,cmbUSEX_YSNO,dsUSEX_YSNO,0";	//combo 아니면 grid 둘중 하나
+		arrParam[4] = "COMBO,cmbAGGR_YSNO,dsUSEX_YSNO,0";	//combo 아니면 grid 둘중 하나
+		this.fnc_CommonCodeInnerBind(arrParam);
+
+	}
+}
+
+/*------------------------------------------+
+ |  변경전 확인  |
+ +------------------------------------------*/
+this.dsTM_VIMNXM_canrowposchange = function(obj:Dataset, e:nexacro.DSRowPosChangeEventInfo)
+{
+	if (this.fnc_DatasetChangeCheck("dsTM_VICDXL,dsTM_VILVXL") == false) return;
+	
+	if (this.fnc_Message("TMM006") == false) {
+		return false;
+	} else {
+		this.fnc_DataSetCancel("dsTM_VICDXL,dsTM_VILVXL");
+	}
+}
+
+
+/*------------------------------------------+
+ |  수정 시 Key Field Disibled 처리 - Head  |
+ +------------------------------------------*/
+this.fn_KeyFieldDisible_Head = function (obj:Dataset) {
+	
+	if (this.dsTM_VIMNXM.getRowCount() < 1)	return;
+
+	if (this.fnc_ToUpper(obj.getRowType(obj.rowposition)) == Dataset.ROWTYPE_INSERT) {
+		this.fnc_SetReadonly(this.edtVIEW_CODE, false);
+	} else {
+		this.fnc_SetReadonly(this.edtVIEW_CODE, true);
+	}
+	
+	//쿼리조회
+	var sMethodName = "SEARCH01";
+	var sInDataSet = "";
+	var sOutDataSet = "dsTM_VICDXL=dsTM_VICDXL dsTM_VILVXL=dsTM_VILVXL";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_VIMNXM.setFocus();		
+}
+
+/*------------------------------------------+
+ | 마스터 신규 데이터 ViEW_CODE 변경시 디테일도 변경|
+ 신규 데이터는 VIEW_CODE가 변경될수 있기 때문에 변경시 권한,조건 디테일도 같이 변경해준다.
+ +------------------------------------------*/
+this.dsTM_VIMNXM_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo)
+{
+	var objds = "";
+	if(e.columnid=="VIEW_CODE"){
+		
+		//권한그룹 변경
+		objds = this.dsTM_VILVXL;
+		for(i=0;i<objds.getRowCount();i++){
+			objds.setColumn(i,"VIEW_CODE",e.newvalue);
+		}
+		
+		//조회조건 변경
+		objds = this.dsTM_VICDXL;
+		for(i=0;i<objds.getRowCount
+		();i++){
+			objds.setColumn(i,"VIEW_CODE",e.newvalue);
+		}
+	}
+}
+
+/*------------------------------------------+
+ |디테일 조회조건  입력형태 CDIT_CODE 변경시 세부컬럼 리드온리 처리 |
+ 신규 데이터는 VIEW_CODE가 변경될수 있기 때문에 변경시 권한,조건 디테일도 같이 변경해준다.
+ +------------------------------------------*/
+this.dsTM_VICDXL_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	var objds = "";
+	
+	var objgrd = this.grdTM_VICDXL;
+	e.columnid
+	if(e.columnid=="CDIT_CODE"){
+
+		//입력형태가 공통코드를 넣어야 하는 것이면 
+		if(this.dsCDIT_CODE.lookup("COMD_CODE",e.newvalue,"REF1_FILD") == '1'){
+			//리드온리만 푼다.
+
+
+
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "POPP_XDAX"), "edittype", "normal");
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "CODE_IDXX"), "edittype", "normal");
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "CODE_NAME"), "edittype", "normal");
+	
+		}else {
+			//공백처리후 리드온리
+			obj.setColumn(e.row,"POPP_XDAX","");
+			obj.setColumn(e.row,"CODE_IDXX","");
+			obj.setColumn(e.row,"CODE_NAME","");
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "POPP_XDAX"), "edittype", "none");
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "CODE_IDXX"), "edittype", "none");
+			objgrd.setCellProperty("Body", this.fnc_GridColumnIndex(objgrd, "CODE_NAME"), "edittype", "none");
+
+		}
+	}
+}
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+	
+	// 조회조건 - 부서정보조회(Popup)
+	if ((obj.name == 'imgHelpTABLE_NAME') || (obj.name == 'edtTABLE_COMMENT')) {
+
+		arrParam[0] = 'TMM0013';                                 //Popup ID
+		arrParam[1] = '';                                        //조건구분에 대응되는 조회조건 값
+		arrParam[2] = this.fnc_Trim(this.edtTABLE_COMMENT.value); //콤보조건구분에 대응되는 조회 조건 값
+		arrParam[3] = 'N';                                       //사용 여부 구분 포함 여부 값
+		arrParam[4] = 'edtTABLE_COMMENT';                         //현재 포커스 Componect명
+		arrParam[5] = 'edtTABLE_NAME,edtTABLE_COMMENT';         //초기화 및 결과 Mapping Column
+		arrParam[6] = '0,1';                                     //Mapping Column Index
+
+	// 조회조건 - 부서정보조회(Popup) 텝 박스 안
+	}
+				
+	this.fnc_HelpDialogeAction(this, obj, arrParam);
+}
+/***************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+
+/*---------------------+
+ |  자료조회조건 추가  |
+ +---------------------*/
+this.fn_AddRow = function (obj:Button, e:ClickEventInfo) {
+
+	if (this.fnc_Length(this.dsTM_VIMNXM.getColumn(this.dsTM_VIMNXM.rowposition, "VIEW_CODE")) > 0) {
+	
+		var iRow = this.dsTM_VICDXL.addRow();
+		this.dsTM_VICDXL.setColumn(iRow, "VIEW_CODE", this.dsTM_VIMNXM.getColumn(this.dsTM_VIMNXM.rowposition, "VIEW_CODE"));
+		
+		//시퀀스 VIEW_CODE 단위로 생성 
+		this.dsTM_VICDXL.setColumn(iRow, "SRAL_NUMB", this.fnc_GetSequence("TM_VICDXL","SRAL_NUMB",this.dsTM_VIMNXM.getColumn(this.dsTM_VIMNXM.rowposition, "VIEW_CODE"),""));
+		
+		this.fnc_GridSetCellFocus(this.grdTM_VICDXL, "SECH_COND");
+	
+	} else {
+		this.fnc_Message("TMM032");
+	}
+}
+
+/*---------------------+
+ |  자료조회조건 삭제  |
+ +---------------------*/
+this.fn_DeleteRow = function (obj:Button, e:ClickEventInfo) {
+
+	if (this.dsTM_VICDXL.getRowCount() > 0) {
+	
+		if (this.fn_DeleteCheckSub()) {
+			this.dsTM_VICDXL.deleteRow(this.dsTM_VICDXL.rowposition);
+		}
+	} else {
+		this.fnc_Message("TMM007");
+	}
+
+	this.grdTM_VICDXL.setFocus();
+}
+
+/*---------------------+
+ |  쿼리생성  |
+ +---------------------*/
+this.btnAddFile_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	//메인테이블 로우가 있는 확인
+	if(this.dsTM_VIMNXM.getRowCount()<1){
+		this.fnc_Message("TMM125", "양식명이 없습니다. 입력버튼을 누르세요.");
+		return;
+	}
+	
+	//조건용 테이블네임이 있는 확인
+	if (this.fnc_Length(this.fnc_Trim(this.edtTABLE_NAME.value)) < 1) {
+		this.fnc_CheckPostAction("TMM072", "테이블명", this.dsTM_VIMNXM, this.dsTM_VIMNXM.rowposition, this.edtTABLE_COMMENT, "");
+		return;
+	}
+				
+	//쿼리가 이미 있으면 덮어 쓸지 확인
+	if (this.fnc_Length(this.fnc_Trim(this.txtSRCH_CNTT.value)) > 0) {
+	
+		if (this.fnc_Message("HRM006") == false) {
+			return ;
+		} 
+	}	
+	
+	//쿼리조회
+	var sMethodName = "SEARCH02";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsHEADER=dsHEADER dsQUERY=dsQUERY";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_VIMNXM.setFocus();		
+}]]></Script>
+  </Form>
+</FDL>

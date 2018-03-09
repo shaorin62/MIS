@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSME0010">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 재물조사 관리 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSME0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+		 	SELECT   /* FSME0010.SEARCH00.재물조사 관리 조회 처리 */ 
+		 	         INVT_DATE   /*조사일*/
+                    ,INVT_NAME   /*재물조사명*/
+                    ,INVT_STDT   /*조사시작일*/
+                    ,INVT_ENDT   /*조사종료일*/
+                    ,ASST_TOTL   /*총자산수*/
+                    ,DESC_REMK   /*비고(100)*/
+               FROM FS_INVTXM
+              WHERE 1=1
+              	AND INVT_DATE BETWEEN NVL(#INVT_DAT1#, INVT_DATE) AND NVL(#INVT_DAT2#, INVT_DATE) /*조사일*/            
+              ORDER BY INVT_DATE DESC  
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :재물조사 관리 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSME0010.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN
+            /* FSME0010.SAVE00.재물조사 관리 저장 처리 */ 
+	        INSERT INTO FS_INVTXM (
+	               INVT_DATE   /*조사일*/
+	              ,INVT_NAME   /*재물조사명*/
+	              ,INVT_STDT   /*조사시작일*/
+	              ,INVT_ENDT   /*조사종료일*/
+	              ,ASST_TOTL   /* 총자산수*/
+	              ,DESC_REMK   /*비고(100)*/
+	              ,INST_DATE   /*등록일시*/
+	              ,INST_USID   /*등록자*/
+	              ,UPDT_DATE   /*수정일시*/
+	              ,UPDT_USID   /*수정자*/
+	              )
+	       VALUES (
+	               #INVT_DATE#
+	              ,#INVT_NAME#
+	              ,#INVT_STDT#
+	              ,#INVT_ENDT#
+	              ,#ASST_TOTL#
+	              ,#DESC_REMK#
+	              ,SYSDATE
+	              ,#UPDT_USID#
+            	  ,SYSDATE
+	              ,#UPDT_USID#
+	              );         
+
+	        /* 재물조사상세 테이블에 인서트*/
+	        INSERT INTO FS_INVTXD ( /*[재물조사상세]*/
+	               INVT_DATE        /*조사일*/
+	              ,ASST_NUMB        /*자산번호*/
+	              ,DEPT_CODE        /*부서코드*/
+	              ,EMPL_NUMB        /*사원번호*/
+	              ,ASST_STAT        /*자산상태[ASST_STAT]*/
+	              ,ACQU_NUMB        /*취득수량*/
+	              ,ACTU_NUMB        /*실사수량*/
+	              ,DESC_REMK        /*비고(100)*/
+	              ,INST_DATE        /*등록일시*/
+	              ,INST_USID        /*등록자*/
+	              ,UPDT_DATE        /*수정일시*/
+	              ,UPDT_USID        /*수정자*/
+	              )
+	      SELECT  #INVT_DATE#        /*조사일*/
+	             ,A.ASST_NUMB       /*자산번호*/
+	             ,A.DEPT_CODE       /*부서코드*/
+	             ,A.EMPL_NUMB       /*관리사원*/
+	             ,A.ASST_STAT       /*자산상태*/
+	             ,A.ACQU_NUMB       /*자산수량*/
+	             ,NULL              /*실사수량*/
+	             ,NULL              /*비고*/
+	             ,SYSDATE
+	             ,#UPDT_USID#
+	             ,SYSDATE
+	             ,#UPDT_USID#
+	        FROM FS_ASSTXM A LEFT JOIN TM_CODEXD B ON A.ASST_STAT = B.COMD_CODE AND B.COMM_CODE = 'ASST_STAT'
+	       WHERE B.REF1_FILD = 'Y';
+	
+	        /*상세테이블에 입력된 자산 수*/
+	        UPDATE FS_INVTXM
+	           SET  ASST_TOTL = (SELECT COUNT(*) FROM FS_INVTXD WHERE INVT_DATE = #INVT_DATE#)
+	         WHERE INVT_DATE  = #INVT_DATE#;  /*조사일*/
+
+   	 END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 재물조사 관리 수정 처리
+********************************************************************************/
+ -->
+	<update id="FSME0010.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE /* FSME0010.UPDATE00.재물조사 관리 수정 처리 */ 
+			        FS_INVTXM
+	           SET  INVT_NAME = #INVT_NAME#   /*재물조사명*/
+	               ,INVT_STDT = #INVT_STDT#   /*조사시작일*/
+	               ,INVT_ENDT = #INVT_ENDT#   /*조사종료일*/
+	               ,DESC_REMK = #DESC_REMK#   /*비고(100)*/
+	               ,UPDT_USID = #UPDT_USID#   /*수정일시*/
+	               ,UPDT_DATE = SYSDATE   /*수정자*/
+	         WHERE INVT_DATE  = #INVT_DATE#  /*조사일*/
+                                   
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 재물조사 관리 삭제 처리
+********************************************************************************/
+ -->
+	<delete id="FSME0010.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+	
+			sASST_CONT                 DECIMAL(12,0);   /* 상세테이블에 조사된 자산수 */
+	
+	    BEGIN
+	         /* FSME0010.DELETE00.재물조사 관리 삭제 처리 */ 
+	         SELECT NVL(COUNT(INVT_DATE),0)
+	           INTO sASST_CONT
+	           FROM FS_INVTXD
+	          WHERE INVT_DATE =#INVT_DATE#
+	            AND (ACTU_NUMB IS NOT NULL OR NVL(ACTU_NUMB, 0) > 0);
+	
+	         IF (sASST_CONT > 0) THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 실사가 진행되었습니다.\n\n' || LPAD(' ',11) ||
+	                                            '삭제가 불가 합니다!');
+	         END IF;
+	
+	        /*상세 삭제 */
+	        DELETE FROM FS_INVTXD
+	         WHERE INVT_DATE = #INVT_DATE#;   /*조사일 */
+	
+	        /*마스터 삭제 */
+	        DELETE FROM FS_INVTXM
+	         WHERE INVT_DATE = #INVT_DATE#;   /*조사일*/
+	
+	    END;
+		]]>
+	</delete>
+
+</sqlMap>

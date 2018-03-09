@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATB0060">
+
+<!--
+ *   프로그램명 : 근태마감  SQLMAP
+ *   작 성 일 : 2016.09.21
+ *   작 성 자 : 김희정
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.21
+	 내    용 : 근태마감 내역 조회
+********************************************************************************/
+-->
+	<select id="HATB0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT	/* HATB0060.SEARCH00.근태마감 내역 조회 */
+			    A.MON AS ATTE_YMTH		/*근태년월*/    
+			   ,NVL(B.ENDD_YSNO,'0') AS ENDD_YSNO	/*마감여부*/
+			   ,B.REMK_100X				/*비고100*/
+			   ,B.INST_USID				/*입력작업자*/
+			   ,B.INST_DATE				/*입력일시*/
+			   ,B.UPDT_USID				/*수정작업자*/
+			   ,B.UPDT_DATE				/*수정일시*/
+		  FROM (	SELECT	TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(ADD_MONTHS(#ATTE_YMTH# || '01',-11),'YYYYMM'),'YYYYMM'),LEVEL - 1),'YYYYMM') MON
+      				FROM DUAL
+					CONNECT BY ADD_MONTHS(TO_DATE(TO_CHAR(ADD_MONTHS(#ATTE_YMTH# || '01',-11),'YYYYMM'),'YYYYMM'),LEVEL - 1) <= TO_DATE(#ATTE_YMTH#,'YYYYMM')
+				) A
+				LEFT OUTER JOIN AT_ENDDXM B				/*[근태마감정보 ] */
+				ON A.MON	= B.ATTE_YMTH
+	]]>
+	<![CDATA[ 
+		ORDER BY A.MON DESC
+	]]>
+	</select>
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.21
+	 내    용 : 근태마감 내역 저장
+********************************************************************************/
+-->
+	<insert id="HATB0060.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        DECLARE 
+			  v_ROWCNT INT;
+	    BEGIN  
+	        
+	        SELECT COUNT(*) 
+	          INTO v_ROWCNT
+	          FROM AT_ENDDXM
+	         WHERE ATTE_YMTH  = #ATTE_YMTH#		/* 근태년월 */
+	         ;
+	         
+	        IF v_ROWCNT > 0 THEN 
+	        
+				UPDATE
+				AT_ENDDXM
+					SET  ENDD_YSNO = #ENDD_YSNO#		/*마감여부*/
+						,REMK_100X = #REMK_100X#		/*비고100*/
+						,UPDT_USID = #UPDT_USID#		/* 수정작업자 */
+						,UPDT_DATE = SYSDATE			/* 수정일시 */
+				  WHERE ATTE_YMTH  = #ATTE_YMTH#		/* 근태년월 */
+	              ;
+	              
+	        ELSE
+        
+		        INSERT
+		        INTO AT_ENDDXM ( 
+		             ATTE_YMTH		/*근태년월*/
+		            ,ENDD_YSNO		/*마감여부*/
+					,REMK_100X		/*비고100*/
+					,INST_USID		/*입력작업자*/
+					,INST_DATE		/*입력일시*/
+					,UPDT_USID		/*수정작업자*/
+					,UPDT_DATE		/*수정일시*/
+		            ) 
+		        VALUES 
+		            ( 
+		             #ATTE_YMTH#		/*근태년월*/
+					,#ENDD_YSNO#		/*마감여부*/
+					,#REMK_100X#		/*비고100*/
+					,#UPDT_USID#		/*입력작업자*/
+					,SYSDATE			/*입력일시*/
+					,#UPDT_USID#		/*수정작업자*/
+					,SYSDATE			/*수정일시*/
+		            );	
+	        END IF; 
+   	    END;
+	
+	]]>
+	</insert>
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 근태마감 내역 삭제
+********************************************************************************/
+-->
+	<delete id="HATB0060.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE
+        AT_ENDDXM
+         WHERE 1 = 1
+           AND ATTE_YMTH  = #ATTE_YMTH#  /* 근태년월 */
+	]]>
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,1663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TXMC0160" titletext="부가세신고서" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onload="fn_FormLoadSetting" onkeydown="fn_HotKey" onclose="fn_FormUnloadProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Static00" taborder="10" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Div id="Div0" taborder="7" tabstop="false" scrollbars="none" left="8" width="101" top="35" height="21">
+          <Layouts>
+            <Layout>
+              <Button id="btn_PROC" taborder="0" text="처리" onclick="btn_PROC_OnClick" style="imagealign:left;" left="0" width="50" top="0" height="21" cssclass="styTextButtonBizProc"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Edit id="edtVAT_SMMDD" taborder="3" visible="false" left="629" width="56" top="71" height="21"/>
+        <Edit id="edtVAT_EMMDD" taborder="4" visible="false" position="absolute" left="687" width="56" top="71" height="21"/>
+        <Static id="Static1" taborder="11" text="사업장" cssclass="styFormSearchCapBe" left="27" top="71" width="66" height="21" style="align:left middle;" position="absolute"/>
+        <Combo id="cmbSHRACCT_GUBN" taborder="0" innerdataset="dsBRANCH_CD" codecolumn="BRANCH_CD" datacolumn="BRANCH_NM" cssclass="styFormItemCombo" left="82" top="71" width="160" height="21" position="absolute" onsetfocus="fn_EditFocus"/>
+        <Static id="Static6" taborder="15" text="분기구분" cssclass="styFormSearchCapBe" left="421" top="71" width="76" height="21" style="align:left middle;" position="absolute"/>
+        <Combo id="cmbVAT_QUARTER" taborder="2" codecolumn="codecolumn" datacolumn="datacolumn" cssclass="styFormItemCombo" left="489" top="71" width="100" height="21" onsetfocus="fn_EditFocus">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">1</Col>
+                <Col id="datacolumn">1기예정</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">2</Col>
+                <Col id="datacolumn">1기확정</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">3</Col>
+                <Col id="datacolumn">2기예정</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">4</Col>
+                <Col id="datacolumn">2기확정</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Tab id="Tab0" taborder="19" left="8" top="113" right="25" bottom="15" tabindex="0">
+          <Tabpages>
+            <Tabpage id="tab1" text="VAT신고서 1쪽" style="margin:0 0 0 0;">
+              <Layouts>
+                <Layout>
+                  <Static id="Shape01" taborder="116" cssclass="styFormItemBoxOut" top="25" height="138" width="585" right="10"/>
+                  <Combo id="Combo0" taborder="122" codecolumn="codecolumn" datacolumn="datacolumn" cssclass="styFormItemCombo" enable="false" top="32" height="21" width="106" index="-1" right="458" onsetfocus="fn_EditFocus">
+                    <Dataset id="innerdataset">
+                      <ColumnInfo>
+                        <Column id="codecolumn" size="256"/>
+                        <Column id="datacolumn" size="256"/>
+                      </ColumnInfo>
+                      <Rows>
+                        <Row>
+                          <Col id="codecolumn">1</Col>
+                          <Col id="datacolumn">1기예정</Col>
+                        </Row>
+                        <Row>
+                          <Col id="codecolumn">2</Col>
+                          <Col id="datacolumn">1기확정</Col>
+                        </Row>
+                        <Row>
+                          <Col id="codecolumn">3</Col>
+                          <Col id="datacolumn">2기예정</Col>
+                        </Row>
+                        <Row>
+                          <Col id="codecolumn">4</Col>
+                          <Col id="datacolumn">2기확정</Col>
+                        </Row>
+                      </Rows>
+                    </Dataset>
+                  </Combo>
+                  <Static id="Static0" taborder="123" text="신고" cssclass="styFormItemCap" top="32" height="21" width="51" right="413"/>
+                  <Edit id="edtPERMITNUM" taborder="125" maxlength="7" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" top="32" height="21" inputtype="number,sign" width="168" right="45"/>
+                  <Static id="Static4" taborder="167" text="총괄납부승인번호" cssclass="styFormItemCap" top="32" right="271" height="21" width="128"/>
+                  <Static id="Static9" taborder="130" text="휴대전화" cssclass="styFormItemCap" top="109" right="327" height="21" width="72"/>
+                  <Edit id="edtCELLPHONE" taborder="131" maxlength="14" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" top="109" right="45" height="21" inputtype="number,sign" width="168"/>
+                  <Static id="Static7" taborder="132" text="전자우편" cssclass="styFormItemCap" top="135" right="327" height="21" width="72"/>
+                  <Edit id="edtEMAIL" taborder="133" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" top="135" right="45" height="21" width="168"/>
+                  <Static id="Static8" taborder="126" text="사업자단위신고납부승인번호" cssclass="styFormItemCap" top="58" height="21" right="207" width="192"/>
+                  <Edit id="edtSKPERMITNUM" taborder="127" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" top="58" right="45" height="21" width="168" tabstop="false" readonly="true"/>
+                  <Static id="Static05" taborder="128" text="사업자단위과세승인번호" cssclass="styFormItemCap" top="84" right="207" height="21" width="192"/>
+                  <Edit id="edtUNITTAXNO" taborder="129" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" top="84" height="21" right="45" width="168"/>
+                  <Static id="Shape09" taborder="170" cssclass="styFormItemBoxOut" width="585" height="33" right="10" bottom="10"/>
+                  <Static id="Shape07" taborder="169" cssclass="styFormItemBoxOut" width="585" height="33" right="10" bottom="51"/>
+                  <Static id="Static16" taborder="107" text="세무대리인" cssclass="sta_WF_Subtitle" right="462" height="21" width="133" bottom="126"/>
+                  <Static id="Static13" taborder="108" text="폐업신고" cssclass="sta_WF_Subtitle" right="488" height="21" width="107" bottom="184"/>
+                  <Static id="Static1" taborder="109" cssclass="sta_WF_Subtitle" top="4" height="21" width="107" text="신고일반" right="488"/>
+                  <Static id="Static2" taborder="111" text="과세표준 명세" cssclass="sta_WF_Subtitle" top="167" height="21" width="159" right="436"/>
+                  <Grid id="grdVAT_TAX_SUBD" cssclass="styGrid01" taborder="112" binddataset="dsTA_VAT101_D" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" style="font:굴림,9;" right="10" bottom="267" top="188" width="585" fillareatype="none">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="139"/>
+                          <Column size="110"/>
+                          <Column size="110"/>
+                          <Column size="110"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="26" band="head"/>
+                          <Row size="24"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="업태"/>
+                          <Cell col="1" displaytype="text" text="종목"/>
+                          <Cell col="2" displaytype="text" text="업종코드"/>
+                          <Cell col="3" displaytype="text" text="금액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" edittype="expr:INCOME_SEQ==4 ? 'none' : 'normal'" style="align: left;" text="bind:CORP_TYPENM"/>
+                          <Cell col="1" displaytype="text" edittype="expr:INCOME_SEQ==4 ? 'none' : 'normal'" style="align: left;" text="bind:CORP_LINE"/>
+                          <Cell col="2" displaytype="text" edittype="expr:INCOME_SEQ==4 ? 'none' : 'normal'" editfilter="number" style="align: center;" text="bind:CORP_TYPECD" editlimit="6"/>
+                          <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:INCOME_SAMT"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBB" cssclass="styGrid01" taborder="113" binddataset="dsTA_VAT101_H1" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" left="10" top="256" fillareatype="none" right="615" height="197">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="120"/>
+                          <Column size="115"/>
+                          <Column size="150"/>
+                          <Column size="130"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="26" band="head"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell colspan="2" displaytype="text" style="align: center;">
+                            <Cell colspan="2" displaytype="text" text="매입세액"/>
+                          </Cell>
+                          <Cell col="2" displaytype="text" text="금액"/>
+                          <Cell col="3" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell rowspan="3" displaytype="text" style="align: left;">
+                            <Cell rowspan="3" displaytype="text" style="align: left;" text="세금계산서수취분"/>
+                          </Cell>
+                          <Cell col="1" displaytype="text" style="align: left;" text="일반매입"/>
+                          <Cell col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_TAXBIL_VAMT" editlimit="17"/>
+                          <Cell row="1" col="1" displaytype="text" style="align: left;" text="수출기업수입분납부유예"/>
+                          <Cell row="1" col="2" displaytype="normal" edittype="none" editfilter="number" style="align: right;" editlimit="17"/>
+                          <Cell row="1" col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_EXPOST_VAMT" editlimit="17"/>
+                          <Cell row="2" col="1" displaytype="text" style="align: left;" text="고정자산매입"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_ASSETS_SAMT" editlimit="17"/>
+                          <Cell row="2" col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_ASSETS_VAMT" editlimit="17"/>
+                          <Cell row="3" colspan="2" displaytype="text" style="align: left;">
+                            <Cell colspan="2" displaytype="text" style="align: left;" text="예  정  신  고  누  락  분"/>
+                          </Cell>
+                          <Cell row="3" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_WILTOT_SAMT" editlimit="17"/>
+                          <Cell row="3" col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_WILTOT_VAMT" editlimit="17"/>
+                          <Cell row="4" colspan="2" displaytype="text" style="align: left;">
+                            <Cell colspan="2" displaytype="text" style="align: left;" text="매 입 자 발 행 세 금 계 산 서"/>
+                          </Cell>
+                          <Cell row="4" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_PURPUB_SAMT" editlimit="17"/>
+                          <Cell row="4" col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_PURPUB_VAMT" editlimit="17"/>
+                          <Cell row="5" colspan="2" displaytype="text" style="align: left;">
+                            <Cell colspan="2" displaytype="text" style="align: left;" text="그 밖 의 공 제 매 입 세 액"/>
+                          </Cell>
+                          <Cell row="5" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_ETCBIL_SAMT" editlimit="17"/>
+                          <Cell row="5" col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:PH_ETCBIL_VAMT" editlimit="17"/>
+                          <Cell row="6" colspan="2" displaytype="text" style="align: left;">
+                            <Cell colspan="2" displaytype="text" style="align: left;" text="공 제 받 지 못 할 매 입 세 액"/>
+                          </Cell>
+                          <Cell row="6" col="2" displaytype="number" style="align: right;" text="bind:PH_UNABLE_SAMT" editlimit="17"/>
+                          <Cell row="6" col="3" displaytype="number" style="align: right;" text="bind:PH_UNABLE_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBC" cssclass="styGrid01" taborder="114" binddataset="dsTA_VAT101_H1" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" left="10" fillareatype="none" bottom="10" right="614" top="463">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="235"/>
+                          <Column size="150"/>
+                          <Column size="130"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="26" band="head"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="경감공제세액"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="기 타 공 제, 경 감 세 액"/>
+                          <Cell col="1" displaytype="normal" style="align: right;"/>
+                          <Cell col="2" displaytype="number" style="align: right;" text="bind:RH_ETCMIN_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="신용카드매출전표발행공제등"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_CREDIT_SAMT" editlimit="17"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_CREDIT_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="예 정  신 고  미 환 급  세 액"/>
+                          <Cell row="2" col="1" displaytype="normal" style="align: right;"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_WILRET_VAMT" editlimit="17"/>
+                          <Cell row="3" displaytype="text" style="align: left;" text="예   정   고   지   세   액"/>
+                          <Cell row="3" col="1" displaytype="normal" style="align: right;"/>
+                          <Cell row="3" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_NOTRET_VAMT" editlimit="17"/>
+                          <Cell row="4" displaytype="text" style="align: left;" text="사업양수자의 대리납부 기납부세액"/>
+                          <Cell row="4" col="1" displaytype="normal" style="align: right;"/>
+                          <Cell row="4" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_PROXY_VAMT" editlimit="17"/>
+                          <Cell row="5" displaytype="text" style="align: left;" text="매입자 납부특례 기납부세액"/>
+                          <Cell row="5" col="1" displaytype="normal" style="align: right;"/>
+                          <Cell row="5" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:RH_PROHIB_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static3" taborder="115" text="국세환급금 계좌" cssclass="sta_WF_Subtitle" right="456" height="21" width="139" bottom="241"/>
+                  <Static id="Shape00" taborder="134" cssclass="styFormItemBoxOut" height="33" width="585" right="10" bottom="209"/>
+                  <Combo id="cmbBANK_CODE" taborder="137" cssclass="styFormItemCombo" height="21" width="100" index="-1" right="433" bottom="215" onsetfocus="fn_EditFocus"/>
+                  <Edit id="edtBRANCHNAME" taborder="139" maxlength="30" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="100" right="241" bottom="215"/>
+                  <Edit id="edtACCOUNTNUM" taborder="140" maxlength="64" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="120" inputtype="number,sign" right="21" bottom="215"/>
+                  <Static id="Shape03" taborder="142" cssclass="styFormItemBoxOut" height="33" width="585" right="10" bottom="151"/>
+                  <Static id="Static14" taborder="144" text="폐업일자" cssclass="styFormItemCap" height="21" width="74" right="501" bottom="157"/>
+                  <Calendar id="calOUTDATE" taborder="145" dateformat="yyyy-MM-dd" cssclass="styFormSearchItemCalendar" height="21" width="100" right="406" bottom="157" onsetfocus="fn_EditFocus"/>
+                  <Static id="Static15" taborder="146" text="폐업사유" cssclass="styFormItemCap" height="21" width="75" right="310" bottom="157" visible="false"/>
+                  <Edit id="edtOUTREMARK" taborder="147" maxlength="3" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="295" right="21" bottom="157" visible="false"/>
+                  <Static id="Shape05" taborder="148" cssclass="styFormItemBoxOut" height="34" width="585" right="10" bottom="92"/>
+                  <Edit id="edtWNAME" taborder="152" maxlength="30" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="100" right="433" bottom="99"/>
+                  <Static id="Static18" taborder="153" text="관리번호" cssclass="styFormItemCap" height="21" width="82" right="327" bottom="99"/>
+                  <Edit id="edtWNUM" taborder="154" maxlength="6" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="110" right="231" bottom="99"/>
+                  <Static id="Static19" taborder="155" text="전화번호" cssclass="styFormItemCap" height="21" width="75" right="133" bottom="99"/>
+                  <Edit id="edtWTEL" taborder="156" maxlength="14" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" height="21" width="120" inputtype="number,sign" right="21" bottom="99"/>
+                  <Static id="Static20" taborder="159" text="가산세액계" cssclass="styFormItemCap" height="21" width="92" right="483" bottom="57"/>
+                  <MaskEdit id="medGASANAMT" taborder="160" mask="#,###" onsetfocus="fn_EditFocus" oneditclick="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" right="21" height="21" style=":disabled {align:right;}" width="473" bottom="57" tabstop="false" readonly="true"/>
+                  <Static id="Static21" taborder="163" text="차가감납부할세액(환급받을세액)" cssclass="styFormItemCap" height="21" bottom="16" width="234" right="341"/>
+                  <MaskEdit id="medCHAGAMAMT" taborder="164" mask="#,###" onsetfocus="fn_EditFocus" oneditclick="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" right="21" height="21" style=":disabled {align:right;}" width="343" bottom="16" tabstop="false" readonly="true" type="number"/>
+                  <Grid id="grdVAT_TAX_SUBA" cssclass="styGrid01" taborder="166" binddataset="dsTA_VAT101_H1" wheelscrollrow="1" autoenter="select" useinputpanel="false" autofittype="col" onenterdown="grd_OnEnterDown" left="10" top="25" height="221" right="615">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="235"/>
+                          <Column size="150"/>
+                          <Column size="130"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="26" band="head"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                          <Row size="24"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="과세표준및매출세액"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="과세 - 세금계산서발급분"/>
+                          <Cell col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_TAXBIL_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="과세 - 매입자발행세금계산서"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_PURPUB_SAMT" editlimit="17"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_PURPUB_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="과세 - 신용카드,현금영수증 발행분"/>
+                          <Cell row="2" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_CRECAS_SAMT" editlimit="17"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_CRECAS_VAMT" editlimit="17"/>
+                          <Cell row="3" displaytype="text" style="align: left;" text="과세 - 기      타"/>
+                          <Cell row="3" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_TAXETC_SAMT" editlimit="17"/>
+                          <Cell row="3" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_TAXETC_VAMT" editlimit="17"/>
+                          <Cell row="4" displaytype="text" style="align: left;" text="영세 - 세금계산서발급분"/>
+                          <Cell row="4" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_ZERBIL_SAMT" editlimit="17"/>
+                          <Cell row="4" col="2" displaytype="normal" style="align: right;"/>
+                          <Cell row="5" displaytype="text" style="align: left;" text="영세 - 기      타"/>
+                          <Cell row="5" col="1" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_ZERETC_SAMT" editlimit="17"/>
+                          <Cell row="5" col="2" displaytype="normal" style="align: right;"/>
+                          <Cell row="6" displaytype="text" style="align: left;" text="예  정  신  고  누  락  분"/>
+                          <Cell row="6" col="1" displaytype="number" style="align: right;" text="bind:SH_WILMIS_SAMT" editlimit="17"/>
+                          <Cell row="6" col="2" displaytype="number" style="align: right;" text="bind:SH_WILMIS_VAMT" editlimit="17"/>
+                          <Cell row="7" displaytype="text" style="align: left;" text="대  손  세  액  가  감"/>
+                          <Cell row="7" col="1" displaytype="number" style="align: right;"/>
+                          <Cell row="7" col="2" displaytype="number" edittype="text" editfilter="number" style="align: right;" text="bind:SH_DOUADD_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static17" taborder="168" text="성명" cssclass="styFormItemCap" width="75" height="21" right="500" bottom="99"/>
+                  <Static id="Static06" taborder="171" text="w&#13;&#10;10" visible="false" left="0" top="75" width="10" height="67" style="background:#fb7b7b7a;"/>
+                  <Static id="Static25" taborder="176" text="h 10" visible="false" left="524" top="550" width="328" height="10" style="background:#fb7b7b7a;"/>
+                  <Static id="Static30" taborder="181" text="h 25" visible="false" left="796" top="163" width="80" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static32" taborder="182" text="h 25" visible="false" left="796" top="293" width="80" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static23" taborder="188" text="신고내용" cssclass="sta_WF_Subtitle" left="10" top="4" width="107" height="21"/>
+                  <Static id="Static12" taborder="138" text="지점" cssclass="styFormItemCap" height="21" width="44" right="341" bottom="215"/>
+                  <Static id="Static11" taborder="141" text="계좌번호" cssclass="styFormItemCap" height="21" width="67" right="141" bottom="215"/>
+                  <Static id="Static10" taborder="136" text="은행" cssclass="styFormItemCap" height="21" width="42" right="533" bottom="215"/>
+                  <Static id="stInformation01" taborder="189" cssclass="sta_WF_line" top="32" width="10" height="124" right="402"/>
+                  <Static id="Static22" taborder="190" text="w&#13;&#10;10" visible="false" left="1142" top="307" width="10" height="243" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tab2" text="VAT신고서 2쪽" style="margin:0 0 0 0;">
+              <Layouts>
+                <Layout>
+                  <Grid id="grdVAT_TAX_SUBG" cssclass="styGrid01" taborder="8" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" left="10" top="466" right="619" bottom="10" style="font:굴림,9;" fillareatype="none">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="170"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="공제받지못할매입세액명세"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="공제받지 못할 매입세액"/>
+                          <Cell col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_UNABLE_SAMT" editlimit="17"/>
+                          <Cell col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_UNABLE_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="공통매입세액 면세사업분"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_EXCEPT_SAMT" editlimit="17"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_EXCEPT_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="대손처분 받은 세액"/>
+                          <Cell row="2" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_DOUADD_SAMT" editlimit="17"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PN_DOUADD_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBF" cssclass="styGrid01" taborder="9" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" left="10" top="212" right="619" height="240" style="font:굴림,9;" fillareatype="none">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="170"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="그밖의공제매입세액명세"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="신용카드매출전표수취명세서제출분-일반"/>
+                          <Cell col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_CREDIT_SAMT" editlimit="17"/>
+                          <Cell col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_CREDIT_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="신용카드매출전표수취명세서제출분-고정자산"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_ASSETS_SAMT" editlimit="17"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_ASSETS_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="의제매입세액"/>
+                          <Cell row="2" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_AGENDA_SAMT" editlimit="17"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_AGENDA_VAMT" editlimit="17"/>
+                          <Cell row="3" displaytype="text" style="align: left;" text="재활용폐자원 등 매입세액"/>
+                          <Cell row="3" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_RECYCL_SAMT" editlimit="17"/>
+                          <Cell row="3" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_RECYCL_VAMT" editlimit="17"/>
+                          <Cell row="4" displaytype="text" style="align: left;" text="과세사업전환매입세액"/>
+                          <Cell row="4" col="1" displaytype="number" style="align: right;"/>
+                          <Cell row="4" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_CONVER_VAMT" editlimit="17"/>
+                          <Cell row="5" displaytype="text" style="align: left;" text="재고매입세액"/>
+                          <Cell row="5" col="1" displaytype="number" style="align: right;"/>
+                          <Cell row="5" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_STOCKP_VAMT" editlimit="16"/>
+                          <Cell row="6" displaytype="text" style="align: left;" text="변제대손세액"/>
+                          <Cell row="6" col="1" displaytype="number" style="align: right;"/>
+                          <Cell row="6" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PD_BADDEP_VAMT" editlimit="16"/>
+                          <Cell row="7" displaytype="text" style="align: left;" text="외국인관광객에 대한 환급세액"/>
+                          <Cell row="7" col="1" displaytype="number" style="align: right;"/>
+                          <Cell row="7" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:PD_FOREINER_VAMT" editlimit="16"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBE" cssclass="styGrid01" taborder="10" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" left="10" top="10" right="619" height="188" style="font:굴림,9;">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="170"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="예정신고누락분명세"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="매출 / 과세 - 세금계산서"/>
+                          <Cell col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_TAXBIL_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="매출 / 과세 - 기         타"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_TAXETC_SAMT" editlimit="17"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_TAXETC_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="매출 / 영세 - 세금계산서"/>
+                          <Cell row="2" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_ZERBIL_SAMT" editlimit="17"/>
+                          <Cell row="2" col="2" displaytype="number" style="align: right;"/>
+                          <Cell row="3" displaytype="text" style="align: left;" text="매출 / 영세 - 기         타"/>
+                          <Cell row="3" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:SW_ZERETC_SAMT" editlimit="17"/>
+                          <Cell row="3" col="2" displaytype="number" style="align: right;"/>
+                          <Cell row="4" displaytype="text" style="align: left;" text="매입 / 세 금 계 산 서"/>
+                          <Cell row="4" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PW_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell row="4" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PW_TAXBIL_VAMT" editlimit="17"/>
+                          <Cell row="5" displaytype="text" style="align: left;" text="매입 / 그밖의공제매입세액"/>
+                          <Cell row="5" col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:PW_ETCBIL_SAMT" editlimit="17"/>
+                          <Cell row="5" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:PW_ETCBIL_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static4" taborder="11" text="면세사업수입금액" cssclass="sta_WF_Subtitle" height="21" width="165" right="435" bottom="188"/>
+                  <Grid id="grdVAT_TAX_SUBK" cssclass="styGrid01" taborder="12" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" style="font:굴림,9;" height="84" width="589" right="10" bottom="10" fillareatype="none">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="139"/>
+                          <Column size="110"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="계산서발급및수취명세"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="계산서 발급 금액"/>
+                          <Cell col="1" displaytype="number" edittype="normal" style="align: right;" text="bind:BD_SALTOT_SAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="계산서 수취 금액"/>
+                          <Cell row="1" col="1" displaytype="number" edittype="normal" style="align:right;" text="bind:BD_PURTOT_SAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBJ" cssclass="styGrid01" taborder="13" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" right="10" height="84" style="font:9 굴림;" fillareatype="none" width="589" bottom="104">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="170"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="110"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="업태"/>
+                          <Cell col="1" displaytype="text" text="종목"/>
+                          <Cell col="2" displaytype="text" text="코드번호"/>
+                          <Cell col="3" displaytype="text" text="금액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" edittype="normal" style="align: left;" text="bind:CORP_TYPENM" editlimit="30"/>
+                          <Cell col="1" displaytype="text" edittype="normal" style="align: left;" text="bind:CORP_LINE" editlimit="50"/>
+                          <Cell col="2" displaytype="text" edittype="normal" style="align: center;" text="bind:CORP_TYPECD" editlimit="7"/>
+                          <Cell col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:DF_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="수입금액제외" expr="expr:&quot;수입금액제외&quot;"/>
+                          <Cell row="1" col="1" displaytype="text" style="align: left;" text="bind:CORP_LINE" expr="expr:&quot;&quot;" editlimit="50"/>
+                          <Cell row="1" col="2" displaytype="text" style="align: center;" text="bind:CORP_TYPECD" expr="expr:&quot;&quot;" editlimit="7"/>
+                          <Cell row="1" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:DF_EXCEPT_SAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBI" cssclass="styGrid01" taborder="14" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" top="158" style="font:굴림,9;" fillareatype="none" width="589" right="10" bottom="216">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="78"/>
+                          <Column size="97"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell colspan="2" displaytype="text" text="가산세명세"/>
+                          <Cell col="2" displaytype="text" text="금액"/>
+                          <Cell col="3" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell colspan="2" displaytype="text" style="align: left;" text="사업자 미등록등"/>
+                          <Cell col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_BIZMIS_SAMT" editlimit="17"/>
+                          <Cell col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_BIZMIS_VAMT" editlimit="17"/>
+                          <Cell row="1" rowspan="3" displaytype="text" style="align: left;" text="세금계산서"/>
+                          <Cell row="1" col="1" displaytype="text" style="align: left;" text="지연발급등"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIDEL_SAMT" editlimit="17"/>
+                          <Cell row="1" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIDEL_VAMT" editlimit="17"/>
+                          <Cell row="2" col="1" displaytype="text" style="align: left;" text="지연수취"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="normal" style="align:right;" text="bind:AD_EBDERV_SAMT" editlimit="17"/>
+                          <Cell row="2" col="3" displaytype="number" edittype="normal" style="align:right;" text="bind:AD_EBDERV_VAMT" editlimit="17"/>
+                          <Cell row="3" col="1" displaytype="text" style="align: left;" text="미발급 등"/>
+                          <Cell row="3" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_NOTPUB_SAMT" editlimit="17"/>
+                          <Cell row="3" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_NOTPUB_VAMT" editlimit="17"/>
+                          <Cell row="4" rowspan="2" displaytype="text" style="align: left;" text="전자세금계산서&#10;발급명세전송"/>
+                          <Cell row="4" col="1" displaytype="text" style="align: left;" text="지연전송"/>
+                          <Cell row="4" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIOVE_SAMT" editlimit="17"/>
+                          <Cell row="4" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIOVE_VAMT" editlimit="17"/>
+                          <Cell row="5" col="1" displaytype="text" style="align: left;" text="미전송"/>
+                          <Cell row="5" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIEXC_SAMT" editlimit="17"/>
+                          <Cell row="5" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_EBIEXC_VAMT" editlimit="17"/>
+                          <Cell row="6" rowspan="2" displaytype="text" style="align: left;" text="세금계산서합계표"/>
+                          <Cell row="6" col="1" displaytype="text" style="align: left;" text="제출 불성실"/>
+                          <Cell row="6" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_TAXBIL_SAMT" editlimit="17"/>
+                          <Cell row="6" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_TAXBIL_VAMT" editlimit="17"/>
+                          <Cell row="7" col="1" displaytype="text" style="align: left;" text="지연제출"/>
+                          <Cell row="7" col="2" displaytype="number" edittype="normal" style="align:right;" text="bind:AD_TAXDEL_SAMT" editlimit="17"/>
+                          <Cell row="7" col="3" displaytype="number" edittype="normal" style="align:right;" text="bind:AD_TAXDEL_VAMT" editlimit="17"/>
+                          <Cell row="8" rowspan="4" displaytype="text" style="align: left;" text="신 고 불 성 실"/>
+                          <Cell row="8" col="1" displaytype="text" style="align: left;" text="무신고(일반)"/>
+                          <Cell row="8" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR1_SAMT" editlimit="17"/>
+                          <Cell row="8" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR1_VAMT" editlimit="17"/>
+                          <Cell row="9" col="1" displaytype="text" style="align: left;" text="무신고(부당)"/>
+                          <Cell row="9" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR2_SAMT" editlimit="17"/>
+                          <Cell row="9" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR2_VAMT" editlimit="17"/>
+                          <Cell row="10" col="1" displaytype="text" style="align: left;" text="과소·초과환급신고(일반)"/>
+                          <Cell row="10" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR3_SAMT" editlimit="17"/>
+                          <Cell row="10" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR3_VAMT" editlimit="17"/>
+                          <Cell row="11" col="1" displaytype="text" style="align: left;" text="과소·초과환급신고(부당)"/>
+                          <Cell row="11" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR4_SAMT" editlimit="17"/>
+                          <Cell row="11" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_REPOR4_VAMT" editlimit="16"/>
+                          <Cell row="12" colspan="2" displaytype="text" style="align: left;" text="납 부 불 성 실"/>
+                          <Cell row="12" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_NOSEND_SAMT" editlimit="17"/>
+                          <Cell row="12" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_NOSEND_VAMT" editlimit="16"/>
+                          <Cell row="13" colspan="2" displaytype="text" style="align: left;" text="영세율 과세표준 신고불성실"/>
+                          <Cell row="13" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_ZERBIL_SAMT" editlimit="17"/>
+                          <Cell row="13" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_ZERBIL_VAMT" editlimit="16"/>
+                          <Cell row="14" colspan="2" displaytype="text" style="align: left;" text="현금매출명세서 불성실"/>
+                          <Cell row="14" col="2" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_CASNOT_SAMT" editlimit="17"/>
+                          <Cell row="14" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_CASNOT_VAMT" editlimit="16"/>
+                          <Cell row="15" colspan="2" displaytype="text" style="align: left;" text="부동산임대공급가액명세서 불성실"/>
+                          <Cell row="15" col="2" displaytype="number" edittype="normal" style="align:right;" text="bind:AD_ESTATE_SAMT" editlimit="17"/>
+                          <Cell row="15" col="3" displaytype="number" edittype="normal" style="align: right;" text="bind:AD_ESTATE_VAMT" editlimit="16"/>
+                          <Cell row="16" rowspan="2" displaytype="text" style="align: center;">
+                            <Cell displaytype="text" style="align: left;" text="매입자"/>
+                            <Cell row="1" displaytype="text" style="align: left;" text="납부특례"/>
+                          </Cell>
+                          <Cell row="16" col="1" displaytype="text" style="align: left;" text="거래계좌 미사용"/>
+                          <Cell row="16" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:AD_ACCNOT_SAMT" editlimit="17"/>
+                          <Cell row="16" col="3" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:AD_ACCNOT_VAMT" editlimit="16"/>
+                          <Cell row="17" col="1" displaytype="text" style="align: left;" text="거래계좌 지연입금"/>
+                          <Cell row="17" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:AD_ACCDELAY_SAMT" editlimit="17"/>
+                          <Cell row="17" col="3" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:AD_ACCDELAY_VAMT" editlimit="16"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid id="grdVAT_TAX_SUBH" cssclass="styGrid01" taborder="15" binddataset="dsTA_VAT101_H2" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" useselcolor="false" onenterdown="grd_OnEnterDown" top="10" height="138" style="font:굴림,9;" fillareatype="none" width="589" right="10">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="170"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="그밖의경감·공제세액명세"/>
+                          <Cell col="1" displaytype="text" text="금액"/>
+                          <Cell col="2" displaytype="text" text="세액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: left;" text="전 자 신 고 세 액 공 제"/>
+                          <Cell col="1" displaytype="number" style="align: right;" text="bind:GONGAMT"/>
+                          <Cell col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:RD_EBIPAY_VAMT" editlimit="17"/>
+                          <Cell row="1" displaytype="text" style="align: left;" text="택시운송사업자 경감세액"/>
+                          <Cell row="1" col="1" displaytype="number" style="align: left;"/>
+                          <Cell row="1" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:RD_TAXICO_VAMT" editlimit="17"/>
+                          <Cell row="2" displaytype="text" style="align: left;" text="현금영수증 사업자 공제 세액"/>
+                          <Cell row="2" col="1" displaytype="number" style="align: left;"/>
+                          <Cell row="2" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:RD_CASBIL_VAMT" editlimit="17"/>
+                          <Cell row="3" displaytype="text" style="align: left;" text="기          타"/>
+                          <Cell row="3" col="1" displaytype="number" style="align: left;"/>
+                          <Cell row="3" col="2" displaytype="number" edittype="normal" editfilter="number" style="align: right;" text="bind:RD_ETCBIL_VAMT" editlimit="17"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <Static id="st_FormTitle" taborder="20" text="부가세신고서" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="21" text="홈 &gt; 세무관리 &gt; 부가세신고 &gt; 부가세신고서" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="22" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="23" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="24" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="25" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="26" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="27" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="29" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="30" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static11" taborder="32" text="h 37" visible="false" left="573" top="103" width="80" height="37" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="33" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="34" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="35" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="36" visible="false" left="74" top="61" width="8" height="41" style="background:#fb7b7b7a;align:left middle;"/>
+        <Static id="Static37" taborder="37" text="w 40" visible="false" left="242" top="61" width="40" height="41" style="background:#fb7b7b7a;align:left middle;"/>
+        <Static id="Static12" taborder="38" text="w 40" visible="false" left="393" top="61" width="40" height="41" style="background:#fb7b7b7a;align:left middle;"/>
+        <Static id="Static10" taborder="39" text="h10" visible="false" left="13" top="103" width="72" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static0" taborder="42" text="연도" cssclass="styFormSearchCapBe" left="272" top="71" width="50" height="21" style="align:left middle;"/>
+        <Calendar id="calSHRVAT_YYYY" taborder="1" type="spin" dateformat="yyyy" editformat="yyyy" cssclass="styFormItemCalendar" left="314" top="71" width="79" height="21" onsetfocus="fn_EditFocus"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsBRANCH_CD" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="256" prop="default" type="STRING"/>
+          <Column id="BRANCH_NM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_VAT101_H1" keystring="BDR_TYPECD" useclientlayout="true" oncolumnchanged="ds_OnColumnChanged">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_YYYY" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_QUARTER" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_SYMD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_EYMD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_CYMD" size="256" prop="default" type="STRING"/>
+          <Column id="USER_ID" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_NO" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_CELL" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_EMAIL" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_NM" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_MASTER" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_LOCATION" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TEL" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_ADDR" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPENM" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_LINE" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_SYMD" size="256" prop="default" type="STRING"/>
+          <Column id="AGENT_NM" size="256" prop="default" type="STRING"/>
+          <Column id="AGENT_NO" size="256" prop="default" type="STRING"/>
+          <Column id="AGENT_TEL" size="256" prop="default" type="STRING"/>
+          <Column id="AGENT_BIZNO" size="256" prop="default" type="STRING"/>
+          <Column id="REVISION_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="SH_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_TAXBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_PURPUB_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_PURPUB_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_CRECAS_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_CRECAS_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_TAXETC_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_TAXETC_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_ZERBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_ZERETC_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_WILMIS_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_WILMIS_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_DOUADD_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_DOUADD_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_TAXTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SH_TAXTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SALTOT_SAMT" type="BIGDECIMAL" size="22"/>
+          <Column id="SALTOT_VAMT" type="BIGDECIMAL" size="22"/>
+          <Column id="PH_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_TAXBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ASSETS_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ASSETS_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_WILTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_WILTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_PURPUB_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_PURPUB_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ETCBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ETCBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_PTOTAL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_PTOTAL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_UNABLE_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_UNABLE_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ADDMIN_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PH_ADDMIN_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SP_RETURN_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_ETCMIN_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_CREDIT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_CREDIT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_MINTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_WILRET_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_NOTRET_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_PROHIB_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_ADDTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="VAT_PAY_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="VAT_JPAY_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="IH_EXCEPT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="IH_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RH_PROXY_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="VAT_REF_VAMT" type="BIGDECIMAL" size="256"/>
+          <Column id="PH_EXPOST_VAMT" type="BIGDECIMAL" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_VAT101_H2" useclientlayout="true" keystring="BDR_TYPECD" oncolumnchanged="ds_OnColumnChanged">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_YYYY" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_QUARTER" size="256" prop="default" type="STRING"/>
+          <Column id="SW_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_TAXBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_TAXETC_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_TAXETC_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_ZERBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_ZERETC_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_SALTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="SW_SALTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_TAXBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_ETCBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_ETCBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_PURTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PW_PURTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_CREDIT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_CREDIT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_AGENDA_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_AGENDA_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_RECYCL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_RECYCL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_CONVER_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_ALAGEN_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_ALAGEN_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_ASSETS_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_ASSETS_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_STOCKP_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_BADDEP_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_PURTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PD_PURTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_UNABLE_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_UNABLE_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_EXCEPT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_EXCEPT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_DOUADD_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_DOUADD_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_PURTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="PN_PURTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RD_EBIPAY_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RD_EBITAX_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RD_TAXICO_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RD_CASBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RD_ETCBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_BIZMIS_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_BIZMIS_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIDEL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIDEL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBDERV_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBDERV_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_NOTPUB_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_NOTPUB_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIOVE_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIOVE_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIEXC_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_EBIEXC_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_TAXBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPORT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPORT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_NOSEND_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_NOSEND_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ZERBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ZERBIL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_CASNOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_CASNOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ADDTOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_TAXDEL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_TAXDEL_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR1_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR1_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR2_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR2_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR3_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR3_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR4_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_REPOR4_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ESTATE_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ESTATE_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DF_EXCEPT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DF_TAXBIL_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="BD_SALTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="BD_PURTOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="REFUND_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_BANKCD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_BANKNO" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_TOTPAYNO" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_BANKBRANCH" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_EYMD" size="256" prop="default" type="STRING"/>
+          <Column id="CLOSING_REMARK" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_REF_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="VAT_NTAX_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_EARLY_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPENM" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_LINE" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_UNITTAXNO" size="256" prop="default" type="STRING"/>
+          <Column id="PD_FOREINER_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ACCNOT_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ACCNOT_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ACCDELAY_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="AD_ACCDELAY_VAMT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="BRANCH_APPRNO" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsVAT_QUARTER" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="COMCODE" size="256" prop="default" type="STRING"/>
+          <Column id="SUBCODE" size="256" prop="default" type="STRING"/>
+          <Column id="SUBNAME" size="256" prop="default" type="STRING"/>
+          <Column id="SUBREF1" size="256" prop="default" type="STRING"/>
+          <Column id="SUBREF2" size="256" prop="default" type="INT"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COMCODE"/>
+            <Col id="SUBCODE">0</Col>
+            <Col id="SUBNAME"/>
+            <Col id="SUBREF1"/>
+            <Col id="SUBREF2"/>
+          </Row>
+          <Row>
+            <Col id="COMCODE"/>
+            <Col id="SUBCODE">1</Col>
+            <Col id="SUBNAME">1기예정</Col>
+            <Col id="SUBREF1"/>
+            <Col id="SUBREF2"/>
+          </Row>
+          <Row>
+            <Col id="COMCODE"/>
+            <Col id="SUBCODE">2</Col>
+            <Col id="SUBNAME">1기확정</Col>
+            <Col id="SUBREF1"/>
+            <Col id="SUBREF2"/>
+          </Row>
+          <Row>
+            <Col id="COMCODE"/>
+            <Col id="SUBCODE">3</Col>
+            <Col id="SUBNAME">2기예정</Col>
+            <Col id="SUBREF1"/>
+            <Col id="SUBREF2"/>
+          </Row>
+          <Row>
+            <Col id="COMCODE"/>
+            <Col id="SUBCODE">4</Col>
+            <Col id="SUBNAME">2기확정</Col>
+            <Col id="SUBREF1"/>
+            <Col id="SUBREF2"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">BANK_CODE</Col>
+            <Col id="DSNAME">dsBANK_CODE</Col>
+            <Col id="HEADFLAG">N</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTA_VAT101_D" useclientlayout="true" oncolumnchanged="ds_OnColumnChanged">
+        <ColumnInfo>
+          <Column id="INCOME_SEQ" size="256" prop="default" type="STRING"/>
+          <Column id="BRANCH_CD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_YYYY" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_QUARTER" size="256" prop="default" type="STRING"/>
+          <Column id="INCOME_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPENM" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_LINE" size="256" prop="default" type="STRING"/>
+          <Column id="CORP_TYPECD" size="256" prop="default" type="STRING"/>
+          <Column id="INCOME_SAMT" size="22" prop="default" type="BIGDECIMAL"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_VAT101_D2" useclientlayout="true" oncolumnchanged="ds_OnColumnChanged">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="3" prop="default" type="STRING"/>
+          <Column id="VAT_YYYY" size="4" prop="default" type="STRING"/>
+          <Column id="VAT_QUARTER" size="1" prop="default" type="STRING"/>
+          <Column id="DEDU_CODE" size="8" prop="default" type="STRING"/>
+          <Column id="DEDU_SAMT" size="15" prop="default" type="BIGDECIMAL"/>
+          <Column id="DEDU_VAMT" type="BIGDECIMAL" size="15" prop="default"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_VAT101_D3" useclientlayout="true" oncolumnchanged="ds_OnColumnChanged">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="3" prop="default" type="STRING"/>
+          <Column id="VAT_YYYY" size="4" prop="default" type="STRING"/>
+          <Column id="VAT_QUARTER" size="1" prop="default" type="STRING"/>
+          <Column id="ADTX_CODE" size="8" prop="default" type="STRING"/>
+          <Column id="ADTX_SAMT" size="15" prop="default" type="BIGDECIMAL"/>
+          <Column id="ADTXVAMT" type="BIGDECIMAL" size="15" prop="default"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsVA_VATBRANCH" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="BRANCH_CD" size="4" type="STRING" description="지점코드"/>
+          <Column id="VAT_YYYY" type="STRING" size="4"/>
+          <Column id="VAT_QUARTER" type="STRING" size="1"/>
+          <Column id="BIZ_NO" size="10" type="STRING" description="사업자번호"/>
+          <Column id="BRANCH_NM" size="40" type="STRING" description="지점명"/>
+          <Column id="CORP_NO" type="STRING" size="256"/>
+          <Column id="CORP_NM" size="40" type="STRING" description="법인명"/>
+          <Column id="CORP_TYPENM" size="100" type="STRING" description="업태"/>
+          <Column id="CORP_LINE" size="100" type="STRING" description="업종"/>
+          <Column id="CORP_MASTER" size="30" type="STRING" description="대표자"/>
+          <Column id="CORP_ADDR" size="301" type="STRING" description="주소"/>
+          <Column id="CORP_TEL" size="20" type="STRING" description="사업자전화번호"/>
+          <Column id="CORP_CELL" size="20" type="STRING" description="사업자전화번호"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="Tab0_tab1_Combo0_value" compid="Tab0.tab1.Combo0" propid="value" datasetid="dsTA_VAT101_H1" columnid="VAT_QUARTER"/>
+      <BindItem id="Tab0_tab1_edtPERMITNUM_value" compid="Tab0.tab1.edtPERMITNUM" propid="value" datasetid="dsTA_VAT101_H2" columnid="VAT_TOTPAYNO"/>
+      <BindItem id="item0" compid="Tab0.tab1.edtUNITTAXNO" propid="value" datasetid="dsTA_VAT101_H2" columnid="BRANCH_APPRNO"/>
+      <BindItem id="Tab0_tab1_edtCELLPHONE_value" compid="Tab0.tab1.edtCELLPHONE" propid="value" datasetid="dsTA_VAT101_H1" columnid="CORP_CELL"/>
+      <BindItem id="Tab0_tab1_edtEMAIL_value" compid="Tab0.tab1.edtEMAIL" propid="value" datasetid="dsTA_VAT101_H1" columnid="CORP_EMAIL"/>
+      <BindItem id="Tab0_tab1_cmbBANK_CODE_value" compid="Tab0.tab1.cmbBANK_CODE" propid="value" datasetid="dsTA_VAT101_H2" columnid="VAT_BANKCD"/>
+      <BindItem id="Tab0_tab1_edtBRANCHNAME_value" compid="Tab0.tab1.edtBRANCHNAME" propid="value" datasetid="dsTA_VAT101_H2" columnid="VAT_BANKBRANCH"/>
+      <BindItem id="Tab0_tab1_edtACCOUNTNUM_value" compid="Tab0.tab1.edtACCOUNTNUM" propid="value" datasetid="dsTA_VAT101_H2" columnid="VAT_BANKNO"/>
+      <BindItem id="Tab0_tab1_calOUTDATE_value" compid="Tab0.tab1.calOUTDATE" propid="value" datasetid="dsTA_VAT101_H2" columnid="CORP_EYMD"/>
+      <BindItem id="Tab0_tab1_edtOUTREMARK_value" compid="Tab0.tab1.edtOUTREMARK" propid="value" datasetid="dsTA_VAT101_H2" columnid="CLOSING_REMARK"/>
+      <BindItem id="Tab0_tab1_edtWNAME_value" compid="Tab0.tab1.edtWNAME" propid="value" datasetid="dsTA_VAT101_H1" columnid="AGENT_NM"/>
+      <BindItem id="Tab0_tab1_edtWNUM_value" compid="Tab0.tab1.edtWNUM" propid="value" datasetid="dsTA_VAT101_H1" columnid="AGENT_NO"/>
+      <BindItem id="Tab0_tab1_edtWTEL_value" compid="Tab0.tab1.edtWTEL" propid="value" datasetid="dsTA_VAT101_H1" columnid="AGENT_TEL"/>
+      <BindItem id="Tab0_tab1_medGASANAMT_value" compid="Tab0.tab1.medGASANAMT" propid="value" datasetid="dsTA_VAT101_H1" columnid="RH_ADDTOT_VAMT"/>
+      <BindItem id="Tab0_tab1_medCHAGAMAMT_value" compid="Tab0.tab1.medCHAGAMAMT" propid="value" datasetid="dsTA_VAT101_H1" columnid="VAT_REF_VAMT"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TXMC0160  부가세신고서
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.03		신민규		Initial Created.
+ *   2016.08.11		안윤준		수정
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_ubireport.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+// 종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄
+this.sBUTTONLIST  	= "TTFFFTFT"; 
+this.sPACKAGENAME 	= "TXMC0160"; 
+this.sSERVERDATE  	= this.fnc_SubStr(this.fnc_GetServerDateTime("date"), 0, 8);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+	
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+	
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+
+	this.fnc_GetBranch();
+
+	var sStds_Date	= this.fnc_AddMonth(this.sSERVERDATE, -1);
+	var sStds_Mnth	= this.fnc_SubStr(sStds_Date, 4, 2);
+	var sVatQuarter = "";
+		
+	this.calSHRVAT_YYYY.set_value(this.fnc_SubStr(sStds_Date, 0, 4));
+
+	if (sStds_Mnth >= "01" && sStds_Mnth <= "03") {
+		sVatQuarter = "1";
+		this.edtVAT_SMMDD.set_value("0101");
+		this.edtVAT_EMMDD.set_value("0331");
+	} else if (sStds_Mnth >= "04" && sStds_Mnth <= "06") {
+		sVatQuarter = "2";
+		this.edtVAT_SMMDD.set_value("0401");
+		this.edtVAT_EMMDD.set_value("0630");
+	} else if (sStds_Mnth >= "07" && sStds_Mnth <= "09") {
+		sVatQuarter = "3";
+		this.edtVAT_SMMDD.set_value("0701");
+		this.edtVAT_EMMDD.set_value("0930");
+	} else if (sStds_Mnth >= "10" && sStds_Mnth <= "12") {
+		sVatQuarter = "4";
+		this.edtVAT_SMMDD.set_value("1001");
+		this.edtVAT_EMMDD.set_value("1231");
+	}
+	
+	this.cmbVAT_QUARTER.set_value(sVatQuarter);
+	this.cmbSHRACCT_GUBN.setFocus();
+	
+}
+ 
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+	
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	// 조회 필수 입력 여부 체크
+	if (!this.fn_SearchItemCheck()) return;
+	
+	this.fnc_DatasetClear("dsTA_VAT101_D,dsTA_VAT101_H1,dsTA_VAT101_H2");
+	
+	var sMethodName  = "SEARCH00";
+	var sInDataSet   = "";
+	var	sOutDataSet  = "dsTA_VAT101_H1=dsTA_VAT101_H1 ";
+		sOutDataSet += "dsTA_VAT101_H2=dsTA_VAT101_H2 ";
+		sOutDataSet += "dsTA_VAT101_D=dsTA_VAT101_D ";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (this.dsTA_VAT101_H1.rowcount < 1) {
+		this.fnc_Message("TMM125", "조회 후 저장하세요");
+		return false;
+	}
+
+	if (this.fnc_Length(this.dsTA_VAT101_D.getColumn(0, "CORP_TYPECD")) < 1) {
+		this.fnc_Message("TMM125", "업종코드를 입력하세요.");
+		return false;
+	}
+
+
+	// 과세표준 명세의 업종코드를 TA_VAT101_H1 에 넣어준다.
+	this.dsTA_VAT101_H1.setColumn(0, "CORP_TYPECD", this.dsTA_VAT101_D.getColumn(0, "CORP_TYPECD"));
+
+	// 과세표준 명세의 수입금액 제외의 업태, 업종, 업종코드를 1라인의 데이터로 넣어준다.
+	this.dsTA_VAT101_D.setColumn(3, "CORP_TYPENM", this.dsTA_VAT101_D.getColumn(0, "CORP_TYPENM"));
+	this.dsTA_VAT101_D.setColumn(3, "CORP_LINE", this.dsTA_VAT101_D.getColumn(0, "CORP_LINE"));
+	this.dsTA_VAT101_D.setColumn(3, "CORP_TYPECD", this.dsTA_VAT101_D.getColumn(0, "CORP_TYPECD"));
+
+	// 과세표준 명세에 금액이 들어가있을 경우 수입금액종류를 넣어준다.,
+	for (var i = 0; i < 4; i++) {
+	
+		if (this.dsTA_VAT101_D.getColumn(i, "INCOME_SAMT") != 0) {
+			// 금액이 있으면
+			if (i != 3) {
+				this.dsTA_VAT101_D.setColumn(i, "INCOME_TYPECD", "1"); //과세표준명세
+			} else {
+				this.dsTA_VAT101_D.setColumn(i, "INCOME_TYPECD", "2"); //수입금액제외
+			}
+		}
+	}
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTA_VAT101_H1=dsTA_VAT101_H1:A ";
+		sInDataSet += "dsTA_VAT101_H2=dsTA_VAT101_H2:A ";
+		sInDataSet += "dsTA_VAT101_D=dsTA_VAT101_D:A ";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+
+	var reportfile = "/txm/TXMC0160R01.jrf";
+
+	var params  =  "ACCT_GUBN#"   + this.fnc_Trim(this.cmbSHRACCT_GUBN.value);
+		params +=  "#VAT_YYYY#"   + this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4);
+		params +=  "#VAT_QUARTER#"+ this.fnc_Trim(this.cmbVAT_QUARTER.value);
+		
+		/*params += "#TOTL_INTL#전체";*/
+
+	var dataref = new Array();
+	
+	dataref[0] = new Object();
+	dataref[0].type = "TRAN";
+	dataref[0].svcUrl = "/core/erp/txm/TXMC0160_SEARCH00.do";
+	dataref[0].inDataset = ""
+	dataref[0].outDataset = "dsTA_VAT101_H1=dsTA_VAT101_H1 dsTA_VAT101_H2=dsTA_VAT101_H2 dsTA_VAT101_D=dsTA_VAT101_D dsVA_VATBRANCH=dsVA_VATBRANCH"
+	dataref[0].arg = this.fn_CreateArgument("REPORT00");
+	
+	this.fn_UbiReport(reportfile, params, dataref);
+	
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTA_VAT101_H1,dsTA_VAT101_H2,dsTA_VAT101_D", this);	
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+	
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+	
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTA_VAT101_H1,dsTA_VAT101_H2,dsTA_VAT101_D")) {
+		if (!this.fnc_Message("TMM023")) return false;
+		
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRVAT_YYYY.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "연도", this.calSHRVAT_YYYY);
+		
+	}
+	
+	return true;
+	
+}
+
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	//변경된 데이터가 없습니다.
+	if (!this.fnc_DatasetChangeCheck("dsTA_VAT101_H1,dsTA_VAT101_H2,dsTA_VAT101_D")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	return true;
+	
+}
+
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm=" 		 + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	 + this.fnc_Quote(sKind); 
+		sReturnString += " ACCT_GUBN=" 	 + this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_GUBN.value)); 						 //사업자등록번호
+		sReturnString += " VAT_YYYY=" 	 + this.fnc_Quote(this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4)); //년도
+		sReturnString += " VAT_QUARTER=" + this.fnc_Quote(this.fnc_Trim(this.cmbVAT_QUARTER.value)); 					 //VAT분기
+		
+	} else if ( sKind == "REPORT00") {
+	
+		sReturnString  = " pgm=" 			+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 		+ this.fnc_Quote(sKind);
+		sReturnString += " ACCT_GUBN=" 	 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_GUBN.value)); 						 //사업자등록번호
+		sReturnString += " VAT_YYYY=" 	 	+ this.fnc_Quote(this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4)); //년도
+		sReturnString += " VAT_QUARTER=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbVAT_QUARTER.value)); 					 //VAT분기
+		
+	} else if (sKind == "PROC00") {
+		sReturnString  = " pgm=" 		 + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	 + this.fnc_Quote(sKind); 
+		sReturnString += " ACCT_GUBN=" 	 + this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_GUBN.value)); 					 //사업자등록번호
+		sReturnString += " VAT_YYYY=" 	 + this.fnc_Quote(this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4)); //년도
+		sReturnString += " VAT_QUARTER=" + this.fnc_Quote(this.fnc_Trim(this.cmbVAT_QUARTER.value)); 					 //VAT분기
+		sReturnString += " VAT_SMMDD="	 + this.fnc_Quote(this.fnc_Trim(this.edtVAT_SMMDD.value));						 //VAT조회 시작월일
+		sReturnString += " VAT_EMMDD="	 + this.fnc_Quote(this.fnc_Trim(this.edtVAT_EMMDD.value)); 						 //VAT조회 종료월일
+		
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" + this.fnc_Quote(sKind); 
+	}
+
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+		
+	}
+}
+
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Message("TMM018", this.dsTA_VAT101_H1.rowcount);
+		this.cmbSHRACCT_GUBN.setFocus();
+		
+	} else if (sMethodName == "REPORT00") {
+
+	} else if (sMethodName == "SAVE00") {
+		this.fnc_Message("TMM103"); 
+		
+	} else if (sMethodName == "PROC00") {
+		/**
+		 * 2015.04.07.PIH
+		 * 환급구분코드
+		 * 일반환급                        (10) : 조기환급(영세율 및 시설투자환급)에 해당되지 않는 경우
+		 * 영세율환급                      (20) : 영세율 매출에 해당하는 금액이 있는 경우
+		 * 시설투자환급                    (30) : 영세율 매출은 없고 고정자산 매입에 해당하는 금액이 있는 경우
+		 * 총괄납부주사업자 환급          (40) : 총괄납부(환급)세액이 "0" 이상(납부)이나 (26)차가감납부할세액(환급받을세액)이 "0" 미만(환급)일 때
+		 * 총괄납부주사업자 일반환급     (41) : 총괄납부(환급)세액이 "0" 미만일 때 조기환급(영세율 및 시설투자환급)에 해당되지 않는 경우
+		 * 총괄납부주사업자 영세율환급   (42) : 총괄납부(환급)세액이 "0" 미만일 때 영세율 매출에 해당하는 금액이 있는 경우
+		 * 총괄납부주사업자 시설투자환급 (43) : 총괄납부(환급)세액이 "0" 미만일 때 영세율 매출은 없고 고정자산 매입에 해당하는 금액이 있는 경우
+		 */
+		 
+		// 실차감납부할세액의 값을 넣어준다.
+		if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "2") {
+			// 총괄납부사업자의 주사업자
+			var nVAT_REF_VAMT = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "VAT_PAY_VAMT"), 0) + nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "VAT_JPAY_VAMT"), 0);
+		
+			/* 20151022 김남호 : 2015년2기예정 부가세 신고시 환급구분코드 에러
+			 본사는 기본 "10"으로 설정했는데 "환급구분코드 확인" 에러 발생으로 "ZZ"로 변경했더니 정상 동작*/
+			if (this.dsTA_VAT101_H2.getColumn(0, "REFUND_TYPECD") == "" || this.dsTA_VAT101_H2.getColumn(0, "REFUND_TYPECD") == null) {
+				// dsTA_VAT101_H2.setColumn(0, "REFUND_TYPECD", "10");
+				this.dsTA_VAT101_H2.setColumn(0, "REFUND_TYPECD", "ZZ");
+			}
+		} else if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "3") {
+			// 총괄납부사업자의 종사업자
+			this.dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", "0");
+			/* 2015.04.23. 안양은 "20"으로 고정
+			 if (toNumber(dsTA_VAT101_H1.getColumn(0, "VAT_PAY_VAMT"), 0) < 0) {
+			 dsTA_VAT101_H2.setColumn(0, "REFUND_TYPECD", "40");
+			 }
+			 */
+			if (this.dsTA_VAT101_H2.getColumn(0, "REFUND_TYPECD") == "" || this.dsTA_VAT101_H2.getColumn(0, "REFUND_TYPECD") == null) {
+				this.dsTA_VAT101_H2.setColumn(0, "REFUND_TYPECD", "20");
+			}
+		} else if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "5") {
+			// 사업자단위과세적용사업자
+			this.dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", this.dsTA_VAT101_H1.getColumn(0, "VAT_PAY_VAMT"));
+		}
+		
+		this.cmbSHRACCT_GUBN.setFocus();
+		
+	} else if (sMethodName == "GetBranch") {
+		this.cmbSHRACCT_GUBN.set_index(0);
+	
+	} else if (sMethodName == "GetCommCode") {
+
+		var arrParam = new Array();
+			arrParam[0] 	= "COMBO,Tab0.tab1.cmbBANK_CODE,dsBANK_CODE,0";
+		this.fnc_CommonCodeInnerBind(arrParam);		
+	}
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+this.btn_PROC_OnClick = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	if (!this.fn_SearchItemCheck()) return;
+
+	var sMethodName  = "PROC00";
+	var sInDataSet   = "";
+	var sOutDataSet  = "dsTA_VAT101_H1=dsTA_VAT101_H1 ";
+		sOutDataSet += "dsTA_VAT101_H2=dsTA_VAT101_H2 ";
+		sOutDataSet += "dsTA_VAT101_D=dsTA_VAT101_D ";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+this.ds_OnColumnChanged = function (obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	this.calculation();
+	
+}
+
+this.calculation = function () {
+	// 전자신고 - 과표예정신고누락분금액합계, 과표예정신고누락분세액 합계
+	// 1PAGE : 과세표준및매출세액 - 예정신고누락분
+	var SW_SALTOT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_TAXBIL_SAMT"), 0);
+		SW_SALTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_TAXETC_SAMT"), 0); //과표예정과세기타금액
+		SW_SALTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_ZERBIL_SAMT"), 0); //과표예정영세세금계산서금액
+		SW_SALTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_ZERETC_SAMT"), 0); //과표예정영세기타금액
+	var SW_SALTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_TAXBIL_VAMT"), 0);
+		SW_SALTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "SW_TAXETC_VAMT"), 0); //과표예정과세기타세액
+
+	var SH_WILMIS_SAMT = SW_SALTOT_SAMT;
+	var SH_WILMIS_VAMT = SW_SALTOT_VAMT;
+	this.dsTA_VAT101_H2.setColumn(0, "SW_SALTOT_SAMT", SW_SALTOT_SAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "SW_SALTOT_VAMT", SW_SALTOT_VAMT);
+
+	this.dsTA_VAT101_H1.setColumn(0, "SH_WILMIS_SAMT", SH_WILMIS_SAMT);
+	this.dsTA_VAT101_H1.setColumn(0, "SH_WILMIS_VAMT", SH_WILMIS_VAMT);
+
+	// 전자신고 - 예정매입누락합계금액, 예정매입누락합계세액
+	// 1PAGE : 매입세액 - 예정신고누락분
+	var PW_PURTOT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PW_TAXBIL_SAMT"), 0);
+		PW_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PW_ETCBIL_SAMT"), 0); //예정매입기타공제누락세액금액
+	var PW_PURTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PW_TAXBIL_VAMT"), 0);
+		PW_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PW_ETCBIL_VAMT"), 0); //예정매입기타공제누락세액세액
+
+	var PH_WILTOT_SAMT = PW_PURTOT_SAMT;
+	var PH_WILTOT_VAMT = PW_PURTOT_VAMT;
+	this.dsTA_VAT101_H2.setColumn(0, "PW_PURTOT_SAMT", PW_PURTOT_SAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "PW_PURTOT_VAMT", PW_PURTOT_VAMT);
+
+	this.dsTA_VAT101_H1.setColumn(0, "PH_WILTOT_SAMT", PH_WILTOT_SAMT);
+	this.dsTA_VAT101_H1.setColumn(0, "PH_WILTOT_VAMT", PH_WILTOT_VAMT);
+
+	// 전자신고 - 기타공제매입금액합계, 기타공제매입세액합계
+	// 1PAGE : 매입세액 - 기타공제매입세액
+	var PD_PURTOT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_CREDIT_SAMT"), 0);
+		PD_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_AGENDA_SAMT"), 0); //매입의제매입금액
+		PD_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_RECYCL_SAMT"), 0); //PD_PURTOT_SAMT += toNumber(dsTA_VAT101_H2.GetColumn(0, "PD_ALAGEN_SAMT"), 0);   //매입고금의제매입금액
+		PD_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_ASSETS_SAMT"), 0); //매입신용고정자산금액
+	var PD_PURTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_CREDIT_VAMT"), 0);
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_AGENDA_VAMT"), 0); //매입의제매입세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_RECYCL_VAMT"), 0); //매입재활용세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_CONVER_VAMT"), 0); //PD_PURTOT_VAMT += toNumber(dsTA_VAT101_H2.GetColumn(0, "PD_ALAGEN_VAMT"), 0);   //매입고금의제매입세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_ASSETS_VAMT"), 0); //매입신용고정자산세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_STOCKP_VAMT"), 0); //매입재고매입세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_BADDEP_VAMT"), 0); //매입변제대손세액
+		PD_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PD_FOREINER_VAMT"), 0); //외국인관광객에대한환급세액
+
+	var PH_ETCBIL_SAMT = PD_PURTOT_SAMT;
+	var PH_ETCBIL_VAMT = PD_PURTOT_VAMT;
+	this.dsTA_VAT101_H2.setColumn(0, "PD_PURTOT_SAMT", PD_PURTOT_SAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "PD_PURTOT_VAMT", PD_PURTOT_VAMT);
+
+	this.dsTA_VAT101_H1.setColumn(0, "PH_ETCBIL_SAMT", PH_ETCBIL_SAMT);
+	this.dsTA_VAT101_H1.setColumn(0, "PH_ETCBIL_VAMT", PH_ETCBIL_VAMT);
+
+	// 매입공제받지못할금액합계, 매입공제받지못할세액합계
+	// 1PAGE : 매입세액 - 기타공제매입세액
+	var PN_PURTOT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_UNABLE_SAMT"), 0);
+		PN_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_EXCEPT_SAMT"), 0); //공통매입면세사업금액
+		PN_PURTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_DOUADD_SAMT"), 0); //대손처분금액
+	var PN_PURTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_UNABLE_VAMT"), 0);
+		PN_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_EXCEPT_VAMT"), 0); //공통매입면세사업세액
+		PN_PURTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "PN_DOUADD_VAMT"), 0); //대손처분세액
+
+	var PH_UNABLE_SAMT = PN_PURTOT_SAMT;
+	var PH_UNABLE_VAMT = PN_PURTOT_VAMT;
+	this.dsTA_VAT101_H2.setColumn(0, "PN_PURTOT_SAMT", PN_PURTOT_SAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "PN_PURTOT_VAMT", PN_PURTOT_VAMT);
+
+	this.dsTA_VAT101_H1.setColumn(0, "PH_UNABLE_SAMT", PH_UNABLE_SAMT);
+	this.dsTA_VAT101_H1.setColumn(0, "PH_UNABLE_VAMT", PH_UNABLE_VAMT);
+
+	// 1PAGE : 경감공제세액 - 기타공제 경감세액
+	var RH_ETCMIN_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "RD_EBIPAY_VAMT"), 0);
+		RH_ETCMIN_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "RD_EBITAX_VAMT"), 0); //전자세금계산서발급세액공제세액
+		RH_ETCMIN_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "RD_TAXICO_VAMT"), 0); //택시사업부가가치세경감세액
+		RH_ETCMIN_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "RD_CASBIL_VAMT"), 0); //현금영수증사업자공제세액
+		RH_ETCMIN_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "RD_ETCBIL_VAMT"), 0); //기타경감공제세액명세기타세액
+
+	this.dsTA_VAT101_H1.setColumn(0, "RH_ETCMIN_VAMT", RH_ETCMIN_VAMT);
+
+	// 1PAGE : 가산세계(아)
+	var AD_REPORT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR1_SAMT"), 0);
+		AD_REPORT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR2_SAMT"), 0); //신고불성실-무신고(부당)금액
+		AD_REPORT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR3_SAMT"), 0); //과소·초과환급신고(일반)금액
+		AD_REPORT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR4_SAMT"), 0); //과소·초과환급신고(부당)금액
+
+	var AD_REPORT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR1_VAMT"), 0);
+		AD_REPORT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR2_VAMT"), 0); //신고불성실-무신고(부당)세액
+		AD_REPORT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR3_VAMT"), 0); //과소·초과환급신고(일반)세액
+		AD_REPORT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPOR4_VAMT"), 0); //과소·초과환급신고(부당)세액
+
+	// 가산세 불성실 계
+	this.dsTA_VAT101_H2.setColumn(0, "AD_REPORT_SAMT", AD_REPORT_SAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "AD_REPORT_VAMT", AD_REPORT_VAMT);
+
+	var RH_ADDTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_BIZMIS_VAMT"), 0);
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_EBIDEL_VAMT"), 0); //세금계산서지연발급등가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_EBDERV_VAMT"), 0); //세금계산서지연수취가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_NOTPUB_VAMT"), 0); //세금계산서미발급등가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_EBIOVE_VAMT"), 0); //전자세금계산서발급명세전송-지연전송세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_EBIEXC_VAMT"), 0); //전자세금계산서발급명세전송-미전송세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_TAXBIL_VAMT"), 0); //세금계산서합계표 제출불성실세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_REPORT_VAMT"), 0); //신고불성실-합계세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_NOSEND_VAMT"), 0); //납부불성실가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_ZERBIL_VAMT"), 0); //영세율신고가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_CASNOT_VAMT"), 0); //현금매출명세서미제출등가산세액
+
+		/* 2013 1기예정 추가 시작 */
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_TAXDEL_VAMT"), 0); //세금계산서합계표 지연제출세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_ESTATE_VAMT"), 0); //부동산임대공급가액명세서 불성실세액
+		/* 2013 1기예정 추가 종료 */
+
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_ACCNOT_VAMT"), 0); //거래계좌미사용가산세액
+		RH_ADDTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H2.getColumn(0, "AD_ACCDELAY_VAMT"), 0); //거래계좌지연입금가산세액
+
+	// 가산세계 = 가산세 세액계
+	this.dsTA_VAT101_H1.setColumn(0, "RH_ADDTOT_VAMT", RH_ADDTOT_VAMT);
+	this.dsTA_VAT101_H2.setColumn(0, "AD_ADDTOT_VAMT", RH_ADDTOT_VAMT);
+
+
+	// 과세표준(9), 산출세액(가)
+	var SH_TAXTOT_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_TAXBIL_SAMT"), 0);
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_PURPUB_SAMT"), 0); //과표신고과세매입자발행금액
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_CRECAS_SAMT"), 0); //과표신고신용카드현금영수증금액
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_TAXETC_SAMT"), 0); //과표신고과세기타금액
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_ZERBIL_SAMT"), 0); //과표신고영세세금계산서금액
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_ZERETC_SAMT"), 0); //과표신고영세기타금액
+		SH_TAXTOT_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_WILMIS_SAMT"), 0); //SH_TAXTOT_SAMT += toNumber(dsTA_VAT101_H1.GetColumn(0, "SH_DOUADD_SAMT"), 0);   //대손세액가감금액
+	var SH_TAXTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_TAXBIL_VAMT"), 0);
+		SH_TAXTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_PURPUB_VAMT"), 0); //과표신고과세매입자발행세액
+		SH_TAXTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_CRECAS_VAMT"), 0); //과표신고신용카드현금영수증세액
+		SH_TAXTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_TAXETC_VAMT"), 0); //과표신고과세기타세액
+		SH_TAXTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_WILMIS_VAMT"), 0); //과표예정신고누락분세액
+		SH_TAXTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_DOUADD_VAMT"), 0); //대손세액가감세액
+
+	this.dsTA_VAT101_H1.setColumn(0, "SH_TAXTOT_SAMT", SH_TAXTOT_SAMT); //과세표준
+	this.dsTA_VAT101_H1.setColumn(0, "SH_TAXTOT_VAMT", SH_TAXTOT_VAMT); //산출세액
+
+	// 과세수입금액합계 = 과세표준
+	this.dsTA_VAT101_H1.setColumn(0, "IH_TAXBIL_SAMT", SH_TAXTOT_SAMT); //과세수입금액합계
+
+	// 과세표준명세의 수입금액제외 금액을 dsTA_vAT101_H1 에 SET
+	this.dsTA_VAT101_H1.setColumn(0, "IH_EXCEPT_SAMT", this.dsTA_VAT101_D.getColumn(3, "INCOME_SAMT"));
+
+	// 과세표준명세 수입금액 = 과세표준 - 수입금액제외
+	IH_EXCEPT_SAMT = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "IH_EXCEPT_SAMT"), 0); //과세수입금액제외금액
+	this.dsTA_VAT101_D.setColumn(0, "INCOME_SAMT", SH_TAXTOT_SAMT - IH_EXCEPT_SAMT); //수입금액 = 과세표준 - 과세수입금액제외금액
+
+	// 매입금액합계(15), 매입세액합계(15)
+	var PH_PTOTAL_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_TAXBIL_SAMT"), 0);
+		PH_PTOTAL_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_ASSETS_SAMT"), 0); //매입수취고정잔산금액
+		PH_PTOTAL_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_WILTOT_SAMT"), 0); //매입예정신고누락금액
+		PH_PTOTAL_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_PURPUB_SAMT"), 0); //매입매입자발행금액
+		PH_PTOTAL_SAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_ETCBIL_SAMT"), 0); //매입기타공제금액
+	var PH_PTOTAL_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_TAXBIL_VAMT"), 0);
+		PH_PTOTAL_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_ASSETS_VAMT"), 0); //매입수취고정자산세액
+		PH_PTOTAL_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_WILTOT_VAMT"), 0); //매입예정신고누락세액
+		PH_PTOTAL_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_PURPUB_VAMT"), 0); //매입매입자발행세액
+		PH_PTOTAL_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_ETCBIL_VAMT"), 0); //매입기타공제세액
+
+	this.dsTA_VAT101_H1.setColumn(0, "PH_PTOTAL_SAMT", PH_PTOTAL_SAMT); //매입금액합계
+	this.dsTA_VAT101_H1.setColumn(0, "PH_PTOTAL_VAMT", PH_PTOTAL_VAMT); //매입세액합계
+
+	// 차감매입금액(17), 차감매입세액(나)
+	var PH_ADDMIN_SAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_PTOTAL_SAMT"), 0);
+		PH_ADDMIN_SAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_UNABLE_SAMT"), 0); //매입공제받지못할금액
+	var PH_ADDMIN_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_PTOTAL_VAMT"), 0);
+		PH_ADDMIN_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_UNABLE_VAMT"), 0); //매입공제받지못할세액
+
+	this.dsTA_VAT101_H1.setColumn(0, "PH_ADDMIN_SAMT", PH_ADDMIN_SAMT); //차감매입금액
+	this.dsTA_VAT101_H1.setColumn(0, "PH_ADDMIN_VAMT", PH_ADDMIN_VAMT); //차감매입세액
+
+	// 납부및환급세액(다)[매출세액(가) - (매입세액(나)]
+	var SP_RETURN_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SH_TAXTOT_VAMT"), 0);
+		SP_RETURN_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_ADDMIN_VAMT"), 0); //차감매입세액
+
+	this.dsTA_VAT101_H1.setColumn(0, "SP_RETURN_VAMT", SP_RETURN_VAMT);
+
+	// 경감세액계(라)
+	var RH_MINTOT_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_ETCMIN_VAMT"), 0);
+		RH_MINTOT_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_CREDIT_VAMT"), 0); //금전신용공제금액
+
+	this.dsTA_VAT101_H1.setColumn(0, "RH_MINTOT_VAMT", RH_MINTOT_VAMT); //경감세액계
+
+	// 차감납부할세액(25)[(다)-(라)-(마)-(바)-(사)-(아)+(자)]
+	var VAT_PAY_VAMT  = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "SP_RETURN_VAMT"), 0);
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_MINTOT_VAMT"), 0); //경감세액계
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_WILRET_VAMT"), 0); //예정미환급세액
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_NOTRET_VAMT"), 0); //예정고지세액
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_PROXY_VAMT"), 0); //사업양수자의대리납부기납부세액
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_PROHIB_VAMT"), 0); //금지금매입자납부특례기납부세액
+		VAT_PAY_VAMT += nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "RH_ADDTOT_VAMT"), 0); //가산세계
+		VAT_PAY_VAMT -= nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "PH_EXPOST_VAMT"), 0); //수출기업수입분납부유예
+
+	this.dsTA_VAT101_H1.setColumn(0, "VAT_REF_VAMT", VAT_PAY_VAMT); //차감납부할세액
+
+	// 차감납부할세액 = 실차감납부할세액
+	// 2014.12.19.PIH : 사업자단위과세적용사업자 일 경우에만 해당되므로 주석처리!
+	// dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", VAT_PAY_VAMT);
+
+	if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "2") {
+		// 총괄납부사업자의 주사업자
+		var nVAT_REF_VAMT = nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "VAT_PAY_VAMT"), 0) + nexacro.toNumber(this.dsTA_VAT101_H1.getColumn(0, "VAT_JPAY_VAMT"), 0);
+		this.dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", nVAT_REF_VAMT);
+		
+	} else if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "3") {
+	
+		// 총괄납부사업자의 종사업자(실차감납부할세액 = 차감납부할세액 + 차감납부할세액(종사업장))
+		this.dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", "0");
+		
+	} else if (this.dsTA_VAT101_H2.getColumn(0, "VAT_NTAX_TYPECD") == "5") {
+		// 사업자단위과세적용사업자
+		this.dsTA_VAT101_H2.setColumn(0, "VAT_REF_VAMT", this.dsTA_VAT101_H1.getColumn(0, "VAT_PAY_VAMT"));
+	}
+
+}
+
+]]></Script>
+  </Form>
+</FDL>

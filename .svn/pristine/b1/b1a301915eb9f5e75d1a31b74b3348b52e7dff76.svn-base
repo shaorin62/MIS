@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TMMA0070">
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 장성환
+     작  성  일 : 2013.04.29
+     내       용 : 엑셀업로드서식 마스터 조회   
+******************************************************************************* */
+-->
+	<select id="TMMA0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT /* TMMA0070.SEARCH00.엑셀업로드서식 마스터 조회   */ 
+		       A.EXCL_VWID   /* 엑셀양식코드 */
+		     , A.EXCL_VWNA   /* 양식명 */
+		     , B.SYST_CODE   /* 시스템구분코드 */
+		     , A.MENU_IDXX   /* 메뉴ID */
+		     , B.MENU_NAME   /* 메뉴명 */
+		     , NVL(A.USEX_YSNO, 0) AS USEX_YSNO   /* 사용여부 */
+		     , A.FILE_IDXX   /* 파일ID */
+		     , D.FILE_PATH   /* 저장경로 */
+		     , A.FILE_NAME   /* 파일명 */
+		     , D.PFIL_NAME   /* 물리파일명 */
+		     , D.LFIL_NAME   /* 논리파일명 */
+		     , D.EXTN_NAME   /* 확장자 */
+		     , A.REMK_100X   /* 비고100 */
+		     , case when D.PFIL_NAME is not null then
+	             '파일 다운로드'
+	           else
+	             ''
+	           end as DOWNLOAD	/*다운로드 버튼 이미지 URL*/
+		  FROM TM_EXCLXM A
+		    LEFT OUTER JOIN TM_MENUXM B
+		      ON A.MENU_IDXX = B.MENU_IDXX
+		    LEFT OUTER JOIN TM_AFILED D
+		      ON A.FILE_IDXX = D.FILE_IDXX
+	]]>
+	<dynamic prepend="WHERE">
+	<isNotEmpty prepend="AND" property="EXCL_VWNA">
+		A.EXCL_VWID || A.EXCL_VWNA LIKE '%' || UPPER(#EXCL_VWNA#) || '%'
+	</isNotEmpty>
+    <isNotEmpty prepend="AND" property="SYST_CODE">
+		B.SYST_CODE = #SYST_CODE#
+	</isNotEmpty>
+	</dynamic>		
+	<![CDATA[
+		 ORDER BY A.EXCL_VWID
+	]]>
+	</select>
+
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 장성환
+     작  성  일 : 2013.04.29
+     내       용 : 엑셀업로드서식 저장  
+******************************************************************************* */
+-->
+	<insert id="TMMA0070.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO TM_EXCLXM (/* TMMA0070.SAVE00.엑셀업로드서식 저장  */
+		     EXCL_VWID   /* 엑셀양식코드 */
+		    ,EXCL_VWNA   /* 양식명 */
+		    ,FILE_IDXX   /* 파일ID */
+		    ,FILE_NAME   /* 파일명 */
+		    ,MENU_IDXX   /* 메뉴ID */
+		    ,USEX_YSNO   /* 사용여부 */
+		    ,REMK_100X   /* 비고100 */
+		    ,INST_USID   /* 입력자 */
+		    ,INST_DATE   /* 입력일시 */
+		    ,UPDT_USID   /* 수정자 */
+		    ,UPDT_DATE   /* 수정일시 */
+		) VALUES (
+		     #EXCL_VWID#
+		    ,#EXCL_VWNA#
+		    ,#FILE_IDXX#
+		    ,#FILE_NAME#
+		    ,#MENU_IDXX#
+		    ,#USEX_YSNO#
+		    ,#REMK_100X#
+		    ,#UPDT_USID#
+		    ,SYSDATE
+		    ,#UPDT_USID#
+		    ,SYSDATE
+		)
+	]]>
+	</insert>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 장성환
+     작  성  일 : 2013.04.29
+     내       용 : 엑셀업로드서식 수정   
+******************************************************************************* */
+-->
+	<update id="TMMA0070.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE TM_EXCLXM  /* TMMA0070.UPDATE00.엑셀업로드서식 수정 */
+		   SET EXCL_VWNA = #EXCL_VWNA#   /* 양식명 */
+		     , FILE_IDXX = #FILE_IDXX#   /* 파일ID */
+		     , FILE_NAME = #FILE_NAME#   /* 파일명 */
+		     , MENU_IDXX = #MENU_IDXX#   /* 메뉴ID */
+		     , USEX_YSNO = #USEX_YSNO#   /* 사용여부 */
+		     , REMK_100X = #REMK_100X#   /* 비고100 */
+		     , UPDT_USID = #UPDT_USID#   /* 수정자 */
+		     , UPDT_DATE = SYSDATE       /* 수정일시 */
+		 WHERE EXCL_VWID = #EXCL_VWID#
+	]]>
+	</update>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 장성환
+     작  성  일 : 2013.04.29
+     내       용 : 엑셀업로드서식 삭제
+******************************************************************************* */
+-->
+	<delete id="TMMA0070.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_EXCLXM  /* TMMA0070.DELETE00.엑셀업로드서식 삭제 */
+		 WHERE EXCL_VWID = #EXCL_VWID#   /*양식코드*/         
+	]]>		
+	</delete>
+	
+</sqlMap>

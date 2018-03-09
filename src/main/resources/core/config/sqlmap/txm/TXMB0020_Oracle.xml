@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TXMB0020">
+<!-- 
+/* ******************************************************************************
+     작 성 자 : 권미영
+     작 성 일 : 2016.07.14
+     내    용 : (세금계산서 국세청 전송내역)의 전체내역 조회
+******************************************************************************* */ 
+-->
+	<select id="TXMB0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMB0020.SEARCH00.세금계산서국세청전송내역  */
+			       A.BIZR_NUMB /* 사업자등록번호 */
+	             , B.CUST_CODE /* 거래처코드 */
+	             , B.CUST_NAME /* 거래처명 */
+	             , B.BSNS_STAT /* 업태 */
+	             , B.BSNS_TYPE /* 업종 */
+	             , SUM(SUPP_AMT1) AS SUPP_AMT1 /* 공급가액 */
+	             , SUM(VATX_AMT1) AS VATX_AMT1 /* 세액 */
+	             , SUM(SUMX_AMT1) AS SUMX_AMT1 /* 합계금액 */
+	             , SUM(TAXX_CNT1) AS TAXX_CNT1
+	             , 0 AS REVX_CNT1
+	             , SUM(SUPP_AMT2) AS SUPP_AMT2
+	             , SUM(VATX_AMT2) AS VATX_AMT2
+	             , SUM(SUMX_AMT2) AS SUMX_AMT2
+	             , SUM(TAXX_CNT2) AS TAXX_CNT2
+	             , 0 AS REVX_CNT2
+	             , SUM(TAXX_CNT2) AS PURC_CONT
+	             , CASE WHEN SUM(SUMX_AMT1) <> SUM(SUMX_AMT2) THEN '금액차이'
+	                    WHEN SUM(TAXX_CNT1) <> SUM(TAXX_CNT2) THEN '건수차이' ELSE ''
+	                END AS DIFF_HIST
+	          FROM (
+	                SELECT E.BIZR_NUMB AS BIZR_NUMB     /* 사업자번호 */
+	                     , 0 AS SUPP_AMT1
+	                     , 0 AS VATX_AMT1
+	                     , 0 AS SUMX_AMT1
+	                     , 0 AS TAXX_CNT1
+	                     , SUM(NVL(A.SUPP_AMNT, 0)) AS SUPP_AMT2   /* 공급가액 */
+	                     , SUM(NVL(A.VATX_AMNT, 0)) AS VATX_AMT2  /* 세액 */
+	                     , SUM(NVL(A.SUPP_AMNT, 0)) + SUM(NVL(A.VATX_AMNT, 0)) AS SUMX_AMT2
+	                     , COUNT(0) AS TAXX_CNT2
+	                  FROM TA_VATXXM A
+	                  LEFT JOIN TA_SLIPNT B
+	                    ON A.SLIP_NUMB = B.SLIP_NUMB
+	                   AND A.SLIP_LINE = B.SLIP_LINE
+	                 INNER JOIN TA_CUSTXM E
+	                    ON A.CUST_CODE = E.CUST_CODE
+	                 WHERE A.TRNS_DATE BETWEEN #BASE_DAT1# AND #BASE_DAT2# /* 전자세금계산서작성일 */
+		]]>
+			<isNotEmpty prepend="AND" property="ACCT_GUBN">
+				A.ACCT_GUBN = #ACCT_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND">
+				A.EVID_DOCU = 'FA180010'  /* 세금계산서 */
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				A.VATX_GUBN = #VATX_GUBN#  /* 매입매출구분 */
+			</isNotEmpty>
+                GROUP BY E.BIZR_NUMB
+                
+		<![CDATA[
+	             UNION ALL
+	                SELECT CASE WHEN #VATX_GUBN# = 'FA200010' THEN PROV_BSNS
+	                            WHEN #VATX_GUBN# = 'FA200020' THEN HIMX_BSNS
+	                        END AS BIZR_NUMB /* 사업자번호 */
+	                     , SUM(SUPP_AMNT) AS SUPP_AMT1   /* 공급가액 */
+	                     , SUM(TAXX_AMTX) AS VATX_AMT1   /* 세액 */
+	                     , SUM(SUMX_AMNT) AS SUMX_AMT1   /* 합계금액 */
+	                     , COUNT(0) AS TAXX_CNT1
+	                     , 0
+	                     , 0
+	                     , 0
+	                     , 0
+	                  FROM TA_ETAXUP
+	                 WHERE ETAX_DATE BETWEEN #BASE_DAT1# AND #BASE_DAT2# /* 전자세금계산서작성일 */
+		]]>
+			<isNotEmpty prepend="AND" property="ACCT_GUBN">
+				ACCT_GUBN = #ACCT_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				VATX_GUBN = #VATX_GUBN#  /* 매입매출구분 */
+			</isNotEmpty>
+			GROUP BY PROV_BSNS, HIMX_BSNS
+			
+		<![CDATA[
+	               ) A
+	          LEFT JOIN TA_CUSTXM B
+	            ON A.BIZR_NUMB = B.BIZR_NUMB
+	         INNER JOIN (
+	                        SELECT BIZR_NUMB
+	                             , MAX(CUST_CODE) AS CUST_CODE
+	                          FROM TA_CUSTXM
+	                         GROUP BY BIZR_NUMB
+	                    ) C
+	            ON B.CUST_CODE = C.CUST_CODE
+	         GROUP BY A.BIZR_NUMB, B.CUST_CODE, B.CUST_NAME, B.BSNS_STAT, B.BSNS_TYPE
+	         ORDER BY A.BIZR_NUMB, B.CUST_CODE, B.CUST_NAME, B.BSNS_STAT, B.BSNS_TYPE
+		]]>
+	</select>
+<!-- 
+/* ******************************************************************************
+     작 성 자 : 권미영
+     작 성 일 : 2016.07.14
+     내    용 : (세금계산서 국세청 전송내역)의 전송내역 조회
+******************************************************************************* */
+-->
+	<select id="TXMB0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			 SELECT /* TXMB0020.SEARCH01.세금계산서국세청전송내역  */ 
+			       '전송내역' AS DATA_GUBN
+                 , CASE WHEN #VATX_GUBN# = 'FA200010' THEN PROV_BSNS
+                        WHEN #VATX_GUBN# = 'FA200020' THEN HIMX_BSNS
+                    END AS BSNS_NUMB
+                 , ACCT_GUBN   /* 회계구분_사업장 */
+                 , VATX_GUBN   /* 입출구분 */
+                 , ETAX_NUMB   /* 번호 */
+                 , ETAX_DATE   /* 작성일자 */
+                 , ETAX_APNO   /* 승인번호 */
+                 , ISSU_DATE   /* 발급일자 */
+                 , TRNS_DATE   /* 전송일자 */
+                 , PROV_BSNS   /* 공급자_사업자번호 */
+                 , PROV_JONG   /* 공급자_종사업장번호 */
+                 , PROV_NAME   /* 공급자_상호 */
+                 , PROV_BOSS   /* 공급자_대표자명 */
+                 , HIMX_BSNS   /* 공급받는자_사업자등록번호 */
+                 , HIMX_JONG   /* 공급받는자_종사업장번호 */
+                 , HIMX_NAME   /* 공급받는자_상호 */
+                 , HIMX_BOSS   /* 공급받는자_대표자 */
+                 , SUMX_AMNT   /* 합계금액 */
+                 , SUPP_AMNT   /* 공급가액 */
+                 , TAXX_AMTX   /* 세액 */
+                 , ETAX_CLAS   /* 전자세금계산서분류 */
+                 , ETAX_TYPE   /* 전자세금계산서종류 */
+                 , TRNS_TYPE   /* 발급유형 */
+                 , REMK_NOTE   /* 비고 */
+                 , REMK_GITA   /* 기타 */
+                 , RECE_BILL   /* 영수_청구 */
+                 , PROV_MAIL   /* 공급자이메일 */
+                 , HIMX_MAI1   /* 공급받는자_이메일1 */
+                 , HIMX_MAI2   /* 공급받는자_이메일2 */
+                 , ITEM_DATE   /* 품목일자 */
+                 , ITEM_NAME   /* 품목명 */
+                 , ITEM_STRD   /* 품목규격 */
+                 , ITEM_QTYX   /* 품목수량 */
+                 , ITEM_PRIC   /* 품목단가 */
+                 , ITEM_SUPP   /* 품목공급가액 */
+                 , ITEM_VATX   /* 품목세액 */
+                 , ITEM_REMK   /* 품목비고 */
+              FROM TA_ETAXUP
+             WHERE 1 = 1 
+		]]>
+			<isNotEmpty prepend="AND" property="ACCT_GUBN">
+				AND ACCT_GUBN = #ACCT_GUBN#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				((#VATX_GUBN# = 'FA200010' AND PROV_BSNS = #BIZR_NUMB#) OR (#VATX_GUBN# = 'FA200020' AND HIMX_BSNS = #BIZR_NUMB#))
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				VATX_GUBN = #VATX_GUBN#  /* 매입매출구분 */
+			</isNotEmpty>
+
+			<isNotEmpty prepend="AND" property="BASE_DAT1">
+			<![CDATA[
+				ETAX_DATE >= #BASE_DAT1#	  /* 전자세금계산서작성일 */
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BASE_DAT2">
+			<![CDATA[
+				ETAX_DATE <= #BASE_DAT2#	  /* 전자세금계산서작성일 */
+			]]>
+			</isNotEmpty>
+			
+            ORDER BY ETAX_DATE, SUPP_AMNT
+	</select>
+<!-- 
+/* ******************************************************************************
+     작 성 자 : 권미영
+     작 성 일 : 2016.07.14
+     내    용 : (세금계산서 국세청 전송내역)의 전표내역 조회
+******************************************************************************* */
+-->
+	<select id="TXMB0020.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMB0020.SEARCH02.세금계산서국세청전송내역  */ 
+			       '전표내역' AS DATA_GUBN
+                 , A.SLIP_NUMB   /* 전표번호 */
+                 , A.SLIP_LINE   /* 전표순번 */
+                 , A.SLIP_NUMB || A.SLIP_LINE AS DISP_NUMB /* 전표표시번호 */
+                 , A.VATX_SEQN   /* 부가세일련번호 */
+                 , A.TRNS_DATE   /* 발행일자 */
+                 , A.CUST_CODE   /* 거래처코드 */
+                 , E.CUST_NAME  AS CUST_NAME /* 거래처명 */
+                 , A.SUPP_AMNT   /* 공급가액 */
+                 , A.VATX_AMNT   /* 세액 */
+                 , A.REMK_NAME   /* 적요 */
+                 , E.BIZR_NUMB     /* 사업자번호 */
+                 , E.CUST_NAME  AS CUST_NAM2 /* 현거래처명 */
+                 , E.BSNS_STAT  /* 업태 */
+                 , E.BSNS_TYPE  /* 업종 */
+                 , SF_GET_DEPTNAME(B.USEX_DEPT) AS DEPT_NAME  /* 귀속부서 */
+                 , B.ACCT_INTL
+                 , SF_GET_ACCTNAME(B.ACCT_INTL) AS ACCT_NAME
+                 , A.VATX_GUBN
+                 /* , G.FILLER5 */, '' AS ETAX_APNO  /* 국세정승인번호 */
+                 , CASE WHEN A.EBIL_GUBN = '1' THEN '전자'
+                        WHEN A.EBIL_GUBN = '0' THEN '일반'
+                    END AS EBIL_GUBN
+              FROM TA_VATXXM A
+              LEFT JOIN TA_SLIPNT B
+                ON A.SLIP_NUMB = B.SLIP_NUMB
+               AND A.SLIP_LINE = B.SLIP_LINE
+             INNER JOIN TA_CUSTXM E
+                ON A.CUST_CODE = E.CUST_CODE
+              LEFT JOIN TM_OFFICE F
+                ON F.ACCT_GUBN = '100'
+              /* LEFT JOIN NSEACCIF.TX_AGENT_DOCUMENT_TEMP G
+                ON F.ACCT_GUBN = G.ISSUEBUSINESSNO
+               AND A.VATX_SEQN = G.ISSUESEQNO */
+             WHERE 1 = 1
+		]]>
+			<isNotEmpty prepend="AND" property="ACCT_GUBN">
+				A.ACCT_GUBN = #ACCT_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND">
+				A.EVID_DOCU = 'FA180010'  /* 세금계산서 */
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				A.VATX_GUBN = #VATX_GUBN# /* 매입매출구분 */
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BIZR_NUMB">
+				E.BIZR_NUMB =  #BIZR_NUMB#
+			</isNotEmpty>
+			
+			
+			<isNotEmpty prepend="AND" property="BASE_DAT1">
+			<![CDATA[
+				A.TRNS_DATE >= #BASE_DAT1#	  /* 전자세금계산서작성일 */
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BASE_DAT2">
+			<![CDATA[
+				A.TRNS_DATE <= #BASE_DAT2#	  /* 전자세금계산서작성일 */
+			]]>
+			</isNotEmpty>
+			
+             ORDER BY A.TRNS_DATE, A.SUPP_AMNT
+	</select>
+
+</sqlMap>

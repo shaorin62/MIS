@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                             
+                                                                                                                      
+<sqlMap namespace="FAMD0030">
+<!-- 
+/*******************************************************************************
+    작 성 자 : 양현덕
+    작 성 일 : 2016.07.20
+    내    용 : 미결잔액현황 조회
+********************************************************************************/
+ -->
+	<select id="FAMD0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT  /* FAMD0030.SEARCH00 미결잔액현황 조회 */
+                 ST.ACCT_INTL   /* 계정과목코드 */
+                ,ST.ACCT_NAME   /* 계정명 */
+                ,ST.SLIP_NUMB   /* 전표번호 */
+                ,ST.SLIP_LINE   /* 전표라인번호 */
+				,ST.DISP_NUMB   /* 전표번호 */ 	
+				,ST.SLIP_DATE	/* 기표일자*/
+                ,ST.ACCT_DATE   /* 회계일자 */
+                ,ST.SLIP_AMNT   /* 전표금액 */
+				,ST.BANJ_AMNT	/* 반제금액*/
+				,NVL(ST.SLIP_AMNT,0) - NVL(ST.BANJ_AMNT,0) AS BALA_AMNT	/* 잔액*/
+				,ST.COND_VANM	/* 관리항목값명*/
+				,ST.REMK_NAME   /* 적요 */
+		FROM	(
+				SELECT  
+						 AC.ACCT_INTL   /* 계정과목코드 */
+						,AC.ACCT_NAME   /* 계정명 */
+						,ST.SLIP_NUMB   /* 전표번호 */
+						,ST.SLIP_LINE   /* 전표라인번호 */
+						,ST.SLIP_NUMB || '-' || ST.SLIP_LINE AS DISP_NUMB   /* 전표번호 */ 	
+						,SM.SLIP_DATE	/* 기표일자*/
+						,ST.ACCT_DATE   /* 회계일자 */
+						,ST.SLIP_AMNT   /* 전표금액 */
+						,(SELECT SUM(SK.SLIP_AMNT)
+						    FROM TA_SLIPNT SK
+						   WHERE SK.OSLI_NUMB  = ST.SLIP_NUMB
+						     AND SK.OSLI_LINE  = ST.SLIP_LINE
+						  )				AS BANJ_AMNT	/* 반제금액*/
+						,SF.COND_VANM	/* 관리항목값명*/
+						,ST.REMK_NAME   /* 적요 */
+				FROM    TA_ACCTXM AC	/* 계정과목*/
+						LEFT JOIN TA_SLIPNT ST	/* 전표행*/
+							   ON	ST.ACCT_INTL = AC.ACCT_INTL
+							  AND	ST.DRCR_GUBN = AC.DRCR_GUBN
+						LEFT JOIN TA_SLIPXM SM	/* 전표마스터*/
+						      ON	SM.SLIP_NUMB = ST.SLIP_NUMB
+						LEFT JOIN TA_ACCTXD AD	/* 계정과목관리항목*/
+						      ON	AD.ACCT_INTL = AC.ACCT_INTL
+						     AND	AD.UNUS_YSNO = '1'	/* 반제관리항목*/
+						LEFT JOIN TA_SLIPRF SF	/* 전표관리항목*/
+							  ON	SF.SLIP_NUMB = ST.SLIP_NUMB
+							 AND	SF.SLIP_LINE = ST.SLIP_LINE
+							 AND	SF.COND_CODE = AD.COND_CODE
+				WHERE   AC.GUNB_YSNO = '1'	/* 건별반제여부*/
+				AND		ST.ACCT_UNIT = #ACCT_UNIT#
+				AND		ST.ACCT_GUBN = NVL(#ACCT_GUBN#,ST.ACCT_GUBN)	/* 사업장 */
+				AND		ST.ACCT_DATE BETWEEN #ACCT_DAT1# AND #ACCT_DAT2#
+		]]>
+      		<isNotEmpty property = "ACCT_INT1" prepend = "AND">
+      			<![CDATA[
+                    AC.ACCT_INTL >= #ACCT_INT1# /*계정과목1*/
+            	]]>       
+        	</isNotEmpty>
+        	<isNotEmpty property = "ACCT_INT2" prepend = "AND">
+        		<![CDATA[
+      				AC.ACCT_INTL <= #ACCT_INT2# /*계정과목2*/
+      			]]>
+        	</isNotEmpty>
+    <![CDATA[		
+				) ST
+      WHERE 1 = 1
+	]]>
+   	<isEqual property = "UNMC_YSNO" prepend = "AND" compareValue="0">
+    <![CDATA[		
+			NVL(ST.SLIP_AMNT,0) - NVL(ST.BANJ_AMNT,0) <> 0   /* 정산 미완료 */
+	]]>
+   	</isEqual>    	           
+   	<isEqual property = "UNMC_YSNO" prepend = "AND" compareValue="1">
+    <![CDATA[		
+			NVL(ST.SLIP_AMNT,0) - NVL(ST.BANJ_AMNT,0) = 0    /* 정산완료 */
+	]]>
+   	</isEqual>    	           
+    <![CDATA[		
+		ORDER	BY
+				ST.ACCT_INTL, ST.SLIP_NUMB, ST.SLIP_LINE
+		
+	]]>
+	</select>
+	
+<!-- 
+/*******************************************************************************
+    작 성 자 : 양현덕
+    작 성 일 : 2016.07.20
+    내    용 : 미결잔액현황 정산 자료 조회
+********************************************************************************/
+ -->
+	<select id="FAMD0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT	/* FAMD0030.SEARCH01 건별반제 잔액현황 정산 자료 조회*/
+				 A.SLIP_NUMB || B.SLIP_LINE AS DISP_NUMB
+                ,B.OSLI_NUMB
+                ,A.SLIP_NUMB
+                ,B.SLIP_LINE
+                ,B.ACCT_DATE
+                ,CASE WHEN D.DRCR_GUBN = B.DRCR_GUBN THEN B.SLIP_AMNT * -1 ELSE B.SLIP_AMNT END AS SLIP_AMNT
+                ,B.FORI_AMNT
+                ,B.REMK_NAME
+                ,B.CURR_GUBN
+        FROM    TA_SLIPXM A
+				JOIN TA_SLIPNT B ON A.SLIP_NUMB = B.SLIP_NUMB
+				LEFT JOIN TA_ACCTXM D	ON D.ACCT_INTL = B.ACCT_INTL
+        WHERE   B.OSLI_NUMB = #SLIP_NUMB#
+        AND     B.OSLI_LINE = #SLIP_LINE#
+		                                         
+	]]>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!--
+/*******************************************************************************
+   작 성 자   : 김준수
+   작 성 일   : 2016.06.27
+   내 용      : 소득내역 조회 
+********************************************************************************/
+ -->
+<sqlMap namespace="TXMD0020">
+
+    <select id="TXMD0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+             SELECT /* TXMD0020.SEARCH00.소득내역 조회  */ 
+                    '확인' AS FETCH_NM                                    /*가져가기버튼*/
+                   , B.INCM_IDXX                                           /*소득ID*/
+                   , B.SLIP_INPU                                           /*전표등록구분*/
+                   , B.ACCT_GUBN
+                   , B.CUST_CODE                                           /*소득자번호*/
+                   , B.INCM_TYCD                                           /*인건비구분(소득자구분)*/
+                   , B.PERS_YYMM                                           /*소득귀속년월*/
+                   , B.SUPP_DATE                                           /*작성일자*/
+                   , B.GITA_SEQX                                           /*소득내역작성단계*/
+                   , B.WORK_DCNT                                           /*근무일수*/
+                   , NVL(B.SUPP_KMAK, 0) AS SUPP_KMAK                      /*과세소득*/
+                   , NVL(B.NTAX_INCM, 0) AS NTAX_INCM                      /*비과세소득*/
+                   , B.APPL_RATE                                           /*적용세율코드*/
+                   , B.GITA_GUBN                                           /*기타소득구분*/
+                   , NVL(B.POSS_DAYS, 0) AS POSS_DAYS                      /*필요경비요율*/
+                   , NVL(B.OUTL_KMAK, 0) AS OUTL_KMAK                      /*필요경비*/
+                   , NVL(B.GASE_TOKM, 0) AS GASE_TOKM                      /*소득금액*/
+                   , NVL(B.TAXX_RATE, 0) AS TAXX_RATE                      /*세율*/
+                   , NVL(B.INCM_TAXX, 0) AS INCM_TAXX                      /*소득세*/
+                   , NVL(B.COMP_SEKM, 0) AS COMP_SEKM                      /*법인세*/
+                   , NVL(B.NONS_SEKM, 0) AS NONS_SEKM                      /*농어촌특별세*/
+                   , NVL(B.INHA_TAXX, 0) AS INHA_TAXX                      /*주민세*/
+                   , NVL(B.SEKM_TOKM, 0) AS SEKM_TOKM                      /*원천징수계*/
+                   , NVL(B.SUPP_KMAK, 0) - NVL(B.SEKM_TOKM, 0) AS SEHU_TOKM/*세후지급액*/
+                   , B.TAKE_DEPT                                           /*담당부서코드*/
+                   , B.TAKE_USER                                           /*담장자사번*/
+                   , B.REMK_NOTE                                           /*비고*/
+                   , B.GITA_RMR2                                           /*감면근거*/
+                   , B.PAYX_DATE                                           /*지출일자(전표지출일자)*/
+                   , SF_GET_DEPTNAME(B.TAKE_DEPT) AS DEPT_NAME             /*부서명*/
+                   , SF_GET_EMPLNAME(B.TAKE_USER) AS EMPL_NAME             /*성명*/
+                   , NVL(A.OWNR_NAME, A.CUST_NAME) AS OWNR_NAME            /*소득자명*/
+                   , A.CUST_NAME AS CUST_NAME                              /*상호*/
+                   , SUBSTR(A.RERN_NUMB, 1, 6) || '-*******' AS RERN_NUMBP /*주민등록번호*/
+                   , A.RERN_NUMB                                           /*주민등록번호*/
+                   , A.BIZR_NUMB                                           /*사업자번호*/
+                   , A.FORI_GUBN                                           /*내외국인구분*/
+                   , A.RESI_GUBN                                           /*거주구분*/
+                   , A.JOBS_GUBN                                           /*직업구분*/
+                   , A.POST_NUMB                                           /*우편번호*/
+                   , A.ADDR_DESC DTL1_ADDR                                 /*주소*/
+                   , A.DTL1_ADDR DTL2_ADDR                                 /*상세주소*/
+                   , B.PAYX_GUBN                                           /*급여구분*/
+                   , B.REMK_NAME                                AS REMK_NAME
+                   , B.SLIP_NUMB
+                   , B.SLIP_LINE
+                   , B.SLIP_NUMB || B.SLIP_LINE                 AS SLIP_DISP
+                FROM TA_CUSTXM A
+                     INNER JOIN TA_INCMXM B 
+                             ON A.CUST_CODE = B.CUST_CODE 
+               WHERE B.PERS_YYMM BETWEEN #PERS_STYM# AND #PERS_EDYM# /* 귀속년월 */
+        ]]>
+        <isNotEmpty prepend="AND" property="CUST_NAME">
+                     A.CUST_NAME LIKE '%' || #CUST_NAME# || '%'                                     /*성명(상호)*/
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="SUPP_STDT">
+        <![CDATA[           
+                      B.SUPP_DATE >= #SUPP_STDT#         /*작성일자_시작*/
+        ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="SUPP_EDDT">
+        <![CDATA[           
+                      B.SUPP_DATE <= #SUPP_EDDT#     /*작성일자_종료*/
+        ]]>
+        </isNotEmpty>  
+        <isNotEmpty prepend="AND" property="INCM_TYCD">
+                     B.INCM_TYCD = #INCM_TYCD#         /*소득자구분*/  
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="STAT_GUBN">
+                     B.GITA_SEQX = #STAT_GUBN#         /*상태구분*/   
+        </isNotEmpty>
+        <![CDATA[                                                                    
+               ORDER BY B.CUST_CODE, B.SUPP_DATE DESC, B.INCM_TYCD
+        ]]>             
+
+    </select>
+<!-- 
+/*******************************************************************************
+   작 성 자   : 김준수
+   작 성 일   : 2016.06.27
+   내 용      : 사업소득자 명단 - 거래처 조회
+********************************************************************************/
+ -->
+    <select id="TXMD0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TXMD0020.SEARCH01.사업소득자 명단 - 거래처 조회  */ 
+                   CUST_CODE
+                 , CUST_NAME
+                 , NVL(OWNR_NAME, CUST_NAME) AS OWNR_NAME
+                 , BIZR_NUMB
+                 , INCM_TYCD
+                 , SF_GET_COMMNAME('INCM_TYCD', INCM_TYCD) AS INCM_CDNM
+                 , RERN_NUMB
+                 , FORI_GUBN
+                 , RESI_GUBN
+                 , JOBS_GUBN
+                 , POST_NUMB
+                 , ADDR_DESC
+                 , DTL1_ADDR
+              FROM TA_CUSTXM
+             WHERE CITY_CODE = '2' /* 개인 */
+        ]]>
+    </select>    
+    
+<!--
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.10.10
+     내      용 : 전표처리된 전표번호 조회
+********************************************************************************/
+ -->
+    <select id="TXMD0020.SEARCHSLIPNUM" parameterClass="hashmap" resultClass="String">
+        <![CDATA[
+            SELECT /* TXMD0020.SEARCHSLIPNUM 전표처리된 전표번호 조회 */
+                   SLIP_NUMB
+              FROM TA_INCMXM
+             WHERE INCM_IDXX = #INCM_IDXX#    /* 소득ID */
+        ]]>
+    </select>
+    
+<!-- 
+/*******************************************************************************
+   작 성 자   : 김준수
+   작 성 일   : 2016.06.27
+   내 용      : 소득내역등록 저장
+********************************************************************************/
+ -->
+    <insert id="TXMD0020.SAVE00" parameterClass="hashmap">
+        <![CDATA[
+        /* TXMD0020.SAVE00.소득내역등록 저장  */ 
+        DECLARE
+            
+            iINCM_IDXX      TA_INCMXM.INCM_IDXX%TYPE;
+            sGITA_SEQX      TA_INCMXM.GITA_SEQX%TYPE;
+    
+        BEGIN
+            
+            /* 소득ID 자동채번 */            
+            SELECT NVL(MAX(INCM_IDXX) + 1, 0)
+              INTO iINCM_IDXX
+              FROM TA_INCMXM
+            ;
+            
+            /* 소득내역작성단계 자동채번 */
+            SELECT NVL(MAX(GITA_SEQX) + 1, 0)
+              INTO sGITA_SEQX
+              FROM TA_INCMXM
+             WHERE CUST_CODE = #CUST_CODE#
+               AND INCM_TYCD = #INCM_TYCD#
+               AND PERS_YYMM = SUBSTR(#PERS_YYMM#, 1, 6)
+               AND SUPP_DATE = #SUPP_DATE#
+            ;
+            
+            INSERT INTO TA_INCMXM (
+                  INCM_IDXX,
+                  SLIP_INPU,
+                  ACCT_GUBN,
+                  CUST_CODE,
+                  INCM_TYCD,
+                  PERS_YYMM,
+                  SUPP_DATE,
+                  GITA_SEQX,
+                  WORK_DCNT,
+                  SUPP_KMAK,
+                  NTAX_INCM,
+                  APPL_RATE,
+                  GITA_GUBN,
+                  POSS_DAYS,
+                  OUTL_KMAK,
+                  GASE_TOKM,
+                  TAXX_RATE,
+                  INCM_TAXX,
+                  COMP_SEKM,
+                  NONS_SEKM,
+                  INHA_TAXX,
+                  SEKM_TOKM,
+                  TAKE_DEPT,
+                  TAKE_USER,
+                  REMK_NOTE,
+                  GITA_RMR2,
+                  INST_USID,
+                  INST_DATE,
+                  UPDT_USID,
+                  UPDT_DATE,
+                  PAYX_GUBN,
+                  REMK_NAME
+                ) VALUES (  
+                   iINCM_IDXX,
+                  #SLIP_INPU#,
+                  #ACCT_GUBN#,
+                  #CUST_CODE#,
+                  #INCM_TYCD#,
+                  SUBSTR(#PERS_YYMM#, 1, 6),
+                  #SUPP_DATE#,
+                   sGITA_SEQX,
+                  #WORK_DCNT#,
+                  #SUPP_KMAK#,
+                  #NTAX_INCM#,
+                  #APPL_RATE#,
+                  #GITA_GUBN#,
+                  #POSS_DAYS#,
+                  #OUTL_KMAK#,
+                  #GASE_TOKM#,
+                  #TAXX_RATE#,
+                  #INCM_TAXX#,
+                  #COMP_SEKM#,
+                  #NONS_SEKM#,
+                  #INHA_TAXX#,
+                  #SEKM_TOKM#,
+                  #TAKE_DEPT#,
+                  #TAKE_USER#,
+                  #REMK_NOTE#,
+                  #GITA_RMR2#,
+                  #UPDT_USID#,
+                  SYSDATE,
+                  #UPDT_USID#,
+                  SYSDATE,
+                  #PAYX_GUBN#,
+                  #REMK_NAME#
+            );           
+
+       END;
+        ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+   작 성 자   : 김준수
+   작 성 일   : 2016.06.27
+   내 용      : 소득내역등록 수정
+********************************************************************************/
+ -->
+    <update id="TXMD0020.UPDATE00" parameterClass="hashmap">
+        <![CDATA[
+         UPDATE TA_INCMXM /* TXMD0020.UPDATE00.소득내역 수정 */
+            SET WORK_DCNT = #WORK_DCNT#,
+                SUPP_KMAK = #SUPP_KMAK#,
+                NTAX_INCM = #NTAX_INCM#,
+                APPL_RATE = #APPL_RATE#,
+                GITA_GUBN = #GITA_GUBN#,
+                POSS_DAYS = #POSS_DAYS#,
+                OUTL_KMAK = #OUTL_KMAK#,
+                GASE_TOKM = #GASE_TOKM#,
+                TAXX_RATE = #TAXX_RATE#,
+                INCM_TAXX = #INCM_TAXX#,
+                COMP_SEKM = #COMP_SEKM#,
+                NONS_SEKM = #NONS_SEKM#,
+                INHA_TAXX = #INHA_TAXX#,
+                SEKM_TOKM = #SEKM_TOKM#,
+                TAKE_DEPT = #TAKE_DEPT#,
+                TAKE_USER = #TAKE_USER#,
+                REMK_NOTE = #REMK_NOTE#,
+                GITA_RMR2 = #GITA_RMR2#,
+                UPDT_DATE = SYSDATE,
+                UPDT_USID = #UPDT_USID#,
+                PAYX_GUBN = #PAYX_GUBN#,
+                REMK_NAME = #REMK_NAME#
+          WHERE INCM_IDXX = #INCM_IDXX#
+        ]]>
+    </update>
+<!-- 
+/*******************************************************************************
+   작 성 자   : 김준수
+   작 성 일   : 2016.06.27
+   내 용      : 소득내역등록 삭제
+********************************************************************************/
+ -->
+    <delete id="TXMD0020.DELETE00" parameterClass="hashmap">
+        <![CDATA[
+         DELETE FROM TA_INCMXM /* TXMD0020.DELETE00.소득내역 삭제 */ 
+          WHERE INCM_IDXX = #INCM_IDXX#
+        ]]>
+    </delete>
+    
+<!--
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.10.10
+     내      용 : 전표대상데이터 체크 초기화
+********************************************************************************/
+ -->
+    <update id="TXMD0020.UPDATE02" parameterClass="hashmap" >
+    <![CDATA[
+        UPDATE TA_INCMXM    /* TXMD0020.UPDATE02 전표대상데이터 체크 초기화 */
+           SET SLIP_NUMB = ''
+         WHERE SLIP_NUMB = #FORM_IDXX# || #UPDT_USID#
+    ]]>
+    </update>
+    
+<!--
+/*******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.10.10
+     내      용 : 전표대상데이터 체크 UPDATE
+********************************************************************************/
+ -->
+    <update id="TXMD0020.UPDATE03" parameterClass="hashmap" >
+    <![CDATA[
+        DECLARE
+            /* TXMD0020.UPDATE03 전표대상데이터 체크 UPDATE */
+            
+            sSLIP_NUMB VARCHAR2(20);
+            
+        BEGIN
+            /*==================================================================
+                1. 전표 기처리여부 체크 
+            ==================================================================*/
+            BEGIN
+                SELECT     SLIP_NUMB
+                  INTO     sSLIP_NUMB
+                  FROM     TA_INCMXM
+                 WHERE     INCM_IDXX    = #INCM_IDXX#    /* 소득ID */
+                 ;
+                 
+                 IF sSLIP_NUMB <> '' OR LENGTH(sSLIP_NUMB) <> 0 THEN
+                    RAISE_APPLICATION_ERROR(-20000, '이미 전표발행된 건 입니다. 소득ID [' || #INCM_IDXX# || ']');
+                 END IF; 
+                 
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    RETURN;
+                    RAISE_APPLICATION_ERROR(-20000,'데이터가 존재하지 않습니다. 소득ID오류 [' || #INCM_IDXX# || ']');
+            END;
+        
+            /*==================================================================
+                2. 전표대상데이터 체크 UPDATE
+            ==================================================================*/
+            UPDATE   TA_INCMXM    
+               SET   SLIP_NUMB      = #FORM_IDXX# || #UPDT_USID#
+             WHERE   INCM_IDXX    = #INCM_IDXX#    /* 소득ID */
+             ;
+             
+        END;
+    ]]>
+    </update>
+    
+<!-- 
+/*******************************************************************************
+        작  성  자 : 권미영
+        작  성  일 : 2016.10.10                       
+        내      용 : 소득내역 전표생성
+ ********************************************************************************/
+-->
+    <insert id="TXMD0020.PROC00" parameterClass="hashmap" >
+    <![CDATA[
+        DECLARE
+            /* TXMD0020.PROC00 소득내역 전표생성 */
+            
+            sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /* 대표적요 */
+            sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /* 전표번호 */
+            sSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /* 전표행번호 */
+            sCOND_VACD        TA_SLIPRF.COND_VACD%TYPE;   /* 관리항목 관리항목값 */
+            
+        BEGIN
+        
+            sTITL_NAME := #TITL_NAME# || '사업소득세 원천징수';
+            
+            /*==================================================================
+                1. 전표마스터 저장 
+            ==================================================================*/
+            PKG_FAMIFSLIP.SP_MASTER_SAVE(
+                 #SYST_LNCD#       /* ●시스템언어코드 */
+                ,#UPDT_USID#    /* ●수정작업자*/
+                ,#ACCT_UNIT#    /* ●회계단위 */
+                ,#ACCT_GUBN#    /* ●회계구분_사업장 */
+                ,#SLIP_DATE#    /* ●전표일자(회계일자) */ 
+                ,#SLIP_GUBN#    /* ●전표유형구분 */
+                ,sTITL_NAME     /* ●제목 */
+                ,#EMPL_NUMB#    /* ●사원번호 */
+                ,#DEPT_CODE#    /* ●부서코드 */                          
+                ,#SOUS_LNKY#    /* ●출처연결키 */
+                ,NULL
+                ,NULL
+                ,NULL
+                ,NULL
+                ,NULL
+                ,sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+        
+        
+            /*==================================================================
+                2-1. 전표라인데이터 
+            ==================================================================*/
+            FOR RS IN (
+                SELECT LPAD(ROWNUM, 4, '0') AS SLIP_LINE    /* 전표라인번호 */
+                      ,ROWNUM AS SORT_ORDR                    /* 정렬순서 */
+                      ,A.* 
+                 FROM (
+                    SELECT  
+                            B.ACCT_INTL                 /* 계정과목코드 */
+                           ,A.TAKE_DEPT AS USEX_DEPT    /* 사용부서 */
+                           ,TO_NCHAR('') AS CSTC_CODE     /* 코스트센터코드 */
+                           ,B.DRCR_GUBN                 /* 차대구분 */
+                           ,'KRW' AS CURR_GUBN          /* 통화구분 */
+                           ,1 AS EXCH_RATE              /* 환율 */
+                           ,CASE WHEN B.JUNL_CODE = 'TX001-0011' THEN A.SUPP_KMAK /* 기본비용(모델료) - 총지급액 */ 
+                                WHEN  B.JUNL_CODE = 'TX001-0001' THEN A.INCM_TAXX /* 소득세 */
+                                WHEN  B.JUNL_CODE = 'TX001-0002' THEN A.INHA_TAXX /* 주민세 */
+                                WHEN  B.JUNL_CODE = 'TX001-0003' THEN NVL(A.SUPP_KMAK, 0) - NVL(A.SEKM_TOKM, 0) /* 미지급비용 - 세후지급액 */
+                            END AS FORI_AMNT            /* 외화금액 */
+                           ,CASE WHEN B.JUNL_CODE = 'TX001-0011' THEN A.SUPP_KMAK /* 기본비용(모델료) - 총지급액 */ 
+                                WHEN  B.JUNL_CODE = 'TX001-0001' THEN A.INCM_TAXX /* 소득세 */
+                                WHEN  B.JUNL_CODE = 'TX001-0002' THEN A.INHA_TAXX /* 주민세 */
+                                WHEN  B.JUNL_CODE = 'TX001-0003' THEN NVL(A.SUPP_KMAK, 0) - NVL(A.SEKM_TOKM, 0) /* 미지급비용 - 세후지급액 */
+                            END AS SLIP_AMNT            /* 전표금액 */ 
+                           ,TO_NCHAR('') AS OSLI_NUMB     /* 상대전표번호 */
+                           ,TO_NCHAR('') AS OSLI_LINE     /* 상대전표순번 */
+                           ,TO_NCHAR('') AS BUDG_GUBN     /* 예산구분 */
+                           ,TO_NCHAR('') AS PROJ_CODE     /* 프로젝트코드 */
+                           ,TO_NCHAR('') AS BGRQ_NUMB      /* 예산품의번호 */
+                           ,TO_NCHAR('') AS BUDG_DEPT      /* 예산부서코드 */
+                           ,TO_NCHAR('') AS BUDG_YYMM     /* 예산년월 */
+                           ,TO_NCHAR('') AS BDSB_CODE     /* 예산과목코드 */
+                           ,TO_NCHAR('') AS BDSP_CODE     /* 예산세목코드 */
+                           ,A.REMK_NOTE AS REMK_NAME      /* 적요 */
+                           ,TO_NCHAR('') AS EVID_DOCU     /* 증빙종류 */
+                           ,TO_NCHAR('') AS PAYX_YSNO     /* 출납처리여부 */
+                           ,TO_NCHAR('') AS PAYX_DATE     /* 지급일 */
+                           ,TO_NCHAR('') AS LEDG_GUBN     /* 출납방법 */
+                           ,TO_NCHAR('') AS BANK_INOU     /* 입출구분 */
+                           ,TO_NCHAR('') AS PRIN_ORDR     /* 출력순서 */ 
+                           ,A.INCM_IDXX                    /* 소득ID */
+                           ,A.INCM_TYCD                    /* 소득유형코드 */
+                           ,A.WORK_DCNT                    /* 근무일수 */
+                           ,A.PERS_YYMM                    /* 귀속년월 */
+                           ,A.SUPP_KMAK                    /* 지급총액 */
+                           ,A.GASE_TOKM                    /* 소득금액 */
+                           ,A.SUPP_DATE                    /* 지급일자 */
+                           ,A.CUST_CODE                    /* 거래처코드 */
+                           ,A.TAKE_USER AS EMPL_NUMB    /* 담당자 */
+                           ,A.TAXX_RATE                    /* 적용세율 */
+                           ,CASE WHEN B.JUNL_CODE = 'TX001-0011' THEN 1 ELSE 0 END AS UPDT_FLAG     /* 업무테이블에 업데이트될 전표여부 */
+                           ,SUBSTR(C.RERN_NUMB, 1, 6) || '-' || SUBSTR(C.RERN_NUMB, 7) AS RERN_NUMB    /* 주민등록번호 */
+                           ,C.BIZR_NUMB                    /* 사업자번호 */
+                      FROM TA_INCMXM A   
+                     INNER JOIN TA_JUNLXM B ON B.SLIP_GUBN = 'TX001' /* 사업기타일용소득전표 */
+                      LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE 
+                     WHERE A.SLIP_NUMB      = #FORM_IDXX# || #UPDT_USID#        /* 타겟이 되는 데이터 */
+                     ORDER BY A.INCM_IDXX                /* 소득ID */
+                             ,B.DRCR_GUBN DESC
+                ) A
+            )
+            LOOP
+            
+                sSLIP_LINE := RS.SLIP_LINE;        /* 전표라인번호 */
+                    
+                /*==================================================================
+                    2-2. 전표라인 저장 
+                ==================================================================*/
+                PKG_FAMIFSLIP.SP_LINE_SAVE(
+                     #SYST_LNCD#       /* ●시스템언어코드*/
+                    ,#UPDT_USID#     /* ●수정작업자*/
+                    ,sSLIP_NUMB         /* ●전표번호 */
+                    ,sSLIP_LINE         /* ●전표라인번호 */
+                    ,#ACCT_UNIT#     /* ●회계단위 */
+                    ,#ACCT_GUBN#     /* ●회계구분_사업장 */
+                    ,RS.ACCT_INTL    /* ●계정과목코드 OR 분개코드 */
+                    ,RS.USEX_DEPT    /* ●사용부서 */
+                    ,RS.CSTC_CODE    /* ◎코스트센터코드 */
+                    ,RS.DRCR_GUBN    /* ●차대구분 */
+                    ,RS.CURR_GUBN    /* ●통화구분 */
+                    ,RS.EXCH_RATE    /* ●환율 */
+                    ,RS.FORI_AMNT    /* ●외화금액 */
+                    ,RS.SLIP_AMNT    /* ●전표금액 */
+                    ,RS.OSLI_NUMB    /* ◎상대전표번호 */
+                    ,RS.OSLI_LINE    /* ◎상대전표순번 */
+                    ,RS.BUDG_GUBN    /* ◎예산구분 */
+                    ,RS.PROJ_CODE    /* ◎프로젝트코드 */
+                    ,RS.BGRQ_NUMB    /* ◎예산품의번호 */
+                    ,RS.BUDG_DEPT    /* ◎예산부서코드 */
+                    ,RS.BUDG_YYMM    /* ◎예산년월 */
+                    ,RS.BDSB_CODE    /* ◎예산과목코드 */
+                    ,RS.BDSP_CODE    /* ◎예산세목코드 */
+                    ,RS.REMK_NAME    /* ●적요 */
+                    ,RS.EVID_DOCU    /* ◎증빙종류 */
+                    ,RS.PAYX_YSNO    /* ◎출납처리여부 */
+                    ,RS.PAYX_DATE    /* ◎지급일 */
+                    ,RS.LEDG_GUBN    /* ◎출납방법 */
+                    ,RS.BANK_INOU    /* ◎입출구분 */
+                    ,RS.PRIN_ORDR    /* ◎출력순서 */
+                    ,RS.SORT_ORDR    /* ◎정렬순서 */
+                    ,NULL     /* ◎미사용여분인수1 */
+                    ,NULL     /* ◎미사용여분인수2 */
+                    ,NULL     /* ◎미사용여분인수3 */
+                    ,NULL     /* ◎미사용여분인수4 */
+                    ,NULL     /* ◎미사용여분인수5 */
+                );
+                
+                
+                /*==================================================================
+                    3-1. 계정별 관리항목 관리코드 조회 
+                ==================================================================*/ 
+                FOR RS_RF IN (    
+                    SELECT A.COND_CODE    /* 관리항목 관리코드 */ 
+                      FROM TA_ACCTXD A    /* [계정관리항목코드] */
+                     WHERE A.ACCT_INTL = RS.ACCT_INTL        /* 계정코드 */
+                       AND (A.DRCR_YSNO IN (0, 1)                                /* 0:차대변선택, 1:차대변필수 */
+                              OR A.DRCR_YSNO = DECODE(RS.DRCR_GUBN, 'D', 2, 3)    /* 2:차변필수, 3:대변필수 */ 
+                              OR A.DRCR_YSNO = DECODE(RS.DRCR_GUBN, 'D', 4, 5)    /* 4:차변선택, 5:대변선택 */
+                           )
+                     ORDER BY A.COND_CODE
+                )
+                LOOP
+                    
+                    sCOND_VACD := '';    /* 초기화 */
+                    
+                    IF RS_RF.COND_CODE = '0002' THEN /* 거래처코드 */
+                        sCOND_VACD := RS.CUST_CODE;
+                    
+                    ELSIF RS_RF.COND_CODE = '0003' THEN /* 사번 */
+                        sCOND_VACD := RS.EMPL_NUMB;
+                        
+                    ELSIF RS_RF.COND_CODE = '0004' THEN /* 부서코드 */
+                        sCOND_VACD := RS.USEX_DEPT;
+                        
+                    ELSIF RS_RF.COND_CODE = '0011' THEN /* 사업자(주민)번호 */
+                        sCOND_VACD := RS.RERN_NUMB;
+                        
+                    ELSIF RS_RF.COND_CODE = '0015' THEN /* 귀속부서 */
+                        sCOND_VACD := RS.USEX_DEPT;
+
+                    ELSIF RS_RF.COND_CODE = '0024' THEN /* 세율 */
+                        sCOND_VACD := RS.TAXX_RATE;
+                        
+                    ELSIF RS_RF.COND_CODE = '0042' THEN /* 발행일 */
+                        sCOND_VACD := RS.SUPP_DATE;
+                        
+                    ELSIF RS_RF.COND_CODE = '0046' THEN /* 지급일 */
+                        sCOND_VACD := RS.SUPP_DATE;
+                        
+                    ELSIF RS_RF.COND_CODE = '0049' THEN /* 과세표준 */
+                        sCOND_VACD := RS.GASE_TOKM;     /* 소득금액 */
+
+                    ELSIF RS_RF.COND_CODE = '0050' THEN /* 원금금액 */
+                        sCOND_VACD := RS.SUPP_KMAK;        /* 지급총액 */
+                        
+                    END IF;
+                    
+                    /*==================================================================
+                        3-2. 관리항목 저장 
+                    ==================================================================*/ 
+                    PKG_FAMIFSLIP.SP_LINERF_SAVE(
+                           #SYST_LNCD#             /* ●시스템언어코드*/
+                          ,#UPDT_USID#           /* ●수정작업자*/
+                          ,sSLIP_NUMB              /* ●전표번호 */
+                          ,sSLIP_LINE             /* ●전표라인번호 */
+                          ,RS_RF.COND_CODE      /* ◎관리항목코드1 */
+                          ,sCOND_VACD              /* ◎관리항목값1 */
+                          ,NULL      /* ◎관리항목코드2 */
+                          ,NULL      /* ◎관리항목값2 */
+                          ,NULL      /* ◎관리항목코드3 */
+                          ,NULL      /* ◎관리항목값3 */
+                          ,NULL      /* ◎관리항목코드4 */
+                          ,NULL      /* ◎관리항목값4 */
+                          ,NULL      /* ◎관리항목코드5 */
+                          ,NULL      /* ◎관리항목값5 */
+                          ,NULL      /* ◎관리항목코드6 */
+                          ,NULL      /* ◎관리항목값6 */
+                          ,NULL      /* ◎관리항목코드7 */
+                          ,NULL      /* ◎관리항목값7 */
+                          ,NULL      /* ◎관리항목코드8 */
+                          ,NULL      /* ◎관리항목값8 */
+                          ,NULL      /* ◎관리항목코드9 */
+                          ,NULL      /* ◎관리항목값9 */
+                      );
+                  END LOOP;    /* END RS_RF 관리항목 */
+    
+                
+                /*==================================================================
+                    4. 전표번호 UPDATE 
+                ==================================================================*/
+                IF RS.UPDT_FLAG = 1 THEN
+                    UPDATE   TA_INCMXM
+                       SET   SLIP_NUMB    = sSLIP_NUMB        /* 전표번호 */
+                            ,SLIP_LINE    = RS.SLIP_LINE    /* 전표라인번호 */
+                            ,UPDT_DATE    = SYSDATE               /* 수정일자 */
+                            ,UPDT_USID    = #UPDT_USID#       /* 수정자 */
+                     WHERE   INCM_IDXX    = RS.INCM_IDXX    /* 소득ID */
+                       ;
+                END IF;
+               
+            END LOOP;    /* END RS 전표라인 */
+    
+            /*==================================================================
+                5. 전표작성종료 
+            ==================================================================*/            
+            PKG_FAMIFSLIP.SP_FINISH (
+                   #SYST_LNCD#         /* ●시스템언어코드*/
+                  ,#UPDT_USID#      /* ●수정작업자*/
+                  ,sSLIP_NUMB          /* ●전표번호 */
+               );        
+            
+        END;
+    ]]>
+    </insert>    
+    
+<!-- 
+/*******************************************************************************
+        작  성  자 : 권미영
+        작  성  일 : 2016.10.10
+        내      용 : 소득내역 전표삭제
+ ********************************************************************************/
+-->
+    <insert id="TXMD0020.PROC01" parameterClass="hashmap" >
+    <![CDATA[
+    BEGIN
+        /* TXMD0020.PROC01 소득내역 전표삭제 */
+        /*==================================================================
+            1. 전표삭제 
+        ==================================================================*/
+        PKG_FAMIFSLIP.SP_DELETE (
+                #SYST_LNCD#      /* ●시스템언어코드*/
+              ,#UPDT_USID#      /* ●수정작업자*/
+              ,#SLIP_NUMB#      /* ●전표번호 */
+              ,#DELE_OPTN#      /* ◎삭제옵션 */
+              
+           );
+           
+           /*==================================================================
+            2. 전표번호 UPDATE 
+        ==================================================================*/
+        UPDATE   TA_INCMXM
+           SET   SLIP_NUMB    = ''                /* 전표번호 */
+                ,SLIP_LINE    = ''                /* 전표라인번호 */
+                ,UPDT_DATE    = SYSDATE               /* 수정일자 */
+                ,UPDT_USID    = #UPDT_USID#        /* 수정자 */
+         WHERE   SLIP_NUMB    = #SLIP_NUMB#        /* 전표번호 */
+           ;
+    END;
+    ]]>
+    </insert>
+    
+
+</sqlMap>

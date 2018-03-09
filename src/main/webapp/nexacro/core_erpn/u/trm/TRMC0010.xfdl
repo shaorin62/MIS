@@ -1,0 +1,1525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TRMC0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="차입금관리" position="absolute" scrollbars="none" onclose="fn_FormUnloadProcess" left="0" width="1187" top="0" height="717">
+    <Layouts>
+      <Layout>
+        <Grid autoenter="TRUE" binddataset="dsTR_DBPYXM" cellsizingtype="both" enable="true" id="grdTR_DBPYXM" useinputpanel="false" taborder="9" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" selecttype="row" position="absolute" left="8" right="25" top="154" bottom="347" cssclass="styGrid01">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="80" band="left"/>
+                <Column size="150" band="left"/>
+                <Column size="70"/>
+                <Column size="110"/>
+                <Column size="75"/>
+                <Column size="75"/>
+                <Column size="80"/>
+                <Column size="85"/>
+                <Column size="85"/>
+                <Column size="85"/>
+                <Column size="85"/>
+                <Column size="85"/>
+                <Column size="100"/>
+                <Column size="90"/>
+                <Column size="75"/>
+                <Column size="90"/>
+                <Column size="75"/>
+                <Column size="120"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="차입금번호"/>
+                <Cell col="1" displaytype="text" text="차입금명"/>
+                <Cell col="2" displaytype="text" text="차입종류"/>
+                <Cell col="3" displaytype="text" text="차입기관"/>
+                <Cell col="4" displaytype="text" text="차입일"/>
+                <Cell col="5" displaytype="text" text="만기일"/>
+                <Cell col="6" displaytype="text" text="이자율(%)"/>
+                <Cell col="7" displaytype="text" text="차입한도액"/>
+                <Cell col="8" displaytype="text" text="차입금액"/>
+                <Cell col="9" displaytype="text" text="상환금액"/>
+                <Cell col="10" displaytype="text" text="미상환금액"/>
+                <Cell col="11" displaytype="text" text="납입이자"/>
+                <Cell col="12" displaytype="text" text="자금유형"/>
+                <Cell col="13" displaytype="text" text="원금상환조건"/>
+                <Cell col="14" displaytype="text" text="최초상환일"/>
+                <Cell col="15" displaytype="text" text="이자납입조건"/>
+                <Cell col="16" displaytype="text" text="이자납입일"/>
+                <Cell col="17" displaytype="text" text="관리계정과목"/>
+                <Cell col="18" displaytype="text" text="이자계정과목"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align: center;" text="bind:DBPY_NUMB" mask="####-####"/>
+                <Cell col="1" displaytype="text" style="align: left;" text="bind:DBPY_NAME"/>
+                <Cell col="2" displaytype="combo" style="align: center;" text="bind:DBPY_KIND"/>
+                <Cell col="3" displaytype="text" style="align: left;" text="bind:DBPY_CUNM"/>
+                <Cell col="4" displaytype="date" style="align: center;" text="bind:DBPY_DATE" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="date" style="align: center;" text="bind:EXPN_DATE" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="number" style="align: right;" text="bind:INTE_RATE" mask="0.###"/>
+                <Cell col="7" displaytype="number" style="align: right;" text="bind:DBPY_LIMT"/>
+                <Cell col="8" displaytype="number" style="align: right;" text="bind:DBPY_AMOT"/>
+                <Cell col="9" displaytype="number" style="align: right;" text="bind:RPAY_AMOT"/>
+                <Cell col="10" displaytype="number" style="align: right;" expr="expr:nexacro.toNumber(DBPY_AMOT, 0) - nexacro.toNumber(RPAY_AMOT, 0)"/>
+                <Cell col="11" displaytype="number" style="align: right;" text="bind:PAID_INTE"/>
+                <Cell col="12" displaytype="combo" style="align: center;" text="bind:FUND_TYPE"/>
+                <Cell col="13" displaytype="combo" style="align: center;" text="bind:PRRP_COND"/>
+                <Cell col="14" displaytype="date" style="align: center;" text="bind:FSRP_DATE" calendardisplaynulltype="none"/>
+                <Cell col="15" displaytype="combo" style="align: center;" text="bind:INTP_COND"/>
+                <Cell col="16" displaytype="text" style="align: right;" text="bind:INPT_DATE" expr="expr:INPT_DATE + &quot; 일&quot;"/>
+                <Cell col="17" displaytype="text" style="align: left;" text="bind:DBPY_ACNM"/>
+                <Cell col="18" displaytype="text" style="align: left;" text="bind:INTE_ACNM"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Tab id="tabXM" taborder="10" right="25" left="8" bottom="15" height="322">
+          <Tabpages>
+            <Tabpage id="tab1" taborder="43" text="차입정보" position="absolute" scrollbars="none" left="2" width="1031" top="27" height="336">
+              <Layouts>
+                <Layout>
+                  <Static id="Shape0" taborder="34" cssclass="styFormItemBoxOut" bottom="10" left="10" height="273" right="10"/>
+                  <Static id="Static22" taborder="107" text="차입종류" cssclass="styFormItemCapBE" left="900" bottom="253" width="90" height="21"/>
+                  <Static id="Static11" taborder="108" text="차입금명" cssclass="styFormItemCapBE" left="326" bottom="253" width="90" height="21"/>
+                  <Static id="Static5" taborder="109" text="차입금번호" cssclass="styFormItemCap" left="30" bottom="253" width="103" height="21"/>
+                  <MaskEdit id="mskPAID_INTE" taborder="21" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="991" bottom="97" height="21" binddataset="dsTR_DBPYXM" width="130" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskINTF_DATE" taborder="20" type="string" mask="####-##-##" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="701" bottom="97" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskINPT_DATE" taborder="19" type="number" mask="##" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="407" bottom="97" width="130" height="21" binddataset="dsTR_DBPYXM" limitbymask="integer"/>
+                  <MaskEdit id="mskRPAY_AMOT" taborder="17" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="991" bottom="123" height="21" binddataset="dsTR_DBPYXM" width="130" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskFNRP_DATE" taborder="16" type="string" mask="####-##-##" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="701" bottom="123" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskLIMT_BALE" taborder="12" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="701" bottom="149" width="130" height="21" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskDBPY_AMOT" taborder="11" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="407" bottom="149" width="130" height="21" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <MaskEdit id="mskDBPY_LIMT" taborder="10" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="127" bottom="149" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <MaskEdit id="mskINTE_RATE" taborder="7" mask="+##.###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="127" bottom="175" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Edit id="edtDESC_REMK" taborder="24" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="127" bottom="19" height="21" binddataset="dsTR_DBPYXM" width="994"/>
+                  <Static id="Static40" taborder="120" text="비고" cssclass="styFormItemCap" left="30" bottom="19" width="103" height="21"/>
+                  <Edit id="edtGUAR_DETL" taborder="23" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="127" bottom="45" height="21" binddataset="dsTR_DBPYXM" width="994"/>
+                  <Static id="Static36" taborder="122" text="보증내역" cssclass="styFormItemCap" left="30" bottom="45" width="103" height="21"/>
+                  <Static id="Static52" taborder="123" text="일" left="539" bottom="97" width="14" height="21"/>
+                  <Static id="Static50" taborder="124" text="이자납입일" cssclass="styFormItemCap" left="326" bottom="97" width="90" height="21"/>
+                  <Combo id="cmbINTP_COND" taborder="18" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="127" bottom="97" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Static id="Static46" taborder="126" text="이자납입조건" cssclass="styFormItemCap" left="30" bottom="97" width="103" height="21"/>
+                  <Static id="Static44" taborder="127" text="납입이자" cssclass="styFormItemCap" left="900" bottom="97" width="90" height="21"/>
+                  <Static id="Static38" taborder="128" text="최종납입일" cssclass="styFormItemCap" left="606" bottom="97" width="90" height="21"/>
+                  <Calendar id="calFSRP_DATE" taborder="15" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="407" bottom="123" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Static id="Static27" taborder="130" text="최초상환일" cssclass="styFormItemCap" left="326" bottom="123" width="90" height="21"/>
+                  <Combo id="cmbPRRP_COND" taborder="14" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="127" bottom="123" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Combo id="cmbRPTM_YSNO" taborder="13" cssclass="cmb_WF_Readonly" enable="true" left="991" bottom="149" height="21" binddataset="dsTR_DBPYXM" width="130" tabstop="false" readonly="true"/>
+                  <Static id="Static18" taborder="133" text="차입금액" cssclass="styFormItemCap" left="326" bottom="149" width="90" height="21"/>
+                  <Combo id="cmbFUND_TYPE" taborder="8" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="407" bottom="175" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Edit id="edtDPAC_NAME" taborder="9" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="856" bottom="175" height="21" binddataset="dsTR_DBPYXM" width="265"/>
+                  <Edit id="edtDPAC_NUMB" taborder="136" autoselect="true" cssclass="edt_WF_Readnoly" enable="true" left="701" bottom="175" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <Static id="Static6" taborder="138" text="자금유형" cssclass="styFormItemCapBE" left="326" bottom="175" width="90" height="21"/>
+                  <Edit id="edtSECU_DETL" taborder="22" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="127" bottom="71" height="21" binddataset="dsTR_DBPYXM" width="994"/>
+                  <Static id="Static34" taborder="140" text="담보내역" cssclass="styFormItemCap" left="30" bottom="71" width="103" height="21"/>
+                  <Static id="Static32" taborder="141" text="원금상환조건" cssclass="styFormItemCap" left="30" bottom="123" width="103" height="21"/>
+                  <Static id="Static30" taborder="142" text="상환금액" cssclass="styFormItemCap" left="900" bottom="123" width="90" height="21"/>
+                  <Static id="Static28" taborder="143" text="최종상환일" cssclass="styFormItemCap" left="606" bottom="123" width="90" height="21"/>
+                  <Static id="Static26" taborder="144" text="차입한도액" cssclass="styFormItemCap" left="30" bottom="149" width="103" height="21"/>
+                  <Static id="Static24" taborder="145" text="상환완료여부" cssclass="styFormItemCap" left="900" bottom="149" width="90" height="21"/>
+                  <Static id="Static9" taborder="146" text="한도잔액" cssclass="styFormItemCap" left="606" bottom="149" width="90" height="21"/>
+                  <Static id="Static0" taborder="147" text="이자율(%)" cssclass="styFormItemCapBE" left="30" bottom="175" width="102" height="21"/>
+                  <Static id="Static12" taborder="148" text="차입계좌번호" cssclass="styFormItemCap" left="606" bottom="175" width="90" height="21"/>
+                  <Static id="Static2" taborder="150" text="차입기관" cssclass="styFormItemCapBE" left="30" bottom="227" width="103" height="21"/>
+                  <MaskEdit id="mskDBPY_NUMB" taborder="151" type="string" mask="####-####" autoselect="true" cssclass="msk_WF_Readonly" enable="true" left="127" bottom="253" width="130" height="21" style="align:center middle; :disabled {align:center middle;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <Edit id="edtDBPY_CUST" taborder="152" autoselect="true" cssclass="edt_WF_Readnoly" enable="true" left="127" bottom="227" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <Edit id="edtDBPY_CUNM" taborder="2" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="282" bottom="227" width="255" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Static id="Static15" taborder="154" text="차입일" cssclass="styFormItemCapBE" left="606" bottom="227" width="90" height="21"/>
+                  <Edit id="edtDBPY_NAME" taborder="0" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="407" bottom="253" width="424" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Calendar id="calDBPY_DATE" taborder="3" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="701" bottom="227" width="130" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Static id="Static21" taborder="157" text="만기일" cssclass="styFormItemCapBE" left="900" bottom="227" width="90" height="21"/>
+                  <Combo id="cmbDBPY_KIND" taborder="1" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="991" bottom="253" height="21" binddataset="dsTR_DBPYXM" width="130"/>
+                  <Calendar id="calEXPN_DATE" taborder="4" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="991" bottom="227" height="21" binddataset="dsTR_DBPYXM" width="130"/>
+                  <Edit id="edtINTE_ACNM" taborder="6" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="856" bottom="201" height="21" binddataset="dsTR_DBPYXM" width="265"/>
+                  <Edit id="edtINTE_ACCT" taborder="162" autoselect="true" cssclass="edt_WF_Readnoly" enable="true" left="701" bottom="201" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <Static id="Static48" taborder="163" text="이자계정과목" cssclass="styFormItemCapBE" left="606" bottom="201" width="90" height="21"/>
+                  <Edit id="edtDBPY_ACNM" taborder="5" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="282" bottom="201" width="255" height="21" binddataset="dsTR_DBPYXM"/>
+                  <Edit id="edtDBPY_ACCT" taborder="166" autoselect="true" oneditclick="tabXM_tab1_edtdDBPY_ACCT_oneditclick" cssclass="edt_WF_Readnoly" enable="true" left="127" bottom="201" width="130" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTR_DBPYXM" tabstop="false" readonly="true"/>
+                  <Static id="Static42" taborder="167" text="관리계정과목" cssclass="styFormItemCapBE" left="30" bottom="201" width="103" height="21"/>
+                  <Static id="imgHelpDBPY_CUST" taborder="168" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="259" width="22" height="21" bottom="227"/>
+                  <Static id="imgHelpDBPY_ACCT" taborder="169" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="259" width="22" height="21" bottom="201"/>
+                  <Static id="imgHelpDPAC_NUMB" taborder="170" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="833" width="21" height="21" bottom="175"/>
+                  <Static id="imgHelpINTE_ACCT" taborder="171" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="833" width="21" height="21" bottom="201"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tab2" taborder="43" text="차입거래내역" position="absolute" left="2" width="1031" top="27" height="336">
+              <Layouts>
+                <Layout>
+                  <Grid autoenter="none" binddataset="dsTR_DBPYXD" cellsizingtype="both" enable="true" id="grdTR_DBPYXD" useinputpanel="false" oncelldblclick="fn_OpenSlip" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" selecttype="row" position="absolute" left="10" right="10" top="30" bottom="10" autofittype="col" onexpandup="fn_HelpDialoge" onlbuttondown="tabXM_tab2_grdTR_DBPYXD_onlbuttondown" >
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="40" band="left"/>
+                          <Column size="100" band="left"/>
+                          <Column size="70" band="left"/>
+                          <Column size="85"/>
+                          <Column size="85"/>
+                          <Column size="85"/>
+                          <Column size="85"/>
+                          <Column size="300"/>
+                          <Column size="140"/>
+                          <Column size="90"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="구분"/>
+                          <Cell col="1" displaytype="text" cssclass="Cellgrd_WF_essential" text="거래일자"/>
+                          <Cell col="2" displaytype="text" cssclass="Cellgrd_WF_essential" text="거래유형"/>
+                          <Cell col="3" displaytype="text" cssclass="Cellgrd_WF_edit" text="차입금액"/>
+                          <Cell col="4" displaytype="text" cssclass="Cellgrd_WF_edit" text="상환금액"/>
+                          <Cell col="5" displaytype="text" text="차입잔액"/>
+                          <Cell col="6" displaytype="text" cssclass="Cellgrd_WF_edit" text="이자금액"/>
+                          <Cell col="7" displaytype="text" cssclass="Cellgrd_WF_essential" text="적요"/>
+                          <Cell col="8" text="전표번호"/>
+                          <Cell col="9" text="전표번호취소"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="text" style="align: center;" text="bind:DBPY_GUBN"/>
+                          <Cell col="1" displaytype="date" style="align: center;" text="bind:TRAN_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="2" displaytype="combo" style="align: center;" text="bind:DBPY_TYPE"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="bind:DBPY_AMOT" editlimit="15"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="bind:RPAY_AMOT"/>
+                          <Cell col="5" displaytype="number" style="align:right;" text="bind:DBPY_BALE"/>
+                          <Cell col="6" displaytype="number" style="align:right;" text="bind:INTE_AMOT"/>
+                          <Cell col="7" displaytype="text" edittype="normal" style="align: left;" text="bind:MAJR_REMK" editlimit="100" editimemode="native"/>
+                          <Cell col="8" displaytype="normal" edittype="expand" text="bind:SLIP_NUMB" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                          <Cell col="9" displaytype="button" text="bind:SLIP_CANC"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell colspan="3" displaytype="text" style="align: center;" text="합계"/>
+                          <Cell col="3" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;DBPY_AMOT&quot;)"/>
+                          <Cell col="4" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;RPAY_AMOT&quot;)"/>
+                          <Cell col="5" displaytype="number" style="align:right;" expr="expr:nexacro.toNumber(dataset.getSum(&quot;DBPY_AMOT&quot;), 0) - nexacro.toNumber(dataset.getSum(&quot;RPAY_AMOT&quot;), 0)"/>
+                          <Cell col="6" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;INTE_AMOT&quot;)"/>
+                          <Cell col="7" displaytype="text" style="align: left;"/>
+                          <Cell col="8"/>
+                          <Cell col="9"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="10" width="232" top="9" height="21" cssclass="styFormSearchInfo" usedecorate="true"/>
+                  <Button id="btnDelRow" taborder="3" onclick="fn_DelRow" right="10" width="62" top="5" height="21" text="행삭제" cssclass="btn_WF_Module"/>
+                  <Button id="btnAddRow" taborder="2" onclick="fn_AddRow" right="75" width="62" top="5" height="21" text="행추가" cssclass="btn_WF_Module"/>
+                  <Button id="btnOpenCreateSlipDiv" taborder="0" text="전표생성" onclick="fn_ControlSlipDiv" style="imagealign:left;margin:0 0 0 0;padding:2 0 0 18;align:left middle; :disabled {padding:1 0 0 0;align:center middle;}" enable="false" visible="false" right="409" width="74" top="5" height="21" cssclass="btn_WF_Module"/>
+                  <Button id="btnDeleteSlip" taborder="1" text="전표삭제" onclick="fn_DeleteSlip" style="imagealign:left;margin:0 0 0 0;padding:2 0 0 18;align:left middle; :disabled {padding:1 0 0 0;align:center middle;}" enable="false" visible="false" right="332" width="74" top="5" height="21" cssclass="btn_WF_Module" position="absolute"/>
+                  <Button id="btnExcelUpload" taborder="5" text="엑셀업로드" onclick="fn_ExcelUpLoad" right="140" width="86" top="5" height="21" cssclass="btn_WF_Module" visible="false"/>
+                  <Button id="btnExcelFormDown" taborder="6" text="양식다운로드" onclick="fn_ExcelFileDown" right="229" width="100" top="5" height="21" cssclass="btn_WF_Module" visible="false"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="196" top="133" height="21" cssclass="styFormSearchInfo" taborder="13" usedecorate="true"/>
+        <FileDownload id="FileDownload00" taborder="33" retry="0" text="FileDownload00" visible="false" position="absolute" left="621" width="17" top="12" height="12"/>
+        <Static id="spSearchBox" taborder="34" cssclass="styFormSearchBox" left="8" top="60" height="69" radiusy="10" radiusx="10" type="roundrectangle" right="25"/>
+        <Static id="Static06" taborder="35" text="만기일자" cssclass="styFormSearchCap" width="68" height="21" top="97" left="643"/>
+        <Static id="Static04" taborder="36" text="차입일자" cssclass="styFormSearchCap" width="68" height="21" top="71" left="643"/>
+        <Static id="Static03" taborder="37" text="자금유형" cssclass="styFormSearchCap" width="68" height="21" top="71" left="446"/>
+        <Static id="Static00" taborder="38" text="차입종류" cssclass="styFormSearchCap" width="68" height="21" top="71" left="252"/>
+        <Static id="Static01" taborder="39" text="차입금명" cssclass="styFormSearchCap" width="68" height="21" top="97" left="252"/>
+        <Static id="Static3" taborder="40" text="상환완료여부" cssclass="styFormSearchCap" width="96" height="21" top="97" left="28"/>
+        <Static id="Static5" taborder="41" text="회계단위" cssclass="styFormSearchCapBe" width="96" height="21" top="71" left="28"/>
+        <Edit id="edtSHRDBPY_NAME" taborder="6" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" width="172" height="21" top="97" left="442"/>
+        <Edit id="edtSHRDBPY_NUMB" taborder="44" autoselect="true" cssclass="styFormSearchItem" enable="false" width="100" height="21" top="97" left="317" style=":disabled {align:center middle;}"/>
+        <Combo id="cmbSHRFUND_TYPE" taborder="2" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" width="100" height="21" index="-1" top="71" left="514"/>
+        <Static id="Static60" taborder="46" text="~" width="14" height="21" top="97" left="816"/>
+        <Static id="Static58" taborder="47" text="~" width="14" height="21" top="71" left="816"/>
+        <Calendar id="calSHREXPN_DAT1" taborder="7" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" width="100" height="21" top="97" left="711"/>
+        <Calendar id="calSHREXPN_DAT2" taborder="8" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" width="100" height="21" top="97" left="831"/>
+        <Calendar id="calSHRDBPY_DAT1" taborder="3" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" width="100" height="21" top="71" left="711"/>
+        <Calendar id="calSHRDBPY_DAT2" taborder="4" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" width="100" height="21" top="71" left="831"/>
+        <Combo id="cmbSHRDBPY_KIND" taborder="1" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" width="100" height="21" index="-1" top="71" left="317"/>
+        <Combo id="cmbSHRACCT_UNIT" taborder="0" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" width="100" height="21" index="-1" top="71" left="123"/>
+        <Combo id="cmbSHRRPTM_YSNO" taborder="5" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" width="100" height="21" index="-1" top="97" left="123"/>
+        <Static id="imgHelpSHRDBPY_NUMB" taborder="58" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="97" width="21" height="21" left="419"/>
+        <Static id="st_FormTitle" taborder="60" text="차입금관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="61" text="홈 &gt; 자금관리 &gt; 차입금관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="62" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="63" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static02" taborder="64" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="65" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="66" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static10" taborder="70" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static11" taborder="71" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static12" taborder="72" text="h 25" visible="false" left="573" top="129" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static13" taborder="73" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static16" taborder="74" text="w30" visible="false" left="9" top="61" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="75" text="w 40" visible="false" left="223" top="61" width="40" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="76" text="h10" visible="false" left="405" top="61" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static28" taborder="77" text="h5" visible="false" left="405" top="92" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static14" taborder="78" text="h10" visible="false" left="405" top="118" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static15" taborder="79" text="h 6" visible="false" left="8" top="148" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="80" text="h 37" visible="false" left="573" top="370" width="80" height="37" style="background:#fb7b7b7a;"/>
+        <Static id="Static18" taborder="81" text="w&#13;&#10;10" visible="false" left="1151" top="456" width="10" height="75" style="background:#fb7b7b7a;"/>
+        <Static id="Static19" taborder="82" text="w&#13;&#10;10" visible="false" left="9" top="456" width="10" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static20" taborder="83" text="h 10" visible="false" left="572" top="691" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="84" text="h 15" visible="false" left="428" top="408" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static22" taborder="87" text="w&#13;30" visible="false" left="20" top="456" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <PopupDiv id="popSLIP" left="48" top="751" width="520" height="142" scrollbars="none" cssclass="pdiv_WF_insert">
+          <Layouts>
+            <Layout>
+              <Static id="Shape0" taborder="47" cssclass="styFormItemBoxOut" left="9" top="9" width="502" height="91"/>
+              <Button id="btnCreateSlip" taborder="48" text="자료생성" onclick="popINSERT_btnINSERT_OnClick" left="439" top="70" width="63" height="21"/>
+              <Button id="btnCloseCreateSlipDiv" taborder="49" text="닫기" onclick="popINSERT_Button0_OnClick" cssclass="btn_POP_CRUD" left="449" top="108" width="62" height="24"/>
+              <Static id="Static0" taborder="50" text="관련발생전표" cssclass="styFormItemCap" visible="false" left="29" top="70" width="100" height="21"/>
+              <Static id="staXxxx7" taborder="51" text="상대계좌번호" cssclass="styFormItemCap" left="29" top="44" width="100" height="21"/>
+              <Static id="staXxxx6" taborder="52" text="상대계정과목" cssclass="styFormItemCapBE" left="29" top="18" width="100" height="21"/>
+              <Edit id="edtOTHR_ACCT" taborder="53" autoselect="true" cssclass="styFormItemText" enable="false" left="125" top="18" width="101" height="21" style=":disabled {align:center;}"/>
+              <Edit id="edtOTHR_ACNM" taborder="54" imemode="hangul" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="251" top="18" width="185" height="21"/>
+              <Edit id="edtOTHR_NTNM" taborder="55" imemode="hangul" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" left="251" top="44" width="185" height="21"/>
+              <Edit id="edtOTHR_ACNT" taborder="56" autoselect="true" cssclass="styFormItemText" enable="false" left="125" top="44" width="101" height="21"/>
+              <Edit id="edtREOC_NAME" taborder="57" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" enable="false" visible="false" left="251" top="70" width="185" height="21"/>
+              <Edit id="edtREOC_NUMB" taborder="58" autoselect="true" cssclass="styFormItemText" enable="false" visible="false" left="125" top="70" width="68" height="21"/>
+              <Edit id="edtMANG_ITE2" taborder="59" autoselect="true" onsetfocus="fn_EditFocus" ontextchanged="popSLIP_edtMANG_ITE2_OnChanged" cssclass="styFormItemText" enable="false" visible="false" left="388" top="18" width="23" height="21"/>
+              <Edit id="edtMANG_ITE4" taborder="60" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" ontextchanged="popSLIP_edtMANG_ITE2_OnChanged" cssclass="styFormItemText" enable="false" visible="false" left="413" top="18" width="23" height="21"/>
+              <Edit id="edtREOC_SEQN" taborder="61" autoselect="true" cssclass="styFormItemText" enable="false" visible="false" left="195" top="70" width="31" height="21"/>
+              <Static id="imgHelpOTHR_ACCT" taborder="62" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" visible="false" left="228" bottom="103" width="21" height="21"/>
+              <Static id="imgHelpOTHR_ACNT" taborder="63" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" visible="false" left="228" bottom="77" width="21" height="21"/>
+              <Static id="imgHelpREOC_NUMB" taborder="64" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" visible="false" left="228" bottom="51" width="21" height="21"/>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+        <Static id="Static23" taborder="88" text="h8" cssclass="sta_GID_box" visible="false" left="18" top="752" width="182" height="8"/>
+        <Static id="Static24" taborder="89" text="h8" cssclass="sta_GID_box" visible="false" left="18" top="883" width="510" height="8"/>
+        <Static id="Static25" taborder="90" text="w8" cssclass="sta_GID_box" visible="false" left="49" top="771" width="8" height="96"/>
+        <Static id="Static26" taborder="91" text="w8" cssclass="sta_GID_box" visible="false" left="559" top="771" width="8" height="144"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTR_DBPYXM" canrowposchange="dsTR_DBPYXM_canrowposchange" oncolumnchanged="dsTR_DBPYXM_oncolumnchanged" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="ACCT_UNIT" size="4" prop="default" type="STRING"/>
+          <Column id="DBPY_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="DBPY_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DBPY_KIND" size="10" prop="default" type="STRING"/>
+          <Column id="DBPY_CUST" size="10" prop="default" type="STRING"/>
+          <Column id="DBPY_CUNM" size="100" prop="default" type="STRING"/>
+          <Column id="DBPY_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="EXPN_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="DBPY_ACCT" size="10" prop="default" type="STRING"/>
+          <Column id="DBPY_ACNM" size="100" prop="default" type="STRING"/>
+          <Column id="INTE_ACCT" size="10" prop="default" type="STRING"/>
+          <Column id="INTE_ACNM" size="100" prop="default" type="STRING"/>
+          <Column id="INTE_RATE" size="20" prop="default" type="BIGDECIMAL"/>
+          <Column id="FUND_TYPE" size="10" prop="default" type="STRING"/>
+          <Column id="DPAC_NUMB" size="64" prop="default" type="STRING"/>
+          <Column id="DPAC_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DBPY_LIMT" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="DBPY_AMOT" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="LIMT_BALE" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="RPTM_YSNO" size="1" prop="default" type="STRING"/>
+          <Column id="PRRP_COND" size="10" prop="default" type="STRING"/>
+          <Column id="FSRP_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="FNRP_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="RPAY_AMOT" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="INTP_COND" size="10" prop="default" type="STRING"/>
+          <Column id="INPT_DATE" size="2" prop="default" type="STRING"/>
+          <Column id="INTF_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="PAID_INTE" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="SECU_DETL" size="100" prop="default" type="STRING"/>
+          <Column id="GUAR_DETL" size="100" prop="default" type="STRING"/>
+          <Column id="DESC_REMK" size="100" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTR_DBPYXD" oncolumnchanged="dsTR_DBPYXD_oncolumnchanged" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DBPY_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="ACCT_UNIT" size="4" prop="default" type="STRING"/>
+          <Column id="DBPY_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="SEQN_NUMB" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="TRAN_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="DBPY_TYPE" size="4" prop="default" type="STRING"/>
+          <Column id="DBPY_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RPAY_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DBPY_BALE" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="INTE_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="MAJR_REMK" size="100" prop="default" type="STRING"/>
+          <Column id="OTHR_ACCT" size="10" prop="default" type="STRING"/>
+          <Column id="OTHR_ACNT" size="20" prop="default" type="STRING"/>
+          <Column id="REOC_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="ACCT_DATE" size="10" prop="default" type="STRING"/>
+          <Column id="APPV_STAT" size="1" prop="default" type="STRING"/>
+          <Column id="SLIP_CANC" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">ACCT_UNIT</Col>
+            <Col id="DSNAME">dsSHRACCT_UNIT</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">DBPY_KIND</Col>
+            <Col id="DSNAME">dsSHRDBPY_KIND</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">FUND_TYPE</Col>
+            <Col id="DSNAME">dsSHRFUND_TYPE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">USIG_YSNO</Col>
+            <Col id="DSNAME">dsSHRRPTM_YSNO</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">DBPY_KIND</Col>
+            <Col id="DSNAME">dsDBPY_KIND</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">FUND_TYPE</Col>
+            <Col id="DSNAME">dsFUND_TYPE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">USIG_YSNO</Col>
+            <Col id="DSNAME">dsRPTM_YSNO</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">PRRP_COND</Col>
+            <Col id="DSNAME">dsPRRP_COND</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">INTP_COND</Col>
+            <Col id="DSNAME">dsINTP_COND</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">APPV_STAT</Col>
+            <Col id="DSNAME">dsAPPV_STAT</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">DBPY_TYPE</Col>
+            <Col id="DSNAME">dsDBPY_TYPE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="DS_EXCEL" useclientlayout="true"/>
+      <Dataset id="dsTR_DBPYXD_TEMP" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DBPY_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="ACCT_UNIT" size="4" prop="default" type="STRING"/>
+          <Column id="DBPY_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="SEQN_NUMB" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="TRAN_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="DBPY_TYPE" size="4" prop="default" type="STRING"/>
+          <Column id="DBPY_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="RPAY_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DBPY_BALE" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="INTE_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="MAJR_REMK" size="100" prop="default" type="STRING"/>
+          <Column id="OTHR_ACCT" size="10" prop="default" type="STRING"/>
+          <Column id="OTHR_ACNT" size="20" prop="default" type="STRING"/>
+          <Column id="REOC_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="ACCT_DATE" size="10" prop="default" type="STRING"/>
+          <Column id="APPV_STAT" size="1" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="tabXM_tab1_edtdDBPY_ACCT_value" compid="tabXM.tab1.edtDBPY_ACCT" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_ACCT"/>
+      <BindItem id="tabXM_tab1_edtDBPY_ACNM_value" compid="tabXM.tab1.edtDBPY_ACNM" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_ACNM"/>
+      <BindItem id="tabXM_tab1_edtINTE_ACCT_value" compid="tabXM.tab1.edtINTE_ACCT" propid="value" datasetid="dsTR_DBPYXM" columnid="INTE_ACCT"/>
+      <BindItem id="tabXM_tab1_edtINTE_ACNM_value" compid="tabXM.tab1.edtINTE_ACNM" propid="value" datasetid="dsTR_DBPYXM" columnid="INTE_ACNM"/>
+      <BindItem id="tabXM_tab1_calEXPN_DATE_value" compid="tabXM.tab1.calEXPN_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="EXPN_DATE"/>
+      <BindItem id="tabXM_tab1_cmbDBPY_KIND_value" compid="tabXM.tab1.cmbDBPY_KIND" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_KIND"/>
+      <BindItem id="tabXM_tab1_calDBPY_DATE_value" compid="tabXM.tab1.calDBPY_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_DATE"/>
+      <BindItem id="tabXM_tab1_edtDBPY_NAME_value" compid="tabXM.tab1.edtDBPY_NAME" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_NAME"/>
+      <BindItem id="tabXM_tab1_edtDBPY_CUNM_value" compid="tabXM.tab1.edtDBPY_CUNM" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_CUNM"/>
+      <BindItem id="tabXM_tab1_edtDBPY_CUST_value" compid="tabXM.tab1.edtDBPY_CUST" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_CUST"/>
+      <BindItem id="tabXM_tab1_mskDBPY_NUMB_value" compid="tabXM.tab1.mskDBPY_NUMB" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_NUMB"/>
+      <BindItem id="tabXM_tab1_edtSECU_DETL_value" compid="tabXM.tab1.edtSECU_DETL" propid="value" datasetid="dsTR_DBPYXM" columnid="SECU_DETL"/>
+      <BindItem id="tabXM_tab1_edtDPAC_NUMB_value" compid="tabXM.tab1.edtDPAC_NUMB" propid="value" datasetid="dsTR_DBPYXM" columnid="DPAC_NUMB"/>
+      <BindItem id="tabXM_tab1_edtDPAC_NAME_value" compid="tabXM.tab1.edtDPAC_NAME" propid="value" datasetid="dsTR_DBPYXM" columnid="DPAC_NAME"/>
+      <BindItem id="tabXM_tab1_cmbFUND_TYPE_value" compid="tabXM.tab1.cmbFUND_TYPE" propid="value" datasetid="dsTR_DBPYXM" columnid="FUND_TYPE"/>
+      <BindItem id="tabXM_tab1_cmbRPTM_YSNO_value" compid="tabXM.tab1.cmbRPTM_YSNO" propid="value" datasetid="dsTR_DBPYXM" columnid="RPTM_YSNO"/>
+      <BindItem id="tabXM_tab1_cmbPRRP_COND_value" compid="tabXM.tab1.cmbPRRP_COND" propid="value" datasetid="dsTR_DBPYXM" columnid="PRRP_COND"/>
+      <BindItem id="tabXM_tab1_calFSRP_DATE_value" compid="tabXM.tab1.calFSRP_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="FSRP_DATE"/>
+      <BindItem id="tabXM_tab1_cmbINTP_COND_value" compid="tabXM.tab1.cmbINTP_COND" propid="value" datasetid="dsTR_DBPYXM" columnid="INTP_COND"/>
+      <BindItem id="tabXM_tab1_edtGUAR_DETL_value" compid="tabXM.tab1.edtGUAR_DETL" propid="value" datasetid="dsTR_DBPYXM" columnid="GUAR_DETL"/>
+      <BindItem id="tabXM_tab1_edtDESC_REMK_value" compid="tabXM.tab1.edtDESC_REMK" propid="value" datasetid="dsTR_DBPYXM" columnid="DESC_REMK"/>
+      <BindItem id="tabXM_tab1_mskINTE_RATE_value" compid="tabXM.tab1.mskINTE_RATE" propid="value" datasetid="dsTR_DBPYXM" columnid="INTE_RATE"/>
+      <BindItem id="tabXM_tab1_mskDBPY_LIMT_value" compid="tabXM.tab1.mskDBPY_LIMT" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_LIMT"/>
+      <BindItem id="tabXM_tab1_mskDBPY_AMOT_value" compid="tabXM.tab1.mskDBPY_AMOT" propid="value" datasetid="dsTR_DBPYXM" columnid="DBPY_AMOT"/>
+      <BindItem id="tabXM_tab1_mskLIMT_BALE_value" compid="tabXM.tab1.mskLIMT_BALE" propid="value" datasetid="dsTR_DBPYXM" columnid="LIMT_BALE"/>
+      <BindItem id="tabXM_tab1_mskFNRP_DATE_value" compid="tabXM.tab1.mskFNRP_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="FNRP_DATE"/>
+      <BindItem id="tabXM_tab1_mskRPAY_AMOT_value" compid="tabXM.tab1.mskRPAY_AMOT" propid="value" datasetid="dsTR_DBPYXM" columnid="RPAY_AMOT"/>
+      <BindItem id="tabXM_tab1_mskINPT_DATE_value" compid="tabXM.tab1.mskINPT_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="INPT_DATE"/>
+      <BindItem id="tabXM_tab1_mskINTF_DATE_value" compid="tabXM.tab1.mskINTF_DATE" propid="value" datasetid="dsTR_DBPYXM" columnid="INTF_DATE"/>
+      <BindItem id="tabXM_tab1_mskPAID_INTE_value" compid="tabXM.tab1.mskPAID_INTE" propid="value" datasetid="dsTR_DBPYXM" columnid="PAID_INTE"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TRMC0010 차입금관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.08		김준수		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF"; //버튼순서[종료,조회,입력,삭제,취소,저장,엑셀,인쇄]
+this.sPACKAGENAME = "TRMC0010";
+this.sDBPY_NUMB   = "";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	
+	this.fnc_FormatSlipNumber(this.tabXM.tab2.grdTR_DBPYXD, "SLIP_NUMB");
+
+	this.tabXM.set_tabindex(0);
+	this.cmbSHRACCT_UNIT.setFocus();
+	
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (ob) {
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTR_DBPYXM,dsTR_DBPYXD");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_DBPYXM=dsTR_DBPYXM";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTR_DBPYXM.setFocus();
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+
+	if (this.fnc_Length(this.fnc_Trim(this.cmbSHRACCT_UNIT.value)) < 1)	{
+		return this.fnc_SearchCheckPostAction("TMM072", "회계단위", this.cmbSHRACCT_UNIT);
+	}
+
+	var iRow = this.dsTR_DBPYXM.insertRow(this.dsTR_DBPYXM.rowposition + 1);
+	if (iRow != this.dsTR_DBPYXM.rowposition) this.dsTR_DBPYXM.deleteRow(iRow);
+	
+	this.dsTR_DBPYXM.setColumn(iRow, "ACCT_UNIT", this.fnc_Trim(this.cmbSHRACCT_UNIT.value)); //회계단위
+	this.dsTR_DBPYXM.setColumn(iRow, "INTE_RATE", 0); //이자율
+	this.dsTR_DBPYXM.setColumn(iRow, "DBPY_LIMT", 0); //차입한도액
+	this.dsTR_DBPYXM.setColumn(iRow, "DBPY_AMOT", 0); //차입금액
+	this.dsTR_DBPYXM.setColumn(iRow, "LIMT_BALE", 0); //한도잔액
+	this.dsTR_DBPYXM.setColumn(iRow, "RPTM_YSNO", "0"); //상환완료여부
+	this.dsTR_DBPYXM.setColumn(iRow, "RPAY_AMOT", 0); //상환금액
+	this.dsTR_DBPYXM.setColumn(iRow, "PAID_INTE", 0); //납입이자
+
+	if (this.tabXM.tabindex != 0) this.tabXM.set_tabindex(0);
+	this.tabXM.tab1.edtDBPY_NAME.setFocus();
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()) this.dsTR_DBPYXM.deleteRow(this.dsTR_DBPYXM.rowposition);
+	this.grdTR_DBPYXM.setFocus();
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsTR_DBPYXM,dsTR_DBPYXD");
+	this.grdTR_DBPYXM.setFocus();
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	
+	if (!this.fn_SaveItemCheck()) return;
+	this.sDBPY_NUMB = this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "DBPY_NUMB"); //차입금번호
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTR_DBPYXM=dsTR_DBPYXM:U dsTR_DBPYXD=dsTR_DBPYXD:U ";
+	var sOutDataSet = "dsTR_DBPYXM=dsTR_DBPYXM";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+	this.tabXM.setFocus();
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function (obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTR_DBPYXM,dsTR_DBPYXD", this);
+	
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj, e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if ((this.fnc_DatasetChangeCheck("dsTR_DBPYXM,dsTR_DBPYXD")) && (this.fnc_Message("TMM023") == false) ) {
+		return false;
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.cmbSHRACCT_UNIT.value)) < 1)	{
+		return this.fnc_SearchCheckPostAction("TMM072", "회계단위", this.cmbSHRACCT_UNIT);
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+
+	var sQuestionText  = "차입금번호(" + this.fnc_Trim(this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "DBPY_NUMB")) + ")";
+		sQuestionText += " 차입금명 (" + this.fnc_Trim(this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "DBPY_NAME")) + ")";
+	return this.fnc_Message("TMM002", sQuestionText);
+	
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsTR_DBPYXM,dsTR_DBPYXD")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsTR_DBPYXM.getRowCount(); i++) {
+
+		if (this.fnc_ToUpper(this.dsTR_DBPYXM.getRowType(i)) == Dataset.ROWTYPE_NORMAL)	continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "DBPY_NAME"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "차임금명", this.dsTR_DBPYXM, i, this.tabXM.tab1.edtDBPY_NAME, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "DBPY_KIND"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "차입종류", this.dsTR_DBPYXM, i, this.tabXM.tab1.cmbDBPY_KIND, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "DBPY_CUST"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "차입기관", this.dsTR_DBPYXM, i, this.tabXM.tab1.edtDBPY_CUNM, "");
+		}
+
+		if (!this.fnc_IsDate(this.dsTR_DBPYXM.getColumn(i, "DBPY_DATE"))) {
+			return this.fnc_CheckPostAction("TMM072", "차입일", this.dsTR_DBPYXM, i, this.tabXM.tab1.calDBPY_DATE, "");
+		}
+
+		if (!this.fnc_IsDate(this.dsTR_DBPYXM.getColumn(i, "EXPN_DATE"))) {
+			return this.fnc_CheckPostAction("TMM072", "만기일", this.dsTR_DBPYXM, i, this.tabXM.tab1.calEXPN_DATE, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "DBPY_ACCT"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "관리계정과목", this.dsTR_DBPYXM, i, this.tabXM.tab1.edtDBPY_ACNM, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "INTE_ACCT"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "이자계정과목", this.dsTR_DBPYXM, i, this.tabXM.tab1.edtINTE_ACNM, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "INTE_RATE"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "이자율", this.dsTR_DBPYXM, i, this.tabXM.tab1.mskINTE_RATE, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(i, "FUND_TYPE"))) < 1)	{
+			return this.fnc_CheckPostAction("TMM072", "자금유형", this.dsTR_DBPYXM, i, this.tabXM.tab1.cmbFUND_TYPE, "");
+		}
+	}
+
+	// 필수 입력 항목 체크
+	var sDbpy_Type;
+	for (var i = 0; i < this.dsTR_DBPYXD.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsTR_DBPYXD.getRowType(i)) == Dataset.ROWTYPE_NORMAL)	continue;
+
+		sDbpy_Type = this.fnc_Trim(this.dsTR_DBPYXD.getColumn(i, "DBPY_TYPE")); //거래유형
+
+		if (!this.fnc_IsDate(this.dsTR_DBPYXD.getColumn(i, "TRAN_DATE"))) {
+			return this.fnc_CheckPostAction("TMM072", "거래일자", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "TRAN_DATE");
+		}
+
+		if (this.fnc_Length(sDbpy_Type) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "거래유형", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "DBPY_TYPE");
+		}
+
+		if (sDbpy_Type == "DBPY" && nexacro.toNumber(this.dsTR_DBPYXD.getColumn(i, "DBPY_AMOT")) < 1) {
+			// DBPY.차입
+			return this.fnc_CheckPostAction("TMM072", "차입금액", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "DBPY_AMOT");
+		}
+
+		if ((sDbpy_Type == "REPT") && (nexacro.toNumber(this.dsTR_DBPYXD.getColumn(i, "RPAY_AMOT")) < 1)) {
+			// REPT.상환
+			return this.fnc_CheckPostAction("TMM072", "상환금액", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "RPAY_AMOT");
+		}
+
+		if ((sDbpy_Type == "INTE") && (nexacro.toNumber(this.dsTR_DBPYXD.getColumn(i, "INTE_AMOT"))) < 1) {
+			// INTE.이자
+			return this.fnc_CheckPostAction("TMM072", "이자금액", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "INTE_AMOT");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(i, "MAJR_REMK"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "적요", this.dsTR_DBPYXD, i, this.tabXM.tab2.grdTR_DBPYXD, "MAJR_REMK");
+		}
+	}
+	return true;
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_UNIT.value)); //회계단위
+		sReturnString += " DBPY_KIND=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRDBPY_KIND.value)); //차입종류
+		sReturnString += " FUND_TYPE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRFUND_TYPE.value)); //자금유형
+		sReturnString += " DBPY_DAT1=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDBPY_DAT1.value)); //차입일자1
+		sReturnString += " DBPY_DAT2=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDBPY_DAT2.value)); //차입일자2
+		sReturnString += " RPTM_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRRPTM_YSNO.value)); //상환완료여부
+		sReturnString += " DBPY_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRDBPY_NUMB.value)); //차입금
+		sReturnString += " EXPN_DAT1=" + this.fnc_Quote(this.fnc_Trim(this.calSHREXPN_DAT1.value)); //만기일자1
+		sReturnString += " EXPN_DAT2=" + this.fnc_Quote(this.fnc_Trim(this.calSHREXPN_DAT2.value)); //만기일자2
+		
+	} else if (sKind == "SEARCH01") { // 탭 조회
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" + this.fnc_Quote(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "ACCT_UNIT"))); //회계단위
+		sReturnString += " DBPY_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "DBPY_NUMB"))); //차입금번호
+
+	} else if (sKind == "SAVE00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_UNIT.value)); //회계단위
+		sReturnString += " DBPY_KIND=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRDBPY_KIND.value)); //차입종류
+		sReturnString += " FUND_TYPE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRFUND_TYPE.value)); //자금유형
+		sReturnString += " DBPY_DAT1=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDBPY_DAT1.value)); //차입일자1
+		sReturnString += " DBPY_DAT2=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDBPY_DAT2.value)); //차입일자2
+		sReturnString += " RPTM_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRRPTM_YSNO.value)); //상환완료여부
+		sReturnString += " DBPY_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRDBPY_NUMB.value)); //차입금
+		sReturnString += " EXPN_DAT1=" + this.fnc_Quote(this.fnc_Trim(this.calSHREXPN_DAT1.value)); //만기일자1
+		sReturnString += " EXPN_DAT2=" + this.fnc_Quote(this.fnc_Trim(this.calSHREXPN_DAT2.value)); //만기일자2
+
+	// 전표생성/삭제 Argument 생성
+	} else if (sKind == "PROC00" || sKind == "PROC01") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" + this.fnc_Quote(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "ACCT_UNIT"))); //회계단위
+		sReturnString += " DBPY_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "DBPY_NUMB"))); //차입금번호
+		sReturnString += " SEQN_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SEQN_NUMB"))); //일련번호
+		sReturnString += " OTHR_ACCT=" + this.fnc_Quote(this.fnc_Trim(this.popSLIP.edtOTHR_ACCT.value)); //상대계정과목
+		sReturnString += " OTHR_ACNT=" + this.fnc_Quote(this.fnc_Trim(this.popSLIP.edtOTHR_ACNT.value)); //상대계좌번호
+		sReturnString += " REOC_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.popSLIP.edtREOC_NUMB.value)); //관련발생전표번호
+		sReturnString += " REOC_SEQN=" + this.fnc_Quote(this.fnc_Trim(this.popSLIP.edtREOC_SEQN.value)); //관련발생전표순번
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	
+	if (ErrorCode < 0) 	{
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+	
+		this.fnc_Information(this.stInformation, this.dsTR_DBPYXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTR_DBPYXM.rowcount);
+		
+	} else if (sMethodName == "SEARCH01") {
+	
+		this.dsTR_DBPYXD.set_rowposition(this.dsTR_DBPYXD.getRowCount());
+		this.fnc_Information(this.tabXM.tab2.stInformation, this.dsTR_DBPYXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+	} else if (sMethodName == "SAVE00") {
+	
+		this.dsTR_DBPYXM.set_rowposition(this.dsTR_DBPYXM.findRow("DBPY_NUMB", this.sDBPY_NUMB));
+		this.dsTR_DBPYXD.set_rowposition(this.dsTR_DBPYXD.getRowCount());
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Information(this.tabXM.tab2.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+		
+	} else if (sMethodName == "PROC00") {
+	
+		this.fn_ControlSlipDiv(this.popSLIP.btnCloseCreateSlipDiv);
+		this.dsTR_DBPYXD.set_rowposition(this.dsTR_DBPYXD.getRowCount());
+		this.fnc_Message("TMM130", "차입금거래 전표 생성");
+		
+	} else if (sMethodName == "PROC01")	{
+	
+		this.dsTR_DBPYXD.set_rowposition(this.dsTR_DBPYXD.getRowCount());
+		this.fnc_Message("TMM130", "차입금거래 전표 삭제");
+		
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+			arrParam[0]  = "COMBO,cmbSHRACCT_UNIT,dsSHRACCT_UNIT,0";	            //회계단위
+			arrParam[1]  = "COMBO,cmbSHRDBPY_KIND,dsSHRDBPY_KIND,0";	            //차입종류
+			arrParam[2]  = "COMBO,cmbSHRFUND_TYPE,dsSHRFUND_TYPE,0";	            //자금유형
+			arrParam[3]  = "COMBO,cmbSHRRPTM_YSNO,dsSHRRPTM_YSNO,0";	            //상환완료여부
+			arrParam[4]  = "COMBO,tabXM.tab1.cmbDBPY_KIND,dsDBPY_KIND,0";	        //차입종류
+			arrParam[5]  = "COMBO,tabXM.tab1.cmbFUND_TYPE,dsFUND_TYPE,0";	        //자금유형
+			arrParam[6]  = "COMBO,tabXM.tab1.cmbRPTM_YSNO,dsRPTM_YSNO,0";	        //상환완료여부
+			arrParam[7]  = "COMBO,tabXM.tab1.cmbPRRP_COND,dsPRRP_COND,0";	        //원금상환조건
+			arrParam[8]  = "COMBO,tabXM.tab1.cmbINTP_COND,dsINTP_COND,0";	        //이자납입조건
+			arrParam[9]  = "GRID,grdTR_DBPYXM,dsDBPY_KIND,DBPY_KIND";               //차입종류(그리드)
+			arrParam[10] = "GRID,grdTR_DBPYXM,dsFUND_TYPE,FUND_TYPE";               //자금유형(그리드)
+			arrParam[11] = "GRID,grdTR_DBPYXM,dsPRRP_COND,PRRP_COND";               //원금상환조건(그리드)
+			arrParam[12] = "GRID,grdTR_DBPYXM,dsINTP_COND,INTP_COND";               //이자납입조건(그리드)
+			arrParam[13] = "GRID,tabXM.tab2.grdTR_DBPYXD,dsDBPY_TYPE,DBPY_TYPE";     //차입거래유형(탭2.그리드)
+			arrParam[14] = "GRID,tabXM.tab2.grdTR_DBPYXD,dsAPPV_STAT,APPV_STAT";     //전표승인상태(탭2.그리드)
+		this.fnc_CommonCodeInnerBind(arrParam);
+	}
+}
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+    var arrParam = new Array();
+
+	//차입금명
+    if ((obj.name == "imgHelpSHRDBPY_NUMB") || (obj.name == "edtSHRDBPY_NAME")) { 
+    
+        arrParam[0] = "TRM0022";
+        arrParam[1] = "";
+        arrParam[2] = this.fnc_Trim(this.edtSHRDBPY_NAME.value);
+        arrParam[3] = "N";
+        arrParam[4] = "edtSHRDBPY_NAME";
+        arrParam[5] = "edtSHRDBPY_NUMB,edtSHRDBPY_NAME";
+        arrParam[6] = "0,1";
+     
+    //차입기관
+    } else if ((obj.name == "imgHelpDBPY_CUST") || (obj.name == "edtDBPY_CUNM")) { 
+    
+        arrParam[0] = "FAM0021";
+        arrParam[1] = "";
+        arrParam[2] = this.fnc_Trim(this.tabXM.tab1.edtDBPY_CUNM.value);
+        arrParam[3] = "N";
+        arrParam[4] = "tabXM.tab1.edtDBPY_CUNM";
+        arrParam[5] = "tabXM.tab1.edtDBPY_CUST,tabXM.tab1.edtDBPY_CUNM";
+        arrParam[6] = "0,1";
+    
+    //관리계정과목
+    } else if ((obj.name == "imgHelpDBPY_ACCT") || (obj.name == "edtDBPY_ACNM")) { 
+    
+        arrParam[0] = "FAM0031";
+        arrParam[1] = "";
+        arrParam[2] = this.fnc_Trim(this.tabXM.tab1.edtDBPY_ACNM.value);
+        arrParam[3] = "N";
+        arrParam[4] = "tabXM.tab1.edtDBPY_ACNM";
+        arrParam[5] = "tabXM.tab1.edtDBPY_ACCT,tabXM.tab1.edtDBPY_ACNM";
+        arrParam[6] = "0,1";
+        
+    //이자계정과목
+    } else if ((obj.name == "imgHelpINTE_ACCT") || (obj.name == "edtINTE_ACNM")) {
+    
+        arrParam[0] = "FAM0031";
+        arrParam[1] = "";
+        arrParam[2] = this.fnc_Trim(this.tabXM.tab1.edtINTE_ACNM.value);
+        arrParam[3] = "N";
+        arrParam[4] = "tabXM.tab1.edtINTE_ACNM";
+        arrParam[5] = "tabXM.tab1.edtINTE_ACCT,tabXM.tab1.edtINTE_ACNM";
+        arrParam[6] = "0,1";
+    
+    // 상대계정과목 
+    } else if ((obj.name == "imgHelpDPAC_NUMB") || (obj.name == "edtDPAC_NAME")) { 
+    
+        arrParam[0] = "TRM0011";
+        arrParam[1] = "DBPY";
+        arrParam[2] = this.fnc_Trim(this.tabXM.tab1.edtDPAC_NAME.value);
+        arrParam[3] = "N";
+        arrParam[4] = "tabXM.tab1.edtDPAC_NAME";
+        arrParam[5] = "tabXM.tab1.edtDPAC_NUMB,tabXM.tab1.edtDPAC_NAME";
+        arrParam[6] = "2,3";
+        
+    // 차입거래내역
+    } else if (obj.name == "grdTR_DBPYXD") {
+		
+		// 전표번호맵핑
+		if (sColumnID == "SLIP_NUMB" || this.fnc_getGridHelpColName(obj, sFromDs) == "SLIP_NUMB") {
+			
+			var iRow = obj.getDatasetRow(sFromDs.row);
+			this.dsTR_DBPYXD.set_rowposition(iRow);
+			
+			arrParam[0] = "TRM0023";
+			arrParam[1] = this.dsTR_DBPYXD.getColumn(iRow, "TRAN_DATE") + ","
+						+ this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "DBPY_ACCT") + ","
+						+ this.dsTR_DBPYXM.getColumn(this.dsTR_DBPYXM.rowposition, "INTE_ACCT");
+			
+			arrParam[2] = this.fnc_Trim(this.tabXM.tab1.edtDPAC_NAME.value);
+			arrParam[3] = "N";
+			arrParam[4] = "tabXM.tab2.grdTR_DBPYXD";
+			arrParam[5] = "SLIP_NUMB";
+			arrParam[6] = "0";
+			arrParam[9] = "fn_HelpAfter"
+        }
+    
+    }
+    
+    if (this.fnc_Length(this.fnc_Trim(arrParam)) > 0) this.fnc_HelpDialogeAction(this, obj, arrParam);
+    
+}
+
+this.fn_HelpAfter = function (sRtn) {
+	
+	if (this.fnc_Length(this.fnc_Trim(sRtn)) < 1) return;
+	
+	var e = new nexacro.DSRowPosChangeEventInfo();
+	e.newrow =	this.dsTR_DBPYXD.rowposition;
+	this.fn_KeyFieldDisible(this.dsTR_DBPYXD, e);
+	
+}
+
+this.tabXM_tab2_grdTR_DBPYXD_onlbuttondown = function(obj:Grid, e:nexacro.GridMouseEventInfo) {
+
+	if (this.fnc_getColId(obj, e.cell) == "SLIP_CANC") {
+		
+		this.dsTR_DBPYXD.set_rowposition(obj.getDatasetRow(e.row));
+		
+		this.dsTR_DBPYXD.setColumn(this.dsTR_DBPYXD.rowposition, "SLIP_NUMB", "");
+			
+		var e = new nexacro.DSRowPosChangeEventInfo();
+		e.newrow =	this.dsTR_DBPYXD.rowposition;
+		this.fn_KeyFieldDisible(this.dsTR_DBPYXD, e);
+	}
+	
+}
+
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+
+	if (obj.name == "dsTR_DBPYXM") {
+		// 차입마스터
+		this.fn_Search01(obj);
+		// 차입한도액
+		this.fnc_SetReadonly(this.tabXM.tab1.mskDBPY_LIMT, Eco.decode(obj.getColumn(e.newrow, "DBPY_KIND"), "MAXI", false, true));
+		
+	} else if (obj.name == "dsTR_DBPYXD") {
+		if (e.newrow < 0) {
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnOpenCreateSlipDiv, true); //전표생성
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnDeleteSlip, true); //전표삭제
+
+			// 전표번호가 경우 None Edit
+		} else if (this.fnc_Length(this.fnc_Trim(obj.getColumn(e.newrow, "SLIP_NUMB"))) > 0) {
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnOpenCreateSlipDiv, true); //전표생성
+// 			/*  Count은 지원되지 않는 속성입니다. */
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnDeleteSlip, Eco.decode(obj.Count, e.newrow + 1, false, true)); //전표삭제
+
+			for (var i = 0; i < this.tabXM.tab2.grdTR_DBPYXD.getCellCount("body"); i++)	{
+				this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", i, "edittype", "none");
+			}
+			
+		} else {
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnOpenCreateSlipDiv, false); //전표생성
+// 			this.fnc_SetReadonly(this.tabXM.tab2.btnDeleteSlip, true); //전표삭제
+
+			var sDbpy_Type = this.dsTR_DBPYXD.getColumn(e.newrow, "DBPY_TYPE");
+
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "TRAN_DATE"), "edittype", "date"); //거래일자
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "DBPY_TYPE"), "edittype", "combo"); //차입거래유형
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "DBPY_AMOT"), "edittype", Eco.decode(sDbpy_Type, "DBPY", "normal", "none")); //차입금액
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "RPAY_AMOT"), "edittype", Eco.decode(sDbpy_Type, "REPT", "normal", "none")); //상환금액
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "INTE_AMOT"), "edittype", "normal"); //이자금액
+			this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "MAJR_REMK"), "edittype", "normal"); //대표적요
+		}
+	}
+	
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/*----------------+
+ |  탭 조회 처리!  |
+ +-----------------*/
+this.fn_Search01 = function (obj) {
+	
+	if (obj.rowcount < 1) return;
+	this.fnc_DatasetClear("dsTR_DBPYXD");
+
+	var sMethodName = "SEARCH01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_DBPYXD=dsTR_DBPYXD ";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack", false);
+}
+
+/*---------------------------+
+ |  전표생성 필수 입력 체크!  |
+ +----------------------------*/
+this.fn_CreateSlipItemCheck = function () {
+
+	if (this.fnc_Length(this.fnc_Trim(this.popSLIP.edtOTHR_ACCT.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "상대계정과목", this.popSLIP.edtOTHR_ACNM);
+	}
+
+	if (this.popSLIP.edtOTHR_NTNM.enable == true && this.fnc_Length(this.fnc_Trim(this.popSLIP.edtOTHR_ACNT.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "상대계좌번호", this.popSLIP.edtOTHR_NTNM);
+	}
+
+	if (this.popSLIP.edtREOC_NAME.enable == true && this.fnc_Length(this.fnc_Trim(this.popSLIP.edtREOC_NUMB.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "관련발생전표번호", this.popSLIP.edtREOC_NAME);
+	}
+
+	if (this.popSLIP.edtREOC_NAME.enable == true && this.fnc_Length(this.fnc_Trim(this.popSLIP.edtREOC_SEQN.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "관련발생전표순번", this.popSLIP.edtREOC_NAME);
+	}
+
+	return true;
+}
+
+/*---------------------------------+
+ |  전표생성                        |
+ +----------------------------------*/
+this.fn_CreateSlip = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTR_DBPYXM,dsTR_DBPYXD"))	{
+		this.fnc_Message("TMM142", "전표생성");
+		return false;
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "ACCT_UNIT"))) < 1
+		 || this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "DBPY_NUMB"))) < 1
+		 || this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SEQN_NUMB"))) < 1) {
+		 
+		this.fnc_Message("TMM106", "거래내역");
+		return false;
+	}
+
+	if (!this.fn_CreateSlipItemCheck())	return;
+
+	if (!this.fnc_Message("BC1006", "차입금 거래 전표 생성")) return;
+
+	var sMethodName = "PROC00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_DBPYXD=dsTR_DBPYXD";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	this.tabXM.tab2.grdTR_DBPYXD.setFocus();
+}
+
+/*---------------------------------+
+ |  전표삭제                        |
+ +----------------------------------*/
+this.fn_DeleteSlip = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTR_DBPYXM,dsTR_DBPYXD"))	{
+		this.fnc_Message("TMM125", "변경된 자료가 존재합니다. 저장 후 진행하세요");
+		return false;
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "ACCT_UNIT"))) < 1
+		 || this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "DBPY_NUMB"))) < 1
+		 || this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SEQN_NUMB"))) < 1) {
+		 
+		this.fnc_Message("TMM106", "거래내역");
+		return false;
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SLIP_NUMB"))) < 0) {
+		this.fnc_Message("TMM125", "생성 된 전표가 없습니다.");
+		return false;
+	}
+
+	var sMethodName = "PROC01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_DBPYXD=dsTR_DBPYXD";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	this.tabXM.tab2.grdTR_DBPYXD.setFocus();
+}
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+/*---------------------------------------+
+ |  전표 생성 DIV			             |
+ +----------------------------------------*/
+this.fn_ControlSlipDiv = function (obj) {
+
+	if (this.fnc_DatasetChangeCheck("dsTR_DBPYXM,dsTR_DBPYXD")) {
+		this.fnc_Message("TMM125", "변경된 자료가 존재합니다. 저장 후 진행하세요");
+		return false;
+	}
+
+	if (obj.name == "btnOpenCreateSlipDiv")	{
+		// DIV전표생성_오픈
+
+		this.popSLIP.edtOTHR_ACCT.set_value("");
+		this.popSLIP.edtOTHR_ACNM.set_value("");
+		this.popSLIP.edtMANG_ITE2.set_value("");
+		this.popSLIP.edtMANG_ITE4.set_value("");
+
+		this.popSLIP.edtOTHR_ACNT.set_value("");
+		this.popSLIP.edtOTHR_NTNM.set_value("");
+		this.popSLIP.edtREOC_NUMB.set_value("");
+		this.popSLIP.edtREOC_SEQN.set_value("");
+		this.popSLIP.edtREOC_NAME.set_value("");
+
+		this.fnc_SetReadonly(this.popSLIP.edtOTHR_NTNM, true);
+		this.fnc_SetReadonly(this.popSLIP.edtREOC_NAME, true);
+
+		var sDbpy_Type = this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "DBPY_TYPE"));
+		
+		if (sDbpy_Type == "DBPY") {
+			// DBPY.차입
+			this.popSLIP.staOTHR_ACCT.set_text("입금계정과목");
+			this.popSLIP.staOTHR_ACNT.set_text("입금계좌번호");
+		} else if (sDbpy_Type == "REPT" || sDbpy_Type == "INTE") {
+			// REPT.상환, INTE.이자
+			this.popSLIP.staOTHR_ACCT.set_text("출금계정과목");
+			this.popSLIP.staOTHR_ACNT.set_text("출금계좌번호");
+		}
+
+		this.popSLIP.__setPosition9x("416px 560px 835px 640px");
+		this.popSLIP.set_visible(true);
+		this.popSLIP.edtOTHR_ACNM.setFocus();
+	} else if (obj.name == "btnCloseCreateSlipDiv") {
+		// DIV전표생성_닫기
+		this.popSLIP.set_visible(false);
+	}
+}
+
+/*-------------------+
+ |  차입거래 행 추가  |
+ +--------------------*/
+this.fn_AddRow = function (obj) {
+
+	var iXMRow = this.dsTR_DBPYXM.rowposition;
+	var sACCT_UNIT = this.fnc_Trim(this.dsTR_DBPYXM.getColumn(iXMRow, "ACCT_UNIT"));
+	var sDBPY_NUMB = this.fnc_Trim(this.dsTR_DBPYXM.getColumn(iXMRow, "DBPY_NUMB"));
+	// 키값 처리 체크
+	if (this.fnc_Length(sACCT_UNIT) < 1 || this.fnc_Length(sDBPY_NUMB) < 1)	{
+		this.fnc_Message("TMM010");
+		return false;
+	}
+
+	// 전표번호가 모두 있을 경우에만 행추가 가능
+	if (this.dsTR_DBPYXD.getCaseCount("trim(SLIP_NUMB) == NULL") > 0) {
+		this.fnc_Message("TMM125", "전표 미생성 거래내역이 존재 합니다.");
+		return false;
+	}
+
+	var iRow = this.dsTR_DBPYXD.addRow();
+	this.dsTR_DBPYXD.setColumn(iRow, "ACCT_UNIT", sACCT_UNIT); //회계단위
+	this.dsTR_DBPYXD.setColumn(iRow, "DBPY_NUMB", sDBPY_NUMB); //차입금번호
+	this.dsTR_DBPYXD.setColumn(iRow, "DBPY_GUBN", "계획"); //초기구분은 계획
+	this.dsTR_DBPYXD.setColumn(iRow, "TRAN_DATE", this.fnc_GetServerDateTime("DATE")); //거래일자
+	this.dsTR_DBPYXD.setColumn(iRow, "DBPY_AMOT", 0); //차입금액
+	this.dsTR_DBPYXD.setColumn(iRow, "RPAY_AMOT", 0); //상환금액
+	this.dsTR_DBPYXD.setColumn(iRow, "DBPY_BALE", 0); //차입잔액
+	this.dsTR_DBPYXD.setColumn(iRow, "INTE_AMOT", 0); //이자금액
+	this.dsTR_DBPYXD.setColumn(iRow, "MAJR_REMK", this.dsTR_DBPYXM.getColumn(iXMRow, "DBPY_NAME")); //적요
+	this.tabXM.tab2.grdTR_DBPYXD.setFocus();
+	
+}
+
+/*-------------------+
+ |  차입거래 행 삭제  |
+ +--------------------*/
+this.fn_DelRow = function (obj) {
+
+	if (!this.fn_DelRowCheck())	return;
+	this.dsTR_DBPYXD.deleteRow(this.dsTR_DBPYXD.rowposition);
+	this.tabXM.tab2.grdTR_DBPYXD.setFocus();
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DelRowCheck = function () {
+
+	if (this.dsTR_DBPYXD.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return;
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SLIP_NUMB"))) > 0) {
+		this.fnc_Message("FA1002", "차입금 거래 전표");
+		return;
+	}
+
+	var sTrandate = this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "TRAN_DATE");
+	var sQuestionText = "거래일자: " + this.fnc_SubStr(sTrandate, 0, 4) + "년" + this.fnc_SubStr(sTrandate, 4, 2) + "월" + this.fnc_SubStr(sTrandate, 6) + "일";
+
+	return this.fnc_Message("TMM002", sQuestionText);
+}
+
+/*----------------+
+ |  전표조회 팝업  |
+ +-----------------*/
+this.fn_OpenSlip = function (obj:Grid, e:nexacro.GridClickEventInfo) {
+
+	var columnName = this.fnc_getColId(obj, e.cell);
+	
+	if (columnName != "SLIP_NUMB") return;
+	
+	var sSlip_Numb = this.dsTR_DBPYXD.getColumn(this.dsTR_DBPYXD.rowposition, "SLIP_NUMB");
+	if (this.fnc_Length(this.fnc_Trim(sSlip_Numb)) > 0) {		
+		this.fnc_ViewSlipForm(sSlip_Numb, "SHR", this.sUSERLAVEL); //NEW:직접입력, REV:수정, SHR:조회, SEM:반자동전표
+	}
+}
+
+/*-----------------------+
+ |  차입금마스터 변경 시  |
+ +-----------------------*/
+this.dsTR_DBPYXM_oncolumnchanged = function (obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	
+	// 차입종류                                // MAXI.한도거래
+	if (e.columnid == "DBPY_KIND") {
+		if (e.newvalue != "MAXI") {
+			this.fnc_SetReadonly(this.tabXM.tab1.mskDBPY_LIMT, true);
+			this.tabXM.tab1.mskDBPY_LIMT.set_value(0);
+		} else {
+			this.fnc_SetReadonly(this.tabXM.tab1.mskDBPY_LIMT, false);
+		}
+	}
+}
+
+/*-----------------------+
+ |  차입거래내역 거래유형 변경 시  |
+ +-----------------------*/
+this.dsTR_DBPYXD_oncolumnchanged = function (obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	// DBPY : 차입금액, REPT : 상환금액
+	if (e.columnid == "DBPY_TYPE") {
+		this.fn_TranTypeEdit(this.fnc_Trim(obj.getColumn(e.row, "DBPY_TYPE")));
+	}
+}
+
+
+/*-----------------------+
+ |  거래유형별 edit 처리  |
+ +------------------------*/
+this.fn_TranTypeEdit = function (v) {
+	
+	var v1,v2;
+
+	if (v == "DBPY") {
+		// 차입금액
+		v1 = "normal";
+		v2 = "none";
+		this.dsTR_DBPYXD.setColumn(this.dsTR_DBPYXD.rowposition, "RPAY_AMOT", 0);
+	} else if (v == "REPT") {
+		// 상환금액
+		v1 = "none";
+		v2 = "normal";
+		this.dsTR_DBPYXD.setColumn(this.dsTR_DBPYXD.rowposition, "DBPY_AMOT", 0);
+	}
+
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "TRAN_DATE"), "edittype", "date"); //거래일자
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "DBPY_TYPE"), "edittype", "combo"); //차입거래유형
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "DBPY_AMOT"), "edittype", v1); //차입금액
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "RPAY_AMOT"), "edittype", v2); //상환금액
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "INTE_AMOT"), "edittype", "normal"); //이자금액
+	this.tabXM.tab2.grdTR_DBPYXD.setCellProperty("body", this.fnc_GridColumnIndex(this.tabXM.tab2.grdTR_DBPYXD, "MAJR_REMK"), "edittype", "normal"); //대표적요
+	
+}
+
+/*---------------------------+
+ |  차입금마스터 Row 변경 시  |
+ +----------------------------*/
+this.dsTR_DBPYXM_canrowposchange = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+	
+	// 차입거래내역 데이터 변경사항 있을 시 초기화 경고
+	if (this.fnc_DatasetChangeCheck("dsTR_DBPYXD")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+}
+
+/*-----------------------------+
+ |  양식파일 다운로드 클릭 時|
+ +------------------------------*/
+this.fn_ExcelFileDown = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	// 양식받기는 고정값("upload/sample/") 으로 지정한다..
+	// 엑셀양식은 기존의 명칭을 사용한다..
+	var folderName = "upload/sample/";
+	var fileName = "UpSample_CarryTrade.xls";
+	// FileDownload00 은 화면에 추가한 FileDownLoad 를 지정한다
+	var bSucc = this.lookupFunc("fnc_FileDownLoad").call(this.FileDownload00, folderName, fileName);
+}
+
+/*---------------------------+
+ |  양식파일 업로드 클릭 時   |
+ +----------------------------*/
+this.fn_ExcelUpLoad = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	var fdNSE_FILE = new FileDialog();
+	var vfNSE_FILE = new VirtualFile();
+
+	fdNSE_FILE.set_filter("Excel(.xls, .xlsx)|*.xls;*.xlsx|");
+
+	var vFile = fdNSE_FILE.open("차입거래내역 엑셀 업로드", FileDialog.LOAD, "%MYDOCUMENT%");
+
+	if (vFile == null) return false;
+
+	var objExtComm = new ExtCommon();
+
+	objExtComm.excelImportByIndex(vFile.fullpath, 0, "DS_EXCEL", 0);
+
+	this.dsTR_DBPYXD_TEMP.set_updatecontrol(false);
+
+	var iXMRow = this.dsTR_DBPYXM.rowposition;
+	var sACCT_UNIT = this.fnc_Trim(this.dsTR_DBPYXM.getColumn(iXMRow, "ACCT_UNIT"));
+	var sDBPY_NUMB = this.fnc_Trim(this.dsTR_DBPYXM.getColumn(iXMRow, "DBPY_NUMB"));
+	
+	for (var i = 1; i < this.DS_EXCEL.getRowCount(); i++) {
+		if (this.fnc_Length(this.fnc_Trim(this.DS_EXCEL.getColumn(i, 0))) > 0) {
+			var nRow = this.dsTR_DBPYXD_TEMP.addRow();
+
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "ACCT_UNIT", sACCT_UNIT); //회계단위
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "DBPY_NUMB", sDBPY_NUMB); //차입금번호
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "DBPY_GUBN", "계획"); //구분
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "DBPY_BALE", 0); //차입잔액
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "TRAN_DATE", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 0))); //거래일자
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "DBPY_TYPE", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 1))); //거래유형
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "DBPY_AMOT", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 2))); //차입금액
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "RPAY_AMOT", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 3))); //상환금액
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "INTE_AMOT", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 4))); //이자금액
+			this.dsTR_DBPYXD_TEMP.setColumn(nRow, "MAJR_REMK", this.fnc_Trim(this.DS_EXCEL.getColumn(i, 5))); //적요
+		}
+	}
+
+	this.dsTR_DBPYXD_TEMP.set_updatecontrol(true);
+
+	// 복사 전 체크
+	if (this.fn_ExcelUploadCheck())	{
+		// TEMP DataSet에서 복사.
+		this.dsTR_DBPYXD.copyData(this.dsTR_DBPYXD_TEMP);
+
+		// 복사해온 Row Status는 Insert Type.
+		this.dsTR_DBPYXD.set_updatecontrol(false);
+		for (var i = 0; i < this.dsTR_DBPYXD.getRowCount(); i++) {
+			this.dsTR_DBPYXD.setRowType(i, Dataset.ROWTYPE_INSERT);
+		}
+		
+		this.dsTR_DBPYXD.set_updatecontrol(true);
+
+		this.tabXM.tab2.stInformation.set_text((this.dsTR_DBPYXD.rowcount + "개의 데이타를 로드 했습니다."));
+
+		this.dsTR_DBPYXD.set_rowposition(0);
+
+		this.tabXM.tab2.grdTR_DBPYXD.setFocus();
+	}
+
+	this.dsTR_DBPYXD_TEMP.clearData();
+
+}
+
+/*-----------------------+
+ |  엑셀 업로드 전 처리 ! |
+ +------------------------*/
+this.fn_ExcelUploadCheck = function () {
+
+	if (this.dsTR_DBPYXD_TEMP.getRowCount() < 1) {
+		this.fnc_Message("TMM125", "Upload 할 엑셀 자료가 없습니다.");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsTR_DBPYXD_TEMP.getRowCount(); i++) {
+		// 일자
+		if (!this.fnc_IsDate(this.dsTR_DBPYXD_TEMP.getColumn(i, "TRAN_DATE"))) {
+			var sMessage = "엑셀파일의" + (i + 1) + "번째의 Row의 거래일자가 잘못되었습니다";
+			return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "TRAN_DATE");
+		}
+
+		// 유형 - 차입
+		if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "DBPY_TYPE")) == "DBPY") {
+			if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "DBPY_AMOT")) == 0) {
+				var sMessage = "엑셀파일의 " + (i + 1) + "번째 Row의 차입금액이 잘못되었습니다.";
+				return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "DBPY_AMOT");
+			}
+			// 상환 0
+			this.dsTR_DBPYXD_TEMP.setColumn(i, "RPAY_AMOT", 0);
+
+			// 유형 - 이자
+		} else if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "DBPY_TYPE")) == "INTE") {
+			if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "INTE_AMOT")) == 0) {
+				var sMessage = "엑셀파일의 " + (i + 1) + "번째 Row의 이자금액이 잘못되었습니다.";
+				return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "INTE_AMOT");
+			}
+			// 차입 상환 0
+			this.dsTR_DBPYXD_TEMP.setColumn(i, "DBPY_AMOT", 0);
+			this.dsTR_DBPYXD_TEMP.setColumn(i, "RPAY_AMOT", 0);
+
+			// 유형 - 상환
+		} else if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "DBPY_TYPE")) == "REPT") {
+			if (this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "RPAY_AMOT")) == 0) {
+				var sMessage = "엑셀파일의 " + (i + 1) + "번째 Row의 상환금액이 잘못되었습니다.";
+				return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "RPAY_AMOT");
+			}
+			// 차입 0
+			this.dsTR_DBPYXD_TEMP.setColumn(i, "DBPY_AMOT", 0);
+		} else {
+			var sMessage = "엑셀파일의 " + (i + 1) + "번째 Row의 거래유형이 잘못되었습니다.";
+			return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "DBPY_TYPE");
+		}
+
+		// 적요
+		if (this.fnc_Length(this.fnc_Trim(this.dsTR_DBPYXD_TEMP.getColumn(i, "MAJR_REMK"))) < 1) {
+			var sMessage = "엑셀파일의 " + (i + 1) + "번째 Row의 적요가 없습니다.";
+			return this.fnc_CheckPostAction("TMM125", sMessage, this.dsTR_DBPYXD_TEMP, i, this.grdTR_DBPYXD, "MAJR_REMK");
+		}
+	}
+
+	return true;
+}
+]]></Script>
+  </Form>
+</FDL>

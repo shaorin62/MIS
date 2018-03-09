@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYC0260">
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.26
+     내    용 : 급여 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYC0260.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYC0260.SEARCH00.급여 테이블 조회 */
+                   DISTINCT C.EXPD_CODE
+                 , G.EXPD_NAME
+                 , G.SORT_ORDR
+              FROM PY_PMDIRY A
+             INNER JOIN PY_PMMAST B
+                ON A.PAYX_DATE = B.PAYX_DATE
+               AND A.WAGE_CODE = B.WAGE_CODE
+             INNER JOIN PY_PMDETL C
+                ON B.PAYX_DATE = C.PAYX_DATE
+               AND B.WAGE_CODE = C.WAGE_CODE
+               AND B.EMPL_NUMB = C.EMPL_NUMB
+              LEFT OUTER JOIN VI_DEPTXM D
+                ON B.DEPT_CODE = D.DEPT_CODE
+              LEFT OUTER JOIN HR_MASTXM E
+                ON B.EMPL_NUMB = E.EMPL_NUMB
+              LEFT OUTER JOIN TM_CODEXD F
+                ON F.COMM_CODE = 'CPOS_CODE'
+               AND F.COMD_CODE = B.CPOS_CODE
+              LEFT OUTER JOIN PY_ALLDED G
+                ON C.EXPD_CODE = G.EXPD_CODE
+             WHERE A.PAYX_DATE = #PAYX_DATE#
+               AND A.WAGE_CODE = #WAGE_CODE#
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                 D.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                 B.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="CLSD_CODE">
+                 B.CLSD_CODE = #CLSD_CODE#
+    </isNotEmpty>
+            ORDER BY G.SORT_ORDR
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.26
+     내    용 : 급여 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYC0260.SEARCH01" parameterClass="hashmap" resultClass="hashmap" remapResults="true">
+    <![CDATA[
+            SELECT /* PAYC0260.SEARCH01.급여 테이블 조회 */
+                   B.EMPL_NUMB  /* 사원번호 */
+                 , E.EMPL_NAME  /* 성명 */
+                 , SF_GET_SECTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS SECT_NAME /* 부실 */
+                 , SF_GET_DEPTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS DEPT_NAME /* 부서 */
+                 , F.COMD_CDNM AS CPOS_NAME                               /* 직급 */
+                 , SF_GET_COMMNAME('DUTY_CODE', B.DUTY_CODE) AS DUTY_NAME /* 직무 */
+                 , NVL(B.PAYX_AMOT,0) AS PAYX_AMOT                        /* 지급총액 */
+                 , A.WAGE_CODE                                            /* 급여코드 */
+    ]]>
+    <iterate property="PY_ALLDED">
+                 , SUM(CASE WHEN C.EXPD_CODE = #PY_ALLDED[].EXPD_CODE# THEN C.EXPD_AMOT ELSE 0 END) AS "$PY_ALLDED[].EXPD_CODE$"
+    </iterate>
+    <![CDATA[
+              FROM PY_PMDIRY A
+             INNER JOIN PY_PMMAST B
+                ON A.PAYX_DATE = B.PAYX_DATE
+               AND A.WAGE_CODE = B.WAGE_CODE
+             INNER JOIN PY_PMDETL C
+                ON B.PAYX_DATE = C.PAYX_DATE
+               AND B.WAGE_CODE = C.WAGE_CODE
+               AND B.EMPL_NUMB = C.EMPL_NUMB
+              LEFT OUTER JOIN VI_DEPTXM D
+                ON B.DEPT_CODE = D.DEPT_CODE
+              LEFT OUTER JOIN HR_MASTXM E
+                ON E.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN TM_CODEXD F
+                ON F.COMM_CODE = 'CPOS_CODE'
+                  AND F.COMD_CODE = B.CPOS_CODE
+            WHERE A.PAYX_DATE = #PAYX_DATE#
+              AND A.WAGE_CODE = #WAGE_CODE#
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                  D.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                  B.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="CLSD_CODE">
+                  B.CLSD_CODE = #CLSD_CODE#
+    </isNotEmpty>
+            GROUP BY B.EMPL_NUMB, E.EMPL_NAME, B.DEPT_CODE, A.PAYX_DATE, F.COMD_CDNM
+                    ,B.DUTY_CODE, B.PAYX_AMOT, B.DDUC_AMOT, D.DEPT_FCOD, F.SORT_ORDR
+                    ,E.ENCO_DATE, A.WAGE_CODE
+            ORDER BY D.DEPT_FCOD, F.SORT_ORDR, E.ENCO_DATE
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.26
+     내    용 : 급여 테이블(소급정보) 조회
+********************************************************************************/
+-->
+    <select id="PAYC0260.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYC0260.SEARCH02.급여 테이블(소급정보) 조회 */
+               C.WAGE_YMTH AS PAYX_YMTH
+             , SUM(C.EXPD_AMOT) AS EXPD_SUMX
+             , SUM(C.RTRC_AMOT) AS RTRC_SUMX
+             , NVL(SUM(C.EXPD_AMOT),0) + NVL(SUM(C.RTRC_AMOT),0) AS PAYX_SUMX
+          FROM PY_PMDIRY A
+         INNER JOIN PY_PMMAST B
+            ON A.PAYX_DATE = B.PAYX_DATE
+           AND A.WAGE_CODE = B.WAGE_CODE
+         INNER JOIN PY_PMDETL C
+            ON B.PAYX_DATE = C.PAYX_DATE
+           AND B.WAGE_CODE = C.WAGE_CODE
+           AND B.EMPL_NUMB = C.EMPL_NUMB
+         WHERE C.WAGE_YMTH LIKE SUBSTR(#PAYX_DATE#,1,4) || '%'
+           AND ((#WAGE_CODE# = '4000' AND A.WAGE_CODE = '1000')
+            OR (#WAGE_CODE# = '4001' AND A.WAGE_CODE IN ('7000','7001','7002')))
+           AND B.EMPL_NUMB = #EMPL_NUMB#
+           AND C.RTRC_AMOT <> 0
+         GROUP BY C.WAGE_YMTH
+         ORDER BY C.WAGE_YMTH
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.26
+     내    용 : 급여 테이블(항목) 조회
+********************************************************************************/
+-->
+    <select id="PAYC0260.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYC0260.SEARCH03.급여 테이블(항목) 조회 */
+               B.EXPD_NAME
+             , SUM(A.EXPD_AMOT) AS EXPD_SUMX
+             , SUM(A.RTRC_AMOT) AS RTRC_SUMX
+             , NVL(SUM(A.EXPD_AMOT),0) + NVL(SUM(A.RTRC_AMOT),0) AS PAYX_SUMX
+          FROM PY_PMDETL A
+         INNER JOIN PY_ALLDED B
+            ON A.EXPD_CODE = B.EXPD_CODE
+         WHERE A.WAGE_YMTH = #PAYX_YMTH#
+           AND ((#WAGE_CODE# = '4000' AND A.WAGE_CODE = '1000')
+            OR (#WAGE_CODE# = '4001' AND A.WAGE_CODE IN ('7000','7001','7002')))
+           AND A.EMPL_NUMB = #EMPL_NUMB#
+           AND A.RTRC_AMOT <> 0
+         GROUP BY B.EXPD_NAME, B.SORT_ORDR
+         ORDER BY B.SORT_ORDR
+    ]]>
+    </select>
+</sqlMap>

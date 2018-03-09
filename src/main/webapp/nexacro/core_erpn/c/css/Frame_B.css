@@ -1,0 +1,1336 @@
+﻿/*************************** top area *****************************/
+/*topFrame form bg*/
+Form.frm_TF_Bg
+{
+	background		: URL('theme://images/frm_WF_Bg.png') repeat-x;
+}
+/** 로고 **/
+Static.sta_TF_logo, Static.sta_TF_logo:mouseover
+{
+	background		: URL('theme://images/img_TF_logo.png');
+	border			: 0 none;
+}
+
+/** 홈 BTN **/
+Button.btn_TF_home, Button.btn_TF_home:disabled, Button.btn_TF_home:focused
+{
+	background		: #e55050;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_TF_home.png');
+	imagealign		: center middle;
+}
+Button.btn_TF_home:mouseover, Button.btn_TF_home:selected
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_home:pushed
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+}
+/** 나의정보 BTN **/
+Button.btn_TF_myinfo, Button.btn_TF_myinfo:disabled
+{
+	background		: URL('theme://images_B/btn_TF_myinfo.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_myinfo:mouseover
+{
+	background		: URL('theme://images_B/btn_TF_myinfo_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_myinfo:pushed, Button.btn_TF_myinfo:focused, Button.btn_TF_myinfo:selected
+{
+	background		: URL('theme://images_B/btn_TF_myinfo_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+/** 설정(테마) BTN **/
+Button.btn_TF_set, Button.btn_TF_set:disabled
+{
+	background		: URL('theme://images_B/btn_TF_set.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_set:mouseover
+{
+	background		: URL('theme://images_B/btn_TF_set_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_set:pushed, Button.btn_TF_set:focused, Button.btn_TF_set:selected
+{
+	background		: URL('theme://images_B/btn_TF_set_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+/** 로그아웃 BTN **/
+Button.btn_TF_logout, Button.btn_TF_logout:disabled
+{
+	background		: URL('theme://images_B/btn_TF_logout.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_logout:mouseover
+{
+	background		: URL('theme://images_B/btn_TF_logout_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_logout:pushed, Button.btn_TF_logout:focused, Button.btn_TF_logout:selected
+{
+	background		: URL('theme://images_B/btn_TF_logout_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+/** 비밀번호 변경 BTN **/
+Button.btn_TF_pw, Button.btn_TF_pw:disabled
+{
+	background		: URL('theme://images_B/btn_TF_pw.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_pw:mouseover
+{
+	background		: URL('theme://images_B/btn_TF_pw_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_TF_pw:pushed, Button.btn_TF_pw:focused, Button.btn_TF_pw:selected
+{
+	background		: URL('theme://images_B/btn_TF_pw_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+/* 상단 시스템 선택 Combo */
+Combo.com_TF_system
+{
+	accessibility		: ;
+	align			: left middle;
+	padding			: 0 2 0 5;
+	background		: transparent;
+	border			: 1 solid #ffffff;
+	bordertype		: normal;
+	buttonsize		: 20;
+	color			: #222222;
+	cursor			: hand;
+	font			: bold antialias 12 Malgun Gothic;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itemcolor		: #222222;
+	itemfont		: antialias 10 Malgun Gothic;
+	itemheight		: 28;
+	itempadding		: 0 2 0 5;
+}
+Combo.com_TF_system:mouseover
+{
+	background		: transparent;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+	font			: bold antialias 12 Malgun Gothic;
+	itembackground		: #f5f5f5;
+}
+Combo.com_TF_system:selected,Combo.com_TF_system:focused
+{
+	background		: transparent;
+	border			: 1 solid #ffffff;
+	color			: #333333;
+	font			: bold antialias 12 Malgun Gothic;
+	itembackground		: #8791a3;
+	itemcolor		: #ffffff;
+}
+Combo.com_TF_system:disabled
+{
+	background		: transparent;
+	border			: 1 solid #ffffff;
+	color			: #aeaeae;
+	font			: bold antialias 12 Malgun Gothic;
+}
+Combo.com_TF_system>#comboedit
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #222222;
+	font			: bold antialias 12 Malgun Gothic;
+	selectbackground	: #8791a3;
+	selectcolor		: #ffffff;
+	cursor			: hand;
+}
+Combo.com_TF_system>#comboedit:mouseover, Combo.com_TF_system>#comboedit:focused
+{
+	color			: #333333;
+}
+Combo.com_TF_system>#comboedit:disabled
+{
+	color			: #aeaeae;
+}
+Combo.com_TF_system>#dropbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cursor			: hand;
+	image			: URL('theme://images/btn_TFdrop_N.png');
+	imagealign		: center middle;
+	padding			: 0 0 0 0;
+}
+Combo.com_TF_system>#dropbutton:mouseover
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_TFdrop_O.png');
+}
+Combo.com_TF_system>#dropbutton:pushed
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_TFdrop_P.png');
+}
+Combo.com_TF_system>#dropbutton:disabled
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_TFdrop_D.png');
+}
+Combo.com_TF_system>#combolist
+{
+	background		: #ffffff;
+	border			: 1 solid #6a7a96;
+	bordertype		: normal;
+	align			: left middle;
+	cursor			: hand;
+}
+
+/* 상단메뉴 Tab */
+Tab.tab_TF_menu
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	align			: center middle;
+	font 			: antialias 11 Malgun Gothic;
+	color 			: #333333;
+	buttonborder		: 0 none;
+	buttonbackground	: ;
+	buttonpadding		: 3 25 3 25;
+	buttonmargin 		: 0 0 0 0 ;
+	cursor 			: hand ;
+}
+Tab.tab_TF_menu:mouseover
+{
+	font 			: antialias 11 Malgun Gothic;
+	color			: #a01518;
+	buttonbackground	: ;
+}
+Tab.tab_TF_menu:selected, Tab.tab_TF_menu:focused
+{
+	font 			: antialias 11 Malgun Gothic;
+	color			: #eb3535;
+	buttonbackground	: ;
+}
+Tab.tab_TF_menu:disabled
+{
+	font 			: antialias 11 Malgun Gothic;
+	color			: #c1c1c1;
+	buttonbackground	: ;
+}
+Tab.tab_TF_menu>Tabpage
+{
+	accessibility		: ;
+	background		: transparent;
+	cursor			: ;
+	gradation		: ;
+	letterspace		: ;
+	opacity			: ;
+	padding			: ;
+	stepalign		: ;
+}
+
+/*************************** left area *************************/
+/* Left quick DIV*/
+Div.div_LF_box
+{
+	background		: #282c37;
+	border			: 0 none;
+}
+/* Left submenu DIV*/
+Div.div_LF_box02
+{
+	background		: #ffffff;
+	border			: 0 none, 1 solid #f0f0f0, 0 none, 0 none;
+}
+
+/* 메뉴검색 PopupDiv */
+PopupDiv.pdiv_LF_search, PopupDiv.pdiv_LF_search:mouseover
+{
+	background		: URL('theme://images/Div_Pop_Bg1.png') stretch 20,20;
+}
+
+/** 메뉴열림/닫힘, 서브메뉴, 즐겨찾기 BTN **/
+Button.btn_LF_MenuClose, Button.btn_LF_MenuClose:disabled, Button.btn_LF_MenuClose:selected, Button.btn_LF_MenuClose:focused
+{
+	background		: #282c37;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_off.png');
+	imagealign		: center middle;
+}
+Button.btn_LF_MenuClose:mouseover
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_MenuClose:pushed
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_MenuClose_S, Button.btn_LF_MenuClose_S:disabled, Button.btn_LF_MenuClose_S:mouseover, Button.btn_LF_MenuClose_S:pushed, Button.btn_LF_MenuClose_S:selected, Button.btn_LF_MenuClose_S:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_off.png');
+	imagealign		: center middle;
+}
+
+Button.btn_LF_MenuOpen, Button.btn_LF_MenuOpen:disabled, Button.btn_LF_MenuOpen:selected, Button.btn_LF_MenuOpen:focused
+{
+	background		: #282c37;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_on.png');
+	imagealign		: center middle;
+}
+Button.btn_LF_MenuOpen:mouseover
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_MenuOpen:pushed
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_MenuOpen_S, Button.btn_LF_MenuOpen_S:disabled, Button.btn_LF_MenuOpen_S:mouseover, Button.btn_LF_MenuOpen_S:pushed, Button.btn_LF_MenuOpen_S:selected, Button.btn_LF_MenuOpen_S:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_on.png');
+	imagealign		: center middle;
+}
+
+Button.btn_LF_SubMenu, Button.btn_LF_SubMenu:disabled
+{
+	background		: #282c37;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_submenu.png');
+	imagealign		: center middle;
+}
+Button.btn_LF_SubMenu:mouseover
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_SubMenu:pushed, Button.btn_LF_SubMenu:selected, Button.btn_LF_SubMenu:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_SubMenu_S, Button.btn_LF_SubMenu_S:disabled, Button.btn_LF_SubMenu_S:mouseover, Button.btn_LF_SubMenu_S:pushed, Button.btn_LF_SubMenu_S:selected, Button.btn_LF_SubMenu_S:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_submenu.png');
+	imagealign		: center middle;
+}
+
+Button.btn_LF_Bookmark, Button.btn_LF_Bookmark:disabled
+{
+	background		: #282c37;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_mymenu.png');
+	imagealign		: center middle;
+}
+Button.btn_LF_Bookmark:mouseover
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_Bookmark:pushed, Button.btn_LF_Bookmark:selected, Button.btn_LF_Bookmark:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_LF_Bookmark_S, Button.btn_LF_Bookmark_S:disabled, Button.btn_LF_Bookmark_S:mouseover, Button.btn_LF_Bookmark_S:pushed, Button.btn_LF_Bookmark_S:selected, Button.btn_LF_Bookmark_S:focused
+{
+	background		: #b53e40;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/ico_LF_mymenu.png');
+	imagealign		: center middle;
+}
+
+/** 즐겨찾기 화면1-9 **/
+Button.btn_LF_MenuNm
+{
+	background		: #ea5a5a;
+	border			: 0 none;
+	bordertype		: round 30 30 ;
+	font			: bold antialias 10 Malgun Gothic;
+	color			: #ffffff;
+	padding			: 0 0 2 0;
+	align			: center middle;
+}
+Button.btn_LF_MenuNm:mouseover
+{
+	background		: #d13438;
+	border			: 0 none;
+	bordertype		: round 30 30 ;
+	font			: bold antialias 10 Malgun Gothic;
+	color			: #ffffff;
+	padding			: 0 0 2 0;
+}
+Button.btn_LF_MenuNm:pushed, Button.btn_LF_MenuNm:focused, Button.btn_LF_MenuNm:selected
+{
+	background		: #a4373a;
+	border			: 0 none;
+	bordertype		: round 30 30 ;
+	font			: bold antialias 10 Malgun Gothic;
+	color			: #ffffff;
+	padding			: 0 0 2 0;
+}
+Button.btn_LF_MenuNm:disabled
+{
+	background		: #53565f;
+	border			: 0 none;
+	bordertype		: round 30 30 ;
+	font			: bold antialias 10 Malgun Gothic;
+	color			: #191c23;
+	padding			: 0 0 2 0;
+}
+
+/** mymenu grd **/
+Grid.grd_LF_Mymenu
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal 0 0;
+	color			: #000000;
+	cursor			: auto;
+	font			: 9 Dotum;
+	gradation		: ;
+	letterspace		: ;
+	line			: ;
+	opacity			: ;
+	padding			: 0 0 0 0;
+	selectline		: ;
+	selectpointimage	: ;
+	shadow			: ;
+	treeclosebuttonimage	: theme://images_B/ico_LF_close.png;
+	treecollapseimage	: theme://images/dummy.png;
+	treeexpandimage		: theme://images/dummy.png;
+	treeitemimage		: theme://images/ico_LF_tree01.png;
+	treeitemmargin		: ;
+	treelinetype		: 1 dotted #989898;
+	treeopenbuttonimage	: theme://images_B/ico_LF_open.png;
+	
+}
+Grid.grd_LF_Mymenu>#body, Grid.grd_LF_Mymenu>#body:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cellalign		: left middle;
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellcolor		: #000000;
+	cellcolor2		: #000000;
+	cellfont		: 9 Dotum;
+	cellline		: 0 none;
+	celllinetype		: exhor;
+	cellpadding		: 2 0 0 0;
+	selectbackground	: #edf4fc;
+	selectborder		: 0 none;
+	selectcolor		: #1f79ca;
+	selectfont		: bold 9 Dotum;
+	selectline		: 0 none;
+	selectlinetype		: ;
+}
+Grid.grd_LF_Mymenu>#body:mouseover
+{
+	cellbackground		: #f4f4f4;
+	cellbackground2		: #f4f4f4;
+	cellcolor		: #000000;
+	cellline		: 0 none;	
+}
+/***/
+Grid.grd_LF_Mymenu>#vscrollbar, Grid.grd_LF_Mymenu>#hscrollbar,
+Div.divBottomArea>#vscrollbar, Div.divBottomArea>#hscrollbar,
+Grid.grd_MF_Workalarm>#vscrollbar, Grid.grd_MF_Workalarm>#hscrollbar
+{
+	background		: transparent;
+	barminsize		: 45;
+	border			: 0 none;
+	bordertype		: normal;
+	decbtnsize		: 0;
+	incbtnsize		: 0;
+	scrollbarsize		: 11;
+}
+Grid.grd_LF_Mymenu>#vscrollbar>#trackbar, Grid.grd_LF_Mymenu>#vscrollbar>#trackbar:disabled,
+Div.divBottomArea>#vscrollbar>#trackbar, Div.divBottomArea>#vscrollbar>#trackbar:disabled,
+Grid.grd_MF_Workalarm>#vscrollbar>#trackbar, Grid.grd_MF_Workalarm>#vscrollbar>#trackbar:disabled
+{
+	background		: transparent URL('theme://images/grd_LF_menuVtrckBg.png') stretch 0,10;
+	image			: URL('theme://images/grd_LF_menuVtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_LF_Mymenu>#vscrollbar>#trackbar:mouseover, Grid.grd_LF_Mymenu>#vscrollbar>#trackbar:pushed,
+Div.divBottomArea>#vscrollbar>#trackbar:mouseover, Div.divBottomArea>#vscrollbar>#trackbar:pushed,
+Grid.grd_MF_Workalarm>#vscrollbar>#trackbar:mouseover, Grid.grd_MF_Workalarm>#vscrollbar>#trackbar:pushed
+{
+	background		: tansparent URL('theme://images/grd_LF_menuVtrckBg_O.png') stretch 0,10;
+	image			: URL('theme://images/grd_LF_menuVtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_LF_Mymenu>#hscrollbar>#trackbar, Grid.grd_LF_Mymenu>#hscrollbar>#trackbar:disabled,
+Div.divBottomArea>#hscrollbar>#trackbar, Div.divBottomArea>#hscrollbar>#trackbar:disabled,
+Grid.grd_MF_Workalarm>#hscrollbar>#trackbar, Grid.grd_MF_Workalarm>#hscrollbar>#trackbar:disabled
+{
+	background		: transparent URL('theme://images/grd_LF_menuHtrckBg.png') stretch 10,0;
+	image			: URL('theme://images/grd_LF_menuHtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_LF_Mymenu>#hscrollbar>#trackbar:mouseover, Grid.grd_LF_Mymenu>#hscrollbar>#trackbar:pushed,
+Div.divBottomArea>#hscrollbar>#trackbar:mouseover, Div.divBottomArea>#hscrollbar>#trackbar:pushed
+Grid.grd_MF_Workalarm>#hscrollbar>#trackbar:mouseover, Grid.grd_MF_Workalarm>#hscrollbar>#trackbar:pushed
+{
+	background		: transparent URL('theme://images/grd_LF_menuHtrckBg_O.png') stretch 10,0;
+	image			: URL('theme://images/grd_LF_menuHtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+
+/** workalarm grd **/
+Grid.grd_MF_Workalarm
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal 0 0;
+	color			: #000000;
+	cursor			: auto;
+	font			: 9 Dotum;
+	gradation		: ;
+	letterspace		: ;
+	line			: ;
+	opacity			: ;
+	padding			: 0 0 0 0;
+	selectline		: ;
+	selectpointimage	: ;
+	shadow			: ;
+}
+Grid.grd_MF_Workalarm>#body, Grid.grd_MF_Workalarm>#body:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cellalign		: left middle;
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellcolor		: #000000;
+	cellcolor2		: #000000;
+	cellfont		: 9 Dotum;
+	cellline		: 0 none;
+	celllinetype		: exhor;
+	cellpadding		: 0 0 0 0;
+	selectbackground	: transparent;
+	selectborder		: 0 none;
+	selectcolor		: #5578da;
+	selectfont		: 9 Dotum;
+	selectline		: 0 none;
+	selectlinetype		: ;
+}
+Grid.grd_MF_Workalarm>#body:mouseover
+{
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellcolor		: #000000;
+	cellline		: 0 none;
+	selectbackground	: transparent;
+	selectcolor		: #5578da;
+}
+
+
+/* 메뉴검색Edit*/
+Edit.Edit_LF_search
+{
+	align			: left middle;
+	background		: #ffffff;
+	border			: 2 solid #bdbdbd;
+	bordertype		: normal 0 0;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 1 29 0 6;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Edit.Edit_LF_search:mouseover, Edit.Edit_LF_search:focused
+{
+	background		: #ffffff;
+	border			: 2 solid #707277;
+	color			: #333333;
+}
+Edit.Edit_LF_search:disabled
+{
+	background		: #f4f4f4;
+	border			: 2 solid #d5d5d5;
+	color			: #aeaeae;
+}
+/* 메뉴검색Edit 안에 돋보기버튼*/
+Button.btn_LF_search, Button.btn_LF_search:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	image			: URL('theme://images/ico_LF_search.png');
+	imagealign		: center middle;
+}
+Button.btn_LF_search:mouseover, Button.btn_LF_search:focused, Button.btn_LF_search:selected
+{
+	background		: transparent;
+	border			: 0 none;
+	image			: URL('theme://images/ico_LF_search_O.png');
+	imagealign		: center middle;	
+}
+Button.btn_LF_search:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	image			: URL('theme://images/ico_LF_search_P.png');
+	imagealign		: center middle;	
+}
+
+
+
+
+/*************************** bottom area *************************/
+/*MDI form bg*/
+Form.frm_BF_mdibg
+{
+	background		: URL('theme://images/bg_BT_Mdi.png') repeat-x;
+}
+
+/*MDI form Tab*/
+Tab.tab_BF_mdi, Tab.tab_BF_mdi:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonbackground	: URL('theme://images/btn_BT_Mdi.png') stretch 7,7;
+	buttonborder		: 0 none;
+	buttonbordertype	: normal;
+	buttonpadding		: 0 10 0 14;
+	color			: #9b9b9b;
+	cursor			: auto;
+	font			: 9 Dotum;
+	showextrabutton		: true;
+	stepalign 		: center middle ;
+	stepshowtype		: ;
+}
+Tab.tab_BF_mdi:mouseover
+{
+	buttonbackground	: URL('theme://images/btn_BT_Mdi_O.png') stretch 7,7;
+	color			: #444444;
+	focusborder		: 0 none;
+}
+Tab.tab_BF_mdi:selected, Tab.tab_BF_mdi:focused
+{
+	color			: #444444;	
+	buttonbackground	: URL('theme://images/btn_BT_Mdi_S.png') stretch 7,7;
+}
+Tab.tab_BF_mdi>Tabpage
+{
+	accessibility		: ;
+	background		: transparent;
+	cursor			: ;
+	gradation		: ;
+	letterspace		: ;
+	opacity			: ;
+	padding			: ;
+	stepalign		: ;
+}
+
+/**  MDI up/down/창배열 **/
+
+/***/
+Button.btn_Mdi_Max
+{
+	background 		: URL('theme://images/btn_BT_max.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Max:mouseover, Button.btn_Mdi_Max:focused, Button.btn_Mdi_Max:selected
+{
+	background 		: URL('theme://images/btn_BT_max_O.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Max:pushed
+{
+	background 		: URL('theme://images/btn_BT_max_P.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Max:disabled
+{
+	background 		: URL('theme://images/btn_BT_max.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+	opacity			: 50;
+}
+/***/
+Button.btn_Mdi_hor
+{
+	background 		: URL('theme://images/btn_BT_horizon.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_hor:mouseover, Button.btn_Mdi_hor:focused, Button.btn_Mdi_hor:selected
+{
+	background 		: URL('theme://images/btn_BT_horizon_O.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_hor:pushed
+{
+	background 		: URL('theme://images/btn_BT_horizon_P.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_hor:disabled
+{
+	background 		: URL('theme://images/btn_BT_horizon.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+	opacity			: 50;
+}
+/***/
+Button.btn_Mdi_Close
+{
+	background 		: URL('theme://images/btn_BT_close.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Close:mouseover, Button.btn_Mdi_Close:focused, Button.btn_Mdi_Close:selected
+{
+	background 		: URL('theme://images/btn_BT_close_O.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Close:pushed
+{
+	background 		: URL('theme://images/btn_BT_close_P.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_Close:disabled
+{
+	background 		: URL('theme://images/btn_BT_close.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+	opacity			: 50;
+}
+/***/
+Button.btn_Mdi_ver
+{
+	background 		: URL('theme://images/btn_BT_vertical.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_ver:mouseover, Button.btn_Mdi_ver:focused, Button.btn_Mdi_ver:selected
+{
+	background 		: URL('theme://images/btn_BT_vertical_O.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_ver:pushed
+{
+	background 		: URL('theme://images/btn_BT_vertical_P.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+}
+Button.btn_Mdi_ver:disabled
+{
+	background 		: URL('theme://images/btn_BT_vertical.png');
+	border			: 0 none;
+	padding			: 0 0 0 0;
+	opacity			: 50;
+}
+
+/*************************** main area *****************************/
+
+/** 나의사진 **/
+ImageViewer.img_MF_photo, ImageViewer.img_MF_photo:disabled, ImageViewer.img_MF_photo:focused, ImageViewer.img_MF_photo:mouseover
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #d0d5d9;
+	bordertype		: round 200 200 ;
+}
+
+/*정보수정, 사진변경*/
+Button.btn_MF_button1, Button.btn_MF_button1:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+Button.btn_MF_button1:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #5aeaff;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+Button.btn_MF_button1:focused, Button.btn_MF_button1:selected, Button.btn_MF_button1:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #003ea3;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+
+Button.btn_MF_button2, Button.btn_MF_button2:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+Button.btn_MF_button2:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #5aeaff;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+Button.btn_MF_button2:focused, Button.btn_MF_button2:selected, Button.btn_MF_button2:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #003ea3;
+	font			: antialias 10 Malgun Gothic;
+	align			: left middle;
+}
+
+/** Text **/
+Static.sta_MF_name, Static.sta_MF_name:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 14 Malgun Gothic;
+}
+Static.sta_MF_text1, Static.sta_MF_text1:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 10 Malgun Gothic;
+}
+Static.sta_MF_text2, Static.sta_MF_text2:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 10 Malgun Gothic;
+}
+Static.sta_MF_text3, Static.sta_MF_text3:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 9 Malgun Gothic;
+}
+Static.sta_MF_text4, Static.sta_MF_text4:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 26 Malgun Gothic;
+}
+Static.sta_MF_text5, Static.sta_MF_text5:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #d0d0d0;
+	font			: antialias 26 Dotum;
+}
+Static.sta_MF_text6, Static.sta_MF_text6:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 13 Malgun Gothic;
+	align			: center middle;
+}
+Static.sta_MF_text7, Static.sta_MF_text7:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #596781;
+	font			: antialias 9 Malgun Gothic;
+	align			: center middle;
+}
+Static.sta_MF_text8, Static.sta_MF_text8:mouseover
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #555555;
+	font			: bold antialias 9 Malgun Gothic;
+	align			: center middle;
+}
+Static.sta_MF_text9, Static.sta_MF_text9:mouseover
+{
+	background		: transparent URL('theme://images_B/bg_MF_bullet1.png') left middle;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: antialias 9 Malgun Gothic;
+	padding			: 0 0 0 0;
+	align			: left middle;
+}
+
+Static.sta_MF_line1, Static.sta_MF_line1:mouseover
+{
+	background		: #7fa6df;
+	border			: 0 none;
+	bordertype		: normal ;
+}
+Static.sta_MF_line2, Static.sta_MF_line2:mouseover
+{
+	background		: #ced9e4;
+	border			: 0 none;
+	bordertype		: normal ;
+}
+Static.sta_MF_line3, Static.sta_MF_line3:mouseover
+{
+	background		: #7fa6df;
+	border			: 0 none;
+	bordertype		: normal ;
+}
+
+Static.sta_MF_number, Static.sta_MF_number:mouseover
+{
+	background		: transparent URL('theme://images_B/img_MF_number.png') left middle;
+	border			: 0 none;
+	bordertype		: normal ;
+	color			: #ffffff;
+	font			: bold antialias 13 Malgun Gothic;
+	padding			: 0 0 0 0;
+	align			: center top;
+}
+
+/** 차트 **/
+Static.sta_MF_chart1, Static.sta_MF_chart1:mouseover
+{
+	background		: #5060aa;
+	border			: 0 none;
+	bordertype		: normal;
+}
+Static.sta_MF_chart2, Static.sta_MF_chart2:mouseover
+{
+	background		: #c84546;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #ffffff;
+	font			: antialias 9 Malgun Gothic;
+	align			: center middle;
+	linespace		: 0;
+}
+/** 배경 **/
+Div.div_MF_top
+{
+	background		: #6898db;
+	border			: 0 none;
+}
+Div.div_MF_bottom
+{
+	background		: #ffffff;
+	border			: 0 none;
+}
+Static.sta_MF_bg1, Static.sta_MF_bg1:mouseover
+{
+	background		: #4f80cf;
+	border			: 0 none;
+	bordertype		: normal;
+}
+
+/** 하단 컨텐츠 BTN **/
+Button.btn_MF_content
+{
+	align			: center middle;
+	background		: #e8f1f7;
+	border			: 1 solid #e8f1f7;
+	bordertype		: normal;
+	color			: #333333;
+	font			: bold antialias 11 Malgun Gothic;
+	padding			: 75 0 0 0;
+	image			: ;
+	imagealign		: ;
+}
+Button.btn_MF_content:mouseover, Button.btn_MF_content:selected, Button.btn_MF_content:focused, Button.btn_MF_content:pushed
+{
+	align			: center middle;
+	background		: #e8f1f7;
+	border			: 3 solid #7c93d5;
+	bordertype		: normal;
+	color			: #333333;
+	font			: bold antialias 11 Malgun Gothic;
+	padding			: 75 0 0 0;
+	image			: ;
+	imagealign		: ;
+}
+Button.btn_MF_content:disabled
+{
+	align			: center middle;
+	background		: #e8f1f7;
+	border			: 1 solid #c6cbdc;
+	bordertype		: normal;
+	color			: #333333;
+	font			: bold antialias 11 Malgun Gothic;
+	padding			: 75 0 0 0;
+	image			: ;
+	imagealign		: ;
+	opacity			: 50;
+}
+
+/** 월달력 그리드 **/
+Grid.grd_MF_date
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal 0 0;
+	color			: #ffffff;
+	cursor			: auto;
+	font			: antialias 11 Malgun Gothic;
+	gradation		: ;
+	letterspace		: ;
+	line			: ;
+	opacity			: ;
+	padding			: 0 0 0 0;
+	selectline		: ;
+	selectpointimage	: ;
+	shadow			: ;
+	treeclosebuttonimage	: theme://images_B/ico_LF_close.png;
+	treecollapseimage	: theme://images/dummy.png;
+	treeexpandimage		: theme://images/dummy.png;
+	treeitemimage		: theme://images/ico_LF_tree01.png;
+	treeitemmargin		: ;
+	treelinetype		: 1 dotted #989898;
+	treeopenbuttonimage	: theme://images_B/ico_LF_open.png;
+	
+}
+Grid.grd_MF_date>#body, Grid.grd_MF_date>#body:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cellalign		: center middle;
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellcolor		: #ffffff;
+	cellcolor2		: #ffffff;
+	cellfont		: antialias 11 Malgun Gothic;
+	cellline		: 0 none;
+	celllinetype		: exhor;
+	cellpadding		: 0 0 0 0;
+	selectbackground	: transparent URL('theme://images_B/bg_MF_day1.png') center middle; /* 선택일*/
+	selectborder		: 0 none;
+	selectcolor		: #ffffff;
+	selectfont		: antialias 11 Malgun Gothic;
+	selectline		: 0 none;
+	selectlinetype		: ;
+}
+Grid.grd_MF_date>#body:mouseover
+{
+	cellbackground		: transparent URL('theme://images/bg_MF_day2.png') center middle; /* 롤오버일*/
+	cellbackground2		: transparent URL('theme://images/bg_MF_day2.png') center middle;
+	cellcolor		: #5c677a;
+	cellline		: 0 none;
+	selectbackground	: transparent URL('theme://images_B/bg_MF_day1.png') center middle;
+	selectcolor		: #ffffff;
+	
+}
+/*달력 일자 링크*/
+.Cellgrd_MF_link
+{
+	font 			: underline antialias 11 Malgun Gothic;	
+	font2 			: underline antialias 11 Malgun Gothic;	
+	selectfont		: underline antialias 11 Malgun Gothic;
+}
+/*달력 일자 선택없음(롤오버 이미지 안보임)*/
+.Cellgrd_MF_noimg
+{
+	background		: transparent;
+	selectbackground	: transparent; /* 선택일*/
+	cellbackground		: transparent; /* 롤오버일*/
+	cellbackground2		: transparent;
+}
+
+/** 공지사항 그리드 **/
+Grid.grd_MF_notice
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal 0 0;
+	color			: #555555;
+	cursor			: auto;
+	font			: antialias 10 Malgun Gothic;
+	padding			: 0 0 0 0;	
+}
+Grid.grd_MF_notice>#body, Grid.grd_MF_notice>#body:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cellalign		: left middle;
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellcolor		: #555555;
+	cellcolor2		: #555555;
+	cellfont		: antialias 10 Malgun Gothic;
+	cellline		: 0 none;
+	celllinetype		: exhor;
+	cellpadding		: 2 0 0 0;
+	selectbackground	: transparent;
+	selectborder		: 0 none;
+	selectcolor		: #555555;
+	selectfont		: Malgun Gothic;
+	selectline		: 0 none;
+	selectlinetype		: ;
+}
+Grid.grd_MF_notice>#body:mouseover, Grid.grd_MF_notice>#body:selected
+{
+	cellbackground		: transparent;
+	cellbackground2		: transparent;
+	cellfont		: antialias 10 Malgun Gothic;
+	cellcolor		: #555555;
+	cellline		: 0 none;
+	selectbackground	: transparent;
+	selectcolor		: #2b58d9;
+	selectfont		: antialias 10 Malgun Gothic;
+}
+Grid.grd_MF_notice>#vscrollbar, Grid.grd_MF_notice>#hscrollbar
+{
+	background		: transparent;
+	barminsize		: 45;
+	border			: 0 none;
+	bordertype		: normal;
+	decbtnsize		: 0;
+	incbtnsize		: 0;
+	scrollbarsize		: 11;
+}
+Grid.grd_MF_notice>#vscrollbar>#trackbar, Grid.grd_MF_notice>#vscrollbar>#trackbar:disabled
+{
+	background		: transparent URL('theme://images/grd_LF_menuVtrckBg.png') stretch 0,10;
+	image			: URL('theme://images/grd_LF_menuVtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_MF_notice>#vscrollbar>#trackbar:mouseover, Grid.grd_MF_notice>#vscrollbar>#trackbar:pushed
+{
+	background		: tansparent URL('theme://images/grd_LF_menuVtrckBg_O.png') stretch 0,10;
+	image			: URL('theme://images/grd_LF_menuVtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_MF_notice>#hscrollbar>#trackbar, Grid.grd_MF_notice>#hscrollbar>#trackbar:disabled
+{
+	background		: transparent URL('theme://images/grd_LF_menuHtrckBg.png') stretch 10,0;
+	image			: URL('theme://images/grd_LF_menuHtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+Grid.grd_MF_notice>#hscrollbar>#trackbar:mouseover, Grid.grd_MF_notice>#hscrollbar>#trackbar:pushed
+{
+	background		: transparent URL('theme://images/grd_LF_menuHtrckBg_O.png') stretch 10,0;
+	image			: URL('theme://images/grd_LF_menuHtrck.png');
+	imagealign		: center middle;
+	border			: 0 none;	
+}
+/* 테마설정 CheckBox */
+CheckBox.che_MF_C
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonalign		: left center;
+	buttonbackground	: URL('theme://images/img_MF_chebg.png');
+	buttonborder		: 0 none;
+	buttonbordertype	: normal;
+	buttonimage		: URL('theme://images/img_MF_check.png');
+	buttonsize		: 24;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;
+	textpadding		: 0 0 0 6;
+}
+CheckBox.che_MF_C:mouseover, CheckBox.che_MF_C:selected, CheckBox.che_MF_C:focused, CheckBox.che_MF_C:pushed
+{
+	buttonbackground	: URL('theme://images/img_MF_chebg_O.png');
+}
+CheckBox.che_MF_C:disabled
+{
+	color			: #aeaeae;
+	buttonbackground	: #ffffff URL('theme://images/img_MF_chebg.png');
+	buttonimage		: URL('theme://images/img_MF_check.png');
+	opacity			: 50;
+}
+/** 우측 하단 BTN **/
+Button.btn_MF_01, Button.btn_MF_01:disabled
+{
+	background		: URL('theme://images_B/btn_MF_1.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_01:mouseover
+{
+	background		: URL('theme://images_B/btn_MF_1_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_01:pushed, Button.btn_MF_01:focused, Button.btn_MF_01:selected
+{
+	background		: URL('theme://images_B/btn_MF_1_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+
+Button.btn_MF_02, Button.btn_MF_02:disabled
+{
+	background		: URL('theme://images_B/btn_MF_2.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_02:mouseover
+{
+	background		: URL('theme://images_B/btn_MF_2_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_02:pushed, Button.btn_MF_02:focused, Button.btn_MF_02:selected
+{
+	background		: URL('theme://images_B/btn_MF_2_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+
+Button.btn_MF_03, Button.btn_MF_03:disabled
+{
+	background		: URL('theme://images_B/btn_MF_3.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_03:mouseover
+{
+	background		: URL('theme://images_B/btn_MF_3_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_03:pushed, Button.btn_MF_03:focused, Button.btn_MF_03:selected
+{
+	background		: URL('theme://images_B/btn_MF_3_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+
+Button.btn_MF_04, Button.btn_MF_04:disabled
+{
+	background		: URL('theme://images_B/btn_MF_4.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_04:mouseover
+{
+	background		: URL('theme://images_B/btn_MF_4_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_04:pushed, Button.btn_MF_04:focused, Button.btn_MF_04:selected
+{
+	background		: URL('theme://images_B/btn_MF_4_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+
+Button.btn_MF_05, Button.btn_MF_05:disabled
+{
+	background		: URL('theme://images_B/btn_MF_5.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_05:mouseover
+{
+	background		: URL('theme://images_B/btn_MF_5_O.png');
+	border			: 0 none;
+	bordertype		: normal;
+}
+Button.btn_MF_05:pushed, Button.btn_MF_05:focused, Button.btn_MF_05:selected
+{
+	background		: URL('theme://images_B/btn_MF_5_P.png');
+	border			: 0 none;
+	bordertype		: normal;
+}

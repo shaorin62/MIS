@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="HATC0040P01" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="휴가내역(팝업)" position="absolute" scrollbars="none" left="0" width="700" top="0" height="391">
+    <Layouts>
+      <Layout>
+        <Grid selecttype="row" binddataset="dsAT_HDAPXH" cellsizingtype="both" enable="true" id="grdAT_HDAPXH" useinputpanel="false" oncelldblclick="fn_Confirm" taborder="0" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="126" cssclass="styGrid01" autofittype="col" scrollbars="autovert" tabstop="true" right="8" bottom="10">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="100"/>
+                <Column size="200"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell rowspan="2" text="신청일자"/>
+                <Cell col="1" rowspan="2" text="휴가구분"/>
+                <Cell col="2" colspan="2" text="휴가기간"/>
+                <Cell col="4" rowspan="2" text="휴가일수"/>
+                <Cell col="5" rowspan="2" text="휴가사유"/>
+                <Cell row="1" col="2" text="시작일"/>
+                <Cell row="1" col="3" text="종료일"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:APPR_DATE"/>
+                <Cell col="1" text="bind:WORK_GUBN"/>
+                <Cell col="2" displaytype="date" edittype="none" text="bind:STRT_DATE"/>
+                <Cell col="3" displaytype="date" edittype="none" text="bind:ENDX_DATE"/>
+                <Cell col="4" text="bind:HOLY_DAYS"/>
+                <Cell col="5" style="align:left;" text="bind:HOLY_RESN"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox0" position="absolute" left="8" top="58" height="43" cssclass="styFormSearchBox" right="8"/>
+        <Static id="Static02" taborder="20" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="7" height="415"/>
+        <Static id="Static06" taborder="21" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" top="0" right="0" width="8" height="415"/>
+        <Static id="Static01" taborder="23" text="h 15" visible="false" left="320" top="40" width="56" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="24" text="h 25" visible="false" left="296" top="101" width="56" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="28" text="h 6" visible="false" left="23" top="120" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation" taborder="29" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="7" top="105" width="206" height="21"/>
+        <Static id="Static30" taborder="31" text="휴가기간" cssclass="styFormSearchCapBe" left="35" top="69" width="98" height="21"/>
+        <Calendar id="calSHRHOLY_DATE1" taborder="32" value="20160101" dateformat="yyyy-MM-dd" left="105" top="69" width="100" height="21"/>
+        <Static id="Static55" taborder="33" text="~" left="207" top="69" width="14" height="21" style="align: center middle;"/>
+        <Calendar id="calSHRHOLY_DATE2" taborder="34" value="20160101" dateformat="yyyy-MM-dd" left="222" top="69" width="100" height="21"/>
+        <Static id="Static31" taborder="35" text="사원" cssclass="styFormSearchCap" left="351" top="69" width="68" height="21"/>
+        <Edit id="edtSHREMPL_NUMB" taborder="36" enable="false" left="393" top="69" width="80" height="21"/>
+        <Static id="imgHelpEMPL_NUMB" taborder="37" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="475" top="69" width="21" height="21" enable="false"/>
+        <Edit id="edtSHREMPL_NAME" taborder="38" left="498" top="69" width="100" height="21" onkillfocus="fn_HelpDialoge" enable="false"/>
+        <Static id="st_FormTitle" taborder="41" text="휴가신청조회 팝업" cssclass="styFormTitle" left="8" top="0" right="8" height="29" style="align: middle left;"/>
+        <Div id="div_ButtonList" taborder="42" tabstop="false" url="common::comButtonType01.xfdl" top="31" right="8" width="455" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Static id="st_FormLocation" taborder="43" text="홈 &gt; 1메뉴 &gt; 자금계획관리" cssclass="styFormLocation" top="0" right="16" width="555" height="29" style="align: right middle;"/>
+        <Static id="Static07" taborder="44" text="h 4" visible="false" left="564" top="54" width="128" height="4" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsAT_HDAPXH">
+        <ColumnInfo>
+          <Column id="DOCU_IDXX" size="10" prop="default" type="STRING"/>
+          <Column id="APPR_SEQN" size="11" prop="default" type="STRING"/>
+          <Column id="DOCU_IDXX_SEQN" size="20" prop="default" type="STRING"/>
+          <Column id="APPR_DATE" size="10" prop="default" type="STRING"/>
+          <Column id="TRGT_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="APPR_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="TRGT_NAME" size="10" prop="default" type="STRING"/>
+          <Column id="APPR_NAME" size="10" prop="default" type="STRING"/>
+          <Column id="HOLY_RESN" size="200" prop="default" type="STRING"/>
+          <Column id="WORK_GUBN" size="5" prop="default" type="STRING"/>
+          <Column id="STRT_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ENDX_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="HOLY_DAYS" size="3" prop="default" type="STRING"/>
+          <Column id="ANNU_NUMB" size="5" prop="default" type="STRING"/>
+          <Column id="ANNU_USED" size="5" prop="default" type="STRING"/>
+          <Column id="ANNU_REMA" size="5" prop="default" type="STRING"/>
+          <Column id="PRMT_NUMB" size="5" prop="default" type="STRING"/>
+          <Column id="PRMT_REMA" size="5" prop="default" type="STRING"/>
+          <Column id="CNCL_GUBN" size="5" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ *   Form Common Script                                                                            *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                     *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                      *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리              *
+ *                                                                                                 *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망   *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_gfn.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "FTFFFFFF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "HATC0040P01"; //해당 Form에서 사용 할 Package 명
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo){
+
+	
+	var iNowDate = this.fnc_GetServerDateTime("DATE");
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	
+	this.calSHRHOLY_DATE1.set_value(this.fnc_SubStr(iNowDate, 0, 6)+"01");
+	this.calSHRHOLY_DATE2.set_value(this.fnc_SubStr(iNowDate, 0, 6)+""+this.fnc_GetLastDayOfMonth(iNowDate));
+	
+	
+	this.edtSHREMPL_NAME.set_value(application.GBL_USERNM);
+	this.edtSHREMPL_NUMB.set_value(application.GBL_EMPLNO);
+	
+	/*권한에 따라 사원번호 수정 가능여부 결정*/
+	/*개발을 위해 권한 level을 1로 셋팅*/
+	//this.sUSERLAVEL = 1;
+	
+	switch(this.sUSERLAVEL){
+		case 1: 
+			this.imgHelpEMPL_NUMB.set_enable(true); 	//검색조건 사원 선택
+			this.edtSHREMPL_NAME.set_enable(true); 		//검색조건 사원명
+			break;
+	}
+
+}
+ 
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj:Button, e:nexacro.ClickEventInfo){
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj:Button, e:nexacro.ClickEventInfo){
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsAT_HDAPXH");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsAT_HDAPXH=dsAT_HDAPXH";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdAT_HDAPXH.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj:Button, e:nexacro.ClickEventInfo){
+	//기능없음
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj:Button, e:nexacro.ClickEventInfo){
+	//기능없음
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj:Button, e:nexacro.ClickEventInfo){
+	this.close();
+	//기능없음
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj:Button, e:nexacro.ClickEventInfo){
+	//기능없음
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj:Button, e:nexacro.ClickEventInfo){
+
+	this.fnc_ToExcel(this);
+	
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj:Button, e:nexacro.ClickEventInfo){
+	//기능없음.
+}
+
+/*-----------------------------------+
+ |  10. 화면 종료時 처리 할 사항  |
+ +------------------------------------*/
+ this.fn_FormUnloadCheckProcess = function (obj:Form,  e:nexacro.CloseEventInfo){
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("",this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+	
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo){
+	
+	return this.fnc_FormUnloadCheck(obj, this);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)     |
+ +------------------------------------*/
+this.fn_HotKey = function (obj, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+	
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-------------------+
+ /  조회 여부 체크!   /
+ +--------------------*/
+this.fn_SearchItemCheck = function (){
+	
+	
+	if (this.fnc_DatasetChangeCheck("dsAT_HDAPXH")) {
+		return this.fnc_Message("TMM023");
+	}
+
+	if (this.fnc_IsDate(this.calSHRHOLY_DATE1.value) == false) {
+		return this.fnc_SearchCheckPostAction("TMM001", "휴가시작일", this.calSHRHOLY_DATE1);
+	}
+
+	if (this.fnc_IsDate(this.calSHRHOLY_DATE2.value) == false) {
+		return this.fnc_SearchCheckPostAction("TMM001", "휴가종료일", this.calSHRHOLY_DATE2);
+	}
+
+	if (this.calSHRHOLY_DATE1.value > this.calSHRHOLY_DATE2.value) {
+		return this.fnc_SearchCheckPostAction("TMM022", "휴가시작일,휴가종료일자", this.calSHRHOLY_DATE2);
+	}
+	
+	
+	return true;
+	
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (){
+
+	return true;
+	
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function (){
+
+	return true;
+
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind){
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00"){
+	
+		sReturnString  = " pgm="        + this.fnc_Quote(this.sPACKAGENAME); //Package(Action Bean명)
+		sReturnString += " action="     + this.fnc_Quote(sKind); 		     //호출할 Package의 Method명
+		sReturnString += " HOLY_DATE1=" + this.fnc_Quote(this.fnc_Trim(this.calSHRHOLY_DATE1.value)); 
+		sReturnString += " HOLY_DATE2=" + this.fnc_Quote(this.fnc_Trim(this.calSHRHOLY_DATE2.value)); 
+		sReturnString += " EMPL_NUMB="  + this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+	}
+	
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG){
+	
+	if (ErrorCode < 0) {
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+	
+		this.fn_PostProcess(sMethodName);
+		
+	}
+	
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName){
+
+	if (sMethodName == "SEARCH00"){
+		this.fnc_Information(this.stInformation, this.dsAT_HDAPXH.rowcount, "SHR"); 
+		this.fnc_Message("TMM018", this.dsAT_HDAPXH.rowcount);
+		
+	}
+	
+}
+
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj, nOldRow, nRow){
+	//기능없음
+}
+
+/*----------------------------------------------------------------+
+ | Help Popup Open                     |
+ +-----------------------------------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+    var arrParam = new Array();
+
+    if ((obj.name == "imgHelpEMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) {
+
+        arrParam[0] = "HRM0001"; //HRM0001                               
+        arrParam[1] = "";                               
+        arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value); 
+        arrParam[3] = "Y";                                       
+        arrParam[4] = "edtSHREMPL_NAME";                         
+        arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";         
+        arrParam[6] = "0,1";                                     
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+
+   }     
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/*---------------+
+ |  확인 처리 !  |
+ +---------------*/
+this.fn_Confirm = function (obj:Grid, e:GridClickEventInfo) {
+
+	//var iColumnCount = this.dsTM_NWPOST.getColCount();
+	var arrReturn = new Array(3);
+
+	// 반환 할 자료(Array) 만들기
+	arrReturn[0] = this.dsAT_HDAPXH.getColumn(this.dsAT_HDAPXH.rowposition, "DOCU_IDXX");
+	arrReturn[1] = this.dsAT_HDAPXH.getColumn(this.dsAT_HDAPXH.rowposition, "APPR_SEQN");
+	arrReturn[2] = this.dsAT_HDAPXH.getColumn(this.dsAT_HDAPXH.rowposition, "DOCU_IDXX_SEQN");
+	arrReturn[3] = this.dsAT_HDAPXH.getColumn(this.dsAT_HDAPXH.rowposition, "MGAM_GUBN1");
+	arrReturn[4] = this.dsAT_HDAPXH.getColumn(this.dsAT_HDAPXH.rowposition, "MGAM_GUBN2");
+		
+	this.fnc_PopupClose(arrReturn);
+
+}
+
+]]></Script>
+  </Form>
+</FDL>

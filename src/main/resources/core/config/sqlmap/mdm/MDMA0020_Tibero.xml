@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMA0020">
+
+<!--  
+ *   프로그램명 : 전파 일괄청약
+ *   작 성 일 : 2016.11.01(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+
+<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.01(표준화 완료)
+		내      용  : 수수료 일괄청약 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 광고주코드
+	-->
+	<select id="MDMA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 		
+		SELECT /* MDMA0020.SEARCH00 수수료 일괄청약 조회 */
+                   A.YEAR_MNTH              /* 년월 */
+                 , A.NUMB_NUMB
+                 , B.CUST_CODE              /* 광고주코드 */
+                 , C.CUST_NAME				/* 광고주명 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , F.CUST_CODE AS ENTP_CODE
+                 , E.OFFI_NAME AS ENTP_NAME
+                 , A.BUSI_FLAG              /* 사업권역 */
+                 , A.DEPT_CODE              /* 부서코드 */
+                 , A.AMNT_FILD              /* 합계금액 */
+                 , A.REG0_BRAN              /* 본사 */
+                 , A.REG1_BRAN              /* 지사1 */
+                 , A.REG2_BRAN              /* 지사2 */
+                 , A.REG3_BRAN              /* 지사3 */
+                 , A.REG4_BRAN              /* 지사4 */
+                 , A.REG5_BRAN              /* 지사5 */
+                 , A.REG6_BRAN              /* 지사6 */
+                 , A.REG7_BRAN              /* 지사7 */
+                 , A.REG8_BRAN              /* 지사8 */
+                 , A.REG9_BRAN              /* 지사9 */
+                 , A.CMTR_NUMB              /* 수수료 거래명세서번호 */
+                 , A.CMTX_NUMB              /* 수수료 세금계산서 번호 */
+                 , A.CMCH_NUMB              /* 수수료 전표번호 */
+                 , A.KBNT_FLAG              /* 코바넷 미크 구분 */
+                 , A.AREA_NAME
+                 , A.EMPL_CODE				/*사원번호*/
+              FROM MD_ETCMXM A   
+              LEFT JOIN MD_KBNTXM B ON  ( A.CUST_CODE = B.KBNT_CODE OR A.CUST_CODE = B.SBSX_CODE )
+              LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE  
+              LEFT JOIN MD_KBNTXM D ON A.ENTP_CODE = D.KBNT_CODE  
+              LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+              LEFT JOIN TA_CUSTXM F ON F.BIZR_NUMB = E.BSNS_NUMB
+              WHERE A.KBNT_FLAG = #KBNT_FLAG#
+	]]>
+	<isNotEmpty prepend="AND" property="YEAR_MNTH">
+			A.YEAR_MNTH = #YEAR_MNTH# 	/* 년월 */
+	</isNotEmpty>
+    <isNotEmpty prepend="AND" property="CUST_CODE">
+			B.CUST_CODE = #CUST_CODE#		/* 광고주코드 */
+	</isNotEmpty>		
+	<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%' || #CUST_NAME#	|| '%'	/* 광고주명 */
+	</isNotEmpty>	
+	<![CDATA[ 		
+	ORDER BY A.NUMB_NUMB
+	]]>	
+	</select>
+
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.04(표준화 완료)
+		내      용 : 수수료 시트저장
+	-->
+	<insert id="MDMA0020.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO MD_ETCMXM (  /* MDMA0020.SAVE00 수수료 확정처리 */
+                YEAR_MNTH        /* 년월 */
+               ,NUMB_NUMB
+               ,CUST_CODE        /* 광고주코드 */
+               ,MEDX_CODE        /* 매체사코드 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,BUSI_FLAG        /* 사업권역 */
+               ,DEPT_CODE        /* 부서코드 */
+               ,AMNT_FILD        /* 합계금액 */
+               ,REG0_BRAN        /* 본사 */
+               ,REG1_BRAN        /* 지사1 */
+               ,REG2_BRAN        /* 지사2 */
+               ,REG3_BRAN        /* 지사3 */
+               ,REG4_BRAN        /* 지사4 */
+               ,REG5_BRAN        /* 지사5 */
+               ,REG6_BRAN        /* 지사6 */
+               ,REG7_BRAN        /* 지사7 */
+               ,REG8_BRAN        /* 지사8 */
+               ,REG9_BRAN        /* 지사9 */
+               ,CMTR_NUMB        /* 수수료 거래명세서번호 */
+               ,CMTX_NUMB        /* 수수료 세금계산서 번호 */
+               ,CMCH_NUMB        /* 수수료 전표번호 */
+               ,KBNT_FLAG			/*코바넷구분*/
+               ,ENTP_CODE			/*광고회사코드*/
+               ,AREA_NAME			/*지역*/
+               ,EMPL_CODE			/*사원번호*/
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 년월 */
+              ,#NUMB_NUMB#
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#MEDX_CODE#       /* 매체사코드 */
+              ,'A00A'       /* 매체구분 */
+              ,#BUSI_FLAG#       /* 사업권역 */
+              ,#DEPT_CODE#       /* 부서코드 */
+              ,#AMNT_FILD#       /* 합계금액 */
+              ,#REG0_BRAN#       /* 본사 */
+              ,#REG1_BRAN#       /* 지사1 */
+              ,#REG2_BRAN#       /* 지사2 */
+              ,#REG3_BRAN#       /* 지사3 */
+              ,#REG4_BRAN#       /* 지사4 */
+              ,#REG5_BRAN#       /* 지사5 */
+              ,#REG6_BRAN#       /* 지사6 */
+              ,#REG7_BRAN#       /* 지사7 */
+              ,#REG8_BRAN#       /* 지사8 */
+              ,#REG9_BRAN#       /* 지사9 */
+              ,#CMTR_NUMB#     /* 수수료 거래명세서번호 */
+              ,#CMTX_NUMB#     /* 수수료 세금계산서 번호 */
+              ,#CMCH_NUMB#     /* 수수료 전표번호 */
+              ,#KBNT_FLAG#		/*코바넷구분*/
+              ,#ENTP_CODE#		/*광고회사코드*/
+              ,#AREA_NAME#		/*지역*/
+              ,#EMPL_CODE#		/*사원번호*/
+              )
+
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.04(표준화 완료)
+		내      용 : 전파 수수료 테이블 저장
+	-->
+	
+	<!-- 
+	전파테이블
+	SELECT	
+		CHEK_FILD
+		,YEAR_MNTH
+		,CUST_CODE
+		,CUST_NAME
+		,'' AS BRND_CODE
+		,'' AS BRND_NAME
+		,MEDX_FLAG
+		,MEDX_FLNM
+		,XXAD_FLAG
+		,MEDX_CODE
+		,MEDX_CDNM
+		,'' AS RMED_CDNM
+		,DTLX_CONT
+		,SUM(AMNT_FILD) AS AMNT_FILD
+		,(CASE WHEN SUM(COMI_FILD) != 0 THEN SUM(COMI_FILD)
+		WHEN MEDX_FLAG != 'A001' THEN SUM(AMNT_FILD)*0.13
+		WHEN SUM(AMNT_FILD) > 800000000 THEN 24000000+66000000+(SUM(AMNT_FILD)-800000000)*0.093  
+		WHEN SUM(AMNT_FILD) > 200000000 THEN 24000000+(SUM(AMNT_FILD)-200000000)*0.11
+        ELSE SUM(AMNT_FILD)*0.12 END) AS COMI_FILD
+		,MEMO_FILD
+		,AORX_FLAG
+	FROM
+	(	
+		SELECT /*  MRPA0010.SEARCH00 세금계산서가 발행된 개별청약서 목록 조회 */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , C.CUST_NAME                        /* 광고주 사업장명 */
+                 , A.BRND_CODE						/* 브랜드 코드 */
+                 , G.BRND_NAME						/* 브랜드 명 */
+              	 , A.MEDX_FLAG						/* 매체구분 */
+                 , H.COMM_CDNM AS MEDX_FLNM		/* 매체구분 */
+                 , '' AS XXAD_FLAG					/*매체설명*/
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM 		 /* 매체사명 */
+                 , I.CUST_NAME AS RMED_CDNM 
+                 , '' AS DTLX_CONT					/*세부내용*/
+				 , (CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD) ELSE A.AMNT_FILD END)/#MONY_UNIT# AS AMNT_FILD			/*광고료*/
+				 , (CASE WHEN A.BROD_FLAG = 'D029' OR A.BROD_FLAG BETWEEN 'D011' AND 'D027' THEN -ABS(A.AMNT_FILD*NVL(A.COMI_RATE,0)) ELSE A.AMNT_FILD*NVL(A.COMI_RATE,0) END)/#MONY_UNIT# AS COMI_FILD		/*수수료*/
+				 , A.MEMO_FILD							/*기타*/
+				 , AORX_FLAG								/*AOR구분*/
+              FROM MD_ETMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN MD_BRNDXM G ON A.CUST_CODE = G.CUST_CODE AND A.BRND_CODE = G.BRND_CODE
+                LEFT JOIN MD_CODEXM H ON A.MEDX_FLAG = H.COMM_CODE
+                LEFT JOIN MD_CUSTXM I ON A.RMED_CODE = I.CUST_CODE AND A.MEDX_CODE=I.HIGH_CODE
+                WHERE 
+                A.TRTX_NUMB IS NOT NULL
+                AND A.YEAR_MNTH >= #YEAR_MNTH#        /* 년월 */
+                AND A.YEAR_MNTH <= #YEAR_MNTH2#
+                AND A.YEAR_MNTH <= '201612'
+          ]]>
+        <isNotEmpty property="MEDX_FLAG">
+			<isNotEqual prepend="AND" property="MEDX_FLAG" compareValue="A00A">
+				A.MEDX_FLAG = #MEDX_FLAG#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%'||#CUST_NAME#||'%'			/* 광고주명 */
+		</isNotEmpty>	
+        <![CDATA[ 
+        ) B
+        GROUP BY B.CHEK_FILD,B.YEAR_MNTH ,B.CUST_CODE ,B.CUST_NAME, B.MEDX_FLAG, B.MEDX_FLNM,B.XXAD_FLAG ,B.MEDX_CODE
+        , B.MEDX_CDNM, B.DTLX_CONT, B.MEMO_FILD , B.AORX_FLAG
+	UNION ALL
+	 -->
+	<insert id="MDMA0020.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO MD_COMIXM (  /* 저장주석수정바람 *//* [] */
+                YEAR_MNTH        /* 년월 */
+               ,ENTP_CODE        /* 광고회사코드 */
+     		   ,CUST_CODE
+               ,MEDX_FLAG        /* 매체구분 */
+               ,BUSI_FLAG        /* 사업구분 */
+               ,DEPT_CODE        /* 부서번호 */
+               ,EMPL_CODE        /* 사원번호 */
+               ,KBNT_FLAG        /* 코바코구분 */
+               ,MEDX_CODE        /* 매체사코드 */
+               ,COMI_FILD        /* 수수료금액 */
+              )
+SELECT * FROM 
+(
+SELECT  
+                 A.YEAR_MNTH
+                 , F.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , B.CUST_CODE
+                 , CASE WHEN A.BUSI_FLAG IN ('TV수수료','가상/간접수수료','외주간접수수료') THEN 'A001'
+                 WHEN A.BUSI_FLAG IN ('RD수수료') THEN 'A002'
+                 ELSE 'A003' END
+                 , A.BUSI_FLAG
+                 , A.DEPT_CODE
+                 , A.EMPL_CODE
+                 , SUM(A.REG0_BRAN) AS TAX0_AMTX            /* 공급가액  */
+                 , SUM(A.REG1_BRAN) AS TAX1_AMTX            /* 공급가액  */ 
+                 , SUM(A.REG2_BRAN) AS TAX2_AMTX            /* 공급가액  */
+                 , SUM(A.REG3_BRAN) AS TAX3_AMTX            /* 공급가액  */
+                 , SUM(A.REG4_BRAN) AS TAX4_AMTX            /* 공급가액  */
+                 , A.KBNT_FLAG						/*코바넷,SBS구분*/
+                 FROM MD_ETCMXM A 
+                 LEFT JOIN MD_KBNTXM B ON ( A.CUST_CODE = B.KBNT_CODE OR A.CUST_CODE = B.SBSX_CODE )
+                 LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				 LEFT JOIN TA_CUSTXM F ON F.BIZR_NUMB = E.BSNS_NUMB
+                WHERE YEAR_MNTH = #YEAR_MNTH# AND A.BUSI_FLAG IN ('TV수수료','가상/간접수수료','외주간접수수료','RD수수료')
+                AND A.CMTX_NUMB IS NULL AND A.KBNT_FLAG = #KBNT_FLAG#
+                AND A.CUST_CODE IS NOT NULL   
+                GROUP BY A.YEAR_MNTH,A.MEDX_CODE,A.MEDX_FLAG,A.DEPT_CODE,A.EMPL_CODE,A.KBNT_FLAG,B.CUST_CODE,A.BUSI_FLAG,F.CUST_CODE
+)
+UNPIVOT (TAXX_AMTX FOR MEDX_CODE IN (TAX0_AMTX AS DECODE(#KBNT_FLAG#,'A','A001','B001'), TAX1_AMTX AS 'A002',TAX2_AMTX AS 'A003', TAX3_AMTX AS 'A004', TAX4_AMTX AS 'A005'))
+WHERE TAXX_AMTX!=0
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2017.01.25(표준화 완료)
+		내      용 : 전파 수수료 테이블 저장 - 위수탁금액 입력
+	-->
+	<update id="MDMA0020.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE MD_COMIXM
+        	SET PRCE_FILD = SF_GET_AMNTFILD(YEAR_MNTH,CUST_CODE,MEDX_CODE,KBNT_FLAG,BUSI_FLAG) /* 위수탁금액 */
+        WHERE YEAR_MNTH = #YEAR_MNTH#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2017.03.31(표준화 완료)
+		내      용 : 전파 수수료 테이블 저장 - 수수료율, 부가세액, 합계액 입력
+	-->
+	<update id="MDMA0020.UPDATE11" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE MD_COMIXM
+        	SET 
+        		VATX_FILD = TRUNC(PRCE_FILD*0.1) /* 위수탁부가세 */
+        		,COMI_VATX = TRUNC(COMI_FILD*0.1) /* 수수료부가세 */
+        		,SUMX_FILD = PRCE_FILD+TRUNC(PRCE_FILD*0.1)+COMI_FILD+TRUNC(COMI_FILD*0.1) /* 합계액 */
+        		,COMI_RATE = COMI_FILD/PRCE_FILD	/* 수수료율 */
+        WHERE YEAR_MNTH = #YEAR_MNTH#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.01(표준화 완료)
+		내      용  : 세금계산서가 생성된 수수료 명세가 있는지 찾는다.
+		파라미터  : 
+	-->
+	<select id="MDMA0020.COUNT00" parameterClass="hashmap" resultClass="int">
+	<![CDATA[ 		
+		SELECT /* MDMA0020.SEARCH00 수수료 일괄청약 조회 */
+			COUNT(CMTX_NUMB)
+              FROM MD_COMIXM A   
+              WHERE YEAR_MNTH = #YEAR_MNTH#
+			AND KBNT_FLAG = #KBNT_FLAG#
+			AND CMTX_NUMB IS NOT NULL
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.04(표준화 완료)
+		내      용 : 수수료 일괄청약 삭제
+	-->
+	<delete id="MDMA0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_ETCMXM	/* MDMA0020.DELETE00 수수료 일괄청약 삭제*/
+			WHERE YEAR_MNTH = #YEAR_MNTH#
+			AND KBNT_FLAG = #KBNT_FLAG#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.04(표준화 완료)
+		내      용 : 수수료 일괄청약 삭제
+	-->
+	<delete id="MDMA0020.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_COMIXM	/* MDMA0020.DELETE01 수수료 일괄청약 삭제*/
+			WHERE YEAR_MNTH = #YEAR_MNTH#
+			AND KBNT_FLAG = #KBNT_FLAG#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.14(표준화 완료)
+		내      용  : 등록된 수수료 일괄청약 조회
+		파라미터  : 
+	-->
+	<select id="MDMA0020.ISETCM" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 		
+		SELECT /* MDMA0020.ISETCM 등록된 수수료 일괄청약 조회 */
+                   A.YEAR_MNTH              /* 년월 */
+                 , A.CUST_CODE              /* 광고주코드 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , A.BUSI_FLAG              /* 신탁구분 */
+                 , A.DEPT_CODE              /* 부서코드 */
+                 , A.AMNT_FILD              /* 합계금액 */
+                 , A.REG0_BRAN              /* 본사 */
+                 , A.REG1_BRAN              /* 지사1 */
+                 , A.REG2_BRAN              /* 지사2 */
+                 , A.REG3_BRAN              /* 지사3 */
+                 , A.REG4_BRAN              /* 지사4 */
+                 , A.REG5_BRAN              /* 지사5 */
+                 , A.KBNT_FLAG              /* 코바넷 미크 구분 */
+                 , A.ENTP_CODE              /* 회사코드 */
+                 , A.NUMB_NUMB              /* 번호 */
+                 , A.AREA_NAME              /* 지역 */
+                 , A.EMPL_CODE              /* 사원번호 */
+              FROM MD_ETCMXM A       
+             WHERE  A.YEAR_MNTH = #YEAR_MNTH# 	/* 년월 */
+             AND A.KBNT_FLAG = #KBNT_FLAG# /*코바넷 구분*/
+	]]>	
+	</select>
+	
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.14(표준화 완료)
+		내      용  : 확정처리된 수수료 일괄청약 조회
+		파라미터  : 
+	-->
+	<select id="MDMA0020.ISCOMISSION" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 		
+		SELECT /* MDMA0020.ISCOMISSION  확정처리된 수수료 일괄청약 조회*/
+                   A.YEAR_MNTH              /* 년월 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.ENTP_CODE              /* 광고회사코드 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , A.BUSI_FLAG              /* 사업구분 */
+                 , A.DEPT_CODE              /* 부서번호 */
+                 , A.EMPL_CODE              /* 사원번호 */
+                 , A.AMNT_FILD              /* 합계금액 */
+                 , A.CMTR_NUMB              /* 수수료 거래명세서번호 */
+                 , A.CMTX_NUMB              /* 수수료 세금계산서 번호 */
+                 , A.CMCH_NUMB              /* 수수료 전표번호 */
+                 , A.KBNT_FLAG              /* 코바코구분 */
+                 , A.CUST_CODE              /*  */
+              FROM MD_COMIXM A              
+             WHERE  A.YEAR_MNTH = #YEAR_MNTH# 	/* 년월 */
+             AND A.KBNT_FLAG = #KBNT_FLAG# /*코바넷 구분*/
+	]]>	
+	</select>
+
+</sqlMap>

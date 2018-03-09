@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMF0010">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 건설중 자산대체 헤더 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMF0010.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT  /* FSMF0010.SEARCH00.자산대체 헤더 */
+			        A.ACCT_UNIT     /*회계단위*/
+                   ,A.ASTF_NUMB     /*자산대체번호*/
+                   ,A.ASTF_GUBN     /*자산대체구분[ASTF_GUBN]*/
+                   ,A.ASTF_DATE     /*자산대체일*/
+                   ,A.ASTF_TAMT     /*자산대체총액*/
+                   ,A.SLIP_NUMB     /*전표번호*/
+              FROM FS_ASTFXM A 
+             WHERE 1=1
+		]]>
+		<isNotEmpty property = "ACCT_UNIT" prepend = "AND">
+			<![CDATA[
+             	A.ACCT_UNIT = #ACCT_UNIT#
+            ]]>
+        </isNotEmpty>
+		<isNotEmpty property = "ASTF_DAT1" prepend = "AND">
+			<![CDATA[
+	             A.ASTF_DATE >= #ASTF_DAT1#
+	        ]]>
+        </isNotEmpty> 
+        <isNotEmpty property = "ASTF_DAT2" prepend = "AND">
+	        <![CDATA[
+	             A.ASTF_DATE <= #ASTF_DAT2#
+	        ]]>
+        </isNotEmpty> 
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 건설중 자산대체 디테일 조회 처리
+********************************************************************************/
+ -->	
+	<select id="FSMF0010.SEARCH01" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT  /* FSMF0010.SEARCH01.자산대체 디테일 */
+			        A.ACCT_UNIT    /*회계단위[ACCT_UNIT]*/
+                   ,A.ASTF_NUMB     /*자산대체번호*/
+                   ,A.SLIP_LINE     /*전표라인번호*/
+                   ,A.ACCT_INTL     /*계정과목코드*/
+                   /*,CASE WHEN SUBSTR(A.ASST_NUMB,1,4) <= '2014' THEN
+                        SF_GET_ACCTNAME(TO_CHAR(SUBSTR(A.ASST_NUMB,1,4)), X.DPCT_ACT1)
+                     ELSE
+                        SF_GET_ACCTNAME(TO_CHAR(SUBSTR(A.ASST_NUMB,1,4)), A.ACCT_INTL)
+                     END  AS ACCT_NAME*/
+                   ,SF_GET_ACCTNAME(A.ACCT_INTL) AS ACCT_NAME /*자산계정과목명*/
+                   ,A.DEPT_CODE     /*부서코드*/
+                   ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME     /*부서명*/
+                   ,A.ASST_NAME     /*자산명*/
+                   ,A.CLSF_CODE     /*품목분류코드*/
+                   ,B.SMAL_NAME     /*품목분류명*/
+                   ,A.PRID_DPCT     /*내용년수*/
+                   ,A.ACQU_COST     /*취득단가*/
+                   ,A.ACQU_NUMB     /*취득수량*/
+                   ,A.ACQU_PRIC     /*취득금액*/
+                   ,A.ASST_NUMB     /*자산번호*/
+              FROM FS_ASTFLA A INNER JOIN VI_ASSETCLASS B
+                                       ON A.CLSF_CODE = B.SMAL_CODE
+				/*자산분류는 년도가 없기때문에 2014BASE 를 이용해서 계정 보여준다*/
+              /*LEFT OUTER JOIN FS_ASCLXM_2014BASE X ON SUBSTR(A.CLSF_CODE,1,2)=X.ASCL_CODE*/
+             WHERE 1=1
+        ]]>             
+        <isNotEmpty property = "ACCT_UNIT" prepend = "AND">
+             ACCT_UNIT = #ACCT_UNIT#
+        </isNotEmpty> 
+        <isNotEmpty property = "ASTF_NUMB" prepend = "AND">
+             ASTF_NUMB = #ASTF_NUMB#
+        </isNotEmpty>                       
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산대체 전표 삭제 처리
+                  자산등록TB과 유기적으로 작용됨. 건설중자산대체 등록시 자산을 선택함
+                  선택후 전표처리 하게 되면 기 자산등록 했던것이 자동 전표처리 되는것 이기때문에
+                  자산등록 화면의 전표번호에 조회가 되어야 하고. 삭제시 자산등록TB에 에도 NULL
+                  업데이트 해주어야 한다
+********************************************************************************/
+ -->
+	<insert id="FSMF0010.SLIPDELETE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+
+			iCNT                        DECIMAL(15,0);              /*상각여부*/
+	
+	    BEGIN
+	           /* FSMF0010.SLIPDELETE00.자산대체 전표삭제처리 */
+	        /************************************+
+	        | 1. 해당년월의 감가상각 데이터 체크 |
+	        +************************************/
+	        SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM              
+             WHERE STDS_YMTH = SUBSTR(#ASTF_DATE#, 1, 6);
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#ASTF_DATE#, 1, 4) || '년 ' || SUBSTR(#ASTF_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n자산대체전표삭제가 불가 합니다!');
+	        END IF;
+	
+	        /****************************+
+	        |  2.전표삭제 
+	        +****************************/
+	        BEGIN 
+	        
+	        PKG_FAMIFSLIP.SP_DELETE(
+	             'KR'     /*수정일시*/
+	            ,#UPDT_USID#     /*작업자*/
+	            ,#SLIP_NUMB#     /*전표번호*/
+	            ,'D'
+	        );    
+	        
+	          EXCEPTION
+			           WHEN OTHERS THEN
+			                RAISE_APPLICATION_ERROR(-20000, '전표삭제 에러'||chr(13)||chr(10)||SQLERRM);
+			  END;	        
+	
+	        /************************+
+	        |  3.자산등록 전표번호 업데이트   |
+	        +*************************/
+	        UPDATE FS_ASSTXM             /*자산마스터*/
+	           SET SLIP_NUMB = NULL        /*전표번호*/
+	         WHERE ACCT_UNIT = #ACCT_UNIT#
+	           AND ASST_NUMB IN (
+	                        SELECT ASST_NUMB
+	                        FROM FS_ASTFLA
+	                        WHERE ACCT_UNIT = #ACCT_UNIT#       /*회계단위*/
+	                          AND ASTF_NUMB = #ASTF_NUMB#       /*자산대체번호*/
+	                         )
+	         ;
+	
+	        /*********************************+
+	        |  4.디테일 및 헤더 삭제 해주기   |
+	        +*********************************/
+	        DELETE FROM FS_ASTFLA WHERE ACCT_UNIT = #ACCT_UNIT# AND ASTF_NUMB = #ASTF_NUMB#; /* 자산대체 대체계정(디테일)*/
+	        DELETE FROM FS_ASTFLS WHERE ACCT_UNIT = #ACCT_UNIT# AND ASTF_NUMB = #ASTF_NUMB#; /* 자산대체 소스전표(디테일)*/
+	        DELETE FROM FS_ASTFXM WHERE ACCT_UNIT = #ACCT_UNIT# AND ASTF_NUMB = #ASTF_NUMB#; /* 자산대체(헤더)*/
+	                                                                               
+	
+	    END;
+		]]>
+	</insert>
+	<!-- 
+/*******************************************************************************
+     작  성  자 : 최인철
+     작  성  일 : 2016. 10. 12
+     내      용 : 자산대체 전표 생성
+                       자산대체 전표 생성
+********************************************************************************/
+ -->
+ <insert id="FSMF0010.SLIP00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+			
+			iCNT            DECIMAL(15,0);                  /*상각여부*/
+			
+			sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;       /*입력자*/
+			sDEPT_CODE      TA_SLIPXM.DEPT_CODE%TYPE;       /*입력부서*/
+			sACCT_GUBN      TA_SLIPXM.ACCT_GUBN%TYPE;       /*사업장*/
+			
+		    nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE := 0;   /*전표순번*/
+		    sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /*전표번호*/
+		    sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*전표일자*/
+		    sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+		    
+				
+	    BEGIN
+	       /* FSMF0010P01.SLIP00.건설중 자산대체 전표생성  */
+	       	/************************************+
+	        | 1. 해당년월의 감가상각 데이터 체크 |
+	        +************************************/
+	        SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM              
+             WHERE STDS_YMTH = SUBSTR(#ASTF_DATE#, 1, 6);
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#ASTF_DATE#, 1, 4) || '년 ' || SUBSTR(#ASTF_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n자산대체전표삭제가 불가 합니다!');
+	        END IF;
+	        
+	        /**********************************************+
+	        |  2.날자 채번   부서 채번  
+	        +**********************************************/
+
+	        BEGIN
+	           	SELECT TO_CHAR(LAST_DAY(to_date(SUBSTR(#ASTF_DATE#, 1, 6) || '01' , 'YYYYMMDD')), 'YYYYMMDD')
+	            INTO   sSLIP_DATE
+	            FROM   DUAL
+	            ;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    sSLIP_DATE := '';
+	        END;
+	
+	        IF LENGTH(sSLIP_DATE) != 8 THEN
+	            RAISE_APPLICATION_ERROR(-20000,'기표일자를 구할 수 없습니다. 전산팀에 문의하세요.!');
+	        END IF;
+	        
+	        	        
+	        BEGIN
+	            SELECT U.DEPT_CODE
+	              INTO  sDEPT_CODE     
+	              FROM   HR_MASTXM U
+	             WHERE  EMPL_NUMB = #UPDT_USID#;
+	
+	            EXCEPTION
+	                WHEN NO_DATA_FOUND THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '입력자에 대한 정보를 찾을 수 없습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	        
+	
+	                
+	        sTITL_NAME   := SUBSTR(#ASTF_DATE#, 1, 4) || '년 ' || SUBSTR(#ASTF_DATE#, 5, 2) || '월 ' || SUBSTR(#ASTF_DATE#, 7, 2) || '일 건설중 자산대체 처리'  ;
+	
+		
+	
+	        /**********************************************+
+	        |  3.전표번호 채번 및 HEADER 추가 처리   |
+	        +**********************************************/
+	
+			   BEGIN
+		        	    
+		        	      
+						        
+							PKG_FAMIFSLIP.SP_MASTER_SAVE(#SYST_LNCD#,      /* ●시스템언어코드*/
+														 #UPDT_USID#,      /* ●수정작업자*/
+														 #ACCT_UNIT#,      /* ●회계단위 */
+														 #ACCT_GUBN#,      /* ●회계구분_사업장 */
+														 sSLIP_DATE,       /* ●전표일자(회계일자) */ 
+														 #SLIP_GUBN#,          /* SLIP_GUBN*/      /* ●전표유형구분 */
+														 sTITL_NAME,       /* ●제목 */
+														 #UPDT_USID#,      /* ●사원번호 */
+														 sDEPT_CODE,	   /* ●부서코드 */ 						 
+														 #SOUS_LNKY#,              /* SOUS_LNKY ●출처연결키 */
+														 NULL,
+														 NULL,
+														 NULL,
+														 NULL,
+														 NULL,
+														 sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+		
+		
+		            EXCEPTION
+			                WHEN OTHERS THEN
+			                    RAISE_APPLICATION_ERROR(-20000, 'HEADER 추가 에러'||chr(13)||chr(10)||SQLERRM);
+			        END;	
+	     
+	        /*************************************************+
+	        |  4.소스전표(디테일) 루프 돌리기-대변   |
+	        +*************************************************/
+	         FOR CUR_ASTFLS IN (
+	            
+	            SELECT A.ACCT_UNIT      /*회계단위*/
+	                  ,A.SLIP_LINE      /*전표라인번호*/
+	                  ,A.SSSL_NUMB      /*소스전표번호*/
+	                  ,A.SSSL_SEQN      /*소스전표라인번호*/
+	                  ,A.ACCT_INTL	                  
+	                  ,A.CUST_CODE      /*거래처코드*/
+	                  ,A.DEPT_CODE      /*부서코드*/
+	                  ,A.SOKR_AMOT      /*상계금액*/	                  
+	                  ,'건설중자산대체 처리'  AS REMK_NAME
+	                  ,D.ACCT_GUBN      /*사업장*/
+	              FROM FS_ASTFLS A	                    
+	                    LEFT JOIN VI_DEPTXM D
+	                        ON  D.DEPT_CODE = A.DEPT_CODE
+	             WHERE A.ACCT_UNIT = #ACCT_UNIT#     /*회계단위[ACCT_UNIT]*/
+	               AND A.ASTF_NUMB = #ASTF_NUMB#      /*자산대체번호*/
+	
+	        )
+	
+	        LOOP
+	        
+	          BEGIN
+	                    /*===================  대변 계정 작성[대체자산등록 전표의 금회대체액은 대변에 입력되어야됨] =================== */
+	                    
+	                    nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        CUR_ASTFLS.ACCT_UNIT,
+	                                        '100',
+	                                        CUR_ASTFLS.ACCT_INTL,  /* 상각누계계정과목  */
+	                                        CUR_ASTFLS.DEPT_CODE,
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_ASTFLS.SOKR_AMOT,
+	                                        CUR_ASTFLS.SOKR_AMOT,
+	                                        CUR_ASTFLS.SSSL_NUMB, /*상대전표번호*/
+	                                        CUR_ASTFLS.SSSL_SEQN, /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_ASTFLS.REMK_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 대변 계정 작성 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+	          
+	          
+	         END LOOP;
+	        
+	
+	
+	        /*************************************************+
+	        |  5.대체계정(디테일) 루프 돌리기-차변   |
+	        +*************************************************/
+	        
+	         FOR CUR_ASTFLA IN (
+	
+	            SELECT A.ACCT_UNIT      /*회계단위*/
+	                  ,A.SLIP_LINE      /*전표라인번호*/
+	                  ,C.DPCT_ACT1      /*자산계정과목코드*/
+	                  ,B.CUST_CODE      /*거래처코드*/
+	                  ,B.DEPT_CODE      /*부서코드*/
+	                  ,A.ACQU_PRIC      /*취득금액*/
+	                  ,'건설중자산대체 처리(' || A.ASST_NUMB || ':' || A.ASST_NAME || ')' AS DESC_REMK
+	                  ,D.ACCT_GUBN      /*사업장*/
+	              FROM FS_ASTFLA A
+	                    INNER JOIN FS_ASSTXM B
+	                        ON A.ASST_NUMB = B.ASST_NUMB
+	                    INNER JOIN VI_ASSETCLASS C
+	                        ON B.CLSF_CODE = C.SMAL_CODE
+	                    LEFT JOIN VI_DEPTXM D
+	                        ON D.DEPT_CODE = A.DEPT_CODE
+	             WHERE A.ACCT_UNIT = #ACCT_UNIT#     /*회계단위[ACCT_UNIT]*/
+	               AND A.ASTF_NUMB = #ASTF_NUMB#     /*자산대체번호*/
+	
+	        )
+	
+	        LOOP
+	
+	                    BEGIN
+	                    /*===================  대변 계정 작성[대체자산등록 전표의 금회대체액은 대변에 입력되어야됨] =================== */
+	                    
+	                    nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                         #ACCT_UNIT#,
+	                                        '100',
+	                                        CUR_ASTFLA.DPCT_ACT1,  /* 상각누계계정과목  */
+	                                        CUR_ASTFLA.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_ASTFLA.ACQU_PRIC,
+	                                        CUR_ASTFLA.ACQU_PRIC,
+	                                        '', /*상대전표번호*/
+	                                        '', /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_ASTFLA.DESC_REMK,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 대체계정 차변  ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+	          
+	          
+	         END LOOP;
+	         
+	          /*=============================================================
+		       6. FINISH 
+		    ===============================================================*/
+		     
+		     
+				   BEGIN
+				    
+			         PKG_FAMIFSLIP.SP_FINISH(
+					        #SYST_LNCD# /* ●시스템언어코드*/
+					       ,#UPDT_USID#   /* ●수정작업자*/
+						   ,sSLIP_NUMB   /* ●전표번호 */
+					    );
+					    
+				   EXCEPTION
+	               WHEN OTHERS THEN
+	                   RAISE_APPLICATION_ERROR(-20000, 'FINISH 에러'||chr(13)||chr(10)||SQLERRM);
+ 	               END;
+	
+	       
+	
+	        /***********************************************+
+	        |  7.자산대체 테이블에 전표번호 업데이트    |
+	        +***********************************************/
+	        
+	                BEGIN
+	        
+			          UPDATE FS_ASTFXM                 /*[자산대체]*/
+			           SET  SLIP_NUMB = sSLIP_NUMB  /*전표번호*/
+			               ,UPDT_DATE = SYSDATE  /*수정일시*/
+			               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+			         WHERE ACCT_UNIT  = #ACCT_UNIT#  /*회계단위[ACCT_UNIT]*/
+			           AND ASTF_NUMB  = #ASTF_NUMB#    /*자산대체번호*/
+			           ;
+	           
+	                EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 대체계정 차변  ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+	           
+	      
+	
+	        /***********************************************+
+	        |  8.자산마스터테이블에 전표번호 업데이트    |
+	        +***********************************************/
+	       
+	                BEGIN
+	                
+				        UPDATE FS_ASSTXM                    /*자산마스터*/
+				        SET  SLIP_NUMB = sSLIP_NUMB        /*전표번호*/
+				            ,SLIP_LINE = '0001'             /*전표라인번호*/
+				            ,UPDT_DATE = SYSDATE        /*수정일시*/
+				            ,UPDT_USID = #UPDT_USID#        /*수정자*/
+				        WHERE ACCT_UNIT = #ACCT_UNIT#
+				        AND ASST_NUMB IN (
+				                        SELECT ASST_NUMB
+				                        FROM FS_ASTFLA
+				                        WHERE ACCT_UNIT = #ACCT_UNIT#       /*회계단위*/
+				                          AND ASTF_NUMB = #ASTF_NUMB#        /*자산대체번호*/
+				                        )
+				         ;
+	         
+	         	           
+	                EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 대체계정 차변  ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+	           
+	         
+	    END;
+		]]>
+	</insert>
+
+</sqlMap>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMB0150">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.09
+     내       용 : 보증보험등록 조회
+********************************************************************************/
+-->
+	<select id="HRMB0150.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* HRMB0150.SEARCH00.보증보험등록 조회 */
+               A.EMPL_NUMB                                           /*사원번호*/
+             , B.EMPL_NAME                                           /*사원명*/
+             , A.OPOS_CODE                                           /*직위코드*/
+             , SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+             , A.BGIN_DATE                                           /*시작일*/
+             , A.ENDX_DATE                                           /*종료일*/
+             , A.GYIE_COMP                                           /*보증보험가입회사*/
+             , A.GYIE_AMOT                                           /*보증보험가입금액*/
+             , A.INSU_FEEX                                           /*보험료*/
+             , A.WAGE_YMTH                                           /*급여년월*/
+             , A.WADN_AMOT                                           /*급여공제금액*/
+             , A.REMK_100X                                           /*비고100*/
+          FROM HR_GRTINS A                                           /*[보증보험]*/
+          LEFT OUTER JOIN HR_MASTXM B ON A.EMPL_NUMB = B.EMPL_NUMB
+         WHERE 1=1 
+        ]]>
+        
+        <isNotEmpty prepend="AND" property="BASE_YMTH2">
+               A.WAGE_YMTH BETWEEN #BASE_YMTH1# AND #BASE_YMTH2#       /* 급여년월 */
+        </isNotEmpty>
+                
+        <isNotEmpty prepend="AND" property="EMPL_NUMB">
+               A.EMPL_NUMB = #EMPL_NUMB#                               /* 사원번호 */
+        </isNotEmpty>
+           
+        <isNotEmpty prepend="AND" property="DEPT_CODE">
+               B.DEPT_CODE = #DEPT_CODE#                               /* 부서코드 */
+        </isNotEmpty>
+           
+        <isNotEmpty prepend="AND" property="WODN_CODE">                /* 재직구분 */
+               B.WODN_CODE = #WODN_CODE#
+        </isNotEmpty>
+        
+        <isNotEmpty prepend="AND" property="BGIN_DAT2">
+               A.BGIN_DATE BETWEEN #BGIN_DAT1# AND #BGIN_DAT2#         /* 시작일 */
+        </isNotEmpty>
+        
+        <isNotEmpty prepend="AND" property="ENDX_DAT2">
+               A.ENDX_DATE BETWEEN #ENDX_DAT1# AND #ENDX_DAT2#         /* 종료일 */
+        </isNotEmpty>
+     
+        <![CDATA[
+         ORDER BY A.EMPL_NUMB
+        ]]>
+
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 황치웅
+     작 성 일 : 2017.01.24
+     내     용 : 보증보험등록 사원번호를 조회.
+********************************************************************************/
+-->
+    <select id="HRMB0150.SEARCH99" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT  /* PAYB0030.SEARCH99.지급공제등록 사원번호를 조회 */
+               A.EMPL_NUMB               /*사원번호*/
+             , A.EMPL_NAME               /*사원명*/
+             , A.OPOS_CODE               /*직위코드*/
+             , E.COMD_CDNM AS OPOS_NAME  /*직위명*/
+             , COUNT(*) OVER (PARTITION BY A.EMPL_NAME) AS CNT 
+          FROM HR_MASTXM A
+          LEFT OUTER JOIN TM_CODEXD E
+            ON E.COMM_CODE = 'OPOS_CODE'  /*직위*/
+           AND A.OPOS_CODE = E.COMD_CODE
+         WHERE  A.EMPL_NAME = #EMPL_NAME#
+           AND SUBSTR(A.ENCO_DATE, 1,6 ) <= #STDS_YMTH#
+           AND NVL(SUBSTR(A.RETR_DATE, 1,6 ), '999912') >= #STDS_YMTH#
+    ]]>
+    </select>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.09
+     내       용 : 보증보험등록 저장
+********************************************************************************/
+-->
+	<insert id="HRMB0150.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        DECLARE /* HRMB0150.SAVE00.보증보험등록 저장 */
+            v_ROWCNT        INT;
+        
+        BEGIN
+        
+            BEGIN
+                SELECT COUNT(*)
+                  INTO v_ROWCNT
+                  FROM HR_GRTINS
+                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                   AND BGIN_DATE = #BGIN_DATE#
+                ;
+        
+                EXCEPTION
+                        WHEN NO_DATA_FOUND THEN
+                                v_ROWCNT := 0;
+            END;
+        
+            IF v_ROWCNT > 0 THEN
+                    RAISE_APPLICATION_ERROR(-20000, '[' || #EMPL_NUMB# || '] ' || #EMPL_NAME# || ' 보증시작일 [' || #BGIN_DATE# || '] 이(가) 중복 입력되었습니다');
+            END IF;
+        
+        
+            INSERT INTO HR_GRTINS ( /* HRMB0150.SAVE00.보증보험등록 저장 *//* [보증보험] */
+                   EMPL_NUMB        /* 사원번호 */
+                  ,DEPT_CODE        /* 부서코드 */
+                  ,CPOS_CODE        /* 직급코드 */
+                  ,OPOS_CODE        /* 직위코드 */
+                  ,BGIN_DATE        /* 시작일 */
+                  ,ENDX_DATE        /* 종료일 */
+                  ,GYIE_COMP        /* 보증보험가입회사 */
+                  ,GYIE_AMOT        /* 보증보험가입금액 */
+                  ,INSU_FEEX        /* 보험료 */
+                  ,WAGE_YMTH        /* 급여년월 */
+                  ,WADN_AMOT        /* 급여공제금액 */
+                  ,REMK_100X        /* 비고100 */
+                  ,INST_USID        /* 입력작업자 */
+                  ,INST_DATE        /* 입력일시 */
+                  ,UPDT_USID        /* 수정작업자 */
+                  ,UPDT_DATE        /* 수정일시 */
+                  )
+           VALUES (
+                   #EMPL_NUMB#       /* 사원번호 */
+                  ,#DEPT_CODE#       /* 부서코드 */
+                  ,#CPOS_CODE#       /* 직급코드 */
+                  ,#OPOS_CODE#       /* 직위코드 */
+                  ,#BGIN_DATE#       /* 시작일 */
+                  ,#ENDX_DATE#       /* 종료일 */
+                  ,#GYIE_COMP#       /* 보증보험가입회사 */
+                  ,#GYIE_AMOT#       /* 보증보험가입금액 */
+                  ,#INSU_FEEX#       /* 보험료 */
+                  ,#WAGE_YMTH#       /* 급여년월 */
+                  ,#WADN_AMOT#       /* 급여공제금액 */
+                  ,#REMK_100X#       /* 비고100 */
+                  ,#UPDT_USID#       /* 입력작업자 */
+                  ,SYSDATE           /* 입력일시 */
+                  ,#UPDT_USID#       /* 수정작업자 */
+                  ,SYSDATE           /* 수정일시 */
+                  )
+                  ; 
+              
+        END;
+	]]>
+	</insert>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.09
+     내       용 : 보증보험등록 수정
+********************************************************************************/
+-->
+	<update id="HRMB0150.UPDATE00" parameterClass="hashmap">
+	<![CDATA[    
+        UPDATE HR_GRTINS    /* HRMB0150.UPDATE00.보증보험등록 수정 *//* [보증보험] */
+           SET  DEPT_CODE = #DEPT_CODE#  /* 부서코드 */
+               ,CPOS_CODE = #CPOS_CODE#  /* 직급코드 */
+               ,OPOS_CODE = #OPOS_CODE#  /* 직위코드 */
+               ,ENDX_DATE = #ENDX_DATE#  /* 종료일 */
+               ,GYIE_COMP = #GYIE_COMP#  /* 보증보험가입회사 */
+               ,GYIE_AMOT = #GYIE_AMOT#  /* 보증보험가입금액 */
+               ,INSU_FEEX = #INSU_FEEX#  /* 보험료 */
+               ,WAGE_YMTH = #WAGE_YMTH#  /* 급여년월 */
+               ,WADN_AMOT = #WADN_AMOT#  /* 급여공제금액 */
+               ,REMK_100X = #REMK_100X#  /* 비고100 */
+               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE = SYSDATE      /* 수정일시 */
+         WHERE EMPL_NUMB  = #EMPL_NUMB#  /* 사원번호 */
+           AND BGIN_DATE  = #BGIN_DATE#  /* 시작일 */
+     
+ 	]]>
+	</update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.09
+     내       용 : 보증보험등록 삭제
+********************************************************************************/
+-->
+	<delete id="HRMB0150.DELETE00" parameterClass="hashmap">
+	<![CDATA[ 
+        DELETE FROM HR_GRTINS /* HRMB0150.DELETE00.보증보험등록 삭제 *//* [보증보험] */
+         WHERE EMPL_NUMB = #EMPL_NUMB#   /* 사원번호 */
+           AND BGIN_DATE = #BGIN_DATE#   /* 시작일 */
+	]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 08. 11
+     내      용 : 보증보험등록  엑셀 업로드 처리
+********************************************************************************/
+ -->
+    <insert id="HRMB0150.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+     DECLARE
+        /* HRMB0150.SAVE01.보증보험등록  엑셀 업로드 처리 */
+        iCHK                    DECIMAL(15,0);  /*상태 체크*/
+        
+     BEGIN
+     
+        /*정상적으로 등록된 사원번호인지 판단*/
+        SELECT COUNT(EMPL_NUMB) INTO iCHK
+          FROM HR_MASTXM
+         WHERE EMPL_NUMB = #EMPL_NUMB#;
+
+        IF iCHK < 1 THEN
+           RAISE_APPLICATION_ERROR(-20000, #EMPL_NUMB# || ':' || #EMPL_NUMB# || '(은/는) 등록되지 않은 사원입니다!');
+        END IF;
+            
+        INSERT INTO HR_GRTINS ( /* HRMB0150.SAVE00.보증보험등록 저장 *//* [보증보험] */
+               EMPL_NUMB        /* 사원번호 */
+              ,DEPT_CODE        /* 부서코드 */
+              ,CPOS_CODE        /* 직급코드 */
+              ,OPOS_CODE        /* 직위코드 */
+              ,BGIN_DATE        /* 시작일 */
+              ,ENDX_DATE        /* 종료일 */
+              ,GYIE_COMP        /* 보증보험가입회사 */
+              ,GYIE_AMOT        /* 보증보험가입금액 */
+              ,INSU_FEEX        /* 보험료 */
+              ,WAGE_YMTH        /* 급여년월 */
+              ,WADN_AMOT        /* 급여공제금액 */
+              ,REMK_100X        /* 비고100 */
+              ,INST_USID        /* 입력작업자 */
+              ,INST_DATE        /* 입력일시 */
+              ,UPDT_USID        /* 수정작업자 */
+              ,UPDT_DATE        /* 수정일시 */
+              )
+       VALUES (
+               #EMPL_NUMB#       /* 사원번호 */
+              ,#DEPT_CODE#       /* 부서코드 */
+              ,#CPOS_CODE#       /* 직급코드 */
+              ,#OPOS_CODE#       /* 직위코드 */
+              ,#BGIN_DATE#       /* 시작일 */
+              ,#ENDX_DATE#       /* 종료일 */
+              ,#GYIE_COMP#       /* 보증보험가입회사 */
+              ,#GYIE_AMOT#       /* 보증보험가입금액 */
+              ,#INSU_FEEX#       /* 보험료 */
+              ,#WAGE_YMTH#       /* 급여년월 */
+              ,#WADN_AMOT#       /* 급여공제금액 */
+              ,#REMK_100X#       /* 비고100 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE           /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE           /* 수정일시 */
+              ); 
+    END;
+    ]]>
+    </insert>
+</sqlMap>

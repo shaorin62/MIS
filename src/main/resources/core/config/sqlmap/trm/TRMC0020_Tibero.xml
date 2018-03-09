@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">   
+
+<sqlMap namespace="TRMC0020">
+<!--
+/*******************************************************************************
+     작  성  자 : 김준수
+     작  성  일 : 2016.06.28
+     내      용 : 차입금거래현황 조회 처리
+********************************************************************************/
+ -->
+	<select id="TRMC0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  /* TRMC0020.SEARCH00 차입금거래현황 조회 */
+			         A.ACCT_UNIT    /*회계단위[ACCT_UNIT]*/
+                    ,A.DBPY_NUMB   /*차입금번호*/
+                    ,A.SEQN_NUMB   /*일련번호*/
+                    ,B.DBPY_NAME   /*차입금명*/
+                    ,B.DBPY_CUST   /*차입기관*/
+                    ,SF_GET_CUSTNAME(B.DBPY_CUST) AS DBPY_CUNM /* 차입기관명*/
+                    ,B.DBPY_KIND   /*차입종류[DBPY_KIND]*/
+                    ,B.FUND_TYPE   /*자금유형[FUND_TYPE]*/
+                    ,B.DBPY_DATE   /*차입일*/
+                    ,B.INTE_RATE   /*이자율*/
+                    ,A.TRAN_DATE   /*거래일*/
+                    ,A.DBPY_AMOT   /*차입금액*/
+                    ,A.RPAY_AMOT   /*상환금액*/
+                    ,NVL(SUM(A.DBPY_AMOT) OVER (PARTITION BY A.DBPY_NUMB
+                    							ORDER BY A.TRAN_DATE, A.SEQN_NUMB
+                    							ROWS UNBOUNDED PRECEDING) , 0)
+                 	 - NVL(SUM(A.RPAY_AMOT) OVER (PARTITION BY A.DBPY_NUMB
+					                              ORDER BY A.TRAN_DATE, A.SEQN_NUMB
+					                              ROWS UNBOUNDED PRECEDING), 0) AS DBPY_BALE /* 차입잔액 */
+                    ,A.INTE_AMOT   /*이자금액*/
+                    ,A.MAJR_REMK   /*대표적요*/
+                    ,A.SLIP_NUMB   /*전표번호*/
+                    ,C.APPR_DATE   /*회계일자*/
+               FROM TA_DBPYXD A
+                    INNER JOIN TA_DBPYXM B
+                            ON A.ACCT_UNIT = B.ACCT_UNIT
+                           AND A.DBPY_NUMB = B.DBPY_NUMB
+                     LEFT JOIN VI_SLIPSTATE C
+                            ON A.ACCT_UNIT = C.ACCT_UNIT
+                           AND A.SLIP_NUMB = C.SLIP_NUMB
+              WHERE A.ACCT_UNIT  = NVL(#ACCT_UNIT#, A.ACCT_UNIT)     /* 회계단위*/
+		]]>
+	            <isNotEmpty prepend="AND" property="DBPY_KIND">
+	                B.DBPY_KIND = #DBPY_KIND# /* 차입종류*/
+	            </isNotEmpty>
+	            <isNotEmpty prepend="AND" property="DBPY_NUMB">
+	                A.DBPY_NUMB = #DBPY_NUMB# /* 차입금번호*/
+	            </isNotEmpty>
+	            <isNotEmpty prepend="AND" property="DBPY_DAT1">
+	                A.TRAN_DATE = #TRAN_DAT1# /* 거래일자1*/
+	            </isNotEmpty>
+	            <isNotEmpty prepend="AND" property="DBPY_DAT2">
+	                A.TRAN_DATE = #TRAN_DAT2# /* 거래일자2*/
+	            </isNotEmpty>
+              
+              ORDER BY A.ACCT_UNIT, A.DBPY_NUMB, A.TRAN_DATE, A.SEQN_NUMB
+	</select>
+
+</sqlMap>

@@ -1,0 +1,525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TRMA0030" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="일자금현황" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" radiusy="10" radiusx="10" type="roundrectangle" position="absolute" left="8" right="25" top="60" height="43" cssclass="styFormSearchBox" taborder="5"/>
+        <Static id="Static00" text="회계단위" position="absolute" left="28" width="86" top="71" height="21" cssclass="styFormSearchCapBe" taborder="6"/>
+        <Combo id="cmbSHRACCT_UNIT" taborder="0" autoselect="true" displayrowcount="20" onsetfocus="fn_EditFocus" position="absolute" ontextchanged="fn_clearData" left="96" width="146" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="Static03" text="기준일자" position="absolute" left="272" width="76" top="71" height="21" cssclass="styFormSearchCapBe" taborder="7"/>
+        <Calendar id="calSHRACCT_DATE" taborder="1" type="normal" dateformat="yyyy-MM-dd" editformat="yyyy-MM-dd" position="absolute" value="null" ontextchange="fn_clearData" onspin="fn_clearData" left="342" width="99" top="71" height="21" cssclass="styFormItemCalendar" onsetfocus="fn_EditFocus"/>
+        <Tab id="Tab0" taborder="2" tabindex="0" position="absolute" left="8" right="25" top="113" bottom="15" onchanged="Tab0_onchanged">
+          <Tabpages>
+            <Tabpage id="TabD1" text="제예금현황" scrollbars="autoboth">
+              <Layouts>
+                <Layout>
+                  <Grid id="grdCrossTab" taborder="0" binddataset="dsTA_RESULT1" wheelscrollrow="1" autoenter="none" useinputpanel="false" selecttype="row" cellsizingtype="both" autofittype="col" onexpanddown="fn_HelpDialoge" position="absolute" left="10" right="10" top="25" bottom="10" cssclass="styGrid01" nosort="true">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="100"/>
+                          <Column size="200"/>
+                          <Column size="150"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="0"/>
+                          <Column size="0"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell text="분류"/>
+                          <Cell col="1" text="구분"/>
+                          <Cell col="2" text="계좌번호"/>
+                          <Cell col="3" text="전일"/>
+                          <Cell col="4" text="입금"/>
+                          <Cell col="5" text="출금"/>
+                          <Cell col="6" colspan="3" text="잔액"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell edittype="none" style="align:left;" text="bind:MAIN_NAME" suppress="1"/>
+                          <Cell col="1" style="align:EXPR(dataset.getRowLevel(currow)==0 ? &quot;left&quot; : &quot;center&quot;);" text="bind:ACNT_NAME" expr="expr:Eco.decode(dataset.getRowLevel(currow), 1, dataset.getColumn(currow - 1, 'MAIN_NAME') + ' 소계', ACNT_NAME)"/>
+                          <Cell col="2" style="align:left;" text="bind:ACNT_NUMB"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="bind:SLIP_AMNT_BEF" mask="#,###"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="bind:SLIP_AMNT_IN" mask="#,###"/>
+                          <Cell col="5" displaytype="number" style="align:right;" text="bind:SLIP_AMNT_OUT" mask="#,###"/>
+                          <Cell col="6" displaytype="number" style="align:right;" text="bind:REMA_AMNT" mask="#,###"/>
+                          <Cell col="7" displaytype="number" style="align:right;" text="bind:BICNET_AMNT" mask="#,###"/>
+                          <Cell col="8" displaytype="number" style="align:right;" expr="expr:toNumber(REMA_AMNT,0) - toNumber(BICNET_AMNT,0)" mask="#,###"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell colspan="3" style="align:center;" text="총계"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('SLIP_AMNT_BEF'),0)" mask="#,###"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('SLIP_AMNT_IN'),0)" mask="#,###"/>
+                          <Cell col="5" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('SLIP_AMNT_OUT'),0)" mask="#,###"/>
+                          <Cell col="6" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('REMA_AMNT'),0)" mask="#,###"/>
+                          <Cell col="7" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('BICNET_AMNT'),0)" mask="#,###"/>
+                          <Cell col="8" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('DIFF_AMNT'),0)" mask="#,###"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="stInformation" taborder="1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="4" width="262" height="21"/>
+                  <Static id="Static00" taborder="2" text="h 25" visible="false" left="573" top="0" width="80" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static09" taborder="3" text="h 6" visible="false" left="8" top="19" width="216" height="6" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="TabD2" text="출납현황">
+              <Layouts>
+                <Layout>
+                  <Grid id="grdCrossTab1" taborder="0" binddataset="dsTA_RESULT2" wheelscrollrow="1" autoenter="none" useinputpanel="false" selecttype="row" cellsizingtype="both" onexpanddown="fn_HelpDialoge" position="absolute" left="10" right="10" top="25" bottom="10" cssclass="styGrid01" autofittype="col" oncelldblclick="Tab0_TabD2_grdCrossTab1_oncelldblclick" nosort="true">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="140"/>
+                          <Column size="402"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="26" band="head"/>
+                          <Row size="26" band="head"/>
+                          <Row size="26"/>
+                          <Row size="26" band="summ"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell rowspan="2" text="전표번호"/>
+                          <Cell col="1" rowspan="2" text="구분"/>
+                          <Cell col="2" colspan="2" text="현금"/>
+                          <Cell col="4" colspan="2" text="제예금"/>
+                          <Cell row="1" col="2" text="입금"/>
+                          <Cell row="1" col="3" text="출금"/>
+                          <Cell row="1" col="4" text="입금"/>
+                          <Cell row="1" col="5" text="출금"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell text="bind:DISP_NUMB"/>
+                          <Cell col="1" style="align:EXPR(dataset.getRowLevel(currow)==0 ? 'left' : 'center');" text="bind:REMK_NAME" expr="expr:Eco.decode(dataset.getRowLevel(currow), 1, &quot;금일계&quot;, REMK_NAME)"/>
+                          <Cell col="2" displaytype="number" style="align:right;" text="bind:CASH_IN" mask="#,###"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="bind:CASH_OUT" mask="#,###"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="bind:ACNT_IN" mask="#,###"/>
+                          <Cell col="5" displaytype="number" style="align:right;" text="bind:ACNT_OUT" mask="#,###"/>
+                        </Band>
+                        <Band id="summary">
+                          <Cell/>
+                          <Cell col="1" style="align:center;" text="잔  액"/>
+                          <Cell col="2" colspan="2" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('CASH_IN'),0) - nexacro.toNumber(dataset.getSum('CASH_OUT'),0)" mask="#,###"/>
+                          <Cell col="4" colspan="2" displaytype="number" style="align:right;" text="expr:nexacro.toNumber(dataset.getSum('ACNT_IN'),0) - nexacro.toNumber(dataset.getSum('ACNT_OUT'),0)" mask="#,###"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="stInformation" taborder="1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="4" width="262" height="21"/>
+                  <Static id="Static00" taborder="2" text="h 25" visible="false" left="573" top="0" width="80" height="25" style="background:#fb7b7b7a;"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <Static id="st_FormTitle" taborder="30" text="일자금현황" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="31" text="홈 &gt; 회계관리&gt;사업장등록" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="32" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="33" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="34" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="35" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="36" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="37" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="38" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="39" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="40" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTA_RESULT1" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true" oncolumnchanged="fn_ColumnChanged">
+        <ColumnInfo>
+          <Column id="MAIN_CODE" type="STRING" size="256"/>
+          <Column id="MAIN_NAME" type="STRING" size="256"/>
+          <Column id="ACCT_INTL" type="STRING" size="256"/>
+          <Column id="ACNT_NAME" type="STRING" size="50"/>
+          <Column id="ACNT_NUMB" type="STRING" size="30"/>
+          <Column id="SLIP_AMNT_BEF" type="BIGDECIMAL" size="22"/>
+          <Column id="SLIP_AMNT_IN" type="BIGDECIMAL" size="22"/>
+          <Column id="SLIP_AMNT_OUT" type="BIGDECIMAL" size="22"/>
+          <Column id="REMA_AMNT" type="BIGDECIMAL" size="22"/>
+          <Column id="SORT_ORD1" type="BIGDECIMAL" size="22"/>
+          <Column id="SORT_ORD2" type="BIGDECIMAL" size="22"/>
+          <Column id="BICNET_AMNT" type="BIGDECIMAL" size="22"/>
+          <Column id="DIFF_AMNT" type="BIGDECIMAL" size="22"/>
+          <Column id="GROUP_CNT" type="STRING" size="22" prop="COUNT"/>
+          <Column id="DESC_REMK" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRACCT_UNIT</Col>
+            <Col id="CODEID">ACCT_UNIT</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTA_RESULT2" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true" oncolumnchanged="fn_ColumnChanged">
+        <ColumnInfo>
+          <Column id="ACCT_INTL" type="STRING" size="256"/>
+          <Column id="DISP_NUMB" type="STRING" size="256"/>
+          <Column id="SLIP_NUMB" type="STRING" size="256"/>
+          <Column id="SLIP_LINE" type="STRING" size="256"/>
+          <Column id="REMK_NAME" type="STRING" size="256"/>
+          <Column id="CASH_IN" type="BIGDECIMAL" size="22"/>
+          <Column id="CASH_OUT" type="BIGDECIMAL" size="22"/>
+          <Column id="ACNT_IN" type="BIGDECIMAL" size="22"/>
+          <Column id="ACNT_OUT" type="BIGDECIMAL" size="22"/>
+          <Column id="GROUP_CNT" type="INT" size="22" prop="COUNT"/>
+          <Column id="ACCT_DATE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TRMA0030 제예금현황
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.08		김준수		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_ubireport.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  	= "TTFFFFTT"; //버튼순서[종료,조회,입력,삭제,취소,저장,엑셀,인쇄]
+this.sPACKAGENAME 	= "TRMA0030";
+
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+ /*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+    this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+    this.fnc_GetComboDs(this.dsCombo);
+    this.fnc_GridSetting(this);
+    
+    var styleObj = this.Tab0.TabD1.grdCrossTab.getCellProperty("body", 0, "style");
+	styleObj.set_background(application.GBL_COLORNORMAL);
+	styleObj.set_background2(application.GBL_COLORNORMAL);
+	
+    this.fnc_FormatSlipNumber(this.Tab0.TabD2.grdCrossTab1, "DISP_NUMB", "Y");
+    
+    this.calSHRACCT_DATE.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 8));
+    this.cmbSHRACCT_UNIT.setFocus();
+	
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+
+	this.fnc_DatasetClear("dsTA_RESULT1,dsTA_RESULT2");
+    var sMethodName = "SEARCH00";
+    var sInDataSet = "";
+    var sOutDataSet = "dsTA_RESULT1=dsTA_RESULT1 dsTA_RESULT2=dsTA_RESULT2 ";
+    var sArgument = this.fn_CreateArgument(sMethodName);
+    this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+    this.cmbSHRACCT_UNIT.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	//기능 없음
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	//기능 없음
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	//기능 없음
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj:Button, e:nexacro.ClickEventInfo) {
+	//기능 없음
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+
+	var reportfile = "/trm/TRMA0030R01.jrf";
+
+	var toDay  = this.fnc_SubStr(this.calSHRACCT_DATE.value, 0, 4) + "년 " + this.fnc_SubStr(this.calSHRACCT_DATE.value, 4, 2) + "월 " + this.fnc_SubStr(this.calSHRACCT_DATE.value, 6, 2) + "일";
+	var params =  "#VAT_YYYY#" + toDay;
+		     
+	var dataref = new Array();
+	
+	dataref[0] = new Object();
+	dataref[0].type = "TRAN";
+	dataref[0].svcUrl = "/core/erp/trm/TRMA0030_SEARCH00.do";
+	dataref[0].inDataset = ""
+	dataref[0].outDataset = "dsTA_RESULT1=dsTA_RESULT1 dsTA_RESULT2=dsTA_RESULT2"
+	dataref[0].arg = this.fn_CreateArgument("SEARCH00");
+	
+	this.fn_UbiReport(reportfile, params, dataref);
+	
+}
+
+ /*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function (obj:Form,  e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("",this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj){
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_Length(this.fnc_Trim(this.cmbSHRACCT_UNIT.value)) < 1)	{
+		return this.fnc_SearchCheckPostAction("TMM072", "회계단위", this.cmbSHRACCT_UNIT);
+	}
+
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRACCT_DATE.value)) < 1)	{
+		return this.fnc_SearchCheckPostAction("TMM072", "기준일자", this.calSHRACCT_DATE);
+	}
+
+	return true;
+	
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;	
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	return true;
+}
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" 	+ this.fnc_Quote(this.cmbSHRACCT_UNIT.value); //회계단위
+		sReturnString += " ACCT_DATE=" 	+ this.fnc_Quote(this.calSHRACCT_DATE.value); //기준일자
+	} 
+
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	
+	if (ErrorCode < 0) 	{
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+		this.fnc_Information(this.Tab0.TabD1.stInformation, this.dsTA_RESULT1.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Information(this.Tab0.TabD2.stInformation, this.dsTA_RESULT2.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_RESULT1.rowcount + this.dsTA_RESULT2.rowcount);
+		
+		this.Tab0.TabD1.grdCrossTab.set_enableredraw(false);
+		this.dsTA_RESULT1.set_keystring("G:MAIN_CODE+MAIN_NAME,S:MAIN_CODE");
+		
+		for (var i = this.dsTA_RESULT1.rowcount - 1; i >= 0; i--) {
+			var iGroup_Cnt = this.dsTA_RESULT1.getColumn(i, "GROUP_CNT");
+			if (this.dsTA_RESULT1.getRowLevel(i) > 0 && iGroup_Cnt <= 1) {
+				this.dsTA_RESULT1.deleteRow(i);
+			}
+		}
+		this.dsTA_RESULT1.applyChange();
+		this.Tab0.TabD1.grdCrossTab.set_enableredraw(true);		
+		
+		this.Tab0.TabD2.grdCrossTab1.set_enableredraw(false)
+		this.dsTA_RESULT2.set_keystring("G:ACCT_DATE,S:DISP_NUMB");
+		this.dsTA_RESULT2.deleteRow(1);	//전일이월 소계 삭제
+		this.dsTA_RESULT2.applyChange();
+		this.Tab0.TabD2.grdCrossTab1.set_enableredraw(true)
+		
+		//this.Tab0.TabD2.grdCrossTab1.setCellProperty("body", 0, "text", "expr:dataset.getRowLevel(currow) == 1 ? '소계':"); 
+	
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRACCT_UNIT,dsSHRACCT_UNIT,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+	}
+
+}
+
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+
+}
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj) {
+
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+this.Tab0_TabD2_grdCrossTab1_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+	
+	var columnName = this.fnc_getColId(obj, e.cell);
+	
+	if (columnName != "DISP_NUMB") return;
+	
+	var sSlip_Numb = this.dsTA_RESULT2.getColumn(this.dsTA_RESULT2.rowposition, "SLIP_NUMB");
+	var sSlip_Line = this.dsTA_RESULT2.getColumn(this.dsTA_RESULT2.rowposition, "SLIP_LINE");
+	if (this.fnc_Length(this.fnc_Trim(sSlip_Numb)) > 0) {
+		this.fnc_ViewSlipForm(sSlip_Numb, "SHR", this.sUSERLAVEL, "", sSlip_Line); //NEW:직접입력, REV:수정, SHR:조회, SEM:반자동전표
+	}
+	
+}
+
+this.Tab0_onchanged = function(obj:Tab, e:nexacro.TabIndexChangeEventInfo) {
+	this.fnc_GridSetting(obj.components[e.postindex]);
+}
+]]></Script>
+  </Form>
+</FDL>

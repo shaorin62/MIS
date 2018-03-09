@@ -1,0 +1,1430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="PAYB0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="급여기본내역관리" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717">
+    <Layouts>
+      <Layout>
+        <Static id="Shape1" position="absolute" left="264" top="128" height="117" cssclass="styFormItemBoxOut" right="25" taborder="32"/>
+        <Static id="Shape02" taborder="95" cssclass="styFormItemBoxOut" left="264" top="255" right="25" height="169"/>
+        <Static id="spSearchBox0" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="36"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="181" top="107" height="21" cssclass="styFormSearchInfo" taborder="37" usedecorate="true"/>
+        <Grid binddataset="dsPY_MASTPM" cellsizingtype="both" enable="true" id="grdPY_MASTPM" useinputpanel="false" autofitminwidth="1035" taborder="66" usecontextmenu="true" useselcolor="true" wheelscrollrow="1" position="absolute" left="8" width="236" top="128" cssclass="styGrid01" bottom="15">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="70" band="left"/>
+                <Column size="71" band="left"/>
+                <Column size="103"/>
+                <Column size="76"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="사원번호"/>
+                <Cell col="1" displaytype="text" text="사원명"/>
+                <Cell col="2" displaytype="text" text="부서명"/>
+                <Cell col="3" displaytype="text" text="직원구분" wordwrap="none"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;background: ;" text="bind:EMPL_NUMB"/>
+                <Cell col="1" displaytype="text" style="align:center;background: ;" text="bind:EMPL_NAME"/>
+                <Cell col="2" displaytype="text" style="align:left;background: ;" text="bind:DEPT_NAME"/>
+                <Cell col="3" displaytype="combo" style="align: ;" text="bind:CLSD_CODE"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Edit autoselect="true" lengthunit="ascii" enable="true" id="edtSHRDEPT_CODE" onsetfocus="fn_EditFocus" taborder="64" left="69" width="80" top="71" height="21" cssclass="styFormSearchItem" tabstop="false" readonly="true"/>
+        <Static id="imgHelpSHRDEPT_CODE" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" left="151" width="22" top="71" height="21" taborder="38"/>
+        <Edit autoskip="true" lengthunit="ascii" id="edtSHRDEPT_NAME" imemode="hangul" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="0" position="absolute" left="174" width="100" top="71" height="21" cssclass="styFormSearchItem" UserData=""/>
+        <Edit autoselect="true" enable="true" id="edtSHREMPL_NUMB" imemode="native" onsetfocus="fn_EditFocus" taborder="65" position="absolute" left="344" width="80" top="71" height="21" cssclass="styFormSearchItem" tabstop="false" readonly="true"/>
+        <Static id="imgHelpSHREMPL_NUMB" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" left="426" width="22" top="71" height="21" taborder="39"/>
+        <Edit autoselect="true" id="edtSHREMPL_NAME" imemode="hangul" maxlength="20" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="1" position="absolute" left="449" width="100" top="71" height="21" cssclass="styFormSearchItem" UserData=""/>
+        <Combo id="cmbSHRCLSD_CODE" onsetfocus="fn_EditFocus" taborder="2" left="646" width="80" top="71" height="21" cssclass="styFormSearchCombo" index="-1"/>
+        <Combo id="cmbSHRWODN_CODE" imemode="none" onsetfocus="fn_EditFocus" type="dropdown" taborder="3" position="absolute" left="824" width="80" top="71" height="21" cssclass="styFormSearchCombo" index="-1"/>
+        <Static id="Static16" text="직급" left="718" width="80" top="163" height="21" cssclass="styFormItemCap" taborder="41"/>
+        <Static id="Static9" text="급여계좌번호" left="498" width="88" top="290" height="21" cssclass="styFormItemCapBE" taborder="43"/>
+        <Static id="Static11" text="단일세율적용" position="absolute" left="284" width="104" top="368" height="21" cssclass="styFormItemCap" taborder="44"/>
+        <Static id="Static13" text="거주자구분" position="absolute" left="718" width="96" top="342" height="21" cssclass="styFormItemCap" taborder="45"/>
+        <Static id="Static30" text="사원번호" left="284" width="72" top="137" height="21" cssclass="styFormItemCap" taborder="48" position="absolute"/>
+        <Edit autoselect="true" binddataset="dsPY_MASTPM" lengthunit="ascii" enable="true" id="edtEMPL_NUMB" taborder="26" position="absolute" style="align:center; :disabled {align:center middle;}" left="352" width="118" top="137" height="21" cssclass="styFormItemText" readonly="true"/>
+        <Static id="Static6" text="성명" position="absolute" left="498" width="80" top="137" height="21" cssclass="styFormItemCap" taborder="50"/>
+        <Edit autoselect="true" binddataset="dsPY_MASTPM" lengthunit="ascii" enable="true" id="edtEMPL_NAME" taborder="27" position="absolute" style=":disabled {align:center middle;}" left="579" width="110" top="137" height="21" cssclass="styFormItemText" readonly="true"/>
+        <MaskEdit autoselect="true" binddataset="dsPY_MASTPM" enable="true" id="medRERN_NUMB" mask="######-#######" taborder="28" type="string" position="absolute" left="804" top="137" height="21" cssclass="styFormItemText" style="selectbackground:#a3daffff;align:center middle; :disabled {align:center middle;}" width="118" readonly="true"/>
+        <Static id="Static15" text="주민번호" position="absolute" left="718" width="80" top="137" height="21" cssclass="styFormItemCap" taborder="51"/>
+        <Edit autoselect="true" binddataset="dsPY_MASTPM" lengthunit="ascii" enable="true" id="edtCPOS_NAME" taborder="29" position="absolute" style="align:center;" left="804" top="163" height="21" cssclass="styFormItemText" width="118" readonly="true"/>
+        <Static id="Static42" text="소속" position="absolute" left="284" width="72" top="163" height="21" cssclass="styFormItemCap" taborder="58"/>
+        <Edit autoselect="true" binddataset="dsPY_MASTPM" lengthunit="ascii" enable="true" id="edtSECT_NAME" taborder="30" position="absolute" style="align:center; :disabled {align:center middle;}" left="352" width="118" top="163" height="21" cssclass="styFormItemText" readonly="true"/>
+        <CheckBox binddataset="dsPY_MASTPM" falsevalue="0" id="chkTARA_YSNO" taborder="19" truevalue="1" value="false" position="absolute" left="378" width="21" top="368" height="21" cssclass="styFormItemChk" enable="true" readonly="false"/>
+        <Static id="Static27" text="거주지국" position="absolute" left="942" width="88" top="342" height="21" cssclass="styFormItemCap" taborder="62"/>
+        <Combo binddataset="dsPY_MASTPM" id="cmbDOMC_CODE" type="search" taborder="18" position="absolute" left="1036" top="342" height="21" cssclass="styFormItemCombo" index="-1" width="110" enable="true" readonly="false"/>
+        <Static id="Static14" text="급여계좌은행" position="absolute" left="284" width="104" top="290" height="21" cssclass="styFormItemCapBE" taborder="63"/>
+        <Combo binddataset="dsPY_MASTPM" id="cmbWABK_CODE" type="search" taborder="8" position="absolute" left="378" width="100" top="290" height="21" cssclass="styFormItemCombo" index="-1" enable="true" readonly="false"/>
+        <Edit autoselect="true" binddataset="dsPY_MASTPM" lengthunit="ascii" id="edtWAGE_ACNO" taborder="9" position="absolute" left="617" width="305" top="290" height="21" cssclass="styFormItemText" maxlength="20" enable="true" readonly="false"/>
+        <Static id="imgSearchTitle8" text="부서" position="absolute" left="27" width="60" top="71" height="21" cssclass="styFormSearchCap" taborder="53"/>
+        <Static id="Image0" text="사원" left="302" width="60" top="71" height="21" cssclass="styFormSearchCap" taborder="55"/>
+        <Static id="Image1" text="직원구분" position="absolute" left="578" width="76" top="71" height="21" cssclass="styFormSearchCap" taborder="56"/>
+        <Static id="Image2" text="재직구분" position="absolute" left="756" width="76" top="71" height="21" cssclass="styFormSearchCap" taborder="57"/>
+        <Combo binddataset="dsPY_MASTPM" id="cmbNANY_CODE" type="search" taborder="15" position="absolute" left="617" top="342" height="21" cssclass="styFormItemCombo" index="-1" width="100" enable="true" readonly="false"/>
+        <Static id="Static70" text="근무상태" position="absolute" style="color:#515151ff;" left="498" width="80" top="189" height="21" cssclass="styFormItemCapBE" taborder="60"/>
+        <Static id="Static77" taborder="69" text="부서" cssclass="styFormItemCap" left="498" top="163" width="80" height="21" position="absolute"/>
+        <Edit id="edtDEPT_NAME00" taborder="70" autoselect="true" cssclass="styFormItemText" enable="true" left="579" top="163" width="110" height="21" style=":disabled {align:center middle;}" binddataset="dsPY_MASTPM" readonly="true" position="absolute"/>
+        <Static id="Static19" text="퇴사일" position="absolute" left="284" width="72" top="215" height="21" cssclass="styFormItemCap" taborder="61"/>
+        <Combo id="cmbCLSD_CODE" taborder="4" type="dropdown" cssclass="styFormItemCombo" left="378" top="264" width="100" height="21" binddataset="dsPY_MASTPM" enable="true" position="absolute"/>
+        <Static id="Static88" taborder="71" text="급여예금주" cssclass="styFormItemCapBE" left="942" top="290" width="88" height="21" position="absolute"/>
+        <Edit id="edtWAGE_DPST" taborder="10" autoselect="true" cssclass="styFormItemText" enable="true" left="1036" top="290" height="21" style="align:left;" binddataset="dsPY_MASTPM" imemode="hangul" lengthunit="ascii" maxlength="50" readonly="false" width="110" position="absolute"/>
+        <Static id="Static92" taborder="72" text="국적" cssclass="styFormItemCap" left="498" top="342" width="88" height="21" position="absolute"/>
+        <Static id="Static93" taborder="73" text="세대주여부" cssclass="styFormItemCap" left="498" top="368" width="88" height="21" position="absolute"/>
+        <CheckBox binddataset="dsPY_MASTPM" falsevalue="0" id="chkHSHL_YSNO" taborder="20" truevalue="1" value="false" position="absolute" left="617" width="16" top="368" height="21" cssclass="styFormItemChk" enable="true" readonly="false"/>
+        <Static id="Static01" taborder="74" text="퇴직연금기관" cssclass="styFormItemCap" left="942" top="264" width="88" height="21" position="absolute"/>
+        <Combo id="cmbREAY_JOCD" taborder="7" cssclass="styFormItemCombo" left="1036" top="264" height="21" binddataset="dsPY_MASTPM" index="-1" width="110" enable="true" position="absolute"/>
+        <Static id="Static18" taborder="75" text="퇴직수당구분" cssclass="styFormItemCapBE" left="718" top="264" width="96" height="21" position="absolute"/>
+        <Combo id="cmbREEP_DIVC" taborder="6" cssclass="styFormItemCombo" left="812" top="264" width="110" height="21" binddataset="dsPY_MASTPM" enable="true" position="absolute" onitemchanged="cmbREEP_DIVC_onitemchanged"/>
+        <Static id="Static22" taborder="76" text="내외국인구분" cssclass="styFormItemCap" left="284" top="342" width="104" height="21" position="absolute"/>
+        <Combo id="cmbLFDN_CODE" taborder="14" cssclass="styFormItemCombo" left="378" top="342" width="100" height="21" binddataset="dsPY_MASTPM" enable="true" position="absolute"/>
+        <Edit id="edtWRKS_NAME" taborder="77" autoselect="true" cssclass="styFormItemText" enable="true" left="579" top="189" width="110" height="21" binddataset="dsPY_MASTPM" readonly="true" position="absolute"/>
+        <Static id="Static08" taborder="78" text="퇴직기산일" cssclass="styFormItemCap" left="718" top="368" width="96" height="21" position="absolute"/>
+        <Static id="Static75" taborder="79" text="보조계좌번호" cssclass="styFormItemCap" left="498" top="316" width="88" height="21" position="absolute"/>
+        <Static id="Static76" taborder="80" text="보조계좌은행" cssclass="styFormItemCap" left="284" top="316" width="104" height="21" position="absolute"/>
+        <Combo id="cmbIRSB_CODE" taborder="11" type="search" cssclass="styFormItemCombo" left="378" top="316" width="100" height="21" binddataset="dsPY_MASTPM" enable="true" readonly="false" position="absolute"/>
+        <Edit id="edtIRSA_ACNO" taborder="12" lengthunit="ascii" maxlength="20" autoselect="true" cssclass="styFormItemText" left="617" top="316" width="305" height="21" binddataset="dsPY_MASTPM" enable="true" readonly="false" position="absolute"/>
+        <Static id="Static81" taborder="81" text="보조예금주" cssclass="styFormItemCap" left="942" top="316" width="88" height="21" position="absolute"/>
+        <Edit id="edtIRSA_DPST" taborder="13" imemode="hangul" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" left="1036" top="316" height="21" style="align:left;" binddataset="dsPY_MASTPM" enable="true" readonly="false" width="110" position="absolute"/>
+        <Static id="Static02" taborder="82" text="노조여부" cssclass="styFormItemCap" left="718" top="215" width="80" height="21" position="absolute"/>
+        <CheckBox id="chkLBJO_YSNO" taborder="83" value="0" truevalue="1" falsevalue="0" cssclass="styFormItemChk" left="799" top="215" width="16" height="21" binddataset="dsPY_MASTPM" enable="true" readonly="true"/>
+        <Static id="stPYTY_CODE" taborder="84" text="급여형태" cssclass="styFormItemCap" left="942" top="137" width="80" height="21" position="absolute"/>
+        <Edit id="edtPYTY_NAME" taborder="85" lengthunit="ascii" autoselect="true" cssclass="styFormItemText" enable="true" left="1028" top="137" width="118" height="21" style="align:center; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" readonly="true" position="absolute"/>
+        <Static id="Static07" taborder="86" text="직렬" cssclass="styFormItemCap" left="1332" top="160" width="88" height="25" visible="false"/>
+        <Edit id="edtSPOS_NAME" taborder="87" lengthunit="ascii" autoselect="true" cssclass="styFormItemText" enable="true" left="1374" top="162" width="110" height="21" style="align:center;" binddataset="dsPY_MASTPM" readonly="true" visible="false"/>
+        <Static id="Static10" taborder="88" text="직책" cssclass="styFormItemCap" left="284" top="189" width="72" height="21" position="absolute"/>
+        <Edit id="edtDURS_NAME" taborder="89" lengthunit="ascii" autoselect="true" cssclass="styFormItemText" enable="true" left="352" top="189" width="118" height="21" style="align:center;" binddataset="dsPY_MASTPM" readonly="true" position="absolute"/>
+        <Edit id="edtDUTY_NAME" taborder="90" lengthunit="ascii" autoselect="true" cssclass="styFormItemText" enable="true" left="1374" top="222" width="110" height="21" style="align:center;" binddataset="dsPY_MASTPM" readonly="true" visible="false"/>
+        <Static id="Static26" taborder="91" text="직무" cssclass="styFormItemCap" left="1332" top="220" width="88" height="25" visible="false"/>
+        <Static id="Static34" taborder="92" text="그룹입사일" onclick="Static34_onclick" cssclass="styFormItemCap" left="718" top="189" width="80" height="21" position="absolute"/>
+        <Static id="Static06" taborder="93" text="자사입사일" onclick="Static34_onclick" cssclass="styFormItemCap" left="942" top="189" width="80" height="21" position="absolute"/>
+        <Static id="Static32" taborder="94" text="연차기준일" cssclass="styFormItemCap" left="498" top="215" width="80" height="21" position="absolute"/>
+        <Static id="Static4" text="직원구분" position="absolute" left="284" width="104" top="264" height="21" cssclass="styFormItemCapBE" taborder="40"/>
+        <Static id="Static0" text="급여지급여부" position="absolute" left="498" width="88" top="264" height="21" cssclass="styFormItemCap" taborder="42"/>
+        <CheckBox id="chkPAWE_YSNO" taborder="5" value="0" truevalue="1" falsevalue="0" cssclass="styFormItemChk" left="617" top="264" width="16" height="21" binddataset="dsPY_MASTPM" enable="true" readonly="false" position="absolute"/>
+        <Static id="Static05" taborder="101" text="임금피크제년도" cssclass="styFormItemCap" left="1320" top="368" width="104" height="25" visible="false"/>
+        <Edit id="edtIRPS_DATE" taborder="22" autoselect="true" cssclass="styFormItemText" enable="true" left="1426" top="370" width="94" height="21" style="align:center;" binddataset="dsPY_MASTPM" readonly="false" visible="false"/>
+        <Static id="Static12" taborder="102" text="기준기본급" cssclass="styFormItemCap" left="1549" top="368" width="88" height="25" visible="false"/>
+        <Edit id="edtCHAX_SUXX" taborder="24" autoselect="true" cssclass="styFormItemText" left="1838" top="370" width="110" height="21" style="align:center; :readonly {align:right;}" binddataset="dsPY_MASTPM" enable="true" readonly="false" visible="false"/>
+        <Static id="Static17" taborder="103" text="차수" cssclass="styFormItemCap" left="1795" top="368" width="88" height="25" visible="false"/>
+        <MaskEdit id="medPCOP_JCDT" taborder="104" type="string" mask="####-##-##" autoselect="true" cssclass="styFormItemText" left="804" top="189" width="118" height="21" style="selectbackground:#a3daffff;align:center middle; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" enable="true" readonly="true" position="absolute"/>
+        <MaskEdit id="medENCO_DATE" taborder="105" type="string" mask="####-##-##" autoselect="true" cssclass="styFormItemText" left="1028" top="189" width="118" height="21" style="selectbackground:#a3daffff;align:center middle; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" enable="true" readonly="true" position="absolute"/>
+        <MaskEdit id="medANSD_DATE" taborder="106" type="string" mask="####-##-##" autoselect="true" cssclass="styFormItemText" left="579" top="215" width="110" height="21" style="selectbackground:#a3daffff;align:center middle; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" enable="true" readonly="true" position="absolute"/>
+        <MaskEdit id="medRETR_DATE" taborder="107" type="string" mask="####-##-##" autoselect="true" cssclass="styFormItemText" left="352" top="215" width="118" height="21" style="selectbackground:#a3daffff;align:center middle; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" enable="true" readonly="true"/>
+        <Tab id="Tab0" taborder="31" position="absolute" left="264" top="434" right="25" bottom="15" cssclass="styTabControl" onchanged="Tab0_onchanged">
+          <Tabpages>
+            <Tabpage id="tab1" taborder="38" text="지급공제" position="absolute" left="2" width="700" top="27" height="328">
+              <Layouts>
+                <Layout>
+                  <Grid autoenter="TRUE" binddataset="dsPY_ALDEYN1" cellsizingtype="both" enable="true" id="grdPY_ALDEYN1" useinputpanel="false" onexpandup="fn_OpenGridPopup" taborder="2" tabstop="true" tooltiptype="inplace" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="10" width="428" top="35" cssclass="styGrid01" bottom="10">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="0"/>
+                          <Column size="80"/>
+                          <Column size="120"/>
+                          <Column size="90"/>
+                          <Column size="80"/>
+                          <Column size="130"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell celltype="head" displaytype="text"/>
+                          <Cell col="1" text="시작일"/>
+                          <Cell col="2" displaytype="text" text="지급항목"/>
+                          <Cell col="3" displaytype="text" text="지급율/금액"/>
+                          <Cell col="4" text="종료일"/>
+                          <Cell col="5" displaytype="text" text="비고"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell celltype="head" displaytype="text" style="align:left;"/>
+                          <Cell col="1" displaytype="date" text="bind:BGIN_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="2" displaytype="text" style="align:left;" text="bind:EXPD_NAME"/>
+                          <Cell col="3" displaytype="number" edittype="none" editfilter="number" style="align:right;" text="bind:EXPD_RAPY"/>
+                          <Cell col="4" displaytype="date" text="bind:ENDX_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="5" displaytype="text" edittype="none" style="align:left;" text="bind:REMK_100X" editimemode="native"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Grid autoenter="TRUE" binddataset="dsPY_ALDEYN2" cellsizingtype="both" enable="true" id="grdPY_ALDEYN2" useinputpanel="false" selecttype="multirow" onexpandup="fn_OpenGridPopup" taborder="4" tabstop="true" tooltiptype="inplace" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="458" top="35" cssclass="styGrid01" bottom="10" right="10" autofittype="none">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="0"/>
+                          <Column size="80"/>
+                          <Column size="120"/>
+                          <Column size="90"/>
+                          <Column size="80"/>
+                          <Column size="130"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell celltype="head" displaytype="text"/>
+                          <Cell col="1" text="시작일"/>
+                          <Cell col="2" displaytype="text" text="공제항목"/>
+                          <Cell col="3" displaytype="text" text="지급율/금액"/>
+                          <Cell col="4" text="종료일"/>
+                          <Cell col="5" displaytype="text" text="비고"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell celltype="head" displaytype="text" style="align:left;"/>
+                          <Cell col="1" displaytype="date" text="bind:BGIN_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="2" displaytype="text" style="align:left;" text="bind:EXPD_NAME"/>
+                          <Cell col="3" displaytype="number" edittype="none" editfilter="number" style="align:right;" text="bind:EXPD_RAPY"/>
+                          <Cell col="4" displaytype="date" text="bind:ENDX_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="5" displaytype="text" edittype="none" style="align:left;" text="bind:REMK_100X" editimemode="native"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Image1" taborder="6" text="지급항목" cssclass="sta_WF_Subtitle" left="10" top="10" width="84" height="21"/>
+                  <Combo id="cmbSHREXPD_CODE1" taborder="7" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="86" top="10" width="160" height="21" displayrowcount="10" onitemchanged="Tab0_tab1_cmbSHREXPD_CODE1_onitemchanged"/>
+                  <Static id="Image00" taborder="8" text="공제항목" cssclass="sta_WF_Subtitle" left="458" top="10" width="84" height="21"/>
+                  <Combo id="cmbSHREXPD_CODE2" taborder="9" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="534" top="10" width="160" height="21" displayrowcount="10" onitemchanged="Tab0_tab1_cmbSHREXPD_CODE2_onitemchanged"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tab2" text="기본급">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation" taborder="0" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="10" top="4" width="232" height="21" usedecorate="true"/>
+                  <Grid id="grdPY_REGSAL" cssclass="styGrid01" taborder="1" binddataset="dsPY_REGSAL" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" autofitminwidth="1035" onexpandup="fn_OpenGridPopup" left="10" top="25" right="10" bottom="10" tooltiptype="inplace">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="60"/>
+                          <Column size="92"/>
+                          <Column size="120"/>
+                          <Column size="120"/>
+                          <Column size="160"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="기준일"/>
+                          <Cell col="1" text="순번"/>
+                          <Cell col="2" text="직위"/>
+                          <Cell col="3" text="기본급"/>
+                          <Cell col="4" text="시간외 근무수당"/>
+                          <Cell col="5" text="비고"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="date" style="align:center;background: ;" text="bind:STDS_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="1" displaytype="text" style="align:center;" text="bind:SRAL_NUMB"/>
+                          <Cell col="2" displaytype="text" style="align:center;" text="bind:OPOS_NAME"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="bind:BSLY_AMOT"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="bind:BSL1_AMOT"/>
+                          <Cell col="5" style="align:left;" text="bind:REMK_100X"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tab3" text="기타소득">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation" taborder="0" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="10" top="33" width="240" height="21" usedecorate="true"/>
+                  <Grid id="grdPY_INCOME" cssclass="styGrid01" taborder="1" binddataset="dsPY_INCOME" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" autofitminwidth="1035" onexpandup="fn_OpenGridPopup" left="10" top="58" right="10" bottom="10" tooltiptype="inplace">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="95"/>
+                          <Column size="150"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="지급일"/>
+                          <Cell col="1" text="소득구분"/>
+                          <Cell col="2" text="과세지급액"/>
+                          <Cell col="3" text="비과세지급액"/>
+                          <Cell col="4" text="지급계"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="date" style="align:center;background: ;" text="bind:INDN_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="1" displaytype="text" style="align:left;" text="bind:INDN_NAME"/>
+                          <Cell col="2" displaytype="number" style="align:right;" text="bind:TAP1_AMOT"/>
+                          <Cell col="3" displaytype="number" style="align:right;" text="bind:NTP1_AMOT"/>
+                          <Cell col="4" displaytype="number" style="align:right;" text="bind:PAYX_TAMT"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static09" taborder="2" text="h 6" visible="false" left="8" top="48" width="216" height="6" style="background:#fb7b7b7a;"/>
+                  <Static id="Image1" taborder="3" text="조회년도" cssclass="sta_WF_Subtitle" left="10" top="10" width="84" height="21"/>
+                  <Calendar id="calSHRSTDS_YEAR" taborder="4" type="spin" dateformat="yyyy" editformat="yyyy" left="106" top="10" width="80" height="20" onchanged="Tab0_tab3_calSHRSTDS_YEAR_onspin" onspin="Tab0_tab3_calSHRSTDS_YEAR_onspin"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tab4" taborder="64" text="급여조정" position="absolute" left="2" width="700" top="27" height="328">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="10" width="248" top="4" height="21" cssclass="styFormSearchInfo" usedecorate="true"/>
+                  <Grid autoenter="TRUE" binddataset="dsPY_PAYSET" cellsizingtype="both" enable="true" id="grdPY_PAYSET" useinputpanel="false" autofitminwidth="200" selecttype="multirow" taborder="2" tabstop="true" tooltiptype="inplace" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="10" top="25" cssclass="styGrid01" right="10" bottom="10" autofittype="col">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="73"/>
+                          <Column size="87"/>
+                          <Column size="100"/>
+                          <Column size="76"/>
+                          <Column size="66"/>
+                          <Column size="81"/>
+                          <Column size="185"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text" text="지급일"/>
+                          <Cell col="1" displaytype="text" text="급여구분"/>
+                          <Cell col="2" displaytype="text" text="지급공제코드"/>
+                          <Cell col="3" displaytype="text" text="조정액/비율"/>
+                          <Cell col="4" displaytype="text" text="조정구분"/>
+                          <Cell col="5" displaytype="text" text="조정종료월"/>
+                          <Cell col="6" displaytype="text" text="비고"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="date" style="align:center;background: ;" text="bind:PAYX_DATE" calendardisplaynulltype="none"/>
+                          <Cell col="1" displaytype="text" edittype="normal" style="align:left;" text="bind:WAGE_NAME"/>
+                          <Cell col="2" displaytype="text" style="align:left;" text="bind:EXPD_NAME"/>
+                          <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:ADJT_RAPY"/>
+                          <Cell col="4" displaytype="text" style="align: ;" text="bind:AJDI_NAME"/>
+                          <Cell col="5" displaytype="text" style="align:center;background: ;" text="bind:FEND_YMTH" mask="expr:FEND_YMTH == '' ? '' : '####-##'"/>
+                          <Cell col="6" displaytype="text" edittype="normal" style="align:left;" text="bind:REMK_100X"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabHR_FAMILY" taborder="48" text="가족사항" position="absolute" left="2" width="700" top="27" height="328">
+              <Layouts>
+                <Layout>
+                  <Button id="btnAddRow" onclick="btnInput_OnClick" taborder="3" position="absolute" width="62" top="5" height="21" cssclass="btn_WF_Module" right="75" text="행추가"/>
+                  <Button id="btnDelRow" onclick="btnDelete_OnClick" taborder="4" visible="true" width="62" top="5" height="21" cssclass="btn_WF_Module" right="10" text="행삭제"/>
+                  <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="10" width="256" top="9" height="21" cssclass="styFormSearchInfo" usedecorate="true"/>
+                  <Grid selecttype="row" autoenter="TRUE" binddataset="dsHR_FAMILY" cellsizingtype="both" enable="true" id="grdHR_FAMILY" useinputpanel="false" taborder="1" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="10" top="30" cssclass="styGrid01" right="10" bottom="10" autofittype="col">
+                    <Formats>
+                      <Format id="Default">
+                        <Columns>
+                          <Column size="0"/>
+                          <Column size="69"/>
+                          <Column size="66"/>
+                          <Column size="110"/>
+                          <Column size="66"/>
+                          <Column size="66"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                          <Column size="100"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell displaytype="text"/>
+                          <Cell col="1" displaytype="text" cssclass="Cellgrd_WF_essential" text="관계"/>
+                          <Cell col="2" displaytype="text" cssclass="Cellgrd_WF_essential" text="성명"/>
+                          <Cell col="3" displaytype="text" cssclass="Cellgrd_WF_essential" text="주민등록번호"/>
+                          <Cell col="4" displaytype="text" cssclass="Cellgrd_WF_edit" text="성별"/>
+                          <Cell col="5" displaytype="text" cssclass="Cellgrd_WF_edit" text="나이 (만)"/>
+                          <Cell col="6" displaytype="text" cssclass="Cellgrd_WF_edit" text="부양여부"/>
+                          <Cell col="7" displaytype="text" cssclass="Cellgrd_WF_edit" text="장애코드"/>
+                          <Cell col="8" displaytype="text" cssclass="Cellgrd_WF_edit" text="가족수당"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell displaytype="none" style="align:center;"/>
+                          <Cell col="1" displaytype="combo" edittype="combo" style="align:left;" text="bind:FREL_CODE" combodisplayrowcount="10"/>
+                          <Cell col="2" displaytype="text" edittype="normal" style="align:center;background: ;" text="bind:FMLY_NAME" editlimit="20" editimemode="native" editlengthunit="ascii"/>
+                          <Cell col="3" displaytype="text" edittype="mask" style="align:center;background: ;" text="bind:FMLY_SSEC" mask="######-#######" editlimit="13"/>
+                          <Cell col="4" displaytype="combo" style="align: ;" text="bind:GNDR_CODE" editlimit="0" editlengthunit="ascii"/>
+                          <Cell col="5" displaytype="text" edittype="none" style="align:center;" text="bind:FMLY_AGEX"/>
+                          <Cell col="6" displaytype="checkbox" edittype="checkbox" style="align:center middle;background: ;" text="bind:SUPT_YSNO" editlimit="0" editlengthunit="ascii"/>
+                          <Cell col="7" displaytype="combo" edittype="combo" style="align:center middle;background: ;" text="bind:HALT_CODE" editlimit="0" editlengthunit="ascii"/>
+                          <Cell col="8" displaytype="checkbox" edittype="checkbox" style="align: ;" text="bind:FALP_YSNO"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <MaskEdit id="medBSLY_AMOT" taborder="23" readonly="false" type="number" autoselect="true" cssclass="styFormItemText" left="1630" top="370" width="110" height="21" style="selectbackground:#a3daffff;border:1 solid #a6a6a9ff,1 solid #d3d3d3ff,1 solid #d3d3d3ff,1 solid #a6a6a9ff;align:center middle; :disabled {align:center middle;}" binddataset="dsPY_MASTPM" visible="false"/>
+        <Calendar id="calRECP_DATE" taborder="21" dateformat="yyyy-MM-dd" cssclass="styFormSearchItemCalendar" enable="true" left="812" top="368" height="21" binddataset="dsPY_MASTPM" readonly="true" width="110" position="absolute"/>
+        <Combo id="cmbRECL_CODE" taborder="16" cssclass="styFormItemCombo" left="812" top="342" width="110" height="21" binddataset="dsPY_MASTPM" position="absolute"/>
+        <Static id="Static20" taborder="108" text="직위" cssclass="styFormItemCap" left="942" top="163" width="80" height="21" position="absolute"/>
+        <Edit id="edtCPOS_NAME00" taborder="109" readonly="true" lengthunit="ascii" autoselect="true" cssclass="styFormItemText" left="1028" top="163" width="118" height="21" style="align:center;" binddataset="dsPY_MASTPM" position="absolute"/>
+        <Static id="Static21" taborder="110" text="표준세액공제" cssclass="styFormItemCap" left="284" top="394" width="104" height="21" position="absolute"/>
+        <CheckBox id="chkSTTD_YSNO" taborder="111" value="0" truevalue="1" falsevalue="0" cssclass="styFormItemChk" left="378" top="394" width="21" height="21" binddataset="dsPY_MASTPM" position="absolute"/>
+        <Static id="Static23" taborder="112" text="분할납부여부" cssclass="styFormItemCap" left="718" top="394" width="96" height="21" position="absolute"/>
+        <CheckBox id="chkPTPY_YSNO" taborder="113" value="0" truevalue="1" falsevalue="0" cssclass="styFormItemChk" left="812" top="394" width="24" height="21" binddataset="dsPY_MASTPM" position="absolute"/>
+        <Static id="Static24" taborder="114" text="급여소득세적용%" cssclass="styFormItemCap" left="498" top="394" width="118" height="21" position="absolute"/>
+        <Combo id="cmbPAYX_TAXR" taborder="115" type="search" cssclass="styFormItemCombo" left="617" top="394" width="100" height="21" binddataset="dsPY_MASTPM" position="absolute"/>
+        <Static id="st_FormTitle" taborder="116" text="급여기본내역관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="117" text="홈 &gt; 급여관리 &gt; 급여관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="118" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="119" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="120" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="121" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static25" taborder="122" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="126" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static31" taborder="127" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static33" taborder="128" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static35" taborder="129" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="130" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="131" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="132" visible="false" left="61" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static38" taborder="133" text="w 40" visible="false" left="274" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static28" taborder="134" text="w30" visible="false" left="265" top="133" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static29" taborder="135" text="h 10" visible="false" left="579" top="245" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static39" taborder="136" text="h 10" visible="false" left="573" top="424" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static41" taborder="138" text="h 10" visible="false" left="573" top="691" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static40" taborder="139" text="h 25" visible="false" left="573" top="469" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static43" taborder="140" text="w&#13;&#10;10" visible="false" left="265" top="541" width="10" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static44" taborder="141" text="w&#13;&#10;10" visible="false" left="1151" top="541" width="10" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static45" taborder="142" text="DC연금가입" cssclass="styFormItemCap" left="942" top="368" width="96" height="21"/>
+        <Calendar id="calREAY_DATE" taborder="143" readonly="true" dateformat="yyyy-MM-dd" cssclass="styFormSearchItemCalendar" left="1036" top="368" width="110" height="21" binddataset="dsPY_MASTPM"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRCLSD_CODE</Col>
+            <Col id="CODEID">CLSD_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRWODN_CODE</Col>
+            <Col id="CODEID">WODN_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsLFDN_CODE</Col>
+            <Col id="CODEID">LFDN_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsNANY_CODE</Col>
+            <Col id="CODEID">NANY_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsRECL_CODE</Col>
+            <Col id="CODEID">RECL_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsDOMC_CODE</Col>
+            <Col id="CODEID">DOMC_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsREEP_DIVC</Col>
+            <Col id="CODEID">REEP_DIVC</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCLSD_CODE</Col>
+            <Col id="CODEID">CLSD_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsWODN_CODE</Col>
+            <Col id="CODEID">WODN_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsBANK_CODE</Col>
+            <Col id="CODEID">BANK_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsFREL_CODE</Col>
+            <Col id="CODEID">FREL_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsGNDR_CODE</Col>
+            <Col id="CODEID">GNDR_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsDEGC_CODE</Col>
+            <Col id="CODEID">DEGC_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsPAYX_TAXR</Col>
+            <Col id="CODEID">PAYX_TAXR</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsHALT_CODE</Col>
+            <Col id="CODEID">HALT_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsUserCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" size="256" prop="default" type="STRING"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsREAY_JOCD</Col>
+            <Col id="COMBOID">PAY0010</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+            <Col id="USEYSNO"/>
+            <Col id="PARAM"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsXPD_CODE1</Col>
+            <Col id="COMBOID">PAY0017</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYSNO"/>
+            <Col id="PARAM"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsXPD_CODE2</Col>
+            <Col id="COMBOID">PAY0018</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYSNO"/>
+            <Col id="PARAM"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPY_MASTPM" onrowposchanged="fn_KeyFieldDisible">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="EMPL_NAME" size="30" type="STRING" description="사원명"/>
+          <Column id="RERN_NUMB" size="32" type="STRING" description="주민등록번호"/>
+          <Column id="PYTY_NAME" size="255" type="STRING" description="급여형태"/>
+          <Column id="SECT_NAME" size="255" type="STRING" description="소속"/>
+          <Column id="DEPT_NAME" size="255" type="STRING" description="부서"/>
+          <Column id="CPOS_NAME" size="255" type="STRING" description="직급"/>
+          <Column id="OPOS_NAME" size="255" type="STRING" description="직위명"/>
+          <Column id="DURS_NAME" size="255" type="STRING" description="직책"/>
+          <Column id="WRKS_NAME" size="255" type="STRING" description="근무상태"/>
+          <Column id="PCOP_JCDT" size="8" type="STRING" description="그룹입사일"/>
+          <Column id="ENCO_DATE" size="8" type="STRING" description="입사일"/>
+          <Column id="RETR_DATE" size="8" type="STRING" description="퇴사일"/>
+          <Column id="ANSD_DATE" size="8" type="STRING" description="연차기준일"/>
+          <Column id="LBJO_YSNO" size="1" type="STRING" description="노조가입여부"/>
+          <Column id="EMPL_BIRT" size="8" type="STRING" description="사원생년월일"/>
+          <Column id="REAL_BIRT" size="8" type="STRING" description="실제생년월일"/>
+          <Column id="SLCA_CODE" size="6" type="STRING" description="양력음력구분코드"/>
+          <Column id="GNDR_CODE" size="6" type="STRING" description="성별코드"/>
+          <Column id="REDI_CODE" size="6" type="STRING" description="채용구분코드"/>
+          <Column id="WRDV_CODE" size="6" type="STRING" description="근무구분코드"/>
+          <Column id="CLSD_CODE" size="6" type="STRING" description="직원구분코드"/>
+          <Column id="PCOP_JCDT" size="8" type="STRING" description="그룹입사일"/>
+          <Column id="ANSD_DATE" size="8" type="STRING" description="연차기준일"/>
+          <Column id="ENCO_DATE" size="8" type="STRING" description="입사일"/>
+          <Column id="RETR_DATE" size="8" type="STRING" description="퇴사일"/>
+          <Column id="WODN_CODE" size="6" type="STRING" description="재직구분코드"/>
+          <Column id="WRKS_CODE" size="6" type="STRING" description="근무상태코드"/>
+          <Column id="PYTY_CODE" size="6" type="STRING" description="급여형태코드"/>
+          <Column id="DEPT_CODE" size="10" type="STRING" description="부서코드"/>
+          <Column id="JBGP_CODE" size="6" type="STRING" description="직군코드"/>
+          <Column id="SPOS_CODE" size="6" type="STRING" description="직렬코드"/>
+          <Column id="CPOS_CODE" size="6" type="STRING" description="직급코드"/>
+          <Column id="OPOS_CODE" size="6" type="STRING" description="직위코드"/>
+          <Column id="DURS_CODE" size="6" type="STRING" description="직책코드"/>
+          <Column id="DUTY_CODE" size="6" type="STRING" description="직무코드"/>
+          <Column id="PSTP_CODE" size="6" type="STRING" description="호봉코드"/>
+          <Column id="JOAG_CODE" size="6" type="STRING" description="직무대리코드"/>
+          <Column id="CLPT_YSNO" size="1" type="STRING" description="직급대우여부"/>
+          <Column id="DSPT_DTCD" size="10" type="STRING" description="파견부서코드"/>
+          <Column id="EXTR_PLDH" size="50" type="STRING" description="외부파견지"/>
+          <Column id="DTMN_YSNO" size="1" type="STRING" description="부서장여부"/>
+          <Column id="JBGP_DATE" size="8" type="STRING" description="직군일"/>
+          <Column id="DUTY_DATE" size="8" type="STRING" description="직무일"/>
+          <Column id="DURS_DATE" size="8" type="STRING" description="직책일"/>
+          <Column id="SEAS_DATE" size="8" type="STRING" description="소속발령일"/>
+          <Column id="DEAT_DATE" size="8" type="STRING" description="부서발령일"/>
+          <Column id="PRON_DATE" size="8" type="STRING" description="승진일"/>
+          <Column id="PARE_DATE" size="8" type="STRING" description="승급일"/>
+          <Column id="NETP_DATE" size="8" type="STRING" description="차기승급일"/>
+          <Column id="FILE_PATH" size="100" type="STRING" description="파일경로"/>
+          <Column id="OPOS_DATE" size="8" type="STRING" description="직위일"/>
+          <Column id="PBNR_YSNO" size="1" type="STRING" description="수습여부"/>
+          <Column id="PBNR_ENDD" size="8" type="STRING" description="수습종료일"/>
+          <Column id="FILE_IDXX" size="100" type="STRING" description="파일ID"/>
+          <Column id="REEP_DIVC" size="255" type="STRING" description="퇴직수당구분코드"/>
+          <Column id="REAY_JOCD" size="255" type="STRING" description="퇴직연금가입기관코드"/>
+          <Column id="WABK_CODE" size="255" type="STRING" description="급여은행코드"/>
+          <Column id="WAGE_ACNO" size="255" type="STRING" description="급여계좌번호"/>
+          <Column id="WAGE_DPST" size="255" type="STRING" description="급여예금주"/>
+          <Column id="IRSB_CODE" size="255" type="STRING" description="부정기급여은행코드"/>
+          <Column id="IRSA_ACNO" size="255" type="STRING" description="부정기급여계좌번호"/>
+          <Column id="IRSA_DPST" size="255" type="STRING" description="부정기급여예금주"/>
+          <Column id="LFDN_CODE" size="255" type="STRING" description="내외국인구분코드"/>
+          <Column id="NANY_CODE" size="255" type="STRING" description="국적코드"/>
+          <Column id="RECL_CODE" size="255" type="STRING" description="거주자구분코드"/>
+          <Column id="DOMC_CODE" size="255" type="STRING" description="거주지국코드"/>
+          <Column id="TARA_YSNO" size="255" type="STRING" description="단일세율적용여부"/>
+          <Column id="HSHL_YSNO" size="255" type="STRING" description="세대주여부"/>
+          <Column id="RECP_DATE" size="255" type="STRING" description="중간정산일(퇴직기산일)"/>
+          <Column id="STTD_YSNO" size="255" type="STRING" description="표준세액공제여부"/>
+          <Column id="PAYX_TAXR" type="STRING" size="256" description="급여소득세적용코드"/>
+          <Column id="PTPY_YSNO" type="STRING" size="256" description="분할납부여부"/>
+          <Column id="REAY_DATE" type="STRING" size="8" description="DC연금가"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_ALDEYN1">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="EXPD_CODE" size="5" type="STRING" description="수당공제코드"/>
+          <Column id="EXPD_NAME" size="50" type="STRING" description="수당공제명"/>
+          <Column id="BGIN_DATE" size="8" type="STRING" description="시작일"/>
+          <Column id="ENDX_DATE" size="8" type="STRING" description="종료일"/>
+          <Column id="PADN_YSNO" size="1" type="STRING" description="지급공제여부"/>
+          <Column id="PDGB_CODE" size="6" type="STRING" description="지급공제구분코드"/>
+          <Column id="PDGB_NAME" size="255" type="STRING" description="지급구분명"/>
+          <Column id="EXPD_RAPY" size="15" type="BIGDECIMAL" description="수당공제비율금액"/>
+          <Column id="REMK_100X" size="100" type="STRING" description="비고100"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_ALDEYN2">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="EXPD_CODE" size="5" type="STRING" description="수당공제코드"/>
+          <Column id="EXPD_NAME" size="50" type="STRING" description="수당공제명"/>
+          <Column id="BGIN_DATE" size="8" type="STRING" description="시작일"/>
+          <Column id="ENDX_DATE" size="8" type="STRING" description="종료일"/>
+          <Column id="PADN_YSNO" size="1" type="STRING" description="지급공제여부"/>
+          <Column id="PDGB_CODE" size="6" type="STRING" description="지급공제구분코드"/>
+          <Column id="PDGB_NAME" size="255" type="STRING" description="지급구분명"/>
+          <Column id="EXPD_RAPY" size="15" type="BIGDECIMAL" description="수당공제비율금액"/>
+          <Column id="REMK_100X" size="100" type="STRING" description="비고100"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_REGSAL">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="STDS_DATE" size="8" type="STRING" description="기준일"/>
+          <Column id="SRAL_NUMB" size="10" type="STRING" description="일련번호"/>
+          <Column id="OPOS_CODE" size="255" type="STRING" description="직위코드"/>
+          <Column id="OPOS_NAME" size="255" type="STRING" description="직위명"/>
+          <Column id="BASC_ANSL" size="15" type="BIGDECIMAL" description="기본연봉"/>
+          <Column id="ASL1_AMOT" size="15" type="BIGDECIMAL" description="연봉1금액"/>
+          <Column id="ASL2_AMOT" size="15" type="BIGDECIMAL" description="연봉2금액"/>
+          <Column id="ASL3_AMOT" size="15" type="BIGDECIMAL" description="연봉3금액"/>
+          <Column id="ASL4_AMOT" size="15" type="BIGDECIMAL" description="연봉4금액"/>
+          <Column id="BSLY_AMOT" size="15" type="BIGDECIMAL" description="기본급금액"/>
+          <Column id="BSL1_AMOT" size="15" type="BIGDECIMAL" description="기본급1금액"/>
+          <Column id="BSL2_AMOT" size="15" type="BIGDECIMAL" description="기본급2금액"/>
+          <Column id="BSL3_AMOT" size="15" type="BIGDECIMAL" description="기본급3금액"/>
+          <Column id="BSL4_AMOT" size="15" type="BIGDECIMAL" description="기본급4금액"/>
+          <Column id="REMK_100X" size="100" type="STRING" description="비고100"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_PAYSET">
+        <ColumnInfo>
+          <Column id="PAYX_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="EXPD_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="ADJT_RAPY" size="256" prop="default" type="STRING"/>
+          <Column id="AJDI_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="FEND_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="REMK_100X" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsHR_FAMILY" oncolumnchanged="dsHR_FAMILY_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="SRAL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="FREL_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_SSEC" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_BIRT" size="256" prop="default" type="STRING"/>
+          <Column id="GNDR_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="SCCR_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_JOBX" size="256" prop="default" type="STRING"/>
+          <Column id="WORK_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_TLNM" size="256" prop="default" type="STRING"/>
+          <Column id="LVTG_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="FALP_AMOT" size="256" prop="default" type="STRING"/>
+          <Column id="FALP_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="SUPT_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="DEGC_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="FRDE_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="BGIN_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="ENDX_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="REMK_100X" size="256" prop="default" type="STRING"/>
+          <Column id="FMLY_AGEX" size="256" prop="default" type="STRING"/>
+          <Column id="FREL_CDNM" size="256" prop="default" type="STRING"/>
+          <Column id="HALT_CODE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_INCOME">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="INDN_DATE" size="8" type="STRING" description="기타지급일"/>
+          <Column id="INDN_CODE" size="6" type="STRING" description="소득구분코드"/>
+          <Column id="TAP1_AMOT" size="15" type="BIGDECIMAL" description="과세1지급금액"/>
+          <Column id="TAP2_AMOT" size="15" type="BIGDECIMAL" description="과세2지급금액"/>
+          <Column id="TAP3_AMOT" size="15" type="BIGDECIMAL" description="과세3지급금액"/>
+          <Column id="NTP1_AMOT" size="15" type="BIGDECIMAL" description="비과세1지급금액"/>
+          <Column id="NTP2_AMOT" size="15" type="BIGDECIMAL" description="비과세2지급금액"/>
+          <Column id="NTP3_AMOT" size="15" type="BIGDECIMAL" description="비과세3지급금액"/>
+          <Column id="INCM_TAXX" size="15" type="BIGDECIMAL" description="소득세"/>
+          <Column id="INHA_TAXX" size="15" type="BIGDECIMAL" description="주민세"/>
+          <Column id="OTDE_AMOT" size="15" type="BIGDECIMAL" description="기타공제금액"/>
+          <Column id="PAYX_DATE" size="8" type="STRING" description="지급일"/>
+          <Column id="WAGE_CODE" size="4" type="STRING" description="급여코드"/>
+          <Column id="ENFC_CODE" size="10" type="STRING" description="사업장코드"/>
+          <Column id="DEPT_CODE" size="10" type="STRING" description="부서코드"/>
+          <Column id="CLSD_CODE" size="6" type="STRING" description="직원구분코드"/>
+          <Column id="CPOS_CODE" size="6" type="STRING" description="직급코드"/>
+          <Column id="OPOS_CODE" size="6" type="STRING" description="직위코드"/>
+          <Column id="REMK_400X" size="400" type="STRING" description="비고400"/>
+          <Column id="INDN_NAME" size="256" type="STRING" description="소득구분"/>
+          <Column id="PAYX_TAMT" size="256" type="STRING" description="지급계"/>
+          <Column id="INDN_SUBD" type="STRING" size="256" description="필터용"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edtEMPL_NUMB" propid="value" datasetid="dsPY_MASTPM" columnid="EMPL_NUMB"/>
+      <BindItem id="item1" compid="edtEMPL_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="EMPL_NAME"/>
+      <BindItem id="item2" compid="medRERN_NUMB" propid="value" datasetid="dsPY_MASTPM" columnid="RERN_NUMB"/>
+      <BindItem id="item3" compid="edtPYTY_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="PYTY_NAME"/>
+      <BindItem id="item4" compid="edtSECT_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="SECT_NAME"/>
+      <BindItem id="item5" compid="edtDEPT_NAME00" propid="value" datasetid="dsPY_MASTPM" columnid="DEPT_NAME"/>
+      <BindItem id="item6" compid="edtCPOS_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="CPOS_NAME"/>
+      <BindItem id="item7" compid="edtSPOS_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="SPOS_NAME"/>
+      <BindItem id="item8" compid="edtDURS_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="DURS_NAME"/>
+      <BindItem id="item9" compid="edtDUTY_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="DUTY_NAME"/>
+      <BindItem id="item10" compid="medPCOP_JCDT" propid="value" datasetid="dsPY_MASTPM" columnid="PCOP_JCDT"/>
+      <BindItem id="item11" compid="medENCO_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="ENCO_DATE"/>
+      <BindItem id="item12" compid="medRETR_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="RETR_DATE"/>
+      <BindItem id="item13" compid="edtWRKS_NAME" propid="value" datasetid="dsPY_MASTPM" columnid="WRKS_NAME"/>
+      <BindItem id="item14" compid="medANSD_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="ANSD_DATE"/>
+      <BindItem id="item15" compid="chkLBJO_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="LBJO_YSNO"/>
+      <BindItem id="item16" compid="chkPAWE_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="PAWE_YSNO"/>
+      <BindItem id="item17" compid="cmbCLSD_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="CLSD_CODE"/>
+      <BindItem id="item18" compid="cmbREEP_DIVC" propid="value" datasetid="dsPY_MASTPM" columnid="REEP_DIVC"/>
+      <BindItem id="item19" compid="cmbREAY_JOCD" propid="value" datasetid="dsPY_MASTPM" columnid="REAY_JOCD"/>
+      <BindItem id="item20" compid="cmbWABK_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="WABK_CODE"/>
+      <BindItem id="item21" compid="edtWAGE_ACNO" propid="value" datasetid="dsPY_MASTPM" columnid="WAGE_ACNO"/>
+      <BindItem id="item22" compid="edtWAGE_DPST" propid="value" datasetid="dsPY_MASTPM" columnid="WAGE_DPST"/>
+      <BindItem id="item23" compid="cmbIRSB_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="IRSB_CODE"/>
+      <BindItem id="item24" compid="edtIRSA_ACNO" propid="value" datasetid="dsPY_MASTPM" columnid="IRSA_ACNO"/>
+      <BindItem id="item25" compid="edtIRSA_DPST" propid="value" datasetid="dsPY_MASTPM" columnid="IRSA_DPST"/>
+      <BindItem id="item26" compid="cmbLFDN_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="LFDN_CODE"/>
+      <BindItem id="item27" compid="cmbNANY_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="NANY_CODE"/>
+      <BindItem id="item29" compid="cmbDOMC_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="DOMC_CODE"/>
+      <BindItem id="item30" compid="chkTARA_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="TARA_YSNO"/>
+      <BindItem id="item31" compid="chkHSHL_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="HSHL_YSNO"/>
+      <BindItem id="item32" compid="calRECP_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="RECP_DATE"/>
+      <BindItem id="item33" compid="edtIRPS_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="IRPS_DATE"/>
+      <BindItem id="item34" compid="edtCHAX_SUXX" propid="value" datasetid="dsPY_MASTPM" columnid="CHAX_SUXX"/>
+      <BindItem id="item35" compid="medBSLY_AMOT" propid="value" datasetid="dsPY_MASTPM" columnid="BSLY_AMOT"/>
+      <BindItem id="item28123" compid="cmbRECL_CODE" propid="value" datasetid="dsPY_MASTPM" columnid="RECL_CODE"/>
+      <BindItem id="item28" compid="edtCPOS_NAME00" propid="value" datasetid="dsPY_MASTPM" columnid="OPOS_NAME"/>
+      <BindItem id="item36" compid="chkSTTD_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="STTD_YSNO"/>
+      <BindItem id="item37" compid="chkPTPY_YSNO" propid="value" datasetid="dsPY_MASTPM" columnid="PTPY_YSNO"/>
+      <BindItem id="item38" compid="cmbPAYX_TAXR" propid="value" datasetid="dsPY_MASTPM" columnid="PAYX_TAXR"/>
+      <BindItem id="item39" compid="calREAY_DATE" propid="value" datasetid="dsPY_MASTPM" columnid="REAY_DATE"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	PAYB0010 급여기본사항관리
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.22		박철영		Initial Created.
+ *   2016.09.05		안윤준		수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  	= "TTFFTTTF";
+this.sPACKAGENAME 	= "PAYB0010";
+this.sKeyValue 		= new Array();
+
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+//TAB INDEX 매핑
+this.FAMY_INDEX = 5; //가족사항
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	if ( this.sUSERLAVEL == "5" ) {
+		this.sBUTTONLIST  = "TTFFFFTF";
+	}
+	
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fnc_GetUserComboDs(this.dsUserCombo);
+
+	this.cmbSHRWODN_CODE.set_index(1);
+	this.edtSHREMPL_NAME.setFocus();
+	
+	if ( this.sUSERLAVEL == "5" ) {
+		this.edtSHRDEPT_CODE.set_enable(false);
+		this.edtSHRDEPT_NAME.set_enable(false);
+		
+		this.edtSHREMPL_NUMB.set_enable(false);
+        this.edtSHREMPL_NAME.set_enable(false);
+        this.cmbSHRCLSD_CODE.set_enable(false);
+        this.cmbSHRWODN_CODE.set_enable(false);
+		
+		this.edtSHREMPL_NUMB.set_value(application.GBL_EMPLNO);
+        this.edtSHREMPL_NAME.set_value(application.GBL_USERNM);
+        
+		this.fnc_FormatResidentNumber(this.medRERN_NUMB);
+		this.fnc_FormatResidentNumber(this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FMLY_SSEC");
+		this.fnc_SetReadonly(this.Tab0.tabHR_FAMILY.grdHR_FAMILY, true);
+		this.cmbCLSD_CODE.set_enable(false);
+		this.cmbWABK_CODE.set_enable(false);
+		this.cmbIRSB_CODE.set_enable(false);
+		this.cmbLFDN_CODE.set_enable(false);
+		this.chkTARA_YSNO.set_enable(false);
+		this.chkSTTD_YSNO.set_enable(false);
+		this.chkPAWE_YSNO.set_enable(false);
+		this.edtWAGE_ACNO.set_enable(false);
+		this.edtIRSA_ACNO.set_enable(false);
+		this.cmbNANY_CODE.set_enable(false);
+		this.chkHSHL_YSNO.set_enable(false);
+		this.cmbPAYX_TAXR.set_enable(false);
+		this.cmbREEP_DIVC.set_enable(false);
+		this.cmbRECL_CODE.set_enable(false);
+		this.calRECP_DATE.set_enable(false);
+		this.chkPTPY_YSNO.set_enable(false);
+		this.cmbREAY_JOCD.set_enable(false);
+		this.edtWAGE_DPST.set_enable(false);
+		this.edtIRSA_DPST.set_enable(false);
+		this.cmbDOMC_CODE.set_enable(false);
+		this.calREAY_DATE.set_enable(false);
+		this.Tab0.tabHR_FAMILY.btnAddRow.set_visible(false);
+		this.Tab0.tabHR_FAMILY.btnDelRow.set_visible(false);
+		
+		this.fn_Search();
+		
+	}
+	
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsPY_MASTPM,dsPY_ALDEYN1,dsPY_ALDEYN2,dsPY_REGSAL,dsPY_INCOME,dsPY_PAYSET,dsHR_FAMILY");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_MASTPM=dsPY_MASTPM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	
+}
+
+/*------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj){
+	
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsPY_MASTPM,dsHR_FAMILY");
+	this.grdPY_MASTPM.setFocus();
+
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	
+	this.sKeyValue[0] = this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition,"EMPL_NUMB");
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet 	= "dsPY_MASTPM=dsPY_MASTPM:U dsHR_FAMILY=dsHR_FAMILY:U";
+	var sOutDataSet = "";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsPY_PAYCOD", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+
+}
+
+/*------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+
+}
+
+/*------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	if (this.fnc_DatasetChangeCheck("dsPY_MASTPM,dsHR_FAMILY")) {
+		return this.fnc_Message("TMM023");
+	}
+
+	return true;
+	
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (obj) {
+
+	if (obj.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+
+	var sQuestionText = "성명:" + this.fnc_Trim(this.dsHR_FAMILY.getColumn(this.dsHR_FAMILY.rowposition, "FMLY_NAME"));
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsPY_MASTPM,dsHR_FAMILY")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	for (var i = 0; i < this.dsPY_MASTPM.getRowCount(); i++) { // 마스터
+
+		if (this.fnc_ToUpper(this.dsPY_MASTPM.getRowType(i)) == Dataset.ROWTYPE_NORMAL)	continue;
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "CLSD_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "직원구분", this.dsPY_MASTPM, i, this.cmbCLSD_CODE, "CLSD_CODE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REEP_DIVC"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "퇴직수당구분", this.dsPY_MASTPM, i, this.cmbREEP_DIVC, "REEP_DIVC");
+		}
+		
+		if (this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REEP_DIVC")) == "2"
+		||  this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REEP_DIVC")) == "3" ) { // 연금DB일때
+			if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REAY_JOCD"))) < 1) {
+				return this.fnc_CheckPostAction("TMM072", "퇴직연금기관", this.dsPY_MASTPM, i, this.cmbREAY_JOCD, "REAY_JOCD");
+			}
+			if (this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REEP_DIVC")) == "3" ) { // 연금DC 일때
+				if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "REAY_DATE"))) < 1) {
+					return this.fnc_CheckPostAction("TMM072", "DC연금가입", this.dsPY_MASTPM, i, this.calREAY_DATE, "REAY_DATE");
+				}
+			}
+			
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "WABK_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "급여계좌은행", this.dsPY_MASTPM, i, this.cmbWABK_CODE, "WABK_CODE");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "WAGE_ACNO"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "급여계좌번호", this.dsPY_MASTPM, i, this.edtWAGE_ACNO, "WAGE_ACNO");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(i, "WAGE_DPST"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "급여예금주", this.dsPY_MASTPM, i, this.edtWAGE_DPST, "WAGE_DPST");
+		}
+		
+	}
+	
+	for (var i = 0; i < this.dsHR_FAMILY.getRowCount(); i++) { // 가족사항
+
+		if (this.fnc_ToUpper(this.dsHR_FAMILY.getRowType(i)) == Dataset.ROWTYPE_NORMAL)	continue;
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsHR_FAMILY.getColumn(i, "FREL_CODE"))) < 1) {
+			this.Tab0.set_tabindex(this.FAMY_INDEX);
+			return this.fnc_CheckPostAction("TMM072", "관계", this.dsHR_FAMILY, i, this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FREL_CODE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsHR_FAMILY.getColumn(i, "FMLY_NAME"))) < 1) {
+			this.Tab0.set_tabindex(this.FAMY_INDEX);
+			return this.fnc_CheckPostAction("TMM072", "성명", this.dsHR_FAMILY, i, this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FMLY_NAME");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsHR_FAMILY.getColumn(i, "FMLY_SSEC"))) < 13 ){
+			if (this.fnc_Length(this.fnc_Trim(this.dsHR_FAMILY.getColumn(i, "FMLY_SSEC"))) != 7 ){
+				this.Tab0.set_tabindex(this.FAMY_INDEX);
+				return this.fnc_CheckPostAction("TMM072", "가족주민번호", this.dsHR_FAMILY, i, this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FMLY_SSEC");
+			}
+		}
+        
+		// TODO 주민번호
+		if (this.fnc_ToUpper(this.dsHR_FAMILY.getRowType(i)) != Dataset.ROWTYPE_NORMAL) {
+			if ( this.fnc_Length(this.fnc_Trim(this.dsHR_FAMILY.getColumn(i, "FMLY_SSEC"))) == 13 ){
+				var sJUNO_RGST2 = this.fnc_Replace(this.dsHR_FAMILY.getColumn(i, "FMLY_SSEC"), "-");
+				// 올바른 주민번호 체크
+				if (!this.fnc_ResidenceNumberCheck(sJUNO_RGST2)) {
+					this.Tab0.set_tabindex(this.FAMY_INDEX);
+					return this.fnc_CheckPostAction("TMM009", "", this.dsHR_FAMILY, i, this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FMLY_SSEC");
+				}
+			}
+		}
+		
+	}
+
+	return true;
+}
+
+/*------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind, sObj, sContentsType) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00")  {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value)); //부서코드
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value)); //사번
+		sReturnString += " WODN_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRWODN_CODE.value)); //재직구분
+		sReturnString += " CLSD_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRCLSD_CODE.value)); //직원구분
+
+	} else if (sKind == "SEARCH01") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition, "EMPL_NUMB"));
+
+	} else if (sKind == "SEARCH02") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition, "EMPL_NUMB"));
+		sReturnString += " EXPD_CODE=" 	+ this.fnc_Quote(sObj.value);
+		sReturnString += " QUERY_TYPE=" + this.fnc_Quote(sContentsType);
+	
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+
+	}
+
+	return sReturnString;
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+
+	}
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsPY_MASTPM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsPY_MASTPM.getCaseCount("dataset.getRowLevel(currow)==0"));
+		
+		if ( this.sKeyValue[0] != "" ) {
+			var irow = this.dsPY_MASTPM.findRow("EMPL_NUMB", this.sKeyValue[0]);
+			this.sKeyValue[0] = "";
+			if(irow<0) irow=0;
+			this.dsPY_MASTPM.set_rowposition(irow);
+		}
+
+	} else if (sMethodName == "SEARCH01") {
+		this.fnc_Information(this.Tab0.tab2.stInformation, this.dsPY_REGSAL.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Information(this.Tab0.tab3.stInformation, this.dsPY_INCOME.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Information(this.Tab0.tab4.stInformation, this.dsPY_PAYSET.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Information(this.Tab0.tabHR_FAMILY.stInformation, this.dsHR_FAMILY.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+	
+	} else if (sMethodName == "SAVE00") {
+		this.fn_KeyFieldDisible(this.dsPY_MASTPM);
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+
+	} else if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+		var arrInt 	 = 0;
+			arrParam[arrInt++] = "COMBO,cmbSHRCLSD_CODE,dsSHRCLSD_CODE,0"; 		// 직원구분
+			arrParam[arrInt++] = "COMBO,cmbSHRWODN_CODE,dsSHRWODN_CODE,0"; 		// 재직구분(조회조건)
+			arrParam[arrInt++] = "COMBO,cmbLFDN_CODE,dsLFDN_CODE,0"; 			// 내외국인
+			arrParam[arrInt++] = "COMBO,cmbNANY_CODE,dsNANY_CODE,0"; 			// 국적
+			arrParam[arrInt++] = "COMBO,cmbRECL_CODE,dsRECL_CODE,0"; 			// 거주자구분
+			arrParam[arrInt++] = "COMBO,cmbDOMC_CODE,dsDOMC_CODE,0"; 			// 거주국가
+			arrParam[arrInt++] = "COMBO,cmbREEP_DIVC,dsREEP_DIVC,0"; 			// 퇴직수당구분
+			arrParam[arrInt++] = "COMBO,cmbCLSD_CODE,dsCLSD_CODE,0"; 			// 직원구분
+			arrParam[arrInt++] = "COMBO,cmbWABK_CODE,dsBANK_CODE,0"; 			// 은행코드
+			arrParam[arrInt++] = "COMBO,cmbIRSB_CODE,dsBANK_CODE,0"; 			// 은행코드
+			arrParam[arrInt++] = "COMBO,cmbPAYX_TAXR,dsPAYX_TAXR,0"; 			// 급여소득세적용
+			arrParam[arrInt++] = "GRID,grdPY_MASTPM,dsCLSD_CODE,CLSD_CODE"; 	// 직원구분
+			arrParam[arrInt++] = "GRID,Tab0.tabHR_FAMILY.grdHR_FAMILY,dsFREL_CODE,FREL_CODE"; // 가족관계
+			arrParam[arrInt++] = "GRID,Tab0.tabHR_FAMILY.grdHR_FAMILY,dsGNDR_CODE,GNDR_CODE"; // 성별
+			arrParam[arrInt++] = "GRID,Tab0.tabHR_FAMILY.grdHR_FAMILY,dsHALT_CODE,HALT_CODE"; // 장애코드
+			
+		this.fnc_CommonCodeInnerBind(arrParam);
+
+	} else if (sMethodName == "GetUserComboCode") {
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbREAY_JOCD,dsREAY_JOCD,0";
+			arrParam[1] = "COMBO,Tab0.tab1.cmbSHREXPD_CODE1,dsXPD_CODE1,0";
+			arrParam[2] = "COMBO,Tab0.tab1.cmbSHREXPD_CODE2,dsXPD_CODE2,0";
+		this.fnc_UserComboInnerBind(arrParam);
+
+	}
+}
+
+/*-------------------------------------+
+ |  수정 시 Key Field Disibled 처리    |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+	
+	this.fnc_SetReadonly(this.cmbCLSD_CODE, true);
+	this.fnc_SetReadonly(this.chkPAWE_YSNO, true);
+	this.fnc_SetReadonly(this.cmbREEP_DIVC, true);
+	this.fnc_SetReadonly(this.cmbREAY_JOCD, true);
+	this.fnc_SetReadonly(this.cmbWABK_CODE, true);
+	this.fnc_SetReadonly(this.edtWAGE_ACNO, true);
+	this.fnc_SetReadonly(this.edtWAGE_DPST, true);
+	this.fnc_SetReadonly(this.cmbIRSB_CODE, true);
+	this.fnc_SetReadonly(this.edtIRSA_ACNO, true);
+	this.fnc_SetReadonly(this.edtIRSA_DPST, true);
+	this.fnc_SetReadonly(this.cmbLFDN_CODE, true);
+	this.fnc_SetReadonly(this.cmbNANY_CODE, true);
+	this.fnc_SetReadonly(this.cmbRECL_CODE, true);
+	this.fnc_SetReadonly(this.cmbDOMC_CODE, true);
+	this.fnc_SetReadonly(this.chkTARA_YSNO, true);
+	this.fnc_SetReadonly(this.chkHSHL_YSNO, true);
+	this.fnc_SetReadonly(this.calRECP_DATE, true);
+	this.fnc_SetReadonly(this.calREAY_DATE, true);
+	
+	this.Tab0.tab1.cmbSHREXPD_CODE1.set_index(0);
+	this.dsPY_ALDEYN1.filter("");
+	this.Tab0.tab1.cmbSHREXPD_CODE2.set_index(0);
+	this.dsPY_ALDEYN2.filter("");
+	
+	var iNowDate = this.fnc_GetServerDateTime("DATE");
+	this.Tab0.tab3.calSHRSTDS_YEAR.set_value(this.fnc_SubStr(iNowDate, 0, 4));
+	this.dsPY_INCOME.filter("");
+
+	if (this.dsPY_MASTPM.getRowCount() < 1) return;
+
+	this.fnc_SetReadonly(this.cmbCLSD_CODE, false);
+	this.fnc_SetReadonly(this.chkPAWE_YSNO, false);
+	this.fnc_SetReadonly(this.cmbREEP_DIVC, false);
+	this.fnc_SetReadonly(this.cmbREAY_JOCD, false);
+	this.fnc_SetReadonly(this.cmbWABK_CODE, false);
+	this.fnc_SetReadonly(this.edtWAGE_ACNO, false);
+	this.fnc_SetReadonly(this.edtWAGE_DPST, false);
+	this.fnc_SetReadonly(this.cmbIRSB_CODE, false);
+	this.fnc_SetReadonly(this.edtIRSA_ACNO, false);
+	this.fnc_SetReadonly(this.edtIRSA_DPST, false);
+	this.fnc_SetReadonly(this.cmbLFDN_CODE, false);
+	this.fnc_SetReadonly(this.cmbNANY_CODE, false);
+	this.fnc_SetReadonly(this.cmbRECL_CODE, false);
+	this.fnc_SetReadonly(this.cmbDOMC_CODE, false);
+	this.fnc_SetReadonly(this.chkTARA_YSNO, false);
+	this.fnc_SetReadonly(this.chkHSHL_YSNO, false);
+	this.fnc_SetReadonly(this.calRECP_DATE, false);
+	this.fnc_SetReadonly(this.calREAY_DATE, false);
+	
+	this.Chk_cmbREEP_DIVC_value(this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition, "REEP_DIVC"));
+	
+	var sMethodName = "SEARCH01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsPY_ALDEYN1=dsPY_ALDEYN1 dsPY_ALDEYN2=dsPY_ALDEYN2 dsPY_REGSAL=dsPY_REGSAL dsPY_PAYSET=dsPY_PAYSET dsPY_INCOME=dsPY_INCOME dsHR_FAMILY=dsHR_FAMILY";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME,sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/***************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+/*------------------------+
+ |  팝업 Setting          |
+ +------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+
+	if ((obj.name == "imgHelpSHRDEPT_CODE") || (obj.name == "edtSHRDEPT_NAME")) { // 부서조회
+		arrParam[0] = "TMM0004";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRDEPT_NAME";
+		arrParam[5] = "edtSHRDEPT_CODE,edtSHRDEPT_NAME";
+		arrParam[6] = "0,1";
+
+	} else if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) {
+		arrParam[0] = "HRM0001";
+		arrParam[1] = this.edtSHRDEPT_CODE.value;
+		arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHREMPL_NAME";
+		arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";
+		arrParam[6] = "0,1";
+
+	}
+	
+	if ( arrParam != "" || this.fnc_Length(arrParam) != 0 ) this.fnc_HelpDialogeAction(this, obj, arrParam);
+}
+
+/*-------------+
+ |  가족추가   |
+ +-------------*/
+this.btnInput_OnClick = function (obj:Button, e:ClickEventInfo) {
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition, "EMPL_NUMB"))) < 1) {
+		this.fnc_Message("TMM013");
+		return false;
+	}
+
+	var iRow = this.dsHR_FAMILY.insertRow(this.dsHR_FAMILY.rowposition+1);
+	this.dsHR_FAMILY.setColumn(iRow, "EMPL_NUMB", this.dsPY_MASTPM.getColumn(this.dsPY_MASTPM.rowposition, "EMPL_NUMB"));
+	this.Tab0.tabHR_FAMILY.grdHR_FAMILY.setCellPos(this.fnc_GridColumnIndex(this.Tab0.tabHR_FAMILY.grdHR_FAMILY, "FREL_CODE"));
+	
+}
+
+/*-------------+
+ |  가족삭제   |
+ +-------------*/
+this.btnDelete_OnClick = function (obj:Button, e:ClickEventInfo) {
+	if (this.fn_DeleteCheck(this.dsHR_FAMILY)) this.dsHR_FAMILY.deleteRow(this.dsHR_FAMILY.rowposition);
+	this.Tab0.tabHR_FAMILY.grdHR_FAMILY.setFocus();
+	
+}
+
+this.dsHR_FAMILY_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	
+	var sBirthDay 	= "";
+	var sAge		= "";
+	
+	if ( e.columnid == "FMLY_SSEC" ) {
+		
+		if( this.fnc_Length(this.fnc_Trim(e.newvalue)) > 6  ) {
+		
+			if ( this.fnc_SubStr(e.newvalue, 6, 1) == "1" || this.fnc_SubStr(e.newvalue, 6, 1) == "2"
+			|| 	 this.fnc_SubStr(e.newvalue, 6, 1) == "5" || this.fnc_SubStr(e.newvalue, 6, 1) == "6" ) {
+				sBirthDay 	= "19"+this.fnc_SubStr(e.newvalue, 0, 6);
+				sAge  		= this.fnc_GetAge(sBirthDay, 0) + " (" +this.fnc_GetAge(sBirthDay, 1) +")";
+				this.dsHR_FAMILY.setColumn(e.row, "FMLY_AGEX", sAge);
+				
+			} else {
+				sBirthDay 	= "20"+this.fnc_SubStr(e.newvalue, 0, 6);
+				sAge  		= this.fnc_GetAge(sBirthDay, 0) + " (" +this.fnc_GetAge(sBirthDay, 1) +")";
+				this.dsHR_FAMILY.setColumn(e.row, "FMLY_AGEX", sAge);
+				
+			}
+		} 
+		
+		if ( this.fnc_SubStr(e.newvalue, 6, 1) == "1" || this.fnc_SubStr(e.newvalue, 6, 1) == "3" ) {
+			this.dsHR_FAMILY.setColumn(e.row, "GNDR_CODE", "M");
+			
+			
+		} else if ( this.fnc_SubStr(e.newvalue, 6, 1) == "2" || this.fnc_SubStr(e.newvalue, 6, 1) == "4" ) {
+			this.dsHR_FAMILY.setColumn(e.row, "GNDR_CODE", "F");
+			
+		}
+		
+	}
+	
+}
+
+this.Tab0_tab3_calSHRSTDS_YEAR_onspin = function(obj:Calendar, e:nexacro.CalendarSpinEventInfo) {
+	var sINDN_DATE = this.fnc_SubStr(e.postvalue, 0, 4);
+ 	this.dsPY_INCOME.filter("INDN_SUBD == " + sINDN_DATE); 
+ 	this.fnc_Information(this.Tab0.tab3.stInformation, this.dsPY_INCOME.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+}
+
+this.Tab0_tab1_cmbSHREXPD_CODE1_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo) {
+	if ( this.fnc_Length(e.postvalue) == 0 ){
+		this.dsPY_ALDEYN1.filter("");
+	} else {
+		this.dsPY_ALDEYN1.filter("EXPD_CODE=='" + e.postvalue +"'");
+	}
+}
+
+this.Tab0_tab1_cmbSHREXPD_CODE2_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo) {
+ 	if ( this.fnc_Length(e.postvalue) == 0 ){
+		this.dsPY_ALDEYN2.filter("");
+	} else {
+		this.dsPY_ALDEYN2.filter("EXPD_CODE=='" + e.postvalue +"'");
+	}
+ 	
+}
+
+this.cmbREEP_DIVC_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo){
+	this.Chk_cmbREEP_DIVC_value(e.postvalue);
+}
+
+this.Tab0_onchanged = function(obj:Tab, e:nexacro.TabIndexChangeEventInfo) {
+	this.fnc_GridSetting(obj.components[e.postindex]);
+}
+
+this.Chk_cmbREEP_DIVC_value = function(postValue){
+	if ( postValue == "2" ) { //DB형
+		this.Static01.set_cssclass("styFormItemCapBE");
+		this.Static45.set_cssclass("styFormItemCap");
+		
+	} else if ( postValue == "3" ) { //DC형
+		this.Static01.set_cssclass("styFormItemCapBE");
+		this.Static45.set_cssclass("styFormItemCapBE");
+		
+	} else {
+		this.Static01.set_cssclass("styFormItemCap");
+		this.Static45.set_cssclass("styFormItemCap");
+		
+	}
+}]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+<sqlMap namespace="BDMD0010">
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.23
+	 내      용 : 조회[품의예산편성]
+********************************************************************************/
+-->
+	<select id="BDMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT   /*BDMD0010.SEARCH00.품의예산편성*/
+			     	 A.DEPT_CODE	/* 부서코드 */
+	                ,SF_GET_DEPTNAME(A.DEPT_CODE)	AS DEPT_NAME /*부서명*/
+					,A.ACCT_INTL	/* 계정코드 */
+	                ,SF_GET_BUDG_ACCTNAME(A.ACCT_INTL)  AS ACCT_BFNM	/* 계정코드명 */
+					,A.BUDG_TYPE	/* 예산유형 */
+					,A.CPLT_SEQN	/* 편성순번 */
+					,A.REQU_DATE	/* 신청일자 */
+					,A.BUDG_STYM	/* 예산시작년월 */
+					,A.BUDG_ENYM	/* 예산종료년월 */
+					,A.BUDG_AMNT	/* 예산금액 */
+					,A.REQU_REMK	/* 신청사유 */
+	                ,A.REQU_NUMB	/* 품의번호*/
+	                ,A.ACCT_GUB1    /* 회계단위 */
+			FROM	TB_CPLREQ A 	/* 품의예산편성 */
+			WHERE	1 = 1
+			AND		A.ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+	
+	   		AND		A.DEPT_CODE	= NVL(#DEPT_CODE#, A.DEPT_CODE)	/* 부서코드 */
+			AND		A.ACCT_INTL	= NVL(#ACCT_INTL#, A.ACCT_INTL)	/* 계정코드 */
+			AND		A.BUDG_TYPE	= NVL(#BUDG_TYPE#, A.BUDG_TYPE)	/* 예산유형 */
+	
+			AND 	'Y' = CASE WHEN NVL(A.BUDG_ENYM, TO_CHAR(SYSDATE, 'YYYYMM')) < #BUDG_YMFR# THEN 'N'
+	        				   WHEN NVL(A.BUDG_STYM, TO_CHAR(SYSDATE, 'YYYYMM')) > #BUDG_YMTO# THEN 'N'
+	                           ELSE 'Y'
+	                           END
+	
+			ORDER	BY
+					A.ACCT_GUB1
+					,A.DEPT_CODE
+					,A.ACCT_INTL
+					,A.BUDG_TYPE
+					,A.CPLT_SEQN
+		]]>
+	</select>
+	
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.23
+	 내      용 : 입력[품의예산편성]
+********************************************************************************/
+-->
+	<insert id="BDMD0010.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+			DECLARE
+			     /*BDMD0010.SAVE00.품의예산편성*/
+				sCPLT_SEQN			TB_CPLREQ.CPLT_SEQN%TYPE;
+	
+			BEGIN
+		
+		        SELECT	NVL(MAX(A.CPLT_SEQN), 0) + 1	/* BDMD0010.SAVE00.SELECT.편성순번 */
+				INTO	sCPLT_SEQN
+		        FROM	TB_CPLREQ A 	/* 품의예산편성 */
+		        WHERE	1 = 1
+		        AND		A.DEPT_CODE	= #DEPT_CODE#	/* 부서코드 */
+		      
+		        /* 20160114 김남호 : 신청일자기준으로 편성순번 생성시 기존 편성순번과 겹침 */
+		        /* AND		A.REQU_DATE LIKE SUBSTR(iREQU_DATE,1,4) || '%' 	*/  /* 신청일자 */
+				;
+		
+		
+				INSERT	INTO TB_CPLREQ
+					(
+					 ACCT_GUB1	/* 회계단위 */
+					,DEPT_CODE	/* 부서코드 */
+					,ACCT_INTL	/* 계정코드 */
+					,BUDG_TYPE	/* 예산유형 */
+					,CPLT_SEQN	/* 편성순번 */
+					,REQU_DATE	/* 신청일자 */
+					,BUDG_STYM	/* 예산시작년월 */
+					,BUDG_ENYM	/* 예산종료년월 */
+					,BUDG_AMNT	/* 예산금액 */
+					,REQU_REMK	/* 신청사유 */
+					,INST_DATE	/* 등록일시 */
+					,INST_USID	/* 등록자 */
+					,WORK_DATE	/* 수정일시 */
+					,WORK_USID	/* 수정자 */
+		            ,REQU_NUMB	/* 품의번호*/
+					)
+				VALUES
+					(
+					 #ACCT_GUB1#	/* 회계단위 */
+					,#DEPT_CODE#	/* 부서코드 */
+					,#ACCT_INTL#	/* 계정코드 */
+					,#BUDG_TYPE#	/* 예산유형 */
+					,sCPLT_SEQN		/* 편성순번 */
+					,#REQU_DATE#	/* 신청일자 */
+					,#BUDG_STYM#	/* 예산시작년월 */
+					,#BUDG_ENYM#	/* 예산종료년월 */
+					,#BUDG_AMNT#	/* 예산금액 */
+					,#REQU_REMK#	/* 신청사유 */
+					,#WORK_DATE#	/* 등록일시 */
+					,#WORK_USID#	/* 등록자 */
+					,#WORK_DATE#	/* 수정일시 */
+					,#WORK_USID#	/* 수정자 */
+		            ,SUBSTR(#REQU_DATE#,1,4) || #DEPT_CODE# || LPAD(sCPLT_SEQN, 4,'0')	/* 품의번호*/
+					)
+				;
+			END;
+		]]>
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.23
+	 내      용 : 수정[품의예산편성]
+********************************************************************************/
+-->
+	<update id="BDMD0010.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE	 TB_CPLREQ	/* BDMD0010.UPDATE00.품의예산편성 */
+			SET		 REQU_DATE	= #REQU_DATE#	/* 신청일자 */
+					,BUDG_STYM	= #BUDG_STYM#	/* 예산시작년월 */
+					,BUDG_ENYM	= #BUDG_ENYM#	/* 예산종료년월 */
+					,BUDG_AMNT	= #BUDG_AMNT#	/* 예산금액 */
+					,REQU_REMK	= #REQU_REMK#	/* 신청사유 */
+					,WORK_DATE	= #WORK_DATE#	/* 수정일자 */
+					,WORK_USID	= #WORK_USID#	/* 수정자 */
+			WHERE	1 = 1
+			AND		ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+			AND		DEPT_CODE	= #DEPT_CODE#	/* 부서코드 */
+			AND		ACCT_INTL	= #ACCT_INTL#	/* 계정코드 */
+			AND		BUDG_TYPE	= #BUDG_TYPE#	/* 예산유형 */
+			AND		CPLT_SEQN	= #CPLT_SEQN#	/* 편성순번 */
+		]]>
+	</update>
+	
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.23
+	 내      용 : 삭제[품의예산편성]
+********************************************************************************/
+-->
+	<delete id="BDMD0010.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+			DELETE	FROM TB_CPLREQ	/*BDMD0010.DELETE00. 품의예산편성 */
+			WHERE	1 = 1
+			AND		ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+			AND		DEPT_CODE	= #DEPT_CODE#	/* 부서코드 */
+			AND		ACCT_INTL	= #ACCT_INTL#	/* 계정코드 */
+			AND		BUDG_TYPE	= #BUDG_TYPE#	/* 예산유형 */
+			AND		CPLT_SEQN	= #CPLT_SEQN#	/* 편성순번 */
+		]]>
+	</delete>
+</sqlMap>

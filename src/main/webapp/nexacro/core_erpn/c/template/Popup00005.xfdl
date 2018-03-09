@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Popup00005" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="그리드(1) 팝업" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadProcess" left="0" top="0" width="850" height="732">
+    <Layouts>
+      <Layout>
+        <Grid autoenter="TRUE" binddataset="dsFS_ASCHXL" cellsizingtype="both" enable="true" id="grdFS_ASCHXM" useinputpanel="false" class="styGrid01" taborder="-1" tabstop="false" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" selecttype="row" position="absolute" left="15" right="15" top="33" bottom="44" cssclass="styGrid01" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="102"/>
+                <Column size="116"/>
+                <Column size="257"/>
+                <Column size="94"/>
+                <Column size="234"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="폐기일자"/>
+                <Cell col="1" displaytype="text" text="자산번호"/>
+                <Cell col="2" displaytype="text" text="자산명"/>
+                <Cell col="3" displaytype="text" text="부서코드"/>
+                <Cell col="4" displaytype="text" text="부서명"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="date" style="align: center;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:CHNG_DATE"/>
+                <Cell col="1" displaytype="text" style="align: center;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ASST_NUMB" mask="expr:ASST_NUMB.toString().length==0?&quot;&quot;:&quot;####-####-####&quot;"/>
+                <Cell col="2" displaytype="text" style="align: left;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ASST_NAME"/>
+                <Cell col="3" displaytype="text" style="align: center;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:DEPT_CODE"/>
+                <Cell col="4" displaytype="text" style="background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align: left;" text="bind:DEPT_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <MPFileDialog id="fdFileDialog" taborder="79" position="absolute" left="472" top="48" width="24" height="24"/>
+        <Div id="Div0" taborder="2" style="color:black;" scrollbars="none" position="absolute" top="8" width="205" height="21" right="15">
+          <Layouts>
+            <Layout>
+              <Button id="btnExcelFormDown" taborder="2" onclick="fn_ExcelFileDown" top="0" height="21" width="98" left="18" text="양식다운로드" cssclass="btn_WF_Module"/>
+              <Button id="btnExcelUpload" taborder="3" onclick="fn_ExcelUpLoad" top="0" height="21" width="86" left="119" text="엑셀업로드" cssclass="btn_WF_Module"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <FileDownload id="FileDownload00" taborder="4" retry="0" position="absolute" visible="false" text="F" left="579" top="11" width="14" height="18"/>
+        <Static id="Static02" taborder="5" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="461"/>
+        <Static id="Static06" taborder="6" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="835" top="6" width="15" height="461"/>
+        <Static id="Static07" taborder="7" text="h 8" visible="false" left="758" top="688" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Button id="btnCancel" taborder="8" text="취소" onclick="fn_Cancel" cssclass="btn_POP_CRUD" right="15" bottom="12" width="62" height="24"/>
+        <Static id="Static05" taborder="9" text="h 12" visible="false" left="758" top="720" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="10" text="h 8" visible="false" left="700" top="0" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="11" text="개발시 ==&gt;즐겨찾기 버튼 없애주세요" left="27" top="5" width="307" height="22" style="background:crimson;color:#ffffffff;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

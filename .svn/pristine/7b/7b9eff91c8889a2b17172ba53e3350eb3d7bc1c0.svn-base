@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="comHelpChoice" onkeydown="fn_FormKeyDown" scrollbars="none" titletext="중복 Recored선택" position="absolute" left="0" width="532" top="0" height="205" onload="fn_FormLoadSetting">
+    <Layouts>
+      <Layout>
+        <Static id="sta_totalCount" position="absolute" style="align:middle left;" left="64" width="252" top="390" height="20"/>
+        <Grid selecttype="multirow" cellsizingtype="both" enable="true" id="grdCommonCode" useinputpanel="false" oncelldblclick="fn_Confirm" taborder="2" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="0" width="532" top="0" height="205" cssclass="styGrid01" binddataset="this.opener.dsCommonCode">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="23" band="head"/>
+                <Row size="20"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="COL_TMP0"/>
+                <Cell col="1" text="COL_TMP1"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:COL_TMP0"/>
+                <Cell col="1" text="bind:COL_TMP1"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn_Close" taborder="3" onclick="btn_Close_OnClick" visible="true" top="8" width="13" height="13" style="background:#ffffffff URL('theme://images\btn_TitlebarClose_O.png');" right="8"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCommonCode" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false"/>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/*******************************************************************************************
+ 2014.10.25 김석두 (최초 개발)
+ 본 화면은 공통 팝업 실행 후 복수의 결과 값을 선택하는 화면 입니다.
+ 
+ ★ 현재 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+    현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요!
+ *******************************************************************************************/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*---------------------------------+
+ |  최초 화면 Load時 처리 할 사항  |
+ +---------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:nexacro.LoadEventInfo) {
+
+ 	this.grdCommonCode.set_formats(this.opener.dsTM_POPUPX.getColumn(0, "SERS_GRDC"));
+ 	this.dsCommonCode.copyData(this.opener.dsCommonCode);
+	this.grdCommonCode.setBindDataset(this.dsCommonCode); 	
+	this.fnc_GridSetting(this);
+
+}
+
+/*----------------+
+ | 화면 Key Event |
+ +----------------*/
+this.fn_FormKeyDown = function (obj:Form, e:KeyEventInfo) {
+
+	if (e.keycode == 13) {
+		this.fn_Confirm();
+	} else if (e.keycode == 27) {
+		this.fnc_PopupClose("");
+	}
+
+}
+
+/*-----------+
+ | 확인 처리 |
+ +-----------*/
+this.fn_Confirm = function (obj:Grid, e:GridClickEventInfo) {
+
+	var iColumnCount = this.dsCommonCode.getColCount();
+	var iRow = this.dsCommonCode.rowposition;
+	var arrReturn = new Array(iColumnCount);
+
+	//반환 할 자료(Array) 만들기
+	for (var i = 0; i < iColumnCount; i++) {
+		arrReturn[i] = this.dsCommonCode.getColumn(iRow, "COL_TMP" + i);
+	}
+
+	this.fnc_PopupClose(arrReturn);
+
+}
+
+/*---------------------------------+
+ | 닫기 버튼을 통한 화면 종료 처리 |
+ +---------------------------------*/
+this.btn_Close_OnClick = function (obj:Button, e:ClickEventInfo) {
+	this.fnc_PopupClose("");
+}]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                             
+                                                                                                                      
+<sqlMap namespace="FAMD0060">
+<!-- 
+/*******************************************************************************
+    작  성  자  권미영
+    작  성  일  2016-08-26
+    내      용  세금공과금명세현황
+********************************************************************************/
+ -->
+	<select id="FAMD0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* FAMD0060.SEARCH00 세금공과금명세현황 */
+			   NT.SLIP_NUMB	/* 전표번호 */
+			 , NT.SLIP_LINE 	/* 전표라인 */
+			 , NT.SLIP_NUMB || '-' || NT.SLIP_LINE AS DISP_SLIP	/* 전표번호 */
+			 , NT.ACCT_INTL    /* 계정과목 */
+		     , AC.ACCT_NAME    /* 계정과목명 */
+		     , NT.ACCT_DATE    /* 회계일자 */
+		     , NT.REMK_NAME    /* 적요 */
+		     , SF_GET_CONDVANM('CUST_CODE', RF.COND_VACD) AS CUST_NAME /* 거래처명 */
+		     , CASE WHEN NT.DRCR_GUBN = AC.DRCR_GUBN THEN NT.SLIP_AMNT ELSE NT.SLIP_AMNT * -1 END AS SLIP_AMNT /* 금액 */
+		  FROM TA_SLIPXM M
+		       INNER JOIN TA_SLIPNT NT
+	                   ON NT.SLIP_NUMB = M.SLIP_NUMB
+		       INNER JOIN TA_ACCTXM AC
+		               ON AC.ACCT_INTL = NT.ACCT_INTL 
+		              AND AC.ACCT_TYPE = 'FA280100'   /* 세금과 공과 계정만 대상 */
+		       LEFT  JOIN TA_SLIPRF RF
+		               ON RF.SLIP_NUMB = NT.SLIP_NUMB
+			          AND RF.SLIP_LINE = NT.SLIP_LINE
+			          AND RF.COND_CODE = '0002'		/* 거래처 관리항목 */
+		 WHERE M.ACCT_UNIT = #ACCT_UNIT#                     		/* 회계단위 */
+		   AND NT.ACCT_DATE BETWEEN #ACCT_DAT1# AND #ACCT_DAT2# 	/* 회계기간 */
+	]]>
+	<isNotEmpty property = "ACCT_INT1" prepend = "AND">
+	<![CDATA[
+		   NT.ACCT_INTL >= #ACCT_INT1#       /* 계정코드 */
+	]]>
+	</isNotEmpty>       	
+	<isNotEmpty property = "ACCT_INT2" prepend = "AND">
+	<![CDATA[
+		   NT.ACCT_INTL <= #ACCT_INT2#       /* 계정코드 */
+	]]>
+	</isNotEmpty>       	
+	<![CDATA[
+		 ORDER BY NT.ACCT_DATE
+		     , NT.SLIP_NUMB
+		     , NT.SLIP_LINE
+	]]>
+	</select>
+	
+
+</sqlMap>

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="COMLOGIN">
+
+	<!-- 
+	    제  목 : 사용자 로그인 정보 처리
+	    작성자 : 장성환
+	    작성일 : 2014.11.14
+	-->
+	<select id="COMLOGIN.LOGINCHECK" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+                  SELECT  /* COMLOGIN.LOGINCHECK [공통] 사용자 로그인 정보 처리  */
+                          A.USER_IDXX                                           /* 사용자ID*/
+                         ,NVL(A.EMPL_NUMB, 'NOT') AS EMPL_NUMB                  /* 사원번호*/
+                         ,NVL(A.USER_NAME, CASE WHEN A.USDN_CODE = '01' THEN E.EMPL_NAME ELSE TO_NCHAR('손님') END) AS EMPL_NAME		/* 사원명*/
+                         ,A.SCRT_NUMB                                           /* 비밀번호 */
+                         ,NVL(F.DEPT_CODE, C.DEPT_CODE)                             AS DEPT_CODE   /* 부서코드*/
+                         ,NVL(NVL(F.DEPT_NAME, C.DEPT_NAME), '개발팀')              AS DEPT_NAME   /* 부서명*/
+                         ,NVL(NVL(F.SECT_CODE, C.SECT_CODE), ' ')                   AS DEPT_LVCD1  /* 소속코드 */
+                         ,NVL(SF_GET_DEPTNAME(NVL(F.SECT_CODE, C.SECT_CODE)), ' ')  AS DEPT_LVNM1  /* 소속명 */
+                         ,NVL(F.ACCT_GUBN, D.ACCT_GUBN)                             AS ENFC_CODE   /* 회계구분 */
+                         ,NVL(G.OFFI_NAME, D.OFFI_NAME)                             AS ENFC_NAME   /* 사업장명칭 */
+                         ,E.OPOS_CODE                                           /* 직위코드 */
+                         ,SF_GET_COMMNAME('OPOS_CODE', E.OPOS_CODE) AS OPOS_CDNM  /* 직위명 */
+                   FROM TM_USERXM A  LEFT JOIN VI_DEPTXM   C ON A.DEPT_CODE = C.DEPT_CODE
+                                     LEFT JOIN VI_BRCHXM   D ON C.ACCT_GUBN = D.ACCT_GUBN
+                                     LEFT JOIN HR_MASTXM   E ON A.EMPL_NUMB = E.EMPL_NUMB
+                                     LEFT JOIN VI_DEPTXM   F ON E.DEPT_CODE = F.DEPT_CODE
+                                     LEFT JOIN VI_BRCHXM   G ON F.ACCT_GUBN = G.ACCT_GUBN
+                  WHERE A.USER_IDXX = #USER_IDXX#
+                    AND A.USEX_YSNO = '1'   /* 사용여부: 1.사용 */
+                    AND E.WODN_CODE = '1'   /* 재직구분: 1.재직 */
+	]]>
+	</select>
+	
+    <!-- 
+	        제  목 : 비밀번호 변경
+	        작성자 : 김준수
+	        작성일 : 2016.08.12
+    -->
+    <update id="COMLOGIN.PASSWORDCHANGE" parameterClass="hashmap">
+    <![CDATA[
+                  UPDATE TM_USERXM /* COMLOGIN.PASSWORDCHANGE [공통] 사용자 비밀번호를 변경 */
+                  SET SCRT_NUMB = #SCRT_NUMB#
+                  WHERE USER_IDXX = #USER_IDXX#
+    ]]>
+    </update>
+	
+	<!-- 
+	    제  목 : 사용자 권한에 해당하는 메뉴목록 조회(권한 있는 node 만)
+	    작성자 : 장성환 
+	    작성일 : 2014.12.03
+	-->
+	<select id="COMLOGIN.MENUDOWN" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+                  SELECT  /*  COMLOGIN.MENUDOWN [공통] 사용자 권한에 해당하는 메뉴목록 조회(권한 있는 node 만) */
+                          A.MENU_LEVL
+                         ,A.MENU_IDXX
+                         ,A.DEVC_YSNO
+                         ,DECODE(A.DEVC_YSNO, '1', A.MENU_NAME, DECODE(A.MENU_LEVL, 3, '미개발] '||A.MENU_NAME, A.MENU_NAME)) AS MENU_NAME
+                         ,A.MNUT_YSNO
+                         ,A.UPME_IDXX
+                         ,A.PROG_IDXX
+                         ,A.PROG_PATH
+                         ,('T'||B.SEAU_YSNO||B.INAU_YSNO||B.DEAU_YSNO||'T'||B.SVAU_YSNO||B.EXCE_YSNO||B.PRAU_YSNO) AS USER_AUTH
+                         ,B.ATHR_LEVL
+                         ,A.SYST_CODE
+                         ,A.MENU_FUNM
+                         ,DECODE(A.MNUT_YSNO,'0','3','0') AS IMAG_IDXX
+                         ,'1'  AS EXTE_IMAG
+                         ,'2'  AS CLOS_IMAG
+                  FROM (
+                        SELECT  A.MENU_LEVL                                           /*메뉴 레벨*/
+                               ,A.MENU_IDXX                                           /*메뉴 ID*/
+                               ,NVL(C.LNSP_NAME, A.MENU_NAME)   AS MENU_NAME          /*메뉴명*/
+                               ,A.MNUT_YSNO                                           /*메뉴트리여부*/
+                               ,A.UPME_IDXX                                           /*상위메뉴ID*/
+                               ,A.MENU_FUNM                                           /*상위메뉴 Full Path*/
+                               ,(CASE WHEN A.SYST_CODE = 'TMM' THEN '9' ELSE '' END) || A.SORT_IDXX       AS MENU_ORDR   /*메뉴 정렬 순서 (공통관리 제일 뒤쪽으로.. 20161005 SH.J*/
+                               ,A.PROG_IDXX                                           /*프로그램 ID*/
+                               ,(SELECT PROG_PATH
+                                   FROM TM_PROGXM
+                                  WHERE PROG_IDXX = A.PROG_IDXX)       AS PROG_PATH   /*프로그램 경로(XML 위치)*/
+                               ,A.SYST_CODE                                           /*시스템 코드*/
+                               ,A.DEVC_YSNO                                           /*개발완료여부*/
+                          FROM VI_MENUXM A
+	                           LEFT JOIN TM_MTLNXM C /* [다국어명칭] */                           
+	                                  ON C.MTLN_TGTY = 'MENU_IDXX'     /* 다국어대상유형: MENU_IDXX.메뉴ID */                          
+	                                 AND C.MTLN_DTCD = 'MENU_IDXX'     /* 다국어자료코드 */                          
+	                                 AND A.MENU_IDXX = C.MTLN_DDCD     /* 다국어세부자료코드 */                          
+	                                 AND C.SYST_LNCD = #GBL_LANGCD#    /* 시스템언어코드 */ 
+                         WHERE A.USEX_YSNO = '1'
+]]>
+<isNull property="MENU_LIST">
+<![CDATA[
+                           AND A.SYST_CODE IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'SYST_CODE' AND (REF1_FILD = #SYST_CODE# OR COMD_CODE = 'TMM'))
+]]>
+</isNull>
+<![CDATA[
+                        ) A LEFT JOIN 
+                       (
+                        SELECT  MENU_IDXX
+                               ,DECODE(MAX(FMAU_YSNO),0,'F',1,'T') AS FMAU_YSNO
+                               ,DECODE(MAX(EXCE_YSNO),0,'F',1,'T') AS EXCE_YSNO
+                               ,DECODE(MAX(SEAU_YSNO),0,'F',1,'T') AS SEAU_YSNO
+                               ,DECODE(MAX(INAU_YSNO),0,'F',1,'T') AS INAU_YSNO
+                               ,DECODE(MAX(DEAU_YSNO),0,'F',1,'T') AS DEAU_YSNO
+                               ,DECODE(MAX(SVAU_YSNO),0,'F',1,'T') AS SVAU_YSNO
+                               ,DECODE(MAX(PRAU_YSNO),0,'F',1,'T') AS PRAU_YSNO
+                               ,MIN(ATHR_LEVL)                     AS ATHR_LEVL
+                          FROM TM_AUTHXM
+                         WHERE GRUP_IDXX IN (SELECT GRUP_IDXX FROM TM_GROUPX WHERE USER_IDXX = #USER_IDXX#)
+                           AND FMAU_YSNO = '1'
+                         GROUP BY MENU_IDXX
+                         ) B 
+                       ON A.MENU_IDXX = B.MENU_IDXX                                    
+                    WHERE 1= 1
+                    AND   A.MENU_IDXX IN (
+                          SELECT  A.MENU_IDXX
+                            FROM VI_MENUXM A  
+                           START WITH MENU_IDXX IN (SELECT DISTINCT MENU_IDXX
+                                                      FROM TM_AUTHXM
+                                                     WHERE GRUP_IDXX IN (SELECT GRUP_IDXX FROM TM_GROUPX WHERE USER_IDXX = #USER_IDXX#)
+                                                       AND FMAU_YSNO = '1')
+                          CONNECT BY A.MENU_IDXX = PRIOR A.UPME_IDXX)
+                          ORDER BY A.MENU_ORDR
+	]]>
+	</select>
+
+	<!-- 
+	    제  목 : 마이 메뉴목록 조회(권한 있는 node 만)
+	    작성자 : 장성환 
+	    작성일 : 2014.12.03
+	-->
+	<select id="COMLOGIN.MYMENUDOWN" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+                  SELECT  /* COMLOGIN.MYMENUDOWN [공통] 마이 메뉴목록 조회(권한 있는 node 만) */
+                          A.MENU_LEVL - 2 AS MENU_LEVL
+                         ,A.MENU_IDXX
+                         ,A.DEVC_YSNO
+                         ,DECODE(A.DEVC_YSNO, '1', A.MENU_NAME, DECODE(A.MENU_LEVL, 3, '미개발] '||A.MENU_NAME, A.MENU_NAME)) AS MENU_NAME
+                         ,A.MNUT_YSNO
+                         /*,A.UPXX_NAME*/
+                         ,A.PROG_IDXX
+                         ,A.PROG_PATH
+                         ,('T'||B.SEAR_YSNO||B.NEWX_YSNO||B.DELE_YSNO||'T'||B.SAVE_YSNO||B.EXCE_YSNO||B.PRIN_YSNO) AS USER_AUTH
+                         ,B.ATHR_LEVL
+                         ,A.SYST_CODE
+                         ,A.MENU_FUNM
+                         ,DECODE(A.MNUT_YSNO,'0','3','0') AS IMAG_IDXX
+                         ,'1'  AS EXTE_IMAG
+                         ,'2'  AS CLOS_IMAG
+                         ,A.MENU_ORDR
+                  FROM (
+                        SELECT  A.MENU_LEVL                                           /*메뉴 레벨*/
+                               ,A.MENU_IDXX                                           /*메뉴 ID*/
+                               ,NVL(C.LNSP_NAME, A.MENU_NAME)   AS MENU_NAME          /*메뉴명*/
+                               ,A.MNUT_YSNO                                           /*메뉴트리여부*/
+                               ,A.UPME_IDXX                                           /*상위메뉴ID*/
+                               ,A.MENU_FUNM                                           /*상위메뉴 Full Path*/
+                               ,B.MENU_ORDR       AS MENU_ORDR   /*메뉴 정렬 순서*/
+                               ,A.PROG_IDXX                                           /*프로그램 ID*/
+                               ,(SELECT PROG_PATH
+                                   FROM TM_PROGXM
+                                  WHERE PROG_IDXX = A.PROG_IDXX)       AS PROG_PATH   /*프로그램 경로(XML 위치)*/
+                               ,A.SYST_CODE                                           /*시스템 코드*/
+                               ,A.DEVC_YSNO                                           /*개발완료여부*/
+                          FROM VI_MENUXM A
+                               INNER JOIN TM_MYMENU B
+                                       ON B.USER_IDXX = #USER_IDXX#
+                                      AND A.MENU_IDXX = B.MENU_IDXX
+                               LEFT  JOIN TM_MTLNXM C /* [다국어명칭] */                           
+                                       ON C.MTLN_TGTY = 'MENU_IDXX'     /* 다국어대상유형: MENU_IDXX.메뉴ID */                          
+                                      AND C.MTLN_DTCD = 'MENU_IDXX'     /* 다국어자료코드 */                          
+                                      AND A.MENU_IDXX = C.MTLN_DDCD     /* 다국어세부자료코드 */                          
+                                      AND C.SYST_LNCD = #GBL_LANGCD#    /* 시스템언어코드 */ 
+                         WHERE A.USEX_YSNO = '1'
+                        ) A LEFT JOIN 
+                       (
+                        SELECT  A.MENU_IDXX
+                               ,DECODE(MAX(FMAU_YSNO),0,'F',1,'T') AS FORM_YSNO
+                               ,DECODE(MAX(EXCE_YSNO),0,'F',1,'T') AS EXCE_YSNO
+                               ,DECODE(MAX(SEAU_YSNO),0,'F',1,'T') AS SEAR_YSNO
+                               ,DECODE(MAX(INAU_YSNO),0,'F',1,'T') AS NEWX_YSNO
+                               ,DECODE(MAX(DEAU_YSNO),0,'F',1,'T') AS DELE_YSNO
+                               ,DECODE(MAX(SVAU_YSNO),0,'F',1,'T') AS SAVE_YSNO
+                               ,DECODE(MAX(PRAU_YSNO),0,'F',1,'T') AS PRIN_YSNO
+                               ,MIN(ATHR_LEVL)                     AS ATHR_LEVL
+                          FROM TM_AUTHXM A
+                            INNER JOIN TM_MYMENU B 
+                              ON B.USER_IDXX = #USER_IDXX# 
+                             AND A.MENU_IDXX = B.MENU_IDXX 
+                         WHERE A.GRUP_IDXX IN (SELECT GRUP_IDXX FROM TM_GROUPX WHERE USER_IDXX = #USER_IDXX#)
+                         GROUP BY A.MENU_IDXX
+                         ) B 
+                       ON A.MENU_IDXX = B.MENU_IDXX
+                    WHERE 1= 1
+                      AND B.MENU_IDXX IS NOT NULL
+                    ORDER BY A.MENU_ORDR 
+	]]>
+	</select>
+
+	<!-- 
+	    제  목 : 메시지 정보 조회
+	    작성자 : 장성환
+	    작성일 : 2014.11.14
+	-->
+	<select id="COMLOGIN.MESSAGEDOWN" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	              SELECT /* COMLOGIN.MESSAGEDOWN [공통] 메시지 정보 조회 */
+	                     A.MSGE_CODE   
+	                   , A.MSKN_CODE   
+	                   , NVL(C.LNSP_NAME, A.MSGE_CNTT) AS MSGE_CNTT 
+	                FROM TM_MESSXM A
+                         LEFT  JOIN TM_MTLNXM C /* [다국어명칭] */                           
+                                 ON C.MTLN_TGTY = 'MSGE_CODE'     /* 다국어대상유형: MSGE_CODE.메시지코드 */                          
+                                AND C.MTLN_DTCD = 'MSGE_CODE'     /* 다국어자료코드 */                          
+                                AND A.MSGE_CODE = C.MTLN_DDCD     /* 다국어세부자료코드 */                          
+                                AND C.SYST_LNCD = #GBL_LANGCD#    /* 시스템언어코드 */ 
+	               WHERE (A.MSDV_CODE = 'C' OR A.MSDV_CODE='A')
+	]]>
+	</select>
+
+	<!-- 
+	    제  목 : 로그인 정보 저장
+	    작성자 : 장성환
+	    작성일 : 2014.11.14
+	-->
+	<update id="COMLOGIN.LOGINSAVE" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO TM_LOGINX (   /* COMLOGIN.LOGINSAVE [공통] 로그인 정보 저장 */ 
+               USER_IDXX   /*사용자ID*/
+              ,EMPL_NUMB   /*사원번호 */
+              ,LGIN_DATE   /*로그인일자*/
+              ,LGIN_IPAR   /*로그인IP*/
+              )
+       VALUES (
+               #USER_IDXX#
+              ,#EMPL_NUMB#
+              ,SYSDATE
+              ,#LGIN_IPAR#
+              )
+	]]>
+	</update>
+	
+	<!-- MyMenu 추가 -->
+	<insert id="COMLOGIN.INSERTMYMENU" parameterClass="hashmap">
+	<![CDATA[
+         INSERT INTO TM_MYMENU (  /* COMLOGIN.INSERTMYMENU [공통] MyMenu 추가 */
+                USER_IDXX   /*사용자ID*/ 
+               ,MENU_IDXX   /*메뉴ID*/ 
+               ,MENU_ORDR   /*메뉴순서*/ 
+               ,INST_DATE   /*등록일시*/
+               ,INST_USID   /*등록자*/
+               ,WORK_DATE   /*수정일시*/
+               ,WORK_USID   /*수정자*/
+       ) VALUES ( 
+                #USER_IDXX#   /*사용자ID*/ 
+               ,#MENU_IDXX#   /*메뉴ID*/ 
+               ,1			  /*메뉴순서*/ 
+               ,#WORK_DATE#
+               ,#WORK_USID#
+               ,#WORK_DATE#
+               ,#WORK_USID#	
+        ) 
+	]]>
+	</insert>
+	
+	<!-- MyMenu 삭제 -->
+	<delete id="COMLOGIN.DELETEMYMENU" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_MYMENU /* COMLOGIN.INSERTMYMENU [공통] MyMenu 삭제 */
+	     WHERE USER_IDXX = #USER_IDXX#   /*사용자ID*/ 
+	       AND MENU_IDXX = #MENU_IDXX#   /*메뉴ID*/ 
+	]]>
+	</delete>
+	
+	
+	
+	<!-- 
+	    제  목 : 사용자 개인설정 정보 조회
+	    작성자 : 장성환
+	    작성일 : 2016.10.27
+	-->
+	<select id="COMLOGIN.COMMONUSERINFO" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT  #USER_IDXX#                   AS USER_IDXX	  /* 사용자ID */
+		       ,NVL(MAX(MYTM_TYCD), 'PURPLE') AS MYTM_TYCD    /* 나의테마유형코드 */
+		       ,NVL(MAX(USER_LNCD), 'ko')     AS USER_LNCD	  /* 사용자언어코드 */
+		       ,MAX(MYPI_FLPT)                AS MYPI_FLPT	  /* 나의사진파일경로 */
+		       ,MAX(FRPI_FLPT)                AS FRPI_FLPT	  /* 액자사진파일경로 */
+		  FROM TM_USERXD
+		 WHERE USER_IDXX = #USER_IDXX#
+	]]>
+	</select>
+	
+	<!--
+	    제  목 : 사용자 개인설정 정보 저장
+	    작성자 : 장성환
+	    작성일 : 2016.11.07
+	-->
+	<insert id="COMLOGIN.SETTINGSAVE" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE
+			iCHK_CNT	NUMBER;
+		BEGIN
+			
+			iCHK_CNT := 0;
+			
+			BEGIN
+				
+				SELECT COUNT(*)
+				  INTO iCHK_CNT
+				  FROM TM_USERXD
+				 WHERE USER_IDXX = #USER_IDXX#;
+				 
+				
+				EXCEPTION WHEN NO_DATA_FOUND THEN
+					iCHK_CNT := 0;
+			END;
+			
+			IF iCHK_CNT = 0 THEN
+				
+				INSERT INTO TM_USERXD (
+					 USER_IDXX	/* 사용자ID	 */
+					,MYTM_TYCD	/* 나의테마유형코드 */
+					,USER_LNCD	/* 사용자언어코드  */
+					,MYPI_FLPT	/* 나의사진파일경로 */
+					,FRPI_FLPT	/* 액자사진파일경로 */
+					,INST_USID	/* 입력작업자    */
+					,INST_DATE	/* 입력일시     */
+					,UPDT_USID	/* 수정작업자    */
+					,UPDT_DATE	/* 수정일시     */
+				) VALUES (
+					 #USER_IDXX#
+					,#MYTM_TYCD#
+					,#USER_LNCD#
+					,#MYPI_FLPT#
+					,#FRPI_FLPT#
+					,#UPDT_USID#
+					,SYSDATE
+					,#UPDT_USID#
+					,SYSDATE
+				);
+				
+			ELSE
+			
+				UPDATE TM_USERXD
+				   SET  MYTM_TYCD = NVL(#MYTM_TYCD#, MYTM_TYCD)	/* 나의테마유형코드 */
+				       ,USER_LNCD = NVL(#USER_LNCD#, USER_LNCD)	/* 사용자언어코드 */
+				       ,MYPI_FLPT = NVL(#MYPI_FLPT#, MYPI_FLPT)	/* 나의사진파일경로 */
+				       ,FRPI_FLPT = NVL(#FRPI_FLPT#, FRPI_FLPT)	/* 액자사진파일경로 */
+				       ,UPDT_USID = #UPDT_USID#
+				       ,UPDT_DATE = SYSDATE
+				 WHERE USER_IDXX = #USER_IDXX# ;
+				 
+			END IF;
+		
+		END;
+	]]>
+	</insert>
+	
+	
+	<!-- 
+	    제  목 : 로그아웃 정보 추가
+	    작성자 : 김준수
+	    작성일 : 2016.10
+	-->
+    <update id="COMLOGIN.LOGOUT" parameterClass="hashmap">
+    <![CDATA[
+         UPDATE TM_LOGINX                /* [시스템로그인정보] */
+           SET LGOT_DATE = SYSDATE      /* 로그아웃일시 */
+         WHERE USER_IDXX = #USER_IDXX#  /* 사용자ID */
+           AND LGIN_DATE = (SELECT MAX(LGIN_DATE) 
+                              FROM TM_LOGINX 
+                             WHERE USER_IDXX = #USER_IDXX# 
+                               AND LGOT_DATE IS NULL)   /* 최근 로그인 기록에 로그아웃 처리 */
+    ]]>
+    </update>
+	
+
+</sqlMap>

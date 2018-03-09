@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"                  
+		"http://www.ibatis.com/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMD0040">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 조회[감가상각명세서(요약)]
+********************************************************************************/
+ -->
+	<select id="FSMD0040.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+
+  		  SELECT 	/*FSMD0040.SEARCH00 조회[감가상각명세서(요약)]*/	  
+                   A.STDS_YMTH                    /*기준년월*/
+                 , A.ASCL_CODE                    /*자산분류코드*/
+                 , C.ASCL_NAME                    /*자산분류명*/
+                 /*, C.MIDL_CODE  AS ASCL_CODE*/  /*중분류코드*/
+                 /*, C.MIDL_NAME  AS ASCL_NAME*/  /*중분류명*/
+                 , A.ASST_NUMB                    /*자산번호*/
+                 , B.ASST_NAME                     /*자산명*/
+                 , B.ASST_STRD                     /*규격*/
+                 , B.ACQS_DATE                     /*취득일*/
+                 , B.ACQU_NUMB                     /*취득수량*/
+                 , SF_GET_COMMNAME('UNIT_CODE', B.UNIT_CODE) AS UNIT_CODE   /*단위*/
+                 , A.PRID_DPCT                  							/*내용년수*/
+                 , CASE WHEN B.DPCT_RATE IS NOT NULL THEN B.DPCT_RATE/100
+                        ELSE 0
+                    END DPCT_RATE               							/*감가상각율*/
+                 ,CASE WHEN NVL(D.ACQU_ENDX, 0) = 0 THEN B.ACQU_PRIC
+                       ELSE NVL(D.ACQU_ENDX, 0)
+                   END B_ACQU_ENDX              							/*전월_기말잔액 (취득원가)*/
+                 , NVL(D.DPCT_ENDX, 0) AS B_DPCT_ENDX   					/*전월_상각누계액*/
+                 , NVL(D.UNDP_BALE, 0) AS B_UNDP_BALE   					/*전월_기말잔액*/
+                 , CASE WHEN NVL(E.ACQU_GROW_C,0) > 0 THEN NVL(E.ACQU_GROW_C,0)
+                        ELSE NVL(E.ACQU_GROW,0)
+                    END AS ACQU_GROW            							/*취득가_당기증가*/
+                 , NVL(E.ACQU_DCRS, 0) * -1 AS ACQU_DCRS                    /*취득가_당기감소( 화면에 - 를 +로 인식하게하려고)*/
+                 /*, A.ACQU_ENDX*/                          				/*취득가_기말잔액*/
+                 /*, NVL(D.UNDP_BALE,0) + NVL(E.ACQU_GROW,0) + NVL(E.ACQU_DCRS,0) AS ACQU_ENDX*/        /*(전월상각누계액+당기증가)-당기감소(감소금액이 -입력 데이타임.  +로 더해줌)*/
+                 , CASE WHEN SUBSTR('20150101', 1, 4) <= '2014' THEN
+                        CASE WHEN SUBSTR(B.ACQS_DATE,1,4) = SUBSTR('20150101', 1, 4) THEN A.ACQU_ENDX
+                             ELSE NVL(D.UNDP_BALE, 0) + NVL(E.ACQU_GROW, 0) + NVL(E.ACQU_DCRS, 0) END   /*(전월상각누계액+당기증가)-당기감소(감소금액이 -입력 데이타임.  +로 더해줌)*/
+                        ELSE
+                            CASE WHEN SUBSTR(B.ACQS_DATE, 1, 6) = SUBSTR('20150101', 1, 6) THEN A.ACQU_ENDX
+                                 ELSE NVL(D.UNDP_BALE, 0) + NVL(E.ACQU_GROW, 0) + NVL(E.ACQU_DCRS, 0) END
+                    END AS ACQU_ENDX
+                 , A.MONT_DPCT AS DPCT_ENDX
+                 /*, A.DPCT_ENDX*/                  /*충당금_기말잔액(월 상각액)*/
+                 , A.UNDP_BALE                      /*미상각잔액     (누적상각액)*/
+           FROM FS_DPCTXM A
+            INNER JOIN FS_ASSTXM B                 /*자산등록*/
+                ON A.ASST_NUMB = B.ASST_NUMB
+             INNER JOIN VI_ASSETCLASS C             /*자산분류명VIEW*/
+                ON B.CLSF_CODE = C.SMAL_CODE
+              /*전월 기초데이타 구하기*/
+              LEFT JOIN (
+                    SELECT X.STDS_YMTH  /*전월*/
+                         , X.ASST_NUMB  /*자산번호*/
+                         , X.ACQU_ENDX  /*전월_전기기말잔액*/
+                         , X.DPCT_ENDX  /*전월_감가상각누계액*/
+                         , X.UNDP_BALE  /*전월_미상각잔액*/
+                      FROM FS_DPCTXM X
+                     WHERE 
+                          X.STDS_YMTH = CASE  WHEN SUBSTR( #STDS_YMTH#, 1, 4) <= '2014' THEN  SUBSTR(#STDS_YMTH#, 1, 4) -1 || '12' 
+                                        ELSE TO_CHAR(TO_DATE(SUBSTR(#STDS_YMTH# , 1, 6), 'YYYYMM') -1, 'YYYYMM')        
+                                        END /*dBEFO_ENDT*/                   
+                 ) D
+                ON A.ASST_NUMB = D.ASST_NUMB
+              /*해당월의 증가, 감소 값을 구하기 위함*/
+              LEFT JOIN (
+                    SELECT A.ASST_NUMB
+                         /*신규취득건 제외(당해년도에 증가,감소건은 SUM 되기때문에 그것 방지)*/
+                         , SUM(CASE WHEN A.ASCH_GUBN <> 'ACQU' THEN DECODE(TO_NUMBER(B.COMD_CODE), 1, A.CHNG_AMOT, 0) END) AS ACQU_GROW_C   /*당기증가 건*/
+                         /*, SUM(DECODE(TO_NUMBER(B.COMD_CODE),  1, A.CHNG_AMOT, 0)) AS ACQU_GROW */     /*당해년도 당기증가액*/
+                         , SUM(DECODE(B.COMD_CODE,  '1', A.CHNG_AMOT, 0)) AS ACQU_GROW      /*당해년도 당기증가액*/
+                         /*, SUM(DECODE(TO_NUMBER(B.CODD_REF4), -1, A.CHNG_AMOT, 0)) AS ACQU_DCRS*/  /*취득가 당기감소*/
+                         /*, SUM(DECODE(TO_NUMBER(B.COMD_CODE), -1, A.DSPS_GILS, 0)) AS ACQU_DCRS*/  /*취득가 당기감소*/
+                         , SUM(DECODE(B.COMD_CODE, '-1', A.DSPS_GILS, 0)) AS ACQU_DCRS      /*취득가 당기감소*/
+                      FROM FS_ASCHXM A
+                     INNER JOIN TM_CODEXD B
+                        ON A.ASCH_GUBN = B.COMD_CODE
+                       AND B.COMM_CODE = 'ASCH_GUBN'
+                       AND (B.REF1_FILD = 'AUTO' OR B.REF1_FILD = 'ASCH' OR B.REF1_FILD = 'SPLT')   /*이동인것은 빼준다.*/
+                       WHERE A.CHNG_DATE LIKE  CASE  WHEN SUBSTR(#STDS_YMTH#, 1, 4) <= '2014' THEN SUBSTR(#STDS_YMTH#, 1, 4) || '%'
+                                               ELSE #STDS_YMTH#||'%' 
+                                               END  /*dCHNG_DATE*/    
+                       
+                     GROUP BY A.ASST_NUMB
+                 ) E
+                ON A.ASST_NUMB = E.ASST_NUMB
+              LEFT JOIN VI_DEPTXM F
+                ON A.DEPT_CODE = F.DEPT_CODE
+             WHERE A.STDS_YMTH = #STDS_YMTH#     /*기준년월*/
+               /*자산마스터 매각,폐기,기증 일경우 변동일자에 업데이트됨. 그래서 당해년도 감가상각명세서 조회시 사용*/
+               AND (A.UNDP_BALE > 0 OR B.FCHG_DATE LIKE SUBSTR(#STDS_YMTH#, 1, 4) || '%')
+               
+      ]]>
+      		<isNotEmpty property = "ASCL_CODE" prepend = "AND">
+      			<![CDATA[
+                   	A.ASCL_CODE = NVL(#ASCL_CODE#, C.ASCL_CODE)   	/*자산분류*/
+            	]]>       
+        	</isNotEmpty>
+        	<isNotEmpty property = "CLSF_CODE" prepend = "AND">
+      			<![CDATA[
+                   	A.CLSF_CODE = NVL(#CLSF_CODE#, C.SMAL_CODE)      /*품목분류*/
+            	]]>       
+        	</isNotEmpty>
+        	<isNotEmpty property = "ACCT_GUBN" prepend = "AND">
+      			<![CDATA[
+                   	F.ACCT_GUBN = NVL(#ACCT_GUBN#, F.ACCT_GUBN) 		/*사업장*/
+            	]]>       
+        	</isNotEmpty>
+        	<isNotEmpty property = "DEPT_CODE" prepend = "AND">
+      			<![CDATA[
+                   	A.DEPT_CODE = NVL(#DEPT_CODE#, A.DEPT_CODE) 		/*부서코드*/
+            	]]>       
+        	</isNotEmpty>
+        	 
+           
+      <![CDATA[
+               
+             ORDER BY A.ASCL_CODE, A.ASST_NUMB
+
+		]]>
+	</select>
+</sqlMap>

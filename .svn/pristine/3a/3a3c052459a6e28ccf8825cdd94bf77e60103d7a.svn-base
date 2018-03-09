@@ -1,0 +1,684 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="PAYB0040" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="급여일지" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="14"/>
+        <Grid autofittype="col" binddataset="dsPY_PMDIRY" cellsizingtype="both" enable="true" id="grdPY_PMDIRY" useinputpanel="false" autofitminwidth="1035" selecttype="row" taborder="2" tabstop="true" tooltiptype="inplace" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="128" cssclass="styGrid01" right="25" bottom="167">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="110"/>
+                <Column size="152"/>
+                <Column size="278"/>
+                <Column size="107"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="background: ;" text="지급일"/>
+                <Cell col="1" displaytype="text" style="background: ;" text="급여구분"/>
+                <Cell col="2" displaytype="text" style="background: ;" text="급여내용"/>
+                <Cell col="3" displaytype="text" style="background: ;" text="급여마감여부"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="date" edittype="none" style="align:center;background: ;" text="bind:PAYX_DATE" calendardisplaynulltype="none"/>
+                <Cell col="1" displaytype="combo" edittype="none" style="align:left;" text="bind:WAGE_CODE" editlimit="20" editlengthunit="ascii"/>
+                <Cell col="2" displaytype="text" edittype="none" style="align:left;" text="bind:WORK_CNTT" editlimit="50" editimemode="hangul" editlengthunit="ascii"/>
+                <Cell col="3" displaytype="checkbox" edittype="none" style="align:center;background: ;" text="bind:WADE_YSNO" editlimit="0" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <ExtCombo id="ExtCombo00" taborder="12" text="ExtCombo00" left="8" top="600" right="81.15%" width="500" _select_type="select" _enable="true"/>
+        <MaskEdit id="medSHRWAGE_YMTH" mask="####" onsetfocus="fn_EditFocus" taborder="0" type="string" left="96" width="70" top="71" height="21" cssclass="styFormSearchItem" style="align:center middle;"/>
+        <Static id="Image1" text="급여구분" position="absolute" left="194" width="68" top="71" height="21" cssclass="styFormSearchCap" taborder="15"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="224" top="107" height="21" cssclass="styFormSearchInfo" taborder="16" usedecorate="true"/>
+        <Static id="Image0" text="귀속년도" position="absolute" left="28" width="68" top="71" height="21" cssclass="styFormSearchCap" taborder="17"/>
+        <Combo id="cmbSHRWAGE_CODE" onsetfocus="fn_EditFocus" taborder="1" position="absolute" left="262" width="140" top="71" height="21" cssclass="styFormSearchCombo" type="dropdown" index="-1"/>
+        <Static id="Shape0" taborder="18" cssclass="styFormItemBoxOut" left="8" right="306" height="117" bottom="15"/>
+        <Static id="Static01" taborder="22" text="지급일" onclick="Static120_onclick" cssclass="styFormItemCapBE" left="27" width="95" height="21" bottom="102"/>
+        <Static id="Static02" taborder="23" text="급여구분" onclick="Static120_onclick" cssclass="styFormItemCapBE" left="338" width="71" bottom="102" height="21"/>
+        <Combo id="cmbWAGE_CODE" taborder="4" cssclass="styFormSearchCombo" left="406" width="120" height="21" index="-1" bottom="102"/>
+        <Calendar id="calPAYX_DATE" taborder="3" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="121" width="100" height="21" bottom="102" value="null"/>
+        <Static id="Static14" taborder="19" text="급여내용" cssclass="styFormItemCap" left="27" width="95" height="21" bottom="76"/>
+        <Edit id="edtWORK_CNTT" taborder="5" readonly="false" lengthunit="ascii" maxlength="200" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="121" width="407" height="21" style="align:left; :disabled {align:center middle;}" bottom="76"/>
+        <Static id="staITCS_YMTH2" taborder="25" text="~" left="206" bottom="24" width="16" height="21" visible="false"/>
+        <Static id="Static00" taborder="26" text="급여대상년월" onclick="Static120_onclick" cssclass="styFormItemCapBE" left="27" bottom="50" width="95" height="21"/>
+        <MaskEdit id="medITCS_YMTH" taborder="12" type="string" mask="####-##" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="121" bottom="24" width="80" height="21" style="align:center middle;" visible="false"/>
+        <MaskEdit id="medITCE_YMTH" taborder="13" type="string" mask="####-##" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="221" bottom="24" width="80" height="21" style="align:center middle;" visible="false"/>
+        <Static id="Static15" taborder="20" text="급여마감여부" cssclass="styFormItemCap" left="338" width="95" height="21" bottom="50"/>
+        <Static id="staRTBS_DATE" taborder="24" text="소득세기간" onclick="Static120_onclick" cssclass="styFormItemCap" left="27" bottom="24" width="95" height="21" visible="false"/>
+        <Static id="st_FormTitle" taborder="27" text="급여일지" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="28" text="홈 &gt; 급여관리 &gt; 급여관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="29" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="30" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="31" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="32" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="33" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="34" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="35" text="h25" visible="false" left="397" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static10" taborder="36" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static11" taborder="37" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="38" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="39" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="40" text="w 40" visible="false" left="166" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Grid id="grdCLSD_CNTT" cssclass="styGrid01" taborder="10" binddataset="dsCLSD_CNTT" wheelscrollrow="1" useinputpanel="false" cellsizingtype="both" onheadclick="grdCLSD_CNTT_onheadclick" right="25" bottom="15" width="261" height="117" autofittype="col" fillareatype="none">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="25" band="left"/>
+                <Column size="110"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="checkbox" edittype="checkbox"/>
+                <Cell col="1" text="급여형태"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="checkbox" edittype="checkbox" text="bind:CHK"/>
+                <Cell col="1" displaytype="text" text="bind:CLSD_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <CheckBox id="chkWADE_YSNO" taborder="8" value="0" truevalue="1" falsevalue="0" onclick="fn_CheckBoxChange" cssclass="styFormSearchChk" left="432" width="19" height="21" bottom="50"/>
+        <Div id="divWAGE_YMTH" taborder="6" url="common::comMonthCalendar.xfdl" left="121" width="100" height="21" bottom="50" position="absolute">
+          <Layouts>
+            <Layout/>
+          </Layouts>
+        </Div>
+        <Static id="Static08" taborder="43" text="w30" visible="false" left="9" top="615" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="44" text="h35" visible="false" left="400" top="550" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="45" text="w20" visible="false" left="881" top="600" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static90" taborder="46" text="상세정보" cssclass="sta_WF_Subtitle" left="9" width="79" bottom="132" height="21"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">CLSD_CODE</Col>
+            <Col id="DSNAME">dsCLSD_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsUserCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" size="256" prop="default" type="STRING"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COMBOID">PAY0006</Col>
+            <Col id="DSNAME">dsSHRWAGE_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="PARAM"/>
+            <Col id="USEYSNO"/>
+          </Row>
+          <Row>
+            <Col id="COMBOID">PAY0006</Col>
+            <Col id="DSNAME">dsWAGE_CODE</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="PARAM"/>
+            <Col id="USEYSNO"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPY_BONBRT">
+        <ColumnInfo>
+          <Column id="PAYX_DATE" type="STRING" size="256"/>
+          <Column id="WAGE_CODE" type="STRING" size="256"/>
+          <Column id="STDS_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="BONU_RATE" size="15" prop="default" type="BIGDECIMAL"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_PMDIRY" onrowposchanged="fn_KeyFieldDisible" canrowposchange="dsPY_PMDIRY_canrowposchange" oncolumnchanged="dsPY_PMDIRY_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="PAYX_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="WORK_CNTT" size="256" prop="default" type="STRING"/>
+          <Column id="HRCH_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="PYCH_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="CLSD_CNTT" size="256" prop="default" type="STRING"/>
+          <Column id="WADE_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="CHPS_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="ITCS_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="ITCE_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="RTBG_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="RTED_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="RTBS_DATE" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCLSD_CNTT" oncolumnchanged="dsCLSD_CNTT_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="CHK" size="256" prop="default" type="STRING"/>
+          <Column id="CLSD_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="CLSD_NAME" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="calPAYX_DATE" propid="value" datasetid="dsPY_PMDIRY" columnid="PAYX_DATE"/>
+      <BindItem id="item1" compid="cmbWAGE_CODE" propid="value" datasetid="dsPY_PMDIRY" columnid="WAGE_CODE"/>
+      <BindItem id="item2" compid="edtWORK_CNTT" propid="value" datasetid="dsPY_PMDIRY" columnid="WORK_CNTT"/>
+      <BindItem id="item8" compid="chkWADE_YSNO" propid="value" datasetid="dsPY_PMDIRY" columnid="WADE_YSNO"/>
+      <BindItem id="item5" compid="medITCS_YMTH" propid="value" datasetid="dsPY_PMDIRY" columnid="ITCS_YMTH"/>
+      <BindItem id="item9" compid="medITCE_YMTH" propid="value" datasetid="dsPY_PMDIRY" columnid="ITCE_YMTH"/>
+      <BindItem id="item4" compid="divWAGE_YMTH" propid="text" datasetid="dsPY_PMDIRY" columnid="WAGE_YMTH"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	PAYB0040 급여일지
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.18		고민주		Initial Created.
+ *   2016.10.14		황치웅		수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF";
+this.sPACKAGENAME = "PAYB0040";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetUserComboDs(this.dsUserCombo);
+	this.fnc_GetComboDs(this.dsCombo);
+
+	this.medSHRWAGE_YMTH.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,4));
+	this.medSHRWAGE_YMTH.setFocus();
+
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsPY_PMDIRY");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_PMDIRY=dsPY_PMDIRY";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdPY_PMDIRY.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	var iRow = this.dsPY_PMDIRY.insertRow(this.dsPY_PMDIRY.rowposition + 1);
+	this.dsPY_PMDIRY.setColumn(iRow, "WADE_YSNO", "0");
+	this.dsPY_PMDIRY.setColumn(iRow, "CHPS_YSNO", "0");
+	this.calPAYX_DATE.setFocus();
+
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()) this.dsPY_PMDIRY.deleteRow(this.dsPY_PMDIRY.rowposition);
+	this.grdPY_PMDIRY.setFocus();
+
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsPY_PMDIRY");
+	this.grdPY_PMDIRY.setFocus();
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+
+	var sMethodName = "SAVE00";
+	var sInDataSet 	= "dsPY_PMDIRY=dsPY_PMDIRY:U dsPY_BONBRT=dsPY_BONBRT:U";
+	var sOutDataSet = "";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdPY_PMDIRY.setFocus();
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsPY_PMDIRY", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsPY_PMDIRY")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+
+	if (this.dsPY_PMDIRY.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var sQuestionText = "지급일" + this.fnc_Trim(this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "PAYX_DATE"))
+						+ ",급여구분:" + this.fnc_Trim(this.cmbWAGE_CODE.text);
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	
+	if (!this.fnc_DatasetChangeCheck("dsPY_PMDIRY,dsPY_BONBRT")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsPY_PMDIRY.getRowCount(); i++) {
+
+		if (this.fnc_ToUpper(this.dsPY_PMDIRY.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_PMDIRY.getColumn(i, "PAYX_DATE"))) < 8) {
+			return this.fnc_CheckPostAction("TMM072", "지급일", this.dsPY_PMDIRY, i, this.grdPY_PMDIRY, "PAYX_DATE");
+		}
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_PMDIRY.getColumn(i, "WAGE_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "급여구분", this.dsPY_PMDIRY, i, this.cmbWAGE_CODE, "");
+		}
+
+	}
+	
+	var sPAYX_DATE	=	this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "PAYX_DATE");
+	var sWAGE_CODE	=	this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "WAGE_CODE");
+			
+	for (var i = 0; i < this.dsPY_BONBRT.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsPY_BONBRT.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_BONBRT.getColumn(i, "STDS_DATE"))) < 8) {
+			return this.fnc_CheckPostAction("TMM072", "기준일", this.dsPY_BONBRT, i, this.dsPY_BONBRT, "STDS_DATE");
+		}
+		if (this.fnc_ToUpper(this.dsPY_BONBRT.getRowType(i)) == Dataset.ROWTYPE_INSERT) {
+			this.dsPY_BONBRT.setColumn(i, "PAYX_DATE", sPAYX_DATE);
+			this.dsPY_BONBRT.setColumn(i, "WAGE_CODE", sWAGE_CODE);
+		}
+	}
+	return true;
+
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " WAGE_YMTH=" + this.fnc_Quote(this.fnc_Trim(this.medSHRWAGE_YMTH.value));
+		sReturnString += " WAGE_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRWAGE_CODE.value));
+
+	} else if (sKind == "SEARCH01") {
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " PAYX_DATE=" + this.fnc_Quote(this.fnc_Trim(this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "PAYX_DATE")));
+		sReturnString += " WAGE_CODE=" + this.fnc_Quote(this.fnc_Trim(this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "WAGE_CODE")));
+	
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+
+	}
+
+	return sReturnString;
+
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsPY_PMDIRY.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsPY_PMDIRY.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.fn_KeyFieldDisible(this.dsPY_PMDIRY);
+		
+	} else if (sMethodName == "SAVE00") {
+		this.fn_KeyFieldDisible(this.dsPY_PMDIRY);
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+
+	} else if (sMethodName == "GetUserComboCode") {
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRWAGE_CODE,dsSHRWAGE_CODE,0";
+			arrParam[1] = "COMBO,cmbWAGE_CODE,dsWAGE_CODE,0";
+			arrParam[2] = "GRID,grdPY_PMDIRY,dsWAGE_CODE,WAGE_CODE";
+		this.fnc_UserComboInnerBind(arrParam);
+
+		this.dsWAGE_CODE.filter("USEX_YSNO == '1'");
+	}
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+		var bindInfo = new Object;
+			bindInfo.binddataset = this.dsPY_PMDIRY;
+			bindInfo.bindcolumn = "WAGE_YMTH";
+		this.divWAGE_YMTH.fn_SetBindInfo(bindInfo);
+
+	if (this.fnc_ToUpper(obj.getRowType(obj.rowposition)) == Dataset.ROWTYPE_INSERT) {
+		this.fnc_SetReadonly(this.calPAYX_DATE, false);
+		this.fnc_SetReadonly(this.cmbWAGE_CODE, false);
+
+	} else {
+		this.fnc_SetReadonly(this.calPAYX_DATE, true);
+		this.fnc_SetReadonly(this.cmbWAGE_CODE, true);
+
+	}
+
+	if (this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition,"WAGE_CODE")== "4000"){
+		this.staRTBS_DATE.set_visible(false);
+		this.medITCS_YMTH.set_visible(false);
+		this.staITCS_YMTH2.set_visible(false);
+		this.medITCE_YMTH.set_visible(false);
+
+	} else if (this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition,"WAGE_CODE")== "2000"){
+		this.staRTBS_DATE.set_text("소득세기간");
+		this.staRTBS_DATE.set_visible(true);
+		this.medITCS_YMTH.set_visible(true);
+		this.staITCS_YMTH2.set_visible(true);
+		this.medITCE_YMTH.set_visible(true);
+
+	}else{
+		this.staRTBS_DATE.set_visible(false);
+		this.medITCS_YMTH.set_visible(false);
+		this.staITCS_YMTH2.set_visible(false);
+		this.medITCE_YMTH.set_visible(false);
+
+	}
+
+	this.fnc_GridCheckClear("grdCLSD_CNTT","0");
+	
+	var sMethodName = "SEARCH01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsCLSD_CNTT=dsCLSD_CNTT dsPY_BONBRT=dsPY_BONBRT";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack", false);
+	
+}
+
+this.dsPY_PMDIRY_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo){
+	if (e.columnid == "PAYX_DATE"){
+		var sWAGE_YMTH = "";
+		if ( nexacro.toNumber(this.fnc_SubStr(e.newvalue, 4, 2)-1) == 0 ){
+			sWAGE_YMTH = this.fnc_SubStr(e.newvalue, 0, 4)-1+"12";
+		} else {
+			sWAGE_YMTH = this.fnc_SubStr(e.newvalue, 0, 4)+this.fnc_SubStr(e.newvalue, 4, 2)-1;
+		}
+		
+		this.dsPY_PMDIRY.setColumn(e.row, "WAGE_YMTH", sWAGE_YMTH);
+		this.dsPY_PMDIRY.setColumn(e.row, "ITCS_YMTH", this.fnc_SubStr(e.newvalue, 0, 6));
+		this.dsPY_PMDIRY.setColumn(e.row, "ITCE_YMTH", this.fnc_SubStr(e.newvalue, 0, 6));
+		
+	}
+	
+	if (e.columnid == "WAGE_YMTH"){
+		this.dsPY_PMDIRY.setColumn(e.row, "ITCS_YMTH", e.newvalue);
+		this.dsPY_PMDIRY.setColumn(e.row, "ITCE_YMTH", e.newvalue);
+		
+	}
+	
+	if (this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition,"WAGE_CODE")== "4000"){
+		this.staRTBS_DATE.set_visible(false);
+		this.medITCS_YMTH.set_visible(false);
+		this.staITCS_YMTH2.set_visible(false);
+		this.medITCE_YMTH.set_visible(false);
+
+	} else if (this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition,"WAGE_CODE")== "2000"){
+		this.staRTBS_DATE.set_text("소득세기간");
+		this.staRTBS_DATE.set_visible(true);
+		this.medITCS_YMTH.set_visible(true);
+		this.staITCS_YMTH2.set_visible(true);
+		this.medITCE_YMTH.set_visible(true);
+
+	} else{
+		this.staRTBS_DATE.set_visible(false);
+		this.medITCS_YMTH.set_visible(false);
+		this.staITCS_YMTH2.set_visible(false);
+		this.medITCE_YMTH.set_visible(false);
+
+	}
+}
+
+this.dsPY_PMDIRY_canrowposchange = function(obj:Dataset, e:nexacro.DSRowPosChangeEventInfo){
+
+	if (this.fnc_DatasetChangeCheck("dsCLSD_CNTT,dsPY_BONBRT")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+
+		this.dsCLSD_CNTT.reset();
+		this.dsPY_BONBRT.reset();
+
+		var sCLSD_CNTT="";
+		for(var i = 0; i < this.dsCLSD_CNTT.rowcount ; i++){
+			if(this.dsCLSD_CNTT.getColumn(i,"CHK") == "1"){
+				sCLSD_CNTT = sCLSD_CNTT + this.dsCLSD_CNTT.getColumn(i,"CLSD_CODE") + ",";
+			}
+		}
+		sCLSD_CNTT = this.fnc_SubStr(sCLSD_CNTT,0,sCLSD_CNTT.length-1);
+		this.dsPY_PMDIRY.setColumn(this.dsPY_PMDIRY.rowposition,"CLSD_CNTT",sCLSD_CNTT);
+
+	}
+
+	return true;
+}
+
+this.dsCLSD_CNTT_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo){
+
+	if ( e.columnid == "CHK"){
+
+		var sCLSD_CNTT="";
+		for(var i = 0; i < this.dsCLSD_CNTT.rowcount ; i++){
+			if(this.dsCLSD_CNTT.getColumn(i,"CHK") == "1"){
+				sCLSD_CNTT = sCLSD_CNTT + this.dsCLSD_CNTT.getColumn(i,"CLSD_CODE") + ",";
+			}
+		}
+		sCLSD_CNTT = this.fnc_SubStr(sCLSD_CNTT,0,sCLSD_CNTT.length-1);
+		this.dsPY_PMDIRY.setColumn(this.dsPY_PMDIRY.rowposition,"CLSD_CNTT",sCLSD_CNTT);
+
+	}
+}
+
+this.grdCLSD_CNTT_onheadclick = function(obj:Grid, e:nexacro.GridClickEventInfo){
+	var sCol = "CHK";
+	if (obj.getBindCellIndex("body", sCol) == e.cell) this.fnc_GridAllCheck(obj, sCol);
+
+}
+
+/*---------------------------+
+ |  상여기준정보 행추가   |
+ +---------------------------*/
+this.btnInput_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	if (this.dsPY_PMDIRY.getColumn(this.dsPY_PMDIRY.rowposition, "WADE_YSNO") == "1") {
+		this.fnc_Message("EVM010");
+		return false;
+	}
+
+	var iRow = this.dsPY_BONBRT.insertRow(this.dsPY_BONBRT.rowposition+1);
+	this.dsPY_BONBRT.set_rowposition(iRow);
+	this.grdPY_BONBRT.setCellPos(this.fnc_GridColumnIndex(this.grdPY_BONBRT, "STDS_DATE"));
+	
+}
+/*---------------------------+
+ |  상여기준정보 행삭제   |
+ +---------------------------*/
+this.btnDelete_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+
+	if (this.dsPY_BONBRT.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+
+	var sQuestionText = "기준일:" + this.fnc_Trim(this.dsPY_BONBRT.getColumn(this.dsPY_BONBRT.rowposition, "STDS_DATE"));	
+	if (this.fnc_Message("TMM002", sQuestionText)) this.dsPY_BONBRT.deleteRow(this.dsPY_BONBRT.rowposition);
+	this.grdPY_BONBRT.setFocus();
+	
+}
+
+]]></Script>
+  </Form>
+</FDL>

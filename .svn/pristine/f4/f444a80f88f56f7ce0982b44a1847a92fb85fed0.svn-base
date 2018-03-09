@@ -1,0 +1,423 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TMMD0310" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="소스코드생성관리" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Shape1" taborder="37" cssclass="styFormItemBoxOut" left="332" top="60" right="25" height="43" style="background:whitesmoke;border:0 solid #cbcbcbff ;"/>
+        <Static id="spSearchBox0" taborder="29" cssclass="styFormSearchBox" left="8" top="60" height="69" radiusy="10" radiusx="10" type="roundrectangle" width="304"/>
+        <Grid autoenter="TRUE" binddataset="dsTM_TABLE" cellsizingtype="both" enable="true" id="grdTM_TABLE" useinputpanel="false" selecttype="row" oncelldblclick="fn_CreateSource" taborder="2" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" width="304" top="154" cssclass="styGrid01" UserData="S" bottom="15" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="120"/>
+                <Column size="204"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="Table"/>
+                <Cell col="1" displaytype="text" text="Comments"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:left;" text="bind:TABLE_NAME" editlimit="3"/>
+                <Cell col="1" displaytype="text" style="align:left;" text="bind:TABLE_COMMENTS"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static0" text="Source Code" left="332" top="113" height="21" cssclass="styFormItemCapBE" taborder="17" position="absolute" width="115"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="169" top="133" height="21" cssclass="styFormSearchInfo" taborder="18" usedecorate="true"/>
+        <Button id="btnCreateParameter" onclick="fn_CreateSource" taborder="3" text="PARAMETER" width="100" top="69" height="25" UserData="P" cssclass="btn_POP_CRUD" left="344"/>
+        <Button id="btnCreateSelect" onclick="fn_CreateSource" taborder="4" text="SELECT" position="absolute" width="82" top="69" height="25" UserData="S" cssclass="btn_POP_CRUD" left="450"/>
+        <Button id="btnCreateInsert" onclick="fn_CreateSource" taborder="5" text="INSERT" position="absolute" width="66" top="69" height="25" UserData="I" cssclass="btn_POP_CRUD" left="538"/>
+        <Button id="btnCreateUpdate" onclick="fn_CreateSource" taborder="6" text="UPDATE" position="absolute" width="74" top="69" height="25" UserData="U" cssclass="btn_POP_CRUD" left="610"/>
+        <Button id="btnCreateDelete" onclick="fn_CreateSource" taborder="7" text="DELETE" position="absolute" width="82" top="69" height="25" UserData="D" cssclass="btn_POP_CRUD" left="690"/>
+        <Button id="btnCreateJavaDel" onclick="fn_CreateSource" taborder="8" text="JAVA DELETE" position="absolute" width="120" top="69" height="25" UserData="DC" cssclass="btn_POP_CRUD" left="778"/>
+        <Button id="btnCreateJavaSave" onclick="fn_CreateSource" taborder="9" text="JAVA SAVE" position="absolute" width="108" top="69" height="25" UserData="SC" cssclass="btn_POP_CRUD" left="904"/>
+        <Button id="btnCreateDataSet" onclick="fn_CreateSource" taborder="10" text="CONTENTS EDIT" position="absolute" width="132" top="69" height="25" UserData="C" cssclass="btn_POP_CRUD" left="1018"/>
+        <Static id="Static1" text="Query Syntax" left="332" height="21" cssclass="styFormItemCapBE" bottom="300" taborder="16" width="115"/>
+        <TextArea lengthunit="ascii" id="edtQuery" imemode="alpha" taborder="13" position="absolute" left="332" height="285" cssclass="styFormItemText" bottom="15" right="25" inputmode="upper" style="font:9 돋움체,Dotum;"/>
+        <Button id="btnCreateQueryDataSet" onclick="fn_CreateSource" taborder="14" text="RUN QUERY" width="101" height="21" UserData="R" right="25" bottom="304" cssclass="btn_WF_Module"/>
+        <Edit autoselect="true" lengthunit="ascii" id="edtSHRFILT_STRN" taborder="1" position="absolute" left="39" width="252" top="97" height="21" cssclass="styFormItemText" ontextchanged="fn_TableListFilter" imemode="alpha" inputmode="upper"/>
+        <Combo id="cmbFILT_KIND" index="0" onitemchanged="fn_TableListFilter" taborder="0" position="absolute" codecolumn="codecolumn" datacolumn="datacolumn" left="108" width="183" top="71" height="21" cssclass="styFormSearchCombo" value="TABLE_NAME" text="Physical Name">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">TABLE_NAME</Col>
+                <Col id="datacolumn">Table</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">TABLE_COMMENTS</Col>
+                <Col id="datacolumn">Comments</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Static id="imgSearchTitle1" text="Filter 구분" position="absolute" style="align:left;" left="28" width="76" top="70" height="21" cssclass="styFormSearchCapBe" taborder="21"/>
+        <Button id="btnCopyClipboard" onclick="fn_CopyClipboard" taborder="11" text="Copy To Clipboard" position="absolute" width="137" top="109" height="21" UserData="R" right="25" cssclass="btn_WF_Module"/>
+        <TextArea lengthunit="ascii" id="edtCODE" imemode="alpha" readonly="false" taborder="12" position="absolute" left="332" top="134" cssclass="styFormItemText" right="25" bottom="331" inputmode="upper" style="font:9 돋움체,Dotum;"/>
+        <Static id="st_FormTitle" taborder="22" text="소스코드생성관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="23" text="홈 &gt; 공통관리 &gt; 공통관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="24" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="25" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="26" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="27" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="28" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="31" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="32" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="33" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="35" text="w20" visible="false" left="312" top="195" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="38" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="39" text="h 25" visible="false" left="185" top="129" width="48" height="25" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTM_TABLE" onrowposchanged="fn_KeyFieldDisible">
+        <ColumnInfo>
+          <Column id="TABLE_NAME" size="255" prop="default" type="STRING"/>
+          <Column id="TABLE_COMMENTS" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTM_QUERY">
+        <ColumnInfo>
+          <Column id="CODE" type="STRING" size="4000"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TMMD0310 소스코드 생성 관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.26		김준수		주석 수정.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTFFFFFF"; //공통기능정의(버튼순으로 T or F)
+this.sPACKAGENAME = "TMMD0310"; //해당 Form에서 사용 할 Package 명
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fn_Search(obj);
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	this.fnc_DatasetClear("dsTM_TABLE,dsTM_QUERY"); 
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTM_TABLE=dsTM_TABLE";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.edtSHRFILT_STRN.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	// 기능없음
+}
+
+/*------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	// 기능없음
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	// 기능없음
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+	// 기능없음
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	// 기능없음
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능없음
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj,e);
+	
+} 
+
+/*------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+
+}
+
+/*------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_CopyClipboard = function (obj:Button, e:ClickEventInfo) {
+
+	system.clearClipboard(); 							//클립보드를 Clear합니다.
+	system.setClipboard("CF_TEXT", this.edtCODE.value); //외부 Excel에 Ctrl+c로 보낼수 있는 예제
+
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind, sContentsType) {
+
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+
+	// Contents 생성을 위한 조회
+	} else if (sKind == "SEARCH01") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " TABLE_NAME=" + this.fnc_Quote(this.fnc_Trim(this.dsTM_TABLE.getColumn(this.dsTM_TABLE.rowposition, "TABLE_NAME")));
+		sReturnString += " QUERY_TYPE=" + this.fnc_Quote(this.fnc_Trim(sContentsType));
+		sReturnString += " QUERY_STRG=" + this.fnc_Quote(this.fnc_Trim(this.edtQuery.value));
+	
+	}
+
+	return sReturnString;
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+	
+		this.fnc_Information(this.stInformation, this.dsTM_TABLE.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTM_TABLE.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.fn_TableListFilter(this.edtSHRFILT_STRN);
+		
+		this.grdTM_TABLE.selectRow(this.dsTM_TABLE.rowposition);
+		
+	} else if (sMethodName == "SEARCH01") {
+				
+		// 내용 초기화 처리
+		this.edtCODE.set_value("");
+
+		if (this.dsTM_QUERY.getColID(0) == "CODE") {
+		
+			// 받은 내용 Display
+			for (var i = 0; i < this.dsTM_QUERY.rowcount; i++) {
+				this.edtCODE.set_value(this.edtCODE.value + (this.dsTM_QUERY.getColumn(i, "CODE") + String.fromCharCode(10)));
+			}
+			
+		} else {
+		
+			this.fnc_DatasetClear("dsTM_QUERY");
+			var sDisplayString = this.dsTM_QUERY.saveXML();
+			sDisplayString = this.fnc_Replace(sDisplayString, "<Dataset id='dsTM_QUERY'>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "<ColumnInfo>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "</ColumnInfo>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "</ColumnInfo>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "<Rows>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "</Rows>","");
+			sDisplayString = this.fnc_Replace(sDisplayString, "</Dataset>", "");
+			this.edtCODE.set_value(this.fnc_Space(12)+this.fnc_Trim(sDisplayString));
+
+		}
+	}
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:DSRowPosChangeEventInfo) {
+
+	// 테이블 변경 시 해당 자료 초기화
+	this.edtCODE.set_value("");
+
+}
+
+/*-------------------------------------+
+ |  작업 처리 - 버튼 종류에 따라 처리  |
+ +-------------------------------------*/
+this.fn_CreateSource = function (obj:Button, e:ClickEventInfo) {
+
+	// Query 직접 실행 시 SELECT 전처리
+	if (obj.name == "btnCreateQueryDataSet") {
+	
+		var sQuery = this.fnc_Trim((this.edtQuery.value));
+
+		if (this.fnc_Length(this.fnc_Trim(sQuery)) < 1) {
+			return this.fnc_SearchCheckPostAction("TMM125", "실행 할 쿼리를 입력하세요!", this.edtQuery);
+		}
+
+		if (this.fnc_ToUpper(sQuery.substr(0,7)) != "SELECT ") {
+			return this.fnc_SearchCheckPostAction("TMM125", "SELECT 구문만 실행 가능합니다.", this.edtQuery);
+		}
+
+		if (this.fnc_IndexOf(sQuery, ";") != -1) {
+			return this.fnc_SearchCheckPostAction("TMM125", "복수쿼리는 실행 되지 않습니다. (;) 제거 하세요!", this.edtQuery);
+		}
+	}
+
+	this.fn_SearchCode(this.fnc_ToUpper(obj.UserData));
+}
+
+/*---------------------+
+ | 스크립트 생성 처리  |
+ +---------------------*/
+this.fn_SearchCode = function (sContentsType) {
+
+	this.fnc_DatasetClear("dsTM_QUERY"); 
+	var sMethodName = "SEARCH01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTM_QUERY=dsTM_QUERY";
+	var sArgument = this.fn_CreateArgument(sMethodName, sContentsType);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.edtCODE.setFocus();
+}
+
+/*--------------------+
+ | Table List Filter  |
+ +--------------------*/
+this.fn_TableListFilter = function (obj) {
+
+	if (obj.name == "cmbFILT_KIND") this.edtSHRFILT_STRN.setFocus();
+
+	if (this.fnc_Length(this.fnc_Trim(this.edtSHRFILT_STRN.text)) > 0) {
+		
+		this.dsTM_TABLE.filter(this.fnc_ToUpper(this.cmbFILT_KIND.value) + ".indexOf("+ "'" + this.fnc_Trim(this.fnc_ToUpper(this.edtSHRFILT_STRN.text)) + "') >= 0");
+		
+		if (this.dsTM_TABLE.getRowCount() > 0) {
+			this.dsTM_TABLE.rowposition = 0;
+			this.grdTM_TABLE.selectRow(0);
+			//this.grdTM_TABLE.setFocus();
+		}
+		
+	} else {
+		this.dsTM_TABLE.filter("");
+	}
+	
+}
+]]></Script>
+  </Form>
+</FDL>

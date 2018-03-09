@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYL0010">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 공통코드상세 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYL0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYL0010.SEARCH00.공통코드상세 테이블 조회 */
+                   #PAYX_DATE# AS PAYX_DATE  /* 지급일 */
+                 , #WAGE_CODE# AS WAGE_CODE
+                 , COMD_CODE AS CLSD_CODE    /* 직원구분코드 */
+                 , COMD_CDNM AS CLSD_NAME
+              FROM TM_CODEXD
+             WHERE COMM_CODE = 'CLSD_CODE'
+               AND CRTE_DATE <= TO_CHAR(SYSDATE, 'YYYYMMDD')
+               AND (WAST_DATE IS NULL OR WAST_DATE = '' OR WAST_DATE >= TO_CHAR(SYSDATE, 'YYYYMMDD'))
+             ORDER BY SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYL0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYL0010.SEARCH01.소급기준 테이블 조회 */
+               #PAYX_DATE# AS PAYX_DATE  /* 지급일 */
+             , #WAGE_CODE# AS WAGE_CODE
+             , #CLSD_CODE# AS CLSD_CODE
+             , A.CPOS_CODE
+             , SF_GET_COMMNAME('CPOS_CODE',A.CPOS_CODE) AS CPOS_NAME
+             , B.INCT_CODE   /* 인상구분코드 */
+             , CASE WHEN B.INCT_CODE = '01' THEN B.ADJT_RAPY * 100 ELSE B.ADJT_RAPY END AS ADJT_RAPY   /* 조정비율금액 */
+             , B.REMK_100X   /* 비고100 */
+          FROM TABLE(SF_HR_MASTXM(#PAYX_DATE#)) A
+     LEFT JOIN PY_REPAYX B
+            ON B.PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+           AND B.WAGE_CODE = #WAGE_CODE#     /* 급여코드 */
+           AND B.CLSD_CODE = #CLSD_CODE#     /* 직원구분 */
+           AND A.CPOS_CODE = B.CPOS_CODE
+     LEFT JOIN TM_CODEXD C
+            ON C.COMM_CODE = 'CPOS_CODE'
+           AND A.CPOS_CODE = C.COMD_CODE
+         WHERE WODN_CODE = '1'
+           AND A.CLSD_CODE = #CLSD_CODE#
+         GROUP BY A.CPOS_CODE, B.INCT_CODE, B.ADJT_RAPY, B.REMK_100X, C.SORT_ORDR
+         ORDER BY C.SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준예외 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYL0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYL0010.SEARCH02.소급기준예외 테이블 조회 */
+               #PAYX_DATE# AS PAYX_DATE  /* 지급일 */
+             , #WAGE_CODE# AS WAGE_CODE
+             , CPOS_CODE   /* 직급코드 */
+             , SF_GET_COMMNAME('CPOS_CODE',CPOS_CODE) AS CPOS_NAME
+             , WGEG_CODE   /* 업적평가평가등급코드 */
+             , INCT_CODE   /* 인상구분코드 */
+             , CASE WHEN INCT_CODE = '01' THEN ADJT_RAPY * 100 ELSE ADJT_RAPY END AS ADJT_RAPY   /* 조정비율금액 */
+             , REMK_100X   /* 비고100 */
+          FROM PY_REPYEX
+         WHERE PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+           AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYL0010.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYL0010.SAVE00.소급기준 테이블 저장 */ 
+           v_ROWCNT INT;
+
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM PY_REPAYX
+             WHERE PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+               AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+               AND CLSD_CODE  = #CLSD_CODE#   /* 직원구분코드 */
+               AND CPOS_CODE  = #CPOS_CODE#   /* 직급코드 */
+               ;
+
+            IF v_ROWCNT > 0 THEN
+                UPDATE PY_REPAYX
+                   SET INCT_CODE = #INCT_CODE#   /* 인상구분코드 */
+                     , ADJT_RAPY = CASE WHEN #INCT_CODE# = '01' THEN TO_NUMBER(#ADJT_RAPY#) / 100.0 ELSE #ADJT_RAPY# END   /* 조정비율금액 */
+                     , REMK_100X = #REMK_100X#   /* 비고100 */
+                     , UPDT_USID = #UPDT_USID#   /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE   /* 수정일시 */
+                 WHERE PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+                   AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+                   AND CLSD_CODE = #CLSD_CODE#   /* 직원구분코드 */
+                   AND CPOS_CODE = #CPOS_CODE#   /* 직급코드 */
+                ;
+            ELSE
+                INSERT INTO PY_REPAYX (
+                        PAYX_DATE   /* 지급일 */
+                      , WAGE_CODE   /* 급여코드 */
+                      , CLSD_CODE   /* 직원구분코드 */
+                      , CPOS_CODE   /* 직급코드 */
+                      , INCT_CODE   /* 인상구분코드 */
+                      , ADJT_RAPY   /* 조정비율금액 */
+                      , REMK_100X   /* 비고100 */
+                      , INST_USID   /* 입력작업자 */
+                      , INST_DATE   /* 입력일시 */
+                      , UPDT_USID   /* 수정작업자 */
+                      , UPDT_DATE   /* 수정일시 */
+                ) VALUES (
+                       #PAYX_DATE#   /* 지급일 */
+                      , #WAGE_CODE#   /* 급여코드 */
+                      , #CLSD_CODE#   /* 직원구분코드 */
+                      , #CPOS_CODE#   /* 직급코드 */
+                      , #INCT_CODE#   /* 인상구분코드 */
+                      , CASE WHEN #INCT_CODE# = '01' THEN TO_NUMBER(#ADJT_RAPY#) / 100.0 ELSE TO_NUMBER(#ADJT_RAPY#) END   /* 조정비율금액 */
+                      , #REMK_100X#   /* 비고100 */
+                      , #UPDT_USID#   /* 입력작업자 */
+                      , SYSDATE   /* 입력일시 */
+                      , #UPDT_USID#   /* 수정작업자 */
+                      , SYSDATE   /* 수정일시 */
+                );
+            END IF;
+        END;
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준예외 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYL0010.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+         INSERT INTO PY_REPYEX ( /* PAYL0010.SAVE01.소급기준예외 테이블 저장 */
+                PAYX_DATE   /* 지급일 */
+              , WAGE_CODE   /* 급여코드 */
+              , CPOS_CODE   /* 직급코드 */
+              , WGEG_CODE   /* 업적평가평가등급코드 */
+              , INCT_CODE   /* 인상구분코드 */
+              , ADJT_RAPY   /* 조정비율금액 */
+              , REMK_100X   /* 비고100 */
+              , INST_USID   /* 입력작업자 */
+              , INST_DATE   /* 입력일시 */
+              , UPDT_USID   /* 수정작업자 */
+              , UPDT_DATE   /* 수정일시 */
+       ) VALUES (
+                #PAYX_DATE#   /* 지급일 */
+              , #WAGE_CODE#   /* 급여코드 */
+              , #CPOS_CODE#   /* 직급코드 */
+              , #WGEG_CODE#   /* 업적평가평가등급코드 */
+              , #INCT_CODE#   /* 인상구분코드 */
+              , CASE WHEN #INCT_CODE# = '01' THEN TO_NUMBER(#ADJT_RAPY#) / 100.0 ELSE TO_NUMBER(#ADJT_RAPY#) END   /* 조정비율금액 */
+              , #REMK_100X#   /* 비고100 */
+              , #UPDT_USID#   /* 입력작업자 */
+              , SYSDATE   /* 입력일시 */
+              , #UPDT_USID#   /* 수정작업자 */
+              , SYSDATE   /* 수정일시 */
+        )
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYL0010.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_REPYEX /* PAYL0010.UPDATE01.소급기준 테이블 수정 */
+           SET INCT_CODE = #INCT_CODE#   /* 인상구분코드 */
+             , ADJT_RAPY = CASE WHEN #INCT_CODE# = '01' THEN TO_NUBMER('#ADJT_RAPY#') / 100.0 ELSE TO_NUMBER('#ADJT_RAPY#') END   /* 조정비율금액 */
+             , REMK_100X = #REMK_100X#   /* 비고100 */
+             , UPDT_USID = #UPDT_USID#   /* 수정작업자 */
+             , UPDT_DATE = SYSDATE   /* 수정일시 */
+         WHERE PAYX_DATE  = #PAYX_DATE#   /* 지급일 */
+           AND WAGE_CODE  = #WAGE_CODE#   /* 급여코드 */
+           AND CPOS_CODE  = #CPOS_CODE#   /* 직급코드 */
+           AND WGEG_CODE  = #WGEG_CODE#   /* 업적평가평가등급코드 */
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYL0010.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM PY_REPAYX /* PAYL0010.DELETE00.소급기준 테이블 삭제 */
+         WHERE PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+           AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+           AND CLSD_CODE = #CLSD_CODE#   /* 직원구분코드 */
+           AND CPOS_CODE = #CPOS_CODE#   /* 직급코드 */
+    ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 소급기준예외 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYL0010.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM PY_REPYEX /* PAYL0010.DELETE01.소급기준예외 테이블 삭제 */
+         WHERE PAYX_DATE = #PAYX_DATE#   /* 지급일 */
+           AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+           AND CPOS_CODE = #CPOS_CODE#   /* 직급코드 */
+           AND WGEG_CODE = #WGEG_CODE#   /* 업적평가평가등급코드 */
+    ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 호봉표생성
+********************************************************************************/
+-->
+    <statement id="PAYL0010.PROC00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYL0010.PROC00.호봉표생성 */
+            vRTBS_DATE VARCHAR2(8);
+
+        BEGIN
+
+            SELECT RTBS_DATE
+              INTO vRTBS_DATE
+              FROM PY_PMDIRY
+             WHERE PAYX_DATE = #PAYX_DATE#
+               AND WAGE_CODE = #WAGE_CODE#
+            ;
+            DELETE FROM PY_GBHOBO
+             WHERE STDS_YMTH = SUBSTR(vRTBS_DATE,1,6)
+            ;
+             INSERT INTO PY_GBHOBO (
+                    STDS_YMTH   /* 기준년월 */
+                   ,PYTY_CODE   /* 급여형태코드 */
+                   ,CPOS_CODE   /* 직급코드 */
+                   ,PSTP_CODE   /* 호봉코드 */
+                   ,BSL1_AMOT   /* 기본급1금액 */
+                   ,BSL2_AMOT   /* 기본급2금액 */
+                   ,BSL3_AMOT   /* 기본급3금액 */
+                   ,BSL4_AMOT   /* 기본급4금액 */
+                   ,BPM5_AMOT   /* 기본급5금액 */
+                   ,BPM6_AMOT   /* 기본급6금액 */
+                   ,BPM7_AMOT   /* 기본급7금액 */
+                   ,BPM8_AMOT   /* 기본급8금액 */
+                   ,BPM9_AMOT   /* 기본급9금액 */
+                   ,REMK_100X   /* 비고100 */
+                   ,INST_USID   /* 입력작업자 */
+                   ,INST_DATE   /* 입력일시 */
+                   ,UPDT_USID   /* 수정작업자 */
+                   ,UPDT_DATE   /* 수정일시 */
+           ) SELECT SUBSTR(A.RTBS_DATE,1,6)   /* 기준년월 */
+                   ,M.PYTY_CODE   /* 급여형태코드 */
+                   ,M.CPOS_CODE   /* 직급코드 */
+                   ,M.PSTP_CODE   /* 호봉코드 */
+                   ,CASE WHEN B.INCT_CODE = '01' THEN M.BSL1_AMOT + (M.BSL1_AMOT * B.ADJT_RAPY)
+                         WHEN B.INCT_CODE = '02' THEN M.BSL1_AMOT + B.ADJT_RAPY
+                         WHEN B.INCT_CODE IS NULL THEN M.BSL1_AMOT END   /* 기본급1금액 */
+                   ,M.BSL2_AMOT   /* 기본급2금액 */
+                   ,0   /* 기본급3금액 */
+                   ,0   /* 기본급4금액 */
+                   ,0   /* 기본급5금액 */
+                   ,0   /* 기본급6금액 */
+                   ,0   /* 기본급7금액 */
+                   ,0   /* 기본급8금액 */
+                   ,0   /* 기본급9금액 */
+                   ,NULL   /* 비고100 */
+                   ,#UPDT_USID#   /* 입력작업자 */
+                   ,SYSDATE   /* 입력일시 */
+                   ,#UPDT_USID#   /* 수정작업자 */
+                   ,SYSDATE   /* 수정일시 */
+               FROM PY_GBHOBO M
+              INNER JOIN PY_PMDIRY A
+                 ON A.PAYX_DATE = #PAYX_DATE#
+                AND A.WAGE_CODE = #WAGE_CODE#
+               LEFT JOIN (SELECT PAYX_DATE
+                               , WAGE_CODE
+                               , CPOS_CODE
+                               , MAX(INCT_CODE) AS INCT_CODE
+                               , MAX(ADJT_RAPY) AS ADJT_RAPY
+                            FROM PY_REPAYX B
+                           GROUP BY PAYX_DATE, WAGE_CODE, CPOS_CODE
+                 ) B
+                 ON A.PAYX_DATE = B.PAYX_DATE
+                AND A.WAGE_CODE = B.WAGE_CODE
+                AND M.CPOS_CODE = B.CPOS_CODE
+              WHERE M.STDS_YMTH = (SELECT MAX(STDS_YMTH)
+                                     FROM PY_GBHOBO
+                                    WHERE STDS_YMTH <= A.RTBS_DATE)
+         ;
+        END;
+    ]]>
+    </statement>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.28
+     내    용 : 기본급표생성
+********************************************************************************/
+-->
+    <statement id="PAYL0010.PROC01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYL0010.PROC01.기본급표생성 */
+            vRTBS_DATE VARCHAR2(8);
+
+        BEGIN
+
+            SELECT RTBS_DATE
+              INTO vRTBS_DATE
+              FROM PY_PMDIRY
+             WHERE PAYX_DATE = #PAYX_DATE#
+               AND WAGE_CODE = #WAGE_CODE#
+            ;
+
+            DELETE FROM PY_REGSAL
+             WHERE STDS_DATE = SUBSTR(vRTBS_DATE,1,6) || '01'
+            ;
+
+            INSERT INTO PY_REGSAL (
+                    EMPL_NUMB   /* 사원번호 */
+                   ,STDS_DATE   /* 기준일 */
+                   ,BASC_ANSL   /* 기본연봉 */
+                   ,ASL1_AMOT   /* 연봉1금액 */
+                   ,ASL2_AMOT   /* 연봉2금액 */
+                   ,ASL3_AMOT   /* 연봉3금액 */
+                   ,ASL4_AMOT   /* 연봉4금액 */
+                   ,BSLY_AMOT   /* 기본급금액 */
+                   ,BSL1_AMOT   /* 기본급1금액 */
+                   ,BSL2_AMOT   /* 기본급2금액 */
+                   ,BSL3_AMOT   /* 기본급3금액 */
+                   ,BSL4_AMOT   /* 기본급4금액 */
+                   ,REMK_100X   /* 비고100 */
+                   ,INST_USID   /* 입력작업자 */
+                   ,INST_DATE   /* 입력일시 */
+                   ,UPDT_USID   /* 수정작업자 */
+                   ,UPDT_DATE   /* 수정일시 */
+            )
+            SELECT  A.EMPL_NUMB   /* 사원번호 */
+                   ,SUBSTR(vRTBS_DATE,1,6) || '01'   /* 기준일 */
+                   ,0   /* 기본연봉 */
+                   ,0   /* 연봉1금액 */
+                   ,0   /* 연봉2금액 */
+                   ,0   /* 연봉3금액 */
+                   ,0   /* 연봉4금액 */
+                   ,CASE WHEN NVL(E.INCT_CODE, D.INCT_CODE) = '01' THEN A.BSLY_AMOT + (A.BSLY_AMOT * NVL(E.ADJT_RAPY, D.ADJT_RAPY))
+                         WHEN NVL(E.INCT_CODE, D.INCT_CODE) = '02' THEN A.BSLY_AMOT + NVL(E.ADJT_RAPY, D.ADJT_RAPY) END    /* 기본급금액 */
+                   ,0   /* 기본급1금액 */
+                   ,0   /* 기본급2금액 */
+                   ,0   /* 기본급3금액 */
+                   ,0   /* 기본급4금액 */
+                   ,NULL   /* 비고100 */
+                   ,#UPDT_USID#   /* 입력작업자 */
+                   ,SYSDATE   /* 입력일시 */
+                   ,#UPDT_USID#   /* 수정작업자 */
+                   ,SYSDATE   /* 수정일시 */
+               FROM PY_REGSAL A
+              INNER JOIN TABLE(SF_HR_MASTXM(vRTBS_DATE)) B
+                 ON A.EMPL_NUMB = B.EMPL_NUMB
+              INNER JOIN PY_REPAYX D
+                 ON D.PAYX_DATE = #PAYX_DATE#
+                AND D.WAGE_CODE = #WAGE_CODE#
+                AND B.CLSD_CODE = D.CLSD_CODE
+                AND B.CPOS_CODE = D.CPOS_CODE
+               LEFT JOIN PY_REPYEX E
+                 ON E.PAYX_DATE = #PAYX_DATE#
+                AND E.WAGE_CODE = #WAGE_CODE#
+                AND B.CPOS_CODE = E.CPOS_CODE
+                AND SF_GET_WGEGNAME(A.EMPL_NUMB, SUBSTR(TO_CHAR(ADD_MONTHS(vRTBS_DATE, 12 * -1), 'YYYYMMDD'),1,4) = E.WGEG_CODE
+               LEFT JOIN PY_PAYRET C
+                 ON C.PAYX_DATE = #PAYX_DATE#
+                AND C.WAGE_CODE = #WAGE_CODE#
+                AND B.EMPL_NUMB = C.EMPL_NUMB
+              WHERE (B.WODN_CODE = '1' OR C.EMPL_NUMB IS NOT NULL)
+                AND A.STDS_DATE = (SELECT MAX(STDS_DATE)
+                                     FROM PY_REGSAL
+                                    WHERE EMPL_NUMB = A.EMPL_NUMB
+                                      AND STDS_DATE <= vRTBS_DATE)
+             ;
+        END;
+    ]]>
+    </statement>
+</sqlMap>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYC0060">
+<!--
+/* ******************************************************************************
+     작  성  자 : 고민주
+     작  성  일 : 2016.07.13
+     내      용 : 보험료/세액납부현황 조회
+******************************************************************************* */
+-->
+    <select id="PAYC0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYC0060.SEARCH00.보험료/세액납부현황 조회 */
+                   D.SECT_NAME                                                                    /* 소속 */
+                 , D.DEPT_NAME                                                                    /* 부서 */
+                 , A.EMPL_NUMB                                                                    /* 사원번호 */
+                 , C.EMPL_NAME                                                                    /* 성명 */
+                 , SF_GET_COMMNAME('CLSD_CODE', A.CLSD_CODE) AS CLSD_CODE                         /* 직원구분 */
+                 , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME                         /* 직위 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D0304' THEN B.EXPD_AMOT ELSE 0 END) AS NATN_ANTY  /* 국민연금 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D0303' THEN B.EXPD_AMOT ELSE 0 END) 
+                 + SUM(CASE WHEN B.EXPD_CODE = 'D1103' THEN B.EXPD_AMOT ELSE 0 END) AS HEAL_INSF  /* 건강보험 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D0305' THEN B.EXPD_AMOT ELSE 0 END) AS HEA2_INSF  /* 장기요양보험 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D0306' THEN B.EXPD_AMOT ELSE 0 END) AS EMPM_INSF  /* 고용보험 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D2000' THEN B.EXPD_AMOT ELSE 0 END) AS INCM_TAXX  /* 소득세 */
+                 , SUM(CASE WHEN B.EXPD_CODE = 'D2010' THEN B.EXPD_AMOT ELSE 0 END) AS INHA_TAXX  /* 지방소득세 */
+             FROM PY_PMMAST A
+            INNER JOIN PY_PMDETL B
+                    ON A.PAYX_DATE = B.PAYX_DATE
+                   AND B.WAGE_CODE = A.WAGE_CODE
+                   AND B.EMPL_NUMB = A.EMPL_NUMB
+            INNER JOIN HR_MASTXM C
+                    ON A.EMPL_NUMB = C.EMPL_NUMB
+            LEFT OUTER JOIN VI_DEPTXM D
+                    ON A.DEPT_CODE = D.DEPT_CODE
+            WHERE A.PAYX_DATE = #PAYX_DATE#
+              AND A.WAGE_CODE = #WAGE_CODE#
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                  D.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                  A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+            GROUP BY D.SECT_NAME, D.DEPT_NAME, A.EMPL_NUMB, C.EMPL_NAME, A.CLSD_CODE, A.OPOS_CODE, D.DEPT_FCOD
+            ORDER BY D.DEPT_FCOD, A.EMPL_NUMB
+    </select>
+</sqlMap>

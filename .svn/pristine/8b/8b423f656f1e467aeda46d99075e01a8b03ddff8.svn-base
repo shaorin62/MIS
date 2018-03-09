@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TC_COM_2" onload="fn_FormLoadSetting" position="absolute" left="0" width="279" top="0" height="285" scrollbars="none" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[공통]달력">
+    <Layouts>
+      <Layout>
+        <Static id="Static00" taborder="5" left="0" top="0" width="279" height="260" cssclass="sta_MF_bg1"/>
+        <Grid id="Grid01" cssclass="grd_MF_date" taborder="0" binddataset="Dataset01" useinputpanel="false" selecttype="area" autofittype="col" left="15" top="47" width="248" height="199">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+              </Columns>
+              <Rows>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+              </Rows>
+              <Band id="body">
+                <Cell style="color:#f84f4fff;" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="1" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="2" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="3" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="4" style="selectbackground: ;" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="5" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="6" style="color:#5e95eeff;" text="1"/>
+                <Cell row="1" style="color:#f84f4fff;" text="2"/>
+                <Cell row="1" col="1" text="3"/>
+                <Cell row="1" col="2" cssclass="Cellgrd_MF_link" text="4"/>
+                <Cell row="1" col="3" text="5"/>
+                <Cell row="1" col="4" text="6"/>
+                <Cell row="1" col="5" text="7"/>
+                <Cell row="1" col="6" style="color:#5e95eeff;" text="8"/>
+                <Cell row="2" style="color:#f84f4fff;" text="9"/>
+                <Cell row="2" col="1" text="10"/>
+                <Cell row="2" col="2" text="11"/>
+                <Cell row="2" col="3" text="12"/>
+                <Cell row="2" col="4" text="13"/>
+                <Cell row="2" col="5" text="14"/>
+                <Cell row="2" col="6" style="color:#5e95eeff;" text="15"/>
+                <Cell row="3" style="color:#f84f4fff;" text="16"/>
+                <Cell row="3" col="1" text="17"/>
+                <Cell row="3" col="2" text="18"/>
+                <Cell row="3" col="3" text="19"/>
+                <Cell row="3" col="4" cssclass="Cellgrd_MF_link" text="20"/>
+                <Cell row="3" col="5" text="21"/>
+                <Cell row="3" col="6" style="color:#5e95eeff;" text="22"/>
+                <Cell row="4" style="color:#f84f4fff;" text="23"/>
+                <Cell row="4" col="1" text="24"/>
+                <Cell row="4" col="2" text="25"/>
+                <Cell row="4" col="3" text="26"/>
+                <Cell row="4" col="4" text="27"/>
+                <Cell row="4" col="5" text="28"/>
+                <Cell row="4" col="6" style="color:#5e95eeff;" text="29"/>
+                <Cell row="5" style="color:#f84f4fff;" text="30"/>
+                <Cell row="5" col="1" text="31"/>
+                <Cell row="5" col="2" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="3" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="4" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="5" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="6" style="color:#5e95eeff;" cssclass="Cellgrd_MF_noimg"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static15" taborder="1" text="2016 . 10" cssclass="sta_MF_text6" left="80" top="9" width="121" height="32"/>
+        <Static id="Static29" taborder="2" cssclass="sta_MF_line1" left="277" top="53" width="2" height="186"/>
+        <Button id="Button00" taborder="3" text="&lt;" cssclass="btn_MF_button1" left="70" top="5" width="21" height="36" style="font:antialias 16 Malgun Gothic;"/>
+        <Button id="Button01" taborder="4" text="&gt;" cssclass="btn_MF_button1" left="195" top="4" width="21" height="36" style="font:antialias 16 Malgun Gothic;"/>
+        <Static id="Static26" taborder="6" text="h 21" visible="false" left="61" top="0" width="151" height="21" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="7" text="w25" visible="false" left="0" top="53" width="25" height="185" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="8" text="w24" visible="false" left="253" top="53" width="24" height="185" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

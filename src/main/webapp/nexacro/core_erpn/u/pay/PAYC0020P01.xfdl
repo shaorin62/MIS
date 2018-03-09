@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="PAYC0020P01" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="급여명세서" position="absolute" scrollbars="none" left="0" width="1070" top="0" height="617" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Div id="divButtonList" taborder="19" tabstop="false" text="" position="absolute" scrollbars="none" left="8" width="573" top="31" height="27"/>
+        <Grid binddataset="dsPY_PMDETL_A" cellmovingtype="col" cellsizingtype="both" enable="true" id="grdPY_PMDETL_A" useinputpanel="false" autofitminwidth="200" oncellclick="fn_DetailView" taborder="5" tabstop="true" tooltiptype="inplace" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="15" cssclass="styGrid01" autofittype="col" top="151" width="358" height="213">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="180"/>
+                <Column size="170"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="지급항목"/>
+                <Cell col="1" displaytype="text" text="금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:left middle;" text="bind:EXPD_NAME"/>
+                <Cell col="1" displaytype="number" style="align:right;" text="bind:EXPD_AMOT"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:right;" text="합계"/>
+                <Cell col="1" displaytype="number" text="expr:dataset.getSum(&quot;EXPD_AMOT&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stGROP_LIST02" taborder="23" text="지급대상" left="15" top="17" width="89" height="21" cssclass="sta_WF_Subtitle"/>
+        <Static id="Shape0" taborder="24" cssclass="styFormItemBoxOut" left="15" top="35" right="15" height="91"/>
+        <Static id="Static120" taborder="27" text="사원번호" onclick="Static120_onclick" cssclass="styFormItemCap" left="35" top="44" width="87" height="21"/>
+        <Static id="Static99" taborder="29" text="직급" cssclass="styFormItemCap" left="35" top="70" width="87" height="21"/>
+        <Edit id="edtEMPL_NUMB" taborder="30" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="103" top="44" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Static id="Static10" taborder="31" text="성명" onclick="Static120_onclick" cssclass="styFormItemCap" left="295" top="44" width="87" height="21"/>
+        <Static id="Static11" taborder="32" text="직위" cssclass="styFormItemCap" left="295" top="70" width="87" height="21"/>
+        <Static id="Static12" taborder="33" text="급여형태" cssclass="styFormItemCap" left="295" top="96" width="87" height="21"/>
+        <Edit id="edtEMPL_NAME" taborder="34" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="360" top="44" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Static id="Static13" taborder="35" text="소속" onclick="Static120_onclick" cssclass="styFormItemCap" left="541" top="44" width="87" height="21"/>
+        <Static id="Static14" taborder="36" text="직책" cssclass="styFormItemCap" left="541" top="70" width="87" height="21"/>
+        <Static id="Static15" taborder="37" text="직원구분" cssclass="styFormItemCap" left="35" top="96" width="87" height="21"/>
+        <Edit id="edtSECT_NAME" taborder="38" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="583" top="44" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Static id="Static19" taborder="39" text="부서" onclick="Static120_onclick" cssclass="styFormItemCap" left="774" top="44" width="87" height="21"/>
+        <Static id="Static16" taborder="42" text="은행" cssclass="styFormItemCap" left="541" top="96" width="87" height="21"/>
+        <Edit id="edtWABK_NAME" taborder="43" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="583" top="96" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Static id="Static00" taborder="51" text="계좌번호" cssclass="styFormItemCap" left="774" top="96" width="87" height="21"/>
+        <Edit id="edtDEPT_NAME" taborder="53" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="843" top="44" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtWAGE_ACNO" taborder="55" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="843" top="96" width="130" height="21" style="align:center; :disabled {align:center middle;}" readonly="true"/>
+        <Static id="stGROP_LIST00" taborder="56" text="지급내역" left="15" top="130" width="89" height="21" cssclass="sta_WF_Subtitle"/>
+        <Static id="stGROP_LIST01" taborder="59" text="공제내역" left="393" top="130" width="97" height="21" cssclass="sta_WF_Subtitle"/>
+        <Grid id="grdPY_PMDETL_D" cssclass="styGrid01" taborder="60" binddataset="dsPY_PMDETL_D" wheelscrollrow="1" useinputpanel="false" cellsizingtype="both" cellmovingtype="col" autofitminwidth="200" oncellclick="fn_DetailView" left="393" top="151" tooltiptype="inplace" width="358" height="213" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="180"/>
+                <Column size="170"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="공제항목"/>
+                <Cell col="1" displaytype="text" text="금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:left middle;" text="bind:EXPD_NAME"/>
+                <Cell col="1" displaytype="number" style="align:right;" text="bind:EXPD_AMOT"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:right;" text="합계"/>
+                <Cell col="1" displaytype="number" text="expr:dataset.getSum(&quot;EXPD_AMOT&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Shape01" taborder="63" cssclass="styFormItemBoxOut" left="771" right="15" height="91" bottom="374"/>
+        <Static id="Static23" taborder="78" text="지급총액" onclick="Static120_onclick" cssclass="styFormItemCap" left="791" width="79" height="21" bottom="435"/>
+        <Static id="Static24" taborder="79" text="공제총액" cssclass="styFormItemCap" left="791" width="79" height="21" bottom="409"/>
+        <Static id="Static26" taborder="87" text="실지급액" cssclass="styFormItemCap" left="791" width="79" height="21" bottom="383"/>
+        <Edit id="edtCPOS_NAME" taborder="91" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="103" top="70" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtWAGP_NAM" taborder="92" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="360" top="96" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtOPOS_NAME" taborder="93" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="360" top="70" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtCLSD_NAME" taborder="94" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="103" top="96" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtDUTY_NAME" taborder="95" readonly="true" lengthunit="utf16" maxlength="0" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="583" top="70" width="130" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <MaskEdit id="mskPAYX_AMOT" taborder="96" mask="#,####################" autoselect="true" limitbymask="integer" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" bottom="435" width="165" height="21" style="align:right; :disabled {align:right;}" readonly="true"/>
+        <MaskEdit id="mskDDUC_AMOT" taborder="97" readonly="true" mask="#,####################" autoselect="true" limitbymask="integer" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" bottom="409" width="165" height="21" style="align:right; :disabled {align:right;}"/>
+        <MaskEdit id="mskREAL_AMOT" taborder="98" readonly="true" mask="#,####################" autoselect="true" limitbymask="integer" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" bottom="383" width="165" height="21" style="align:right; :disabled {align:right;}"/>
+        <Div id="div_ButtonList" taborder="99" tabstop="false" url="common::comButtonType01.xfdl" top="8" right="15" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Static id="Static17" taborder="100" text="h4" visible="false" left="569" top="31" width="110" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="101" text="h8" visible="false" left="541" top="0" width="110" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="103" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="461"/>
+        <Static id="Static07" taborder="104" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="1055" top="0" width="15" height="461"/>
+        <Static id="Static18" taborder="105" text="h15" visible="false" left="439" top="602" width="110" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="106" text="h 25" visible="false" left="573" top="126" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="107" text="w30" visible="false" left="16" top="45" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="108" text="w20" visible="false" left="373" top="157" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="109" text="w20" visible="false" left="751" top="157" width="20" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="110" text="w30" visible="false" left="772" top="166" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Grid id="grdPY_INCOME" cssclass="styGrid01" taborder="119" binddataset="dsPY_INCOME" wheelscrollrow="1" useinputpanel="false" cellsizingtype="both" cellmovingtype="col" autofitminwidth="200" oncellclick="fn_DetailView" left="15" top="389" width="358" tooltiptype="inplace" height="213" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="90"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="지급항목"/>
+                <Cell col="1" text="과세금액"/>
+                <Cell col="2" text="비과세금액"/>
+                <Cell col="3" text="합계"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:left middle;" text="bind:COMD_CDNM"/>
+                <Cell col="1" displaytype="number" style="align:right;" text="bind:TAP1_AMOT"/>
+                <Cell col="2" displaytype="number" style="align:right;" text="bind:NTP1_AMOT"/>
+                <Cell col="3" displaytype="number" style="align:right;" text="bind:TOTL_AMOT"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:right;" text="합계"/>
+                <Cell col="1" displaytype="number" text="expr:dataset.getSum(&quot;TAP1_AMOT&quot;)"/>
+                <Cell col="2" displaytype="number" text="expr:dataset.getSum(&quot;NTP1_AMOT&quot;)"/>
+                <Cell col="3" displaytype="number" text="expr:dataset.getSum(&quot;TOTL_AMOT&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stGROP_LIST03" taborder="120" text="기타보상" cssclass="sta_WF_Subtitle" left="15" top="368" width="89" height="21"/>
+        <Static id="stGROP_LIST04" taborder="121" text="기타공제" cssclass="sta_WF_Subtitle" left="393" top="368" width="97" height="21"/>
+        <Grid id="grdPY_ALLDED" cssclass="styGrid01" taborder="122" binddataset="dsPY_ALLDED" wheelscrollrow="1" useinputpanel="false" cellsizingtype="both" cellmovingtype="col" autofitminwidth="200" oncellclick="fn_DetailView" left="393" top="389" width="358" tooltiptype="inplace" height="213" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="180"/>
+                <Column size="170"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="공제항목"/>
+                <Cell col="1" text="금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:left middle;" text="bind:EXPD_NAME"/>
+                <Cell col="1" displaytype="number" style="align:right;" text="bind:EXPD_AMOT"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:right;" text="합계"/>
+                <Cell col="1" displaytype="number" text="expr:dataset.getSum(&quot;EXPD_AMOT&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static22" taborder="123" text="h 25" visible="false" left="563" top="364" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Shape02" taborder="124" cssclass="styFormItemBoxOut" left="771" right="15" bottom="137" height="91"/>
+        <Static id="Static02" taborder="125" text="총연차" onclick="Static120_onclick" cssclass="styFormItemCap" left="791" bottom="198" width="79" height="21"/>
+        <Static id="Static04" taborder="126" text="사용연차" cssclass="styFormItemCap" left="791" bottom="172" width="79" height="21"/>
+        <Static id="Static05" taborder="127" text="잔여연차" cssclass="styFormItemCap" left="791" bottom="146" width="79" height="21"/>
+        <Static id="Static20" taborder="131" text="w30" visible="false" left="772" top="403" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Edit id="edtAPLY_ANDC" taborder="132" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" top="398" width="165" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtUSEX_ANDC" taborder="133" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" top="424" width="165" height="21" style="align:center; :disabled {align:center middle;}"/>
+        <Edit id="edtUSEB_ANDC" taborder="134" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="859" top="450" width="165" height="21" style="align:center; :disabled {align:center middle;}"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsPY_PMMAST">
+        <ColumnInfo>
+          <Column id="PAYX_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="SECT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CLSD_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CPOS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DUTY_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="PSTP_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DURS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="WAGP_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="WABK_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_ACNO" size="256" prop="default" type="STRING"/>
+          <Column id="REMK_1000" size="256" prop="default" type="STRING"/>
+          <Column id="PAYX_AMOT" size="256" prop="default" type="STRING"/>
+          <Column id="DDUC_AMOT" size="256" prop="default" type="STRING"/>
+          <Column id="REAL_AMOT" size="256" prop="default" type="STRING"/>
+          <Column id="EMBU_DIVC" size="256" prop="default" type="STRING"/>
+          <Column id="OPOS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CLSD_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_YMTH" size="256" prop="default" type="STRING"/>
+          <Column id="WAGE_MOTH" size="256" prop="default" type="STRING"/>
+          <Column id="APLY_ANDC" size="256" prop="default" type="STRING"/>
+          <Column id="USEX_ANDC" size="256" prop="default" type="STRING"/>
+          <Column id="USEB_ANDC" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_PMDETL_A">
+        <ColumnInfo>
+          <Column id="EXPD_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EXPD_AMOT" size="256" prop="default" type="BIGDECIMAL"/>
+          <Column id="EXPD_CODE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_PMDETL_D">
+        <ColumnInfo>
+          <Column id="EXPD_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EXPD_AMOT" size="256" prop="default" type="BIGDECIMAL"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPY_INCOME">
+        <ColumnInfo>
+          <Column id="COMD_CDNM" type="STRING" size="256" description="지급항목"/>
+          <Column id="TAP1_AMOT" type="BIGDECIMAL" size="256" description="과세금액"/>
+          <Column id="NTP1_AMOT" type="BIGDECIMAL" size="256" description="비과세금액"/>
+          <Column id="TOTL_AMOT" type="BIGDECIMAL" size="256" description="합계"/>
+          <Column id="WAGE_CODE" type="BIGDECIMAL" size="256" description="급여코드"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsPY_ALLDED">
+        <ColumnInfo>
+          <Column id="EXPD_NAME" type="STRING" size="256" description="수당공제명"/>
+          <Column id="EXPD_AMOT" type="BIGDECIMAL" size="256" description="수당공제금액"/>
+          <Column id="WAGE_CODE" type="BIGDECIMAL" size="256" description="급여코드"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edtEMPL_NUMB" propid="value" datasetid="dsPY_PMMAST" columnid="EMPL_NUMB"/>
+      <BindItem id="item3" compid="edtEMPL_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="EMPL_NAME"/>
+      <BindItem id="item6" compid="edtSECT_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="SECT_NAME"/>
+      <BindItem id="item8" compid="edtWABK_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="WABK_NAME"/>
+      <BindItem id="item9" compid="edtDEPT_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="DEPT_NAME"/>
+      <BindItem id="item11" compid="edtWAGE_ACNO" propid="value" datasetid="dsPY_PMMAST" columnid="WAGE_ACNO"/>
+      <BindItem id="item1" compid="edtCPOS_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="CPOS_NAME"/>
+      <BindItem id="item16" compid="edtWAGP_NAM" propid="value" datasetid="dsPY_PMMAST" columnid="WAGP_NAME"/>
+      <BindItem id="item17" compid="edtOPOS_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="OPOS_NAME"/>
+      <BindItem id="item19" compid="edtCLSD_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="CLSD_NAME"/>
+      <BindItem id="item21" compid="edtDUTY_NAME" propid="value" datasetid="dsPY_PMMAST" columnid="DUTY_NAME"/>
+      <BindItem id="item4" compid="mskPAYX_AMOT" propid="value" datasetid="dsPY_PMMAST" columnid="PAYX_AMOT"/>
+      <BindItem id="item5" compid="mskDDUC_AMOT" propid="value" datasetid="dsPY_PMMAST" columnid="DDUC_AMOT"/>
+      <BindItem id="item7" compid="mskREAL_AMOT" propid="value" datasetid="dsPY_PMMAST" columnid="REAL_AMOT"/>
+      <BindItem id="item2" compid="edtAPLY_ANDC" propid="value" datasetid="dsPY_PMMAST" columnid="APLY_ANDC"/>
+      <BindItem id="item10" compid="edtUSEX_ANDC" propid="value" datasetid="dsPY_PMMAST" columnid="USEX_ANDC"/>
+      <BindItem id="item12" compid="edtUSEB_ANDC" propid="value" datasetid="dsPY_PMMAST" columnid="USEB_ANDC"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	PAYB0110 급여명세서(팝업)
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.01		고민주		Initial Created.
+ *   2016.10.26		안윤준		수정
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+/***************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망     *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_ubireport.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TFFFFFFT"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "PAYC0020P01";
+this.sPAYX_DATE = "";
+this.sWAGE_CODE = "";
+this.sEMPL_NUMB = "";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+if (this.opener != null) {
+	this.sPAYX_DATE = this.parent.sPAYX_DATE;
+	this.sWAGE_CODE = this.parent.sWAGE_CODE;
+	this.sEMPL_NUMB = this.parent.sEMPL_NUMB;
+	
+}
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fn_Search();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+	
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	this.fnc_DatasetClear("dsPY_PMMAST,dsPY_PMDETL_A,dsPY_PMDETL_D");
+
+	var sMethodName = "SEARCH02";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_PMMAST=dsPY_PMMAST";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, "PAYC0020", sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	var sMethodName = "SEARCH03";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_PMDETL_A=dsPY_PMDETL_A";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, "PAYC0020", sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	var sMethodName = "SEARCH04";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_PMDETL_D=dsPY_PMDETL_D";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, "PAYC0020", sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+	var sMethodName = "SEARCH05";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_INCOME=dsPY_INCOME dsPY_ALLDED=dsPY_ALLDED";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, "PAYC0020", sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+	
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+
+	var reportfile = "/pay/PAYC0020R01.jrf";
+	
+	var params  = "WAGE_YMTH#" + this.fnc_Trim(this.fnc_SubStr(this.dsPY_PMMAST.getColumn(this.dsPY_PMMAST.rowposition, "WAGE_YMTH"),0,4));
+     	params +="#WAGE_MOTH#" + this.fnc_Trim(this.dsPY_PMMAST.getColumn(this.dsPY_PMMAST.rowposition, "WAGE_MOTH"));
+		params +="#WAGE_NAME#" + this.fnc_Trim(this.dsPY_PMMAST.getColumn(this.dsPY_PMMAST.rowposition, "WAGE_NAME"));
+	
+	var dataref = new Array();
+	
+	dataref[0] 				= new Object();
+	dataref[0].type 		= "TRAN";
+	dataref[0].svcUrl 		= "/core/erp/pay/PAYC0020_SEARCH02.do";
+	dataref[0].inDataset 	= ""
+	dataref[0].outDataset 	= "dsPY_PMMAST=dsPY_PMMAST"
+	dataref[0].arg = this.fn_CreateArgument("SEARCH02");
+	
+	dataref[1] 				= new Object();
+	dataref[1].type 		= "TRAN";
+	dataref[1].svcUrl 		= "/core/erp/pay/PAYC0020_SEARCH03.do";
+	dataref[1].inDataset 	= ""
+	dataref[1].outDataset 	= "dsPY_PMDETL_A=dsPY_PMDETL_A"
+	dataref[1].arg = this.fn_CreateArgument("SEARCH03");
+	
+	dataref[2] 				= new Object();
+	dataref[2].type 		= "TRAN";
+	dataref[2].svcUrl 		= "/core/erp/pay/PAYC0020_SEARCH04.do";
+	dataref[2].inDataset 	= ""
+	dataref[2].outDataset 	= "dsPY_PMDETL_D=dsPY_PMDETL_D"
+	dataref[2].arg = this.fn_CreateArgument("SEARCH04");
+	
+	dataref[3] 				= new Object();
+	dataref[3].type 		= "TRAN";
+	dataref[3].svcUrl 		= "/core/erp/pay/PAYC0020_SEARCH05.do";
+	dataref[3].inDataset 	= ""
+	dataref[3].outDataset 	= "dsPY_INCOME=dsPY_INCOME dsPY_ALLDED=dsPY_ALLDED";
+	dataref[3].arg = this.fn_CreateArgument("SEARCH05");
+		
+	this.fn_UbiReport(reportfile, params, dataref, "");
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsPY_PMMAST", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+	
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	return true;
+	
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+	
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	return true;
+
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH02" || sKind == "SEARCH03" || sKind == "SEARCH04" || sKind == "SEARCH05" ) {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " PAYX_DATE=" 	+ this.fnc_Quote(this.fnc_Trim(this.sPAYX_DATE));
+		sReturnString += " WAGE_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.sWAGE_CODE));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.sEMPL_NUMB));
+
+	}
+
+	return sReturnString;
+
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH02" ){
+		if ( this.dsPY_PMMAST.getColumn(this.dsPY_PMMAST.rowposition, "CLSD_CODE") == "01" ) {
+			this.dsPY_PMDETL_A.set_enableevent(false);
+			for ( var i=0; i<this.dsPY_PMDETL_A.getRowCount(); i++ ) {
+				if ( this.dsPY_PMDETL_A.getColumn(i, "EXPD_CODE") == "A0051" ) {
+					this.dsPY_PMDETL_A.setColumn(i, "EXPD_NAME", "월급여");
+				}
+			}
+			this.dsPY_PMDETL_A.set_enableevent(true);
+			
+		}
+	}
+	
+}]]></Script>
+  </Form>
+</FDL>

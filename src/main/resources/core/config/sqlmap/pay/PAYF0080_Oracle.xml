@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYF0080">
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 19
+     내    용 : 퇴직금산정 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYF0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYF0080.SEARCH00 퇴직금산정 조회 */
+                   A.EMPL_NUMB  /* 사번 */
+                 , C.EMPL_NAME  /* 성명 */
+                 , D.SECT_NAME  /* 부실 */
+                 , D.DEPT_NAME  /* 부서 */
+                 , SF_GET_COMMNAME('OPOS_CODE', C.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+                 , SF_GET_COMMNAME('CPOS_CODE', C.CPOS_CODE) AS CPOS_NAME   /* 직급 */
+                 , SF_GET_COMMNAME('DUTY_CODE', C.DUTY_CODE) AS DUTY_NAME   /* 직무 */
+                 , A.RCKN_DATE  /* 기산일 */
+                 , A.STDS_DATE  /* 퇴직일 */
+                 , A.CWRK_YCNT  /* 근속년수 */
+                 , A.CWRK_MCNT  /* 근속월수 */
+                 , A.CWRK_DCNT  /* 근속일수 */
+                 , A.PAYX_RATE  /* 지급율 */
+                 , A.WAGE_TAMT  /* 급여계 */
+                 , A.BONU_TAMT  /* 상여계 */
+                 , A.AVER_WAGE  /* 평균임금 */
+                 , A.RETI_WAGE  /* 퇴직급여 */
+              FROM PY_RTCESE A
+              LEFT OUTER JOIN TABLE(SF_HR_MASTXM(A.EMPL_NUMB)) C
+                ON A.EMPL_NUMB = C.EMPL_NUMB
+              LEFT OUTER JOIN VI_DEPTXM D
+                ON C.DEPT_CODE = D.DEPT_CODE
+              LEFT OUTER JOIN TABLE(SF_TM_DEPTXM(#STDS_DATE#)) E
+                ON C.DEPT_CODE = E.DEPT_CODE
+             WHERE A.STDS_DATE = #STDS_DATE#
+    ]]>
+               <isNotEmpty property="EMPL_NUMB" prepend="AND">
+                   A.EMPL_NUMB = #EMPL_NUMB#
+               </isNotEmpty>
+               
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 19
+     내    용 : 퇴직금산정 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYF0080.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+            DECLARE 
+                v_BEFO_ALWN NUMBER; /*이전 충당금*/
+                v_ROWCNT    INT;
+                v_PAYX_DATE VARCHAR2(8);
+                v_DCXX_YSNO VARCHAR2(1);
+            BEGIN
+
+                    
+                /*2016-12-06 LYG DC형가입자인지 확인*/
+                SELECT CASE WHEN REEP_DIVC = '3' AND REAY_DATE <= #STDS_DATE# THEN 'Y'
+                            ELSE 'N'
+                            END
+                  INTO v_DCXX_YSNO
+                  FROM PY_MASTPM
+                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                 ;
+                    
+                    
+                DELETE FROM PY_RTCPAY
+                 WHERE STDS_DATE = #STDS_DATE#
+                   AND EMPL_NUMB = #EMPL_NUMB#;
+        
+                DELETE FROM PY_RTCESE
+                 WHERE STDS_DATE = #STDS_DATE#
+                   AND EMPL_NUMB = #EMPL_NUMB#;
+        
+                /*퇴직금산정자료 입력*/
+                INSERT INTO PY_RTCESE (
+                   STDS_DATE   /*기준일*/
+                  ,EMPL_NUMB   /*사원번호*/
+                  ,WAGE_TAMT   /*급여합계*/
+                  ,BONU_TAMT   /*상여합계*/
+                  ,AVER_WAGE   /*평균임금*/
+                  ,CWRK_YCNT   /*근속년수*/
+                  ,CWRK_MCNT   /*근속월수*/
+                  ,CWRK_DCNT   /*근속일수*/
+                  ,PAYX_RATE   /*지급율*/
+                  ,RETI_WAGE   /*퇴직충당금*/
+                  ,ENCO_DATE   /*입사일*/
+                  ,RCKN_DATE   /*기산일*/
+                  ,INST_USID   /*등록작업자*/
+                  ,INST_DATE   /*등록일시*/
+                  ,UPDT_USID   /*수정작업자*/
+                  ,UPDT_DATE   /*수정일시*/
+                )
+                SELECT #STDS_DATE# AS STDS_DATE
+                     , A.EMPL_NUMB
+                     , 0 AS WAGE_TAMT
+                     , 0 AS BONU_TAMT
+                     , 0 AS AVER_WAGE
+                     , TRUNC(FLOOR(MONTHS_BETWEEN(TO_DATE(#STDS_DATE#, 'YYYYMMDD') + 1, TO_DATE( SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#) ,'YYYYMMDD')))/12, 0) AS CWRK_YCNT
+                     , MOD(FLOOR(MONTHS_BETWEEN(TO_DATE(#STDS_DATE#, 'YYYYMMDD') + 1, TO_DATE(SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#) ,'YYYYMMDD'))), 12) AS CWRK_MCNT
+                     , (TO_DATE(#STDS_DATE#, 'YYYYMMDD') - (ADD_MONTHS(TO_DATE(SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#),'YYYYMMDD'), (TRUNC(MONTHS_BETWEEN(TO_DATE(#STDS_DATE#,'YYYYMMDD') + 1, TO_DATE(SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#), 'YYYYMMDD')))))-1)) AS CWRK_DCNT
+                     , 0 AS PAYX_RATE
+                     , 0 AS RETI_WAGE
+                     , A.ENCO_DATE AS ENCO_DATE
+                     , CASE WHEN B.RETR_DATE IS NULL OR B.RETR_DATE < SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#)
+                            THEN SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#)
+                            ELSE TO_CHAR(TO_DATE(B.RETR_DATE,'YYYYMMDD') + 1, 'YYYYMMDD')
+                            END AS RCKN_DATE                      
+                      
+                     , #UPDT_USID#
+                     , SYSDATE
+                     , #UPDT_USID#
+                     , SYSDATE
+                  FROM HR_MASTXM A
+                          INNER JOIN PY_MASTPM C
+                            ON A.EMPL_NUMB = C.EMPL_NUMB
+                          LEFT OUTER JOIN (
+                                            SELECT EMPL_NUMB
+                                                 , MAX(FINL_ENDT) AS RETR_DATE
+                                              FROM PY_RTPCXM
+                                             WHERE FINL_ENDT <= #STDS_DATE#
+                                               AND EMPL_NUMB = #EMPL_NUMB#
+                                               AND RERE_CODE = '5'
+                                             GROUP BY EMPL_NUMB
+                                          ) B
+                            ON A.EMPL_NUMB = B.EMPL_NUMB
+                WHERE (A.RETR_DATE IS NULL OR A.RETR_DATE > #STDS_DATE#)
+                  AND A.ENCO_DATE <= #STDS_DATE#
+                  AND A.EMPL_NUMB = #EMPL_NUMB#
+                  /*AND C.REEP_DIVC IN ('1','2')*/ /*퇴직일시금, DB형*/
+                  ;
+        
+                              
+                /*2016-10-28 LYG 지급율 계산*/
+                /* 지급율(X년 + Y개월/12 + Z일/365)  */
+                UPDATE PY_RTCESE
+                   SET PAYX_RATE = CWRK_YCNT + ( CWRK_MCNT / 12 ) + (CWRK_DCNT / 365 )
+                 WHERE STDS_DATE = #STDS_DATE#
+                   AND EMPL_NUMB = #EMPL_NUMB#
+                ;
+                
+                
+                IF (v_DCXX_YSNO = 'N') THEN
+                    /*DB형,퇴직급일시금 급여 데이터 입력*/
+                    INSERT INTO PY_RTCPAY
+                    SELECT
+                           #STDS_DATE# AS STDS_DATE
+                          ,A.EMPL_NUMB
+                          ,A.REUD_CODE AS REUD_CODE
+                          ,A.EXPD_CODE
+                          ,SUM(CASE WHEN C.PAYX_YMTH IS NOT NULL THEN A.EXPD_AMOT ELSE 0 END) AS PAYX_AMOT
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                      FROM HR_MASTXM M
+                            INNER JOIN (
+                                          SELECT
+                                                 A.EMPL_NUMB
+                                                ,B.EXPD_CODE
+                                                ,E.WAGE_YMTH  AS   PAYX_YMTH
+                                                ,SUM(NVL(B.EXPD_AMOT,0) + NVL(B.RTRC_AMOT,0)) AS EXPD_AMOT
+                                                ,C.REUD_CODE
+                                            FROM PY_PMMAST A
+                                                    INNER JOIN PY_PMDETL B
+                                                      ON A.PAYX_DATE = B.PAYX_DATE
+                                                        AND A.WAGE_CODE = B.WAGE_CODE
+                                                        AND A.EMPL_NUMB = B.EMPL_NUMB
+                                                    INNER JOIN PY_ALLDED C
+                                                      ON B.EXPD_CODE = C.EXPD_CODE
+                                                        AND C.REUD_CODE IN ('1','2') /*기본급,월간급*/
+                                                    INNER JOIN PY_PAYCOD D
+                                                      ON A.WAGE_CODE = D.WAGE_CODE
+                                                    INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                                                      ON E.PAYX_DATE = A.PAYX_DATE
+                                                     AND E.WAGE_CODE = A.WAGE_CODE                                                    
+                                            WHERE D.WAGP_CODE NOT IN ('9000','4000') /*소급, 인상분제외*/    
+                                              AND A.EMPL_NUMB = #EMPL_NUMB#
+                                              AND B.EXPD_CODE != 'A9005'             /*2016-11-08  LYG 소급분 수당 제외*/                                        
+                                          GROUP BY A.EMPL_NUMB, B.EXPD_CODE, E.WAGE_YMTH,C.REUD_CODE
+                                        ) A
+                              ON M.EMPL_NUMB = A.EMPL_NUMB
+                            LEFT OUTER JOIN (
+                                              SELECT EMPL_NUMB
+                                                    ,PAYX_YMTH
+                                                FROM (
+                                                      SELECT A.EMPL_NUMB
+                                                            ,E.WAGE_YMTH AS PAYX_YMTH
+                                                            ,ROW_NUMBER() OVER (PARTITION BY A.EMPL_NUMB ORDER BY SUBSTR(A.PAYX_DATE,1,6) DESC) AS ROWNUMBER
+                                                        FROM PY_PMMAST A
+                                                                 INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                                                                   ON E.PAYX_DATE = A.PAYX_DATE
+                                                                  AND E.WAGE_CODE = A.WAGE_CODE  
+                                                       WHERE E.WAGE_YMTH <= SUBSTR(#STDS_DATE#,1,6)
+                                                         AND A.EMPL_NUMB = #EMPL_NUMB#
+                                                         AND A.WAGP_CODE = '1000'
+                                                     ) K
+                                               WHERE ROWNUMBER<=3
+                                            ) C
+                              ON A.EMPL_NUMB = C.EMPL_NUMB
+                             AND A.PAYX_YMTH = C.PAYX_YMTH
+                    WHERE M.EMPL_NUMB = #EMPL_NUMB#
+                    GROUP BY A.EMPL_NUMB, A.REUD_CODE, A.EXPD_CODE;
+                    
+                    /*DB형,퇴직급일시금 상여 데이터 입력*/
+                    INSERT INTO PY_RTCPAY
+                    SELECT
+                           #STDS_DATE# AS STDS_DATE
+                          ,A.EMPL_NUMB
+                          ,C.REUD_CODE
+                          ,B.EXPD_CODE
+                          ,SUM(NVL(B.EXPD_AMOT,0) + NVL(B.RTRC_AMOT,0)) AS PAYX_AMOT /*상여수당*/
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                    FROM PY_MASTPM M
+                          INNER JOIN PY_PMMAST A
+                            ON M.EMPL_NUMB = A.EMPL_NUMB
+                          INNER JOIN PY_PMDETL B
+                            ON A.PAYX_DATE = B.PAYX_DATE
+                              AND A.WAGE_CODE = B.WAGE_CODE
+                              AND A.EMPL_NUMB = B.EMPL_NUMB
+                          INNER JOIN PY_ALLDED C
+                            ON B.EXPD_CODE = C.EXPD_CODE
+                              AND C.REUD_CODE = '3'
+                          INNER JOIN PY_PAYCOD D
+                            ON A.WAGE_CODE = D.WAGE_CODE
+                          INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                            ON E.PAYX_DATE = A.PAYX_DATE
+                           AND E.WAGE_CODE = A.WAGE_CODE                                                  
+                    WHERE 
+                          /*2016-11-22 LYG 지급일이 아닌 급여일지의 급여년월 기준으로 적용*/   
+                          E.WAGE_YMTH BETWEEN TO_CHAR(ADD_MONTHS(TO_DATE(#STDS_DATE#,'YYYYMMDD') + 1, -12),'YYYYMM') AND SUBSTR(#STDS_DATE#,1,6)
+                          
+                      AND D.WAGP_CODE NOT IN ('9000','4000') /*소급, 인상분제외*/
+                      
+                      AND B.EXPD_CODE NOT IN ('A9005','A0070')   /*2016-11-08 LYG 소급분, 연차수당 제외*/
+                      AND M.EMPL_NUMB = #EMPL_NUMB#
+                    GROUP BY A.EMPL_NUMB, A.ENFC_CODE, C.REUD_CODE, B.EXPD_CODE
+                    ;                   
+                    
+                ELSE
+                    /*DC형이고 DC형 전환일이 기준일보다 큰 경우 급여 데이터 입력*/
+                    INSERT INTO PY_RTCPAY
+                    SELECT
+                           #STDS_DATE# AS STDS_DATE
+                          ,A.EMPL_NUMB
+                          ,A.REUD_CODE AS REUD_CODE
+                          ,A.EXPD_CODE
+                          ,SUM(CASE WHEN C.PAYX_YMTH IS NOT NULL THEN A.EXPD_AMOT ELSE 0 END) AS PAYX_AMOT
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                     FROM PY_MASTPM M
+                           INNER JOIN (
+                                        SELECT
+                                               A.EMPL_NUMB
+                                              ,B.EXPD_CODE
+                                              ,E.WAGE_YMTH  AS   PAYX_YMTH
+                                              ,SUM(NVL(B.EXPD_AMOT,0) + NVL(B.RTRC_AMOT,0)) AS EXPD_AMOT
+                                              ,C.REUD_CODE
+                                              ,A.ENFC_CODE
+                                        FROM PY_PMMAST A
+                                              INNER JOIN PY_PMDETL B
+                                                ON A.PAYX_DATE = B.PAYX_DATE
+                                               AND A.WAGE_CODE = B.WAGE_CODE
+                                               AND A.EMPL_NUMB = B.EMPL_NUMB
+                                              INNER JOIN PY_ALLDED C
+                                                ON B.EXPD_CODE = C.EXPD_CODE
+                                               AND C.REUD_CODE IN ('1','2') /*기본급,월간급*/
+                                              INNER JOIN PY_PAYCOD D
+                                                ON A.WAGE_CODE = D.WAGE_CODE
+                                              INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                                                ON E.PAYX_DATE = A.PAYX_DATE
+                                               AND E.WAGE_CODE = A.WAGE_CODE                                         
+                                        WHERE D.WAGP_CODE NOT IN ('9000','4000') /*소급, 인상분제외*/
+                                          AND B.EXPD_CODE != 'A9005'             /*2016-11-08  LYG 소급분 수당 제외*/
+                                          AND A.EMPL_NUMB = #EMPL_NUMB#
+                                        GROUP BY A.EMPL_NUMB, B.EXPD_CODE, E.WAGE_YMTH, C.REUD_CODE, A.ENFC_CODE
+                                    ) A
+                              ON M.EMPL_NUMB = A.EMPL_NUMB
+                           LEFT OUTER JOIN (
+                                              SELECT
+                                                     EMPL_NUMB
+                                                    ,PAYX_YMTH
+                                              FROM (
+                                                    SELECT
+                                                           A.EMPL_NUMB
+                                                         , E.WAGE_YMTH AS PAYX_YMTH
+                                                         , ROW_NUMBER() OVER (PARTITION BY A.EMPL_NUMB ORDER BY E.WAGE_YMTH DESC) AS ROWNUMBER
+                                                      FROM PY_PMMAST A
+                                                              INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                                                                ON E.PAYX_DATE = A.PAYX_DATE
+                                                               AND E.WAGE_CODE = A.WAGE_CODE                                                  
+                                                     WHERE E.WAGE_YMTH <= SUBSTR(#STDS_DATE#,1,6)
+                                                       AND E.WAGE_YMTH >= SUBSTR(SF_GET_RCKNDATE(A.EMPL_NUMB, #STDS_DATE#),1,6)
+                                                       AND A.WAGP_CODE = '1000'
+                                                       AND A.EMPL_NUMB = #EMPL_NUMB#
+                                                  ) K
+                                              WHERE ROWNUMBER<=12
+                                            ) C
+                              ON A.EMPL_NUMB = C.EMPL_NUMB
+                             AND A.PAYX_YMTH = C.PAYX_YMTH
+                    WHERE M.EMPL_NUMB = #EMPL_NUMB#
+                    GROUP BY A.EMPL_NUMB, A.ENFC_CODE, A.REUD_CODE, A.EXPD_CODE;                
+
+                    /*DC형이고 DC형 전환일이 기준일보다 큰 경우 상여 데이터 입력*/
+                    INSERT INTO PY_RTCPAY
+                    SELECT
+                           #STDS_DATE# AS STDS_DATE
+                          ,A.EMPL_NUMB
+                          ,C.REUD_CODE
+                          ,B.EXPD_CODE
+                          ,SUM(NVL(B.EXPD_AMOT,0) + NVL(B.RTRC_AMOT,0)) AS PAYX_AMOT /*상여수당*/
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                          ,#UPDT_USID#
+                          ,SYSDATE
+                    FROM PY_MASTPM M
+                          INNER JOIN PY_PMMAST A
+                            ON M.EMPL_NUMB = A.EMPL_NUMB
+                          INNER JOIN PY_PMDETL B
+                            ON A.PAYX_DATE = B.PAYX_DATE
+                              AND A.WAGE_CODE = B.WAGE_CODE
+                              AND A.EMPL_NUMB = B.EMPL_NUMB
+                          INNER JOIN PY_ALLDED C
+                            ON B.EXPD_CODE = C.EXPD_CODE
+                              AND C.REUD_CODE = '3'
+                          INNER JOIN PY_PAYCOD D
+                            ON A.WAGE_CODE = D.WAGE_CODE
+                          INNER JOIN PY_PMDIRY E         /* 2016-11-22 LYG 급여일지 */
+                            ON E.PAYX_DATE = A.PAYX_DATE
+                           AND E.WAGE_CODE = A.WAGE_CODE                     
+                    WHERE 
+                          /*2016-11-22 LYG 지급일이 아닌 급여일지의 급여년월 기준으로 적용*/
+                          E.WAGE_YMTH BETWEEN TO_CHAR(ADD_MONTHS(TO_DATE(#STDS_DATE#,'YYYYMMDD') + 1, -12),'YYYYMM') AND SUBSTR(#STDS_DATE#,1,6)
+                          
+                      AND SF_GET_RCKNDATE(M.EMPL_NUMB, #STDS_DATE#) <= A.PAYX_DATE
+                    
+                      AND D.WAGP_CODE NOT IN ('9000','4000') /*소급, 인상분제외*/
+                      
+                      AND B.EXPD_CODE NOT IN ('A9005','A0070')   /*2016-11-08 LYG 소급분, 연차수당 제외*/
+                      AND M.EMPL_NUMB = #EMPL_NUMB#                   
+                    GROUP BY A.EMPL_NUMB, A.ENFC_CODE, C.REUD_CODE, B.EXPD_CODE
+                    ;                       
+
+                END IF;
+                
+                
+                /*2016-11-22 LYG 연차수당 계산*/
+                INSERT INTO PY_RTCPAY
+                SELECT #STDS_DATE# AS STDS_DATE
+                     , B.EMPL_NUMB
+                     , '3'       AS  REUD_CODE
+                     , 'A0070'   AS  EXPD_CODE
+                     , ROUND((D.BSLY_AMOT/209)*8, -1) *  C.REMA_ANDC AS EXPD_AMOT    /*연차수당금액*/
+                     , #UPDT_USID#
+                     , SYSDATE
+                     , #UPDT_USID#
+                     , SYSDATE                
+                  FROM PY_MASTPM A
+                          INNER JOIN TABLE(SF_HR_MASTXM( A.EMPL_NUMB, #STDS_DATE# )) B
+                             ON A.EMPL_NUMB = B.EMPL_NUMB
+                          INNER JOIN (SELECT A.EMPL_NUMB
+                                           , SUM(A.APLY_ANDC) - SUM(A.ADJT_ANDC) AS APLY_ANDC                    /* 발생연차 */
+                                           , SUM(A.USEX_ANDC) AS USEX_ANDC                                       /* 사용연차 */
+                                           , SUM(A.APLY_ANDC) - SUM(A.ADJT_ANDC) - SUM(A.USEX_ANDC) AS REMA_ANDC /* 잔여연차 */
+                                           , SUM(A.PROM_ANDC) AS PROM_ANDC                                       /* 촉진연차 */
+                                        FROM (SELECT EMPL_NUMB
+                                                   , APLY_ANDC
+                                                   , 0 ADJT_ANDC
+                                                   , 0 USEX_ANDC
+                                                   , PROM_ANDC
+                                                FROM AT_ANNUXM    /* 연차관리 */
+                                               WHERE STDS_YEAR = SUBSTR(#STDS_DATE#, 1, 4) 
+                                               UNION ALL
+                                              SELECT EMPL_NUMB
+                                                   , 0 APLY_ANDC
+                                                   , SUM(ADJT_ANDC) ADJT_ANDC
+                                                   , 0 USEX_ANDC
+                                                   , 0 PROM_ANDC
+                                                FROM AT_ANNUXD     /* 연차조정 */
+                                               WHERE STDS_YEAR = SUBSTR(#STDS_DATE#, 1, 4) 
+                                               GROUP BY EMPL_NUMB 
+                                               UNION ALL
+                                              SELECT EMPL_NUMB
+                                                   , 0 APLY_ANDC
+                                                   , 0 ADJT_ANDC
+                                                   , SUM(WORK_TIME) USEX_ANDC
+                                                   , 0  PROM_ANDC
+                                                FROM AT_ATTEDY        /* 일일근태 */
+                                               WHERE WORK_GUBN = '4'
+                                                 AND ATTE_DATE LIKE SUBSTR(#STDS_DATE#, 1, 4)||'%' 
+                                               GROUP BY EMPL_NUMB 
+                                              ) A
+                                       GROUP BY A.EMPL_NUMB
+                                      ) C ON A.EMPL_NUMB = C.EMPL_NUMB           
+                       LEFT OUTER JOIN ( SELECT EMPL_NUMB
+                                              , BSLY_AMOT
+                                           FROM ( SELECT EMPL_NUMB
+                                                       , BSLY_AMOT
+                                                       , ROW_NUMBER() OVER ( PARTITION BY EMPL_NUMB ORDER BY EMPL_NUMB, STDS_DATE DESC, SRAL_NUMB DESC ) R_NUM
+                                                    FROM PY_REGSAL 
+                                                   WHERE STDS_DATE <= #STDS_DATE#
+                                                ) 
+                                          WHERE R_NUM = 1
+                                      ) D
+                                     ON A.EMPL_NUMB = D.EMPL_NUMB           
+                        INNER JOIN TM_DEPTXM E
+                           ON E.DEPT_CODE = B.DEPT_CODE
+                WHERE A.EMPL_NUMB = #EMPL_NUMB#
+                ;
+        
+                /*급상여합계 업데이트*/
+                UPDATE PY_RTCESE A
+                   SET (WAGE_TAMT, BONU_TAMT) = (
+                                                  SELECT B.WAGE_TAMT
+                                                        ,B.BONU_TAMT
+                                                    FROM (
+                                                          SELECT
+                                                                 STDS_DATE
+                                                                ,EMPL_NUMB
+                                                                ,SUM(CASE WHEN REUD_CODE IN ('1','2') THEN PAYX_AMOT ELSE 0 END) AS WAGE_TAMT
+                                                                ,SUM(CASE WHEN REUD_CODE = '3' THEN PAYX_AMOT ELSE 0 END) AS BONU_TAMT
+                                                            FROM PY_RTCPAY
+                                                          GROUP BY STDS_DATE, EMPL_NUMB
+                                                         ) B
+                                                   WHERE A.STDS_DATE = B.STDS_DATE
+                                                     AND A.EMPL_NUMB = B.EMPL_NUMB
+                                                )
+                WHERE STDS_DATE = #STDS_DATE#
+                  AND EMPL_NUMB = #EMPL_NUMB#;
+        
+                /*퇴직충당금 업데이트*/
+                UPDATE PY_RTCESE
+                   SET AVER_WAGE = TRUNC(WAGE_TAMT / 3) + TRUNC(BONU_TAMT / 12)     
+                
+                      ,RETI_WAGE = ROUND((TRUNC(WAGE_TAMT / 3) + TRUNC(BONU_TAMT / 12)) * PAYX_RATE * NVL( TO_NUMBER(SF_GET_COMMNAMEREF('RETR_RATE', EMPL_NUMB, '1')), 1 ),0)
+                 WHERE STDS_DATE = #STDS_DATE#
+                   AND EMPL_NUMB = #EMPL_NUMB#
+                  ;
+            END;    
+
+    ]]>
+    </insert>
+</sqlMap>

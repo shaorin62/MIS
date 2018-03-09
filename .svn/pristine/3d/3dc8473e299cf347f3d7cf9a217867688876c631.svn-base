@@ -1,0 +1,800 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TMMA0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="공통코드관리" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Static41" taborder="257" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="235" width="633" height="47" right="25"/>
+        <Static id="Shape1" position="absolute" cssclass="styFormItemBoxOut" taborder="50" right="25" top="128" width="722" height="54"/>
+        <Static id="spSearchBox0" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="54"/>
+        <Static id="imgSearchTitle0" text="공통코드명" position="absolute" left="28" width="76" top="71" height="21" cssclass="styFormSearchCap" taborder="55"/>
+        <Static id="imgSearchTitle1" text="시스템" position="absolute" left="338" width="55" top="71" height="21" cssclass="styFormSearchCap" taborder="56"/>
+        <Edit autoselect="true" lengthunit="ascii" id="edtSHRCOMM_CDNM" imemode="hangul" onsetfocus="fn_EditFocus" taborder="0" position="absolute" left="109" width="200" top="71" height="21" cssclass="styFormSearchItem" onkeydown="edtSHRCOMM_CDNM_onkeydown"/>
+        <Combo id="cmbSHRSYST_CODE" imemode="none" onsetfocus="fn_EditFocus" taborder="1" position="absolute" left="393" width="200" top="71" height="21" cssclass="styFormSearchCombo"/>
+        <Static id="staXxxx0" text="공통코드" position="absolute" width="82" height="21" cssclass="styFormItemCapBE" taborder="58" top="133" right="645"/>
+        <Static id="staXxxx1" text="시스템" position="absolute" width="65" height="21" cssclass="styFormItemCapBE" taborder="59" top="133" right="186"/>
+        <Static id="Static1" text="공통코드명" position="absolute" width="82" height="21" cssclass="styFormItemCapBE" taborder="61" top="133" right="464"/>
+        <Static id="Static4" text="코드구분" position="absolute" width="82" height="21" cssclass="styFormItemCapBE" taborder="62" top="156" right="645"/>
+        <Static id="Static8" text="세부코드길이" position="absolute" width="97" height="21" cssclass="styFormItemCap" taborder="63" onclick="Static8_onclick" top="156" right="449"/>
+        <Grid binddataset="dsTM_CODEXH" cellsizingtype="both" enable="true" id="grdTM_CODEXH" useinputpanel="false" taborder="67" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" selecttype="row" left="8" top="128" cssclass="styGrid01" bottom="15" right="767" autofittype="col" oncelldblclick="grdTM_CODEXH_oncelldblclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="90"/>
+                <Column size="226"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="공통코드"/>
+                <Cell col="1" text="공통코드명"/>
+                <Cell col="2" text="시스템구분"/>
+              </Band>
+              <Band id="body">
+                <Cell style="cursor:hand;" text="bind:COMM_CODE"/>
+                <Cell col="1" style="align:left;" text="bind:COMM_CDNM"/>
+                <Cell col="2" displaytype="combo" text="bind:SYST_CODE"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static36" text="초기세팅여부" position="absolute" width="95" height="21" cssclass="styFormItemCap" taborder="65" top="156" right="156"/>
+        <Combo binddataset="dsTM_CODEXH" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" id="cmbSYST_CODE" type="dropdown" taborder="4" position="absolute" height="21" cssclass="styFormItemCombo" index="-1" right="42" width="154" top="133"/>
+        <Edit id="edtCOMM_CDNM" taborder="3" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" right="263" width="189" height="21" binddataset="dsTM_CODEXH" top="133" imemode="none"/>
+        <Edit id="edtCOCD_LNTH" taborder="6" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="5" autoselect="true" cssclass="styFormItemText" right="395" width="57" height="21" binddataset="dsTM_CODEXH" top="156" inputtype="number"/>
+        <Combo id="cmbCDGB_CODE" taborder="5" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" right="558" width="100" height="21" binddataset="dsTM_CODEXH" top="156"/>
+        <CheckBox id="chkISET_YSNO" taborder="7" value="0" truevalue="1" falsevalue="0" onclick="chkSHRXXXX_XXXX0_onclick" cssclass="styFormItemChk" top="156" width="16" height="21" binddataset="dsTM_CODEXD" right="139"/>
+        <Edit id="edtCOMM_CODE" taborder="2" inputmode="upper" lengthunit="ascii" maxlength="10" autoselect="true" cssclass="styFormItemText" width="100" height="21" binddataset="dsTM_CODEXH" right="558" top="133"/>
+        <Static id="st_FormTitle" taborder="107" text="공통코드관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="108" text="홈 &gt;공통관리&gt;공통관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="109" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="110" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="111" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static15" taborder="112" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static16" taborder="113" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static18" taborder="117" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static19" taborder="118" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static20" taborder="119" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="120" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation1" taborder="121" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="107" width="198" height="21"/>
+        <Static id="Static17" taborder="127" text="h 25" visible="false" left="317" top="103" width="82" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="130" cssclass="sta_WF_Labelbg" top="189" height="47" onclick="Static12_onclick" width="633" right="25"/>
+        <Static id="Static13" taborder="131" text="항목 1" cssclass="sta_WF_Label" width="90" height="47" style="padding:1 0 0 22;" top="189" right="657"/>
+        <Edit id="edtRE1F_CMCD" taborder="183" imemode="alpha" inputmode="upper" readonly="false" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" enable="true" top="213" width="88" height="21" binddataset="dsTM_CODEXH" right="298"/>
+        <Edit id="edtRE1F_DESC" taborder="185" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" top="191" right="29" height="21" binddataset="dsTM_CODEXH" width="557"/>
+        <Combo id="cmbRE1T_CODE" taborder="186" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" top="213" right="466" height="21" binddataset="dsTM_CODEXH" width="120" index="-1"/>
+        <Static id="imgRE1F_CMNM" taborder="181" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="213" right="275" height="21" width="21"/>
+        <Edit id="edtRE1F_CMNM" taborder="182" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" top="213" right="29" height="21" binddataset="dsTM_CODEXH" width="244"/>
+        <Static id="Static42" taborder="199" text="제목" cssclass="styFormSubCap" top="191" width="64" height="21" right="584"/>
+        <Static id="Static43" taborder="200" text="입력형태" cssclass="styFormSubCap" top="213" width="64" height="21" right="584"/>
+        <Static id="Static44" taborder="201" text="공통코드" cssclass="styFormSubCap" top="213" width="64" height="21" right="385"/>
+        <Static id="Static86" taborder="252" text="비고" cssclass="sta_WF_Label" top="649" width="90" style="padding:1 0 0 22;" right="657" bottom="15"/>
+        <Static id="Static87" taborder="253" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="649" width="633" right="25" bottom="15"/>
+        <Static id="Static21" taborder="254" text="공통코드" cssclass="styFormSubCap" top="259" width="64" height="21" right="385"/>
+        <Static id="Static22" taborder="255" text="입력형태" cssclass="styFormSubCap" top="259" width="64" height="21" right="584"/>
+        <Static id="Static40" taborder="256" text="제목" cssclass="styFormSubCap" top="237" width="64" height="21" right="584"/>
+        <Static id="Static45" taborder="258" text="항목 2" cssclass="sta_WF_Label" top="235" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static46" taborder="259" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="281" width="633" height="47" right="25"/>
+        <Static id="Static47" taborder="260" text="공통코드" cssclass="styFormSubCap" top="305" width="64" height="21" right="385"/>
+        <Static id="Static48" taborder="261" text="입력형태" cssclass="styFormSubCap" top="305" width="64" height="21" right="584"/>
+        <Static id="Static49" taborder="262" text="제목" cssclass="styFormSubCap" top="283" width="64" height="21" right="584"/>
+        <Static id="Static50" taborder="263" text="항목 3" cssclass="sta_WF_Label" top="281" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static51" taborder="264" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="327" width="633" height="47" right="25"/>
+        <Static id="Static52" taborder="265" text="공통코드" cssclass="styFormSubCap" top="351" width="64" height="21" right="385"/>
+        <Static id="Static53" taborder="266" text="입력형태" cssclass="styFormSubCap" top="351" width="64" height="21" right="584"/>
+        <Static id="Static54" taborder="267" text="제목" cssclass="styFormSubCap" top="329" width="64" height="21" right="584"/>
+        <Static id="Static55" taborder="268" text="항목 4" cssclass="sta_WF_Label" top="327" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static56" taborder="269" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="373" width="633" height="47" right="25"/>
+        <Static id="Static57" taborder="270" text="공통코드" cssclass="styFormSubCap" top="397" width="64" height="21" right="385"/>
+        <Static id="Static58" taborder="271" text="입력형태" cssclass="styFormSubCap" top="397" width="64" height="21" right="584"/>
+        <Static id="Static59" taborder="272" text="제목" cssclass="styFormSubCap" top="375" width="64" height="21" right="584"/>
+        <Static id="Static60" taborder="273" text="항목 5" cssclass="sta_WF_Label" top="373" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static61" taborder="274" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="419" width="633" height="47" right="25"/>
+        <Static id="Static62" taborder="275" text="공통코드" cssclass="styFormSubCap" top="443" width="64" height="21" right="385"/>
+        <Static id="Static63" taborder="276" text="입력형태" cssclass="styFormSubCap" top="443" width="64" height="21" right="584"/>
+        <Static id="Static64" taborder="277" text="제목" cssclass="styFormSubCap" top="421" width="64" height="21" right="584"/>
+        <Static id="Static65" taborder="278" text="항목 6" cssclass="sta_WF_Label" top="419" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static66" taborder="279" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="465" width="633" height="47" right="25"/>
+        <Static id="Static67" taborder="280" text="공통코드" cssclass="styFormSubCap" top="489" width="64" height="21" right="385"/>
+        <Static id="Static68" taborder="281" text="입력형태" cssclass="styFormSubCap" top="489" width="64" height="21" right="584"/>
+        <Static id="Static69" taborder="282" text="제목" cssclass="styFormSubCap" top="467" width="64" height="21" right="584"/>
+        <Static id="Static70" taborder="283" text="항목 7" cssclass="sta_WF_Label" top="465" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static71" taborder="284" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="511" width="633" height="47" right="25"/>
+        <Static id="Static72" taborder="285" text="공통코드" cssclass="styFormSubCap" top="535" width="64" height="21" right="385"/>
+        <Static id="Static73" taborder="286" text="입력형태" cssclass="styFormSubCap" top="535" width="64" height="21" right="584"/>
+        <Static id="Static74" taborder="287" text="제목" cssclass="styFormSubCap" top="513" width="64" height="21" right="584"/>
+        <Static id="Static75" taborder="288" text="항목 8" cssclass="sta_WF_Label" top="511" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static76" taborder="289" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="557" width="633" height="47" right="25"/>
+        <Static id="Static77" taborder="290" text="공통코드" cssclass="styFormSubCap" top="581" width="64" height="21" right="385"/>
+        <Static id="Static78" taborder="291" text="입력형태" cssclass="styFormSubCap" top="581" width="64" height="21" right="584"/>
+        <Static id="Static79" taborder="292" text="제목" cssclass="styFormSubCap" top="559" width="64" height="21" right="584"/>
+        <Static id="Static80" taborder="293" text="항목 9" cssclass="sta_WF_Label" top="557" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <Static id="Static81" taborder="294" onclick="Static12_onclick" cssclass="sta_WF_Labelbg" top="603" width="633" height="47" right="25"/>
+        <Static id="Static82" taborder="295" text="공통코드" cssclass="styFormSubCap" top="627" width="64" height="21" right="385"/>
+        <Static id="Static83" taborder="296" text="입력형태" cssclass="styFormSubCap" top="627" width="64" height="21" right="584"/>
+        <Static id="Static84" taborder="297" text="제목" cssclass="styFormSubCap" top="605" width="64" height="21" right="584"/>
+        <Static id="Static85" taborder="298" text="항목 10" cssclass="sta_WF_Label" top="603" width="90" height="47" style="padding:1 0 0 22;" right="657"/>
+        <TextArea binddataset="dsTM_CODEXH" lengthunit="ascii" id="txtREMK_100X" imemode="none" maxlength="1000" onsetfocus="fn_EditFocus" taborder="48" position="absolute" cssclass="styFormItemText" bottom="18" top="652" right="28" width="627"/>
+        <Edit id="edtRE2F_CMNM" taborder="14" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="259" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE2F_CMNM" taborder="15" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="259" right="275" height="21" width="21"/>
+        <Edit id="edtRE2F_CMCD" taborder="97" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="259" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE2F_DESC" taborder="12" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="237" width="557"/>
+        <Combo id="cmbRE2T_CODE" taborder="13" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="259" width="120" index="-1"/>
+        <Edit id="edtRE3F_CMNM" taborder="18" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="305" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE3F_CMNM" taborder="19" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="305" right="275" height="22" width="21"/>
+        <Edit id="edtRE3F_CMCD" taborder="98" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="305" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE3F_DESC" taborder="16" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="283" width="557"/>
+        <Combo id="cmbRE3T_CODE" taborder="17" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="305" width="120" index="-1"/>
+        <Edit id="edtRE4F_CMNM" taborder="22" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="351" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE4F_CMNM" taborder="23" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="351" right="275" height="22" width="21"/>
+        <Edit id="edtRE4F_CMCD" taborder="99" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="351" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE4F_DESC" taborder="20" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="329" width="557"/>
+        <Combo id="cmbRE4T_CODE" taborder="21" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="351" width="120" index="-1"/>
+        <Edit id="edtRE5F_CMNM" taborder="26" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="397" onkillfocus="fn_HelpDialoge" oneditclick="edtRE5F_CMNM_oneditclick" width="244"/>
+        <Static id="imgRE5F_CMNM" taborder="27" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="397" right="275" height="22" width="21"/>
+        <Edit id="edtRE6F_DESC" taborder="28" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="421" width="557"/>
+        <Combo id="cmbRE6T_CODE" taborder="29" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="443" width="120" index="-1"/>
+        <Edit id="edtRE6F_CMNM" taborder="30" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="443" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE6F_CMNM" taborder="31" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="443" right="275" height="22" width="21"/>
+        <Edit id="edtRE7F_DESC" taborder="32" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="467" width="557"/>
+        <Combo id="cmbRE7T_CODE" taborder="33" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="489" width="120" index="-1"/>
+        <Edit id="edtRE7F_CMNM" taborder="34" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="489" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE7F_CMNM" taborder="35" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="489" right="275" height="22" width="21"/>
+        <Edit id="edtRE8F_DESC" taborder="36" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="513" width="557"/>
+        <Combo id="cmbRE8T_CODE" taborder="37" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="535" width="120" index="-1"/>
+        <Edit id="edtRE8F_CMNM" taborder="38" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="535" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE8F_CMNM" taborder="39" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="535" right="275" height="22" width="21"/>
+        <Edit id="edtRE9F_DESC" taborder="40" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="559" width="557"/>
+        <Combo id="cmbRE9T_CODE" taborder="41" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="581" width="120" index="-1"/>
+        <Edit id="edtRE9F_CMNM" taborder="42" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="581" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgRE9F_CMNM" taborder="43" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="581" right="275" height="22" width="21"/>
+        <Edit id="edtR10F_DESC" taborder="44" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="605" oneditclick="edtR10F_DESC_oneditclick" width="557"/>
+        <Combo id="cmbR10T_CODE" taborder="45" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="627" width="120" index="-1"/>
+        <Edit id="edtR10F_CMNM" taborder="46" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="627" onkillfocus="fn_HelpDialoge" width="244"/>
+        <Static id="imgR10F_CMNM" taborder="47" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" top="627" right="275" height="22" width="21"/>
+        <Edit id="edtRE5F_CMCD" taborder="100" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="397" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE6F_CMCD" taborder="101" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="443" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE7F_CMCD" taborder="102" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="489" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE8F_CMCD" taborder="103" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="535" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE9F_CMCD" taborder="104" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="581" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtR10F_CMCD" taborder="105" imemode="alpha" inputmode="upper" lengthunit="ascii" maxlength="15" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="edt_WF_Readonly" top="627" height="21" binddataset="dsTM_CODEXH" readonly="false" enable="true" right="298" width="88"/>
+        <Edit id="edtRE5F_DESC" taborder="24" imemode="none" inputmode="upper" lengthunit="ascii" maxlength="50" autoselect="true" cssclass="styFormItemText" height="21" binddataset="dsTM_CODEXH" right="29" top="375" width="557"/>
+        <Combo id="cmbRE5T_CODE" taborder="25" codecolumn="COMD_CODE" datacolumn="COMD_CDNM" cssclass="styFormItemCombo" height="21" binddataset="dsTM_CODEXH" right="466" top="397" width="120" index="-1"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTM_CODEXH" onrowposchanged="fn_KeyFieldDisible_Head" oncolumnchanged="dsTM_CODEXH_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="COMM_CODE" type="STRING" size="256"/>
+          <Column id="COMM_CDNM" type="STRING" size="256"/>
+          <Column id="SYST_CODE" type="STRING" size="256"/>
+          <Column id="CDGB_CODE" type="STRING" size="256"/>
+          <Column id="COCD_LNTH" type="STRING" size="256"/>
+          <Column id="RE1F_DESC" type="STRING" size="256"/>
+          <Column id="RE1T_CODE" type="STRING" size="256"/>
+          <Column id="RE1F_CMCD" type="STRING" size="256"/>
+          <Column id="RE1F_CMNM" type="STRING" size="256"/>
+          <Column id="RE2F_DESC" type="STRING" size="256"/>
+          <Column id="RE2T_CODE" type="STRING" size="256"/>
+          <Column id="RE2F_CMCD" type="STRING" size="256"/>
+          <Column id="RE2F_CMNM" type="STRING" size="256"/>
+          <Column id="RE3F_DESC" type="STRING" size="256"/>
+          <Column id="RE3T_CODE" type="STRING" size="256"/>
+          <Column id="RE3F_CMCD" type="STRING" size="256"/>
+          <Column id="RE3F_CMNM" type="STRING" size="256"/>
+          <Column id="RE4F_DESC" type="STRING" size="256"/>
+          <Column id="RE4T_CODE" type="STRING" size="256"/>
+          <Column id="RE4F_CMCD" type="STRING" size="256"/>
+          <Column id="RE4F_CMNM" type="STRING" size="256"/>
+          <Column id="RE5F_DESC" type="STRING" size="256"/>
+          <Column id="RE5T_CODE" type="STRING" size="256"/>
+          <Column id="RE5F_CMCD" type="STRING" size="256"/>
+          <Column id="RE5F_CMNM" type="STRING" size="256"/>
+          <Column id="RE6F_DESC" type="STRING" size="256"/>
+          <Column id="RE6T_CODE" type="STRING" size="256"/>
+          <Column id="RE6F_CMCD" type="STRING" size="256"/>
+          <Column id="RE6F_CMNM" type="STRING" size="256"/>
+          <Column id="RE7F_DESC" type="STRING" size="256"/>
+          <Column id="RE7T_CODE" type="STRING" size="256"/>
+          <Column id="RE7F_CMCD" type="STRING" size="256"/>
+          <Column id="RE7F_CMNM" type="STRING" size="256"/>
+          <Column id="RE8F_DESC" type="STRING" size="256"/>
+          <Column id="RE8T_CODE" type="STRING" size="256"/>
+          <Column id="RE8F_CMCD" type="STRING" size="256"/>
+          <Column id="RE8F_CMNM" type="STRING" size="256"/>
+          <Column id="RE9F_DESC" type="STRING" size="256"/>
+          <Column id="RE9T_CODE" type="STRING" size="256"/>
+          <Column id="RE9F_CMCD" type="STRING" size="256"/>
+          <Column id="RE9F_CMNM" type="STRING" size="256"/>
+          <Column id="R10F_DESC" type="STRING" size="256"/>
+          <Column id="R10T_CODE" type="STRING" size="256"/>
+          <Column id="R10F_CMCD" type="STRING" size="256"/>
+          <Column id="R10F_CMNM" type="STRING" size="256"/>
+          <Column id="REMK_100X" type="STRING" size="256"/>
+          <Column id="ISET_YSNO" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYN" type="STRING" size="256" prop="default"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsSHRSYST_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYN">Y</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsSYST_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+            <Col id="USEYN">Y</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCDGB_CODE</Col>
+            <Col id="CODEID">CDGB_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+            <Col id="USEYN">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsREXT_CODE</Col>
+            <Col id="CODEID">REXT_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+            <Col id="USEYN">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item16" compid="cmbRE1T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE1T_CODE"/>
+      <BindItem id="item6" compid="edtRE1F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE1F_DESC"/>
+      <BindItem id="item37" compid="edtRE1F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE1F_CMCD"/>
+      <BindItem id="item47" compid="edtRE1F_CMCD" propid="" datasetid="dsTM_CODEXH" columnid="RE1F_CMCD"/>
+      <BindItem id="item26" compid="edtRE1F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE1F_CMNM"/>
+      <BindItem id="item0" compid="edtCOMM_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="COMM_CODE"/>
+      <BindItem id="item1" compid="cmbSYST_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="SYST_CODE"/>
+      <BindItem id="item2" compid="edtCOMM_CDNM" propid="value" datasetid="dsTM_CODEXH" columnid="COMM_CDNM"/>
+      <BindItem id="item3" compid="cmbCDGB_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="CDGB_CODE"/>
+      <BindItem id="item4" compid="edtCOCD_LNTH" propid="value" datasetid="dsTM_CODEXH" columnid="COCD_LNTH"/>
+      <BindItem id="item5" compid="chkISET_YSNO" propid="value" datasetid="dsTM_CODEXH" columnid="ISET_YSNO"/>
+      <BindItem id="item7" compid="edtRE2F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE2F_DESC"/>
+      <BindItem id="item8" compid="edtRE3F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE3F_DESC"/>
+      <BindItem id="item9" compid="edtRE4F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE4F_DESC"/>
+      <BindItem id="item10" compid="edtRE5F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE5F_DESC"/>
+      <BindItem id="item11" compid="edtRE6F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE6F_DESC"/>
+      <BindItem id="item12" compid="edtRE7F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE7F_DESC"/>
+      <BindItem id="item13" compid="edtRE8F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE8F_DESC"/>
+      <BindItem id="item14" compid="edtRE9F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="RE9F_DESC"/>
+      <BindItem id="item15" compid="edtR10F_DESC" propid="value" datasetid="dsTM_CODEXH" columnid="R10F_DESC"/>
+      <BindItem id="item17" compid="cmbRE2T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE2T_CODE"/>
+      <BindItem id="item19" compid="cmbRE4T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE4T_CODE"/>
+      <BindItem id="item23" compid="cmbRE8T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE8T_CODE"/>
+      <BindItem id="item24" compid="cmbRE9T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE9T_CODE"/>
+      <BindItem id="item25" compid="cmbR10T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="R10T_CODE"/>
+      <BindItem id="item27" compid="edtRE2F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE2F_CMNM"/>
+      <BindItem id="item28" compid="edtRE3F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE3F_CMNM"/>
+      <BindItem id="item29" compid="edtRE4F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE4F_CMNM"/>
+      <BindItem id="item30" compid="edtRE5F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE5F_CMNM"/>
+      <BindItem id="item31" compid="edtRE6F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE6F_CMNM"/>
+      <BindItem id="item32" compid="edtRE7F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE7F_CMNM"/>
+      <BindItem id="item33" compid="edtRE8F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE8F_CMNM"/>
+      <BindItem id="item34" compid="edtRE9F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="RE9F_CMNM"/>
+      <BindItem id="item35" compid="edtR10F_CMNM" propid="value" datasetid="dsTM_CODEXH" columnid="R10F_CMNM"/>
+      <BindItem id="item36" compid="txtREMK_100X" propid="value" datasetid="dsTM_CODEXH" columnid="REMK_100X"/>
+      <BindItem id="item20" compid="cmbRE5T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE5T_CODE"/>
+      <BindItem id="item18" compid="cmbRE3T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE3T_CODE"/>
+      <BindItem id="item21" compid="cmbRE6T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE6T_CODE"/>
+      <BindItem id="item22" compid="cmbRE7T_CODE" propid="value" datasetid="dsTM_CODEXH" columnid="RE7T_CODE"/>
+      <BindItem id="item38" compid="edtRE2F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE2F_CMCD"/>
+      <BindItem id="item39" compid="edtRE3F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE3F_CMCD"/>
+      <BindItem id="item40" compid="edtRE4F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE4F_CMCD"/>
+      <BindItem id="item41" compid="edtRE5F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE5F_CMCD"/>
+      <BindItem id="item42" compid="edtRE6F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE6F_CMCD"/>
+      <BindItem id="item43" compid="edtRE7F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE7F_CMCD"/>
+      <BindItem id="item44" compid="edtRE8F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE8F_CMCD"/>
+      <BindItem id="item45" compid="edtRE9F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="RE9F_CMCD"/>
+      <BindItem id="item46" compid="edtR10F_CMCD" propid="value" datasetid="dsTM_CODEXH" columnid="R10F_CMCD"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TMMA0010 공통코드관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.26. 김석두(표준화 최종 완료)
+ *   2016.09.26. 김준수 주석 수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/************************
+ *  화면 변수 선언부  *
+ ************************/
+this.sBUTTONLIST  = "TTTTTTTF"; //버튼순서[종료,조회,입력,삭제,취소,저장,엑셀,인쇄]
+this.sPACKAGENAME = "TMMA0010";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";  
+	 this.sFORMCAPTION  = "";  
+	 this.sFORMLOCATION = "";  
+	 this.sUSERLAVEL    = "";  
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+
+	/*세부코드관리에서 호출 시*/
+	if(typeof (this.getOwnerFrame()["openParameter"]) != "undefined" && (this.getOwnerFrame()["openParameter"]).length> 0 ) {
+		var openParameter = this.getOwnerFrame()["openParameter"];
+		this.edtSHRCOMM_CDNM.set_value(openParameter[0]);
+		
+		this.fn_Search();
+	}
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTM_CODEXH");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTM_CODEXH=dsTM_CODEXH";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME,sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_CODEXH.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+
+	var iRow = this.dsTM_CODEXH.insertRow(this.dsTM_CODEXH.rowposition + 1);
+	this.dsTM_CODEXH.setColumn(iRow, "ISET_YSNO", "0");
+	this.edtCOMM_CODE.setFocus();
+
+}
+
+/*------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+
+	if (this.fn_DeleteCheck()) this.dsTM_CODEXH.deleteRow(this.dsTM_CODEXH.rowposition);
+	this.grdTM_CODEXH.setFocus();
+
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+
+	this.fnc_DataSetCancel("dsTM_CODEXH");
+	this.grdTM_CODEXH.setFocus();
+
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTM_CODEXH=dsTM_CODEXH:U";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_CODEXH.setFocus();
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능없음.
+}
+
+/*--------------------------------------+
+ |  10.최초 화면 UnLoad時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	 if(e.fromobject instanceof Div) return;
+	 var sMessage = this.fnc_FormUnloadCheck("dsTM_CODEXH", this);
+
+	 if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj, e);
+
+} 
+
+/*------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+
+}
+
+/*------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTM_CODEXH")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTM_CODEXH") == false) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	for (var i = 0; i < this.dsTM_CODEXH.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsTM_CODEXH.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_CODEXH.getColumn(i, "COMM_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "공통코드", this.dsTM_CODEXH, i, this.edtCOMM_CODE, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_CODEXH.getColumn(i, "SYST_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "시스템", this.dsTM_CODEXH, i, this.cmbSYST_CODE, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_CODEXH.getColumn(i, "COMM_CDNM"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "공통코드명", this.dsTM_CODEXH, i, this.edtCOMM_CDNM, "");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTM_CODEXH.getColumn(i, "CDGB_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "코드구분", this.dsTM_CODEXH, i, this.cmbCDGB_CODE, "");
+		}	
+
+		//제목에 따라 입력 형태 필수 체크
+		var sCompId = "";
+		for (var ri = 1; ri < 11 ; ri++) {
+	
+			sCompId = (ri < 10) ? "E" + ri : "" + ri;
+			
+			if (this.dsTM_CODEXH.getColumn(i, "R" + sCompId + "T_CODE") == "01") {
+
+				//입력형태가 공통코드[01]이면 공통코드 필수 체크
+				if (this.fnc_Length(this.dsTM_CODEXH.getColumn(i, "R" + sCompId + "F_CMCD")) < 1) {
+				
+					var sCOMM_CODE = this.dsTM_CODEXH.getColumn(i, "COMM_CODE");
+					var sCOMM_CDNM = this.dsTM_CODEXH.getColumn(i, "COMM_CDNM");
+					var sMess      = sCOMM_CODE + ":" + sCOMM_CDNM + "의 항목 " + ri + "의 입력형태가 공통코드이면 해당 공통코드";
+					return this.fnc_CheckPostAction("TMM072", sMess, this.dsTM_CODEXH, i, eval("this.edtR" + sCompId + "F_CMNM"), "");
+
+				}
+				
+			}
+		
+		}	
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (obj:Dataset) {
+
+	if (this.dsTM_CODEXH.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+
+	var sQuestionText = "(" + this.fnc_Trim(this.dsTM_CODEXH.getColumn(this.dsTM_CODEXH.rowposition, "COMM_CDNM")) + ") 공통코드";
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+
+		sReturnString  = " pgm=" 	   + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " COMM_CDNM=" + this.fnc_Quote(this.edtSHRCOMM_CDNM.value); //공통코드명
+		sReturnString += " SYST_CODE=" + this.fnc_Quote(this.cmbSHRSYST_CODE.value); //시스템
+
+	} else if (sKind == "SAVE00") {
+
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+
+	}
+
+	return sReturnString;
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+		this.fnc_Information(this.stInformation1, this.dsTM_CODEXH.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTM_CODEXH.getCaseCount("dataset.getRowLevel(currow)==0"));
+		
+	} else if (sMethodName == "SAVE00") {
+
+		this.fnc_Information(this.stInformation1, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_KeyFieldDisible_Head(this.dsTM_CODEXH);
+
+	} else if (sMethodName == "GetCommCode") {
+
+		var arrParam = new Array();
+			arrParam[0]  = "COMBO,cmbSHRSYST_CODE,dsSHRSYST_CODE,0";
+			arrParam[1]  = "COMBO,cmbSYST_CODE,dsSYST_CODE,0";
+			arrParam[2]  = "GRID,grdTM_CODEXH,dsSYST_CODE,SYST_CODE";
+			arrParam[3]  = "COMBO,cmbCDGB_CODE,dsCDGB_CODE,0";
+			arrParam[4]  = "COMBO,cmbRE1T_CODE,dsREXT_CODE,0";
+			arrParam[5]  = "COMBO,cmbRE2T_CODE,dsREXT_CODE,0";
+			arrParam[6]  = "COMBO,cmbRE3T_CODE,dsREXT_CODE,0";
+			arrParam[7]  = "COMBO,cmbRE4T_CODE,dsREXT_CODE,0";
+			arrParam[8]  = "COMBO,cmbRE5T_CODE,dsREXT_CODE,0";
+			arrParam[9]  = "COMBO,cmbRE6T_CODE,dsREXT_CODE,0";
+			arrParam[10] = "COMBO,cmbRE7T_CODE,dsREXT_CODE,0";
+			arrParam[11] = "COMBO,cmbRE8T_CODE,dsREXT_CODE,0";
+			arrParam[12] = "COMBO,cmbRE9T_CODE,dsREXT_CODE,0";
+			arrParam[13] = "COMBO,cmbR10T_CODE,dsREXT_CODE,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+
+	}
+
+}
+
+/*------------------------------------------+
+ |  수정 시 Key Field Disibled 처리 - Head  |
+ +------------------------------------------*/
+this.fn_KeyFieldDisible_Head = function (obj:Dataset) {
+
+	var iRow    = obj.rowposition;
+	var sCompId = "";
+	var iFlag   = false;
+
+	if (this.fnc_ToUpper(obj.getRowType(iRow)) == Dataset.ROWTYPE_INSERT) {
+		this.edtCOMM_CODE.set_readonly(false);
+	} else {
+		this.edtCOMM_CODE.set_readonly(true);
+	}
+
+	for (var i = 1; i < 11 ; i++){
+
+		sCompId  = (i < 10) ? "E"+i : ""+i;
+
+		//제목이 Null이면 입력형태 ReadOnly
+		iFlag = (this.fnc_Length(obj.getColumn(iRow, "R" + sCompId + "F_DESC")) < 1) ? true : false;
+		eval("this.cmbR" + sCompId + "T_CODE").set_readonly(iFlag);
+
+		//입력형태가 공통코드[01]가 아니면 
+		iFlag = (obj.getColumn(iRow, "R" + sCompId + "T_CODE") != "01") ? true : false;
+		eval("this.edtR" + sCompId + "F_CMNM").set_readonly(iFlag);
+
+	}	
+
+}
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+	
+	if ((obj.name.substring(3,5) == "RE") || (obj.name.substring(3,5) == "R1")) {
+
+		var sRXXF_CMNM = "edt" + obj.id.substring(3,7) + "_CMNM";
+		var sRXXF_CMCD = "edt" + obj.id.substring(3,7) + "_CMCD"; 
+
+		arrParam[0] = "TMM1001";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(eval("this."+sRXXF_CMNM).value);
+		arrParam[3] = "N";
+		arrParam[4] = sRXXF_CMNM;
+		arrParam[5] = sRXXF_CMCD + "," + sRXXF_CMNM;
+		arrParam[6] = "0,1";
+
+	} 
+
+	if (this.fnc_Length(arrParam) > 0) this.fnc_HelpDialogeAction(this, obj, arrParam);
+
+}
+
+/***************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                *
+ ***************************************************************************************************/
+/***************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                 *
+ ***************************************************************************************************/
+
+/*-----------------------------+
+ | 컬럼 값이 변경될 때 처리 |
+ +-----------------------------*/
+this.dsTM_CODEXH_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {	
+
+	if (!(e.columnid.substring(0,2) == "RE" || e.columnid.substring(0,2) == "R1")) return;
+
+	var sCompId = e.columnid.substring(1, 3);
+	var sColmId = e.columnid.substring(3, 9);
+    var sFlag   = false;
+
+	if (sColmId == "F_DESC") {
+
+		//제목이 들어온 경우
+		sFlag = (obj.getColumn(obj.rowposition, "R" + sCompId + "F_DESC").length < 1) ? true : false;
+		eval("this.cmbR" + sCompId + "T_CODE").set_readonly(sFlag);
+
+		if (sFlag == false) return;
+		obj.setColumn(obj.rowposition, "R" + sCompId + "T_CODE", "");
+		obj.setColumn(obj.rowposition, "R" + sCompId + "F_CMCD", "");
+		obj.setColumn(obj.rowposition, "R" + sCompId + "F_CMNM", "");
+		eval("this.edtR" + sCompId + "F_CMCD").set_readonly(sFlag);
+		eval("this.edtR" + sCompId + "F_CMNM").set_readonly(sFlag);
+
+	} else if (sColmId == "T_CODE") {
+
+		//입력형태가 들어온 경우
+		sFlag = (obj.getColumn(obj.rowposition, "R" + sCompId + "T_CODE") != "01") ? true : false;
+		eval("this.edtR" + sCompId + "F_CMCD").set_readonly(sFlag);
+		eval("this.edtR" + sCompId + "F_CMNM").set_readonly(sFlag);				
+
+		if (sFlag == false) return;
+		obj.setColumn(obj.rowposition, "R" + sCompId + "F_CMCD", "");
+		obj.setColumn(obj.rowposition, "R" + sCompId + "F_CMNM", "");
+
+	}
+
+}
+
+/*******************************************************
+*  공통코드 DoubleClick 시 공통코드 세부 호출 처리 *
+********************************************************/
+this.grdTM_CODEXH_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+
+	if (this.grdTM_CODEXH.getBindCellIndex("body","COMM_CODE") == e.col) {
+
+		var arrParam = new Array();  
+			arrParam[0] = this.dsTM_CODEXH.getColumn(this.dsTM_CODEXH.rowposition, "COMM_CODE");
+		this.fnc_OpenMenu("MTMMA0020", arrParam);
+
+	}
+
+}
+
+/*---------------------------------------------------------+
+ |  편의상 공통코드/명 입력 후 EnterKey  시 조회 처리 |
+ +---------------------------------------------------------*/
+this.edtSHRCOMM_CDNM_onkeydown = function(obj:Edit, e:nexacro.KeyEventInfo) {
+	
+	if (e.keycode != 13) return;
+	if (this.fnc_Length(this.fnc_Trim(obj.value)) > 0) this.fn_Search();
+
+}
+]]></Script>
+  </Form>
+</FDL>

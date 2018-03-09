@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="HRMD0040" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="인원현황(직위별/부서별)" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="200" top="107" height="21" cssclass="styFormSearchInfo" usedecorate="true"/>
+        <Grid autoenter="TRUE" binddataset="dsHR_MASTXD" cellsizingtype="row" enable="true" id="grdHR_MASTXD" useinputpanel="false" selecttype="row" taborder="8" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="128" cssclass="styGrid01" right="25" bottom="15">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="align:center;" text="소속"/>
+                <Cell col="1" displaytype="text" text="부서"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="none" style="align:left;" text="bind:SECT_NAME"/>
+                <Cell col="1" displaytype="text" edittype="none" style="align:left;" text="bind:DEPT_NAME"/>
+              </Band>
+              <Band id="summary">
+                <Cell/>
+                <Cell col="1" text="합계"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="imgSearchTitle4" taborder="13" text="기준일" cssclass="styFormSearchCapBe" left="28" top="71" width="55" height="21"/>
+        <Calendar id="calSHRSTDS_DATE" taborder="14" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="83" top="71" width="100" height="21"/>
+        <Static id="st_FormTitle" taborder="15" text="인원현황(직위별/부서별)" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="16" text="홈 &gt; 인사관리 &gt; 인사통계 &gt; 인원현황(직급별/부서별)" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="17" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="18" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="19" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="20" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="21" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="22" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="23" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="24" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="25" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="26" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="27" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="28" visible="false" left="75" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTM_CODEXD">
+        <ColumnInfo>
+          <Column id="OPOS_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="OPOS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="SORT_ORDR" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsHR_MASTXD">
+        <ColumnInfo>
+          <Column id="SECT_CODE" type="string" size="32" prop=""/>
+          <Column id="SECT_NAME" type="string" size="32" prop=""/>
+          <Column id="DEPT_CODE" type="string" size="32" prop=""/>
+          <Column id="DEPT_NAME" type="string" size="32" prop=""/>
+          <Column id="DEPT_FCOD" size="256" prop="default" type="STRING"/>
+          <Column id="CSORT" size="256" prop="default" type="STRING"/>
+          <Column id="JBGP_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="OPOS_SUMM" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:   HRMD0040 인원현황(직급별/부서별)
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date           Modifier    Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.04     고민주     Initial Created.
+ *   2016.09.30     황치웅     수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTFFFFTF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "HRMD0040"; 
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) { 
+	 this.sUSERAUTH     = "";   
+	 this.sFORMCAPTION  = "";   
+	 this.sFORMLOCATION = "";   
+	 this.sUSERLAVEL    = "";   
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.calSHRSTDS_DATE.set_value(this.fnc_GetServerDateTime("DATE"));
+	this.calSHRSTDS_DATE.setFocus();
+
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+
+	//동적그리드- 추가된 컬럼 삭제
+ 	var iColCount    = this.grdHR_MASTXD.getCellCount("body");
+ 	var iAddColCount = this.dsTM_CODEXD.getRowCount();
+
+ 	for(var i = iColCount; i >= iColCount - iAddColCount ; i--){
+		this.grdHR_MASTXD.deleteContentsCol(i);
+	}
+
+	this.fnc_DatasetClear("dsHR_MASTXD,dsTM_CODEXD");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsHR_MASTXD=dsHR_MASTXD dsTM_CODEXD=dsTM_CODEXD";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdHR_MASTXD.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {	
+	this.fnc_DataSetCancel("dsHR_MASTXD,dsTM_CODEXD");
+	this.grdHR_MASTXD.setFocus();
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsHR_MASTXD", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsHR_MASTXD")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRSTDS_DATE.value)) < 8) {
+		return this.fnc_SearchCheckPostAction("TMM072", "기준일", this.calSHRSTDS_DATE);
+	} 
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+	
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	return true;
+	
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm="         + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="      + this.fnc_Quote(sKind);
+		sReturnString += " STDS_DATE=" 	 + this.fnc_Quote(this.fnc_Trim(this.calSHRSTDS_DATE.value)); 
+	}
+
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == "SEARCH00") {
+		//동적그리드- 필요한 그리드 컬럼 생성
+		var iCol = -1;
+		/*this.grdHR_MASTXD.splitContentsCell("summ",0,0,0,1,true);*/
+
+		for(var i = 0 ; i < this.dsTM_CODEXD.getRowCount(); i++){ 
+
+			iCol = this.grdHR_MASTXD.appendContentsCol();  
+			this.grdHR_MASTXD.setFormatColProperty(iCol,"size", 100);
+
+			this.grdHR_MASTXD.setCellProperty("Head", iCol, "text",this.dsTM_CODEXD.getColumn(i,"OPOS_NAME"));
+			this.grdHR_MASTXD.setCellProperty("Body", iCol, "text","bind:COL_"+this.dsTM_CODEXD.getColumn(i,"OPOS_CODE"));   
+			this.grdHR_MASTXD.setCellProperty("Body", iCol, "displaytype","number"); 
+			this.grdHR_MASTXD.setCellProperty("Body", iCol, "style","align:right;, 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));");  
+
+			this.grdHR_MASTXD.setCellProperty("Summ", iCol, "displaytype","number"); 
+			this.grdHR_MASTXD.setCellProperty("Summ", iCol, "style","align:right;"); 
+			this.grdHR_MASTXD.setCellProperty("Summ", iCol, "expr","expr:dataset.getSum('COL_"+this.dsTM_CODEXD.getColumn(i,"OPOS_CODE")+"')");
+		
+		}
+		
+		iCol = this.grdHR_MASTXD.appendContentsCol();  
+		this.grdHR_MASTXD.setFormatColProperty(iCol,"size", 100);
+
+		this.grdHR_MASTXD.setCellProperty("Head", iCol, "text", "총계");
+		this.grdHR_MASTXD.setCellProperty("Body", iCol, "text","bind:OPOS_SUMM");   
+		this.grdHR_MASTXD.setCellProperty("Body", iCol, "displaytype","number"); 
+		this.grdHR_MASTXD.setCellProperty("Body", iCol, "style","align:right;, 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));");  
+
+		this.grdHR_MASTXD.setCellProperty("Summ", iCol, "displaytype","number"); 
+		this.grdHR_MASTXD.setCellProperty("Summ", iCol, "style","align:right;"); 
+		this.grdHR_MASTXD.setCellProperty("Summ", iCol, "expr","expr:dataset.getSum('OPOS_SUMM')");
+		
+		
+		//this.grdHR_MASTXD.mergeContentsCell("summ",0,0,0,1,0,false);
+
+		this.fnc_Information(this.stInformation, this.dsHR_MASTXD.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsHR_MASTXD.getCaseCount("dataset.getRowLevel(currow)==0"));
+		
+	}
+}]]></Script>
+  </Form>
+</FDL>

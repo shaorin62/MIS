@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATE0050">
+
+ <!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연장근로현황
+********************************************************************************/
+-->
+    <select id="HATE0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	    <![CDATA[
+	        SELECT #STDS_MONT# STDS_MONT
+			      ,SUBSTR(CALN_DATE,7,2) CALN_DATE
+			      ,WDAY_CODE
+			      ,HOGB_CODE
+			  FROM TM_CALDXM
+			  WHERE 1=1
+			  
+	    ]]>
+	    <isNotEmpty prepend="AND" property="STDS_MONT">                     /* 기준년월 */
+	        CALN_DATE LIKE #STDS_MONT#||'%'
+	    </isNotEmpty>
+	
+	    <![CDATA[
+	         ORDER BY CALN_DATE
+	    ]]>
+    </select>
+
+
+<!-- 
+        WITH MONT_OVER AS
+	  (
+	    SELECT #STDS_MONT# 
+	          ,EMPL_NUMB  /*사원번호*/
+	          ,STDS_MONT
+	          ,SUM(NVL(DECODE(STDS_DATE, '01', WORK_TIME,0),0)) DAY01									/*1일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '02', WORK_TIME,0),0)) DAY02									/*2일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '03', WORK_TIME,0),0)) DAY03									/*3일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '04', WORK_TIME,0),0)) DAY04									/*4일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '05', WORK_TIME,0),0)) DAY05									/*5일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '06', WORK_TIME,0),0)) DAY06									/*6일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '07', WORK_TIME,0),0)) DAY07									/*7일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '08', WORK_TIME,0),0)) DAY08									/*8일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '09', WORK_TIME,0),0)) DAY09									/*9일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '10', WORK_TIME,0),0)) DAY10									/*10일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '11', WORK_TIME,0),0)) DAY11									/*11일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '12', WORK_TIME,0),0)) DAY12									/*12일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '13', WORK_TIME,0),0)) DAY13									/*13일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '14', WORK_TIME,0),0)) DAY14									/*14일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '15', WORK_TIME,0),0)) DAY15									/*15일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '16', WORK_TIME,0),0)) DAY16									/*16일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '17', WORK_TIME,0),0)) DAY17									/*17일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '18', WORK_TIME,0),0)) DAY18									/*18일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '19', WORK_TIME,0),0)) DAY19									/*19일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '20', WORK_TIME,0),0)) DAY20									/*20일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '21', WORK_TIME,0),0)) DAY21									/*21일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '22', WORK_TIME,0),0)) DAY22									/*22일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '23', WORK_TIME,0),0)) DAY23									/*23일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '24', WORK_TIME,0),0)) DAY24									/*24일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '25', WORK_TIME,0),0)) DAY25									/*25일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '26', WORK_TIME,0),0)) DAY26									/*26일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '27', WORK_TIME,0),0)) DAY27									/*27일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '28', WORK_TIME,0),0)) DAY28									/*28일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '29', WORK_TIME,0),0)) DAY29									/*29일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '30', WORK_TIME,0),0)) DAY30									/*30일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '31', WORK_TIME,0),0)) DAY31									/*31일연장근로*/
+	    FROM 
+	      (SELECT EMPL_NUMB
+	            ,SUBSTR(ATTE_DATE,1,6) STDS_MONT
+	            ,SUBSTR(ATTE_DATE,7,2) STDS_DATE
+	            ,SUM(WORK_TIME) WORK_TIME
+	        FROM AT_ATTEDY
+	        WHERE WORK_GUBN IN ('1', '2')
+	          AND SUBSTR(ATTE_DATE,1,6) = #STDS_MONT#
+	        GROUP BY EMPL_NUMB, SUBSTR(ATTE_DATE,1,6), SUBSTR(ATTE_DATE,7,2)
+	      )
+	    GROUP BY #STDS_MONT#, EMPL_NUMB, STDS_MONT
+	  ),
+	  MONT_OVER_SUM AS
+	  (
+	    SELECT EMPL_NUMB
+	          ,SUBSTR(ATTE_DATE,1,6) STDS_MONT
+	          ,WORK_GUBN
+	          ,SUM(WORK_TIME) WORK_TIME
+	        FROM AT_ATTEDY
+	        WHERE WORK_GUBN IN ('1', '2')
+	          AND SUBSTR(ATTE_DATE,1,6) = #STDS_MONT#
+	        GROUP BY EMPL_NUMB, SUBSTR(ATTE_DATE,1,6),WORK_GUBN
+	  )
+	  SELECT #STDS_MONT#
+	      ,A.DEPT_CODE                                  /*부서코드*/
+	      ,B.DEPT_NAME	 								/*부서명*/
+		  ,A.EMPL_NUMB  								/*사원번호*/
+	  	  ,A.EMPL_NAME  								/*사원명*/			
+	      ,NVL(C.DAY01,0)		DAY01							/*1일연장근로*/
+	      ,NVL(C.DAY02,0)		DAY02							/*2일연장근로*/
+	      ,NVL(C.DAY03,0)		DAY03							/*3일연장근로*/
+	      ,NVL(C.DAY04,0)		DAY04							/*4일연장근로*/
+	      ,NVL(C.DAY05,0)		DAY05							/*5일연장근로*/
+	      ,NVL(C.DAY06,0)		DAY06							/*6일연장근로*/
+	      ,NVL(C.DAY07,0)		DAY07							/*7일연장근로*/
+	      ,NVL(C.DAY08,0)		DAY08							/*8일연장근로*/
+	      ,NVL(C.DAY09,0)		DAY09							/*9일연장근로*/
+	      ,NVL(C.DAY10,0)		DAY10							/*10일연장근로*/
+	      ,NVL(C.DAY11,0)		DAY11							/*11일연장근로*/
+	      ,NVL(C.DAY12,0)		DAY12							/*12일연장근로*/
+	      ,NVL(C.DAY13,0)		DAY13							/*13일연장근로*/
+	      ,NVL(C.DAY14,0)		DAY14							/*14일연장근로*/
+	      ,NVL(C.DAY15,0)		DAY15							/*15일연장근로*/
+	      ,NVL(C.DAY16,0)		DAY16							/*16일연장근로*/
+	      ,NVL(C.DAY17,0)		DAY17							/*17일연장근로*/
+	      ,NVL(C.DAY18,0)		DAY18							/*18일연장근로*/
+	      ,NVL(C.DAY19,0)		DAY19							/*19일연장근로*/
+	      ,NVL(C.DAY20,0)		DAY20							/*20일연장근로*/
+	      ,NVL(C.DAY21,0)		DAY21							/*21일연장근로*/
+	      ,NVL(C.DAY22,0)		DAY22							/*22일연장근로*/
+	      ,NVL(C.DAY23,0)		DAY23							/*23일연장근로*/
+	      ,NVL(C.DAY24,0)		DAY24							/*24일연장근로*/
+	      ,NVL(C.DAY25,0)		DAY25							/*25일연장근로*/
+	      ,NVL(C.DAY26,0)		DAY26							/*26일연장근로*/
+	      ,NVL(C.DAY27,0)		DAY27							/*27일연장근로*/
+	      ,NVL(C.DAY28,0)		DAY28							/*28일연장근로*/
+	      ,NVL(C.DAY29,0)		DAY29							/*29일연장근로*/
+	      ,NVL(C.DAY30,0)		DAY30							/*30일연장근로*/
+	      ,NVL(C.DAY31,0)		DAY31							/*31일연장근로*/
+	      ,NVL(D.WORK_TIME,0)		NIGT_OVER							/*야간근로*/
+	      ,NVL(E.WORK_TIME,0)		HOLY_OVER							/*휴일근로*/
+	      ,NVL(D.WORK_TIME,0)+ NVL(E.WORK_TIME,0)		OVER_TOTAL							/*근로계*/
+			FROM HR_MASTXM A /*인사마스터 */
+				,TM_DEPTXM B /*부서마스터*/
+				,MONT_OVER C
+		        ,(SELECT EMPL_NUMB
+			            ,STDS_MONT
+			            ,WORK_GUBN
+			            ,WORK_TIME
+			        FROM MONT_OVER_SUM
+			        WHERE WORK_GUBN = '1') D
+			    ,(SELECT EMPL_NUMB
+			            ,STDS_MONT
+			            ,WORK_GUBN
+			            ,WORK_TIME
+			        FROM MONT_OVER_SUM
+			        WHERE WORK_GUBN = '2') E
+			WHERE A.DEPT_CODE = B.DEPT_CODE
+				AND A.EMPL_NUMB = C.EMPL_NUMB(+)
+	      		AND A.EMPL_NUMB = D.EMPL_NUMB(+)
+	      		AND A.EMPL_NUMB = E.EMPL_NUMB(+)
+				AND (
+					A.ENCO_DATE <= #STDS_MONT#||'31' AND (A.RETR_DATE >= #STDS_MONT#||'01' OR A.RETR_DATE IS NULL )
+					)
+ -->
+
+    <select id="HATE0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	WITH MONT_OVER AS
+	  (
+	    SELECT #STDS_MONT# 
+	          ,EMPL_NUMB  /*사원번호*/
+	          ,STDS_MONT
+	          ,SUM(NVL(DECODE(STDS_DATE, '01', WORK_TIME,0),0)) DAY01									/*1일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '02', WORK_TIME,0),0)) DAY02									/*2일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '03', WORK_TIME,0),0)) DAY03									/*3일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '04', WORK_TIME,0),0)) DAY04									/*4일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '05', WORK_TIME,0),0)) DAY05									/*5일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '06', WORK_TIME,0),0)) DAY06									/*6일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '07', WORK_TIME,0),0)) DAY07									/*7일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '08', WORK_TIME,0),0)) DAY08									/*8일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '09', WORK_TIME,0),0)) DAY09									/*9일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '10', WORK_TIME,0),0)) DAY10									/*10일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '11', WORK_TIME,0),0)) DAY11									/*11일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '12', WORK_TIME,0),0)) DAY12									/*12일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '13', WORK_TIME,0),0)) DAY13									/*13일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '14', WORK_TIME,0),0)) DAY14									/*14일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '15', WORK_TIME,0),0)) DAY15									/*15일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '16', WORK_TIME,0),0)) DAY16									/*16일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '17', WORK_TIME,0),0)) DAY17									/*17일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '18', WORK_TIME,0),0)) DAY18									/*18일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '19', WORK_TIME,0),0)) DAY19									/*19일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '20', WORK_TIME,0),0)) DAY20									/*20일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '21', WORK_TIME,0),0)) DAY21									/*21일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '22', WORK_TIME,0),0)) DAY22									/*22일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '23', WORK_TIME,0),0)) DAY23									/*23일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '24', WORK_TIME,0),0)) DAY24									/*24일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '25', WORK_TIME,0),0)) DAY25									/*25일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '26', WORK_TIME,0),0)) DAY26									/*26일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '27', WORK_TIME,0),0)) DAY27									/*27일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '28', WORK_TIME,0),0)) DAY28									/*28일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '29', WORK_TIME,0),0)) DAY29									/*29일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '30', WORK_TIME,0),0)) DAY30									/*30일연장근로*/
+	          ,SUM(NVL(DECODE(STDS_DATE, '31', WORK_TIME,0),0)) DAY31									/*31일연장근로*/
+	    FROM 
+	      (SELECT EMPL_NUMB
+	            ,SUBSTR(ATTE_DATE,1,6) STDS_MONT
+	            ,SUBSTR(ATTE_DATE,7,2) STDS_DATE
+	            ,SUM(WORK_TIME) WORK_TIME
+	        FROM AT_ATTEDY
+	        WHERE WORK_GUBN IN ('1', '2')
+	          AND SUBSTR(ATTE_DATE,1,6) = #STDS_MONT#
+	        GROUP BY EMPL_NUMB, SUBSTR(ATTE_DATE,1,6), SUBSTR(ATTE_DATE,7,2)
+	      )
+	    GROUP BY #STDS_MONT#, EMPL_NUMB, STDS_MONT
+	  ),
+	  MONT_OVER_SUM AS
+	  (
+	    SELECT EMPL_NUMB
+	          ,SUBSTR(ATTE_DATE,1,6) STDS_MONT
+	          ,WORK_GUBN
+	          ,SUM(WORK_TIME) WORK_TIME
+	        FROM AT_ATTEDY
+	        WHERE WORK_GUBN IN ('1', '2')
+	          AND SUBSTR(ATTE_DATE,1,6) = #STDS_MONT#
+	        GROUP BY EMPL_NUMB, SUBSTR(ATTE_DATE,1,6),WORK_GUBN
+	  )
+	  SELECT #STDS_MONT#
+	      ,A.DEPT_CODE                                  /*부서코드*/
+	      ,B.DEPT_NAME	 								/*부서명*/
+		  ,A.EMPL_NUMB  								/*사원번호*/
+	  	  ,A.EMPL_NAME  								/*사원명*/			
+	      ,NVL(C.DAY01,0)		DAY01							/*1일연장근로*/
+	      ,NVL(C.DAY02,0)		DAY02							/*2일연장근로*/
+	      ,NVL(C.DAY03,0)		DAY03							/*3일연장근로*/
+	      ,NVL(C.DAY04,0)		DAY04							/*4일연장근로*/
+	      ,NVL(C.DAY05,0)		DAY05							/*5일연장근로*/
+	      ,NVL(C.DAY06,0)		DAY06							/*6일연장근로*/
+	      ,NVL(C.DAY07,0)		DAY07							/*7일연장근로*/
+	      ,NVL(C.DAY08,0)		DAY08							/*8일연장근로*/
+	      ,NVL(C.DAY09,0)		DAY09							/*9일연장근로*/
+	      ,NVL(C.DAY10,0)		DAY10							/*10일연장근로*/
+	      ,NVL(C.DAY11,0)		DAY11							/*11일연장근로*/
+	      ,NVL(C.DAY12,0)		DAY12							/*12일연장근로*/
+	      ,NVL(C.DAY13,0)		DAY13							/*13일연장근로*/
+	      ,NVL(C.DAY14,0)		DAY14							/*14일연장근로*/
+	      ,NVL(C.DAY15,0)		DAY15							/*15일연장근로*/
+	      ,NVL(C.DAY16,0)		DAY16							/*16일연장근로*/
+	      ,NVL(C.DAY17,0)		DAY17							/*17일연장근로*/
+	      ,NVL(C.DAY18,0)		DAY18							/*18일연장근로*/
+	      ,NVL(C.DAY19,0)		DAY19							/*19일연장근로*/
+	      ,NVL(C.DAY20,0)		DAY20							/*20일연장근로*/
+	      ,NVL(C.DAY21,0)		DAY21							/*21일연장근로*/
+	      ,NVL(C.DAY22,0)		DAY22							/*22일연장근로*/
+	      ,NVL(C.DAY23,0)		DAY23							/*23일연장근로*/
+	      ,NVL(C.DAY24,0)		DAY24							/*24일연장근로*/
+	      ,NVL(C.DAY25,0)		DAY25							/*25일연장근로*/
+	      ,NVL(C.DAY26,0)		DAY26							/*26일연장근로*/
+	      ,NVL(C.DAY27,0)		DAY27							/*27일연장근로*/
+	      ,NVL(C.DAY28,0)		DAY28							/*28일연장근로*/
+	      ,NVL(C.DAY29,0)		DAY29							/*29일연장근로*/
+	      ,NVL(C.DAY30,0)		DAY30							/*30일연장근로*/
+	      ,NVL(C.DAY31,0)		DAY31							/*31일연장근로*/
+	      ,NVL(D.WORK_TIME,0)		NIGT_OVER							/*야간근로*/
+	      ,NVL(E.WORK_TIME,0)		HOLY_OVER							/*휴일근로*/
+	      ,NVL(D.WORK_TIME,0)+ NVL(E.WORK_TIME,0)		OVER_TOTAL							/*근로계*/
+			FROM HR_MASTXM A /*인사마스터 */
+				INNER JOIN TM_DEPTXM B /*부서마스터*/
+          ON A.DEPT_CODE = B.DEPT_CODE
+        LEFT OUTER JOIN MONT_OVER C
+          ON A.EMPL_NUMB = C.EMPL_NUMB
+        LEFT OUTER JOIN (SELECT EMPL_NUMB
+                              ,STDS_MONT
+                              ,WORK_GUBN
+                              ,WORK_TIME
+                          FROM MONT_OVER_SUM
+                          WHERE WORK_GUBN = '1') D
+          ON A.EMPL_NUMB = D.EMPL_NUMB
+			   LEFT OUTER JOIN (SELECT EMPL_NUMB
+                                ,STDS_MONT
+                                ,WORK_GUBN
+                                ,WORK_TIME
+                            FROM MONT_OVER_SUM
+                            WHERE WORK_GUBN = '2') E
+          ON A.EMPL_NUMB = E.EMPL_NUMB
+			WHERE 1=1
+				AND (
+					A.ENCO_DATE <= #STDS_MONT#||'31' AND (A.RETR_DATE >= #STDS_MONT#||'01' OR A.RETR_DATE IS NULL )
+					)
+    ]]>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">                     /* 사원번호 */
+    	    A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">                     /* 부서코드 */
+    	    A.DEPT_CODE = #DEPT_CODE#
+    </isNotEmpty>
+     <![CDATA[
+	         ORDER BY A.DEPT_CODE, A.EMPL_NUMB
+	 ]]>
+    </select>
+</sqlMap>

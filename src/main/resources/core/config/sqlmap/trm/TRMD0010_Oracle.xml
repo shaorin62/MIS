@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="TRMD0010">
+<!--
+/* ******************************************************************************
+	 작  성  자 : 김준수
+	 작  성  일 : 2016.07.13
+	 내      용 : 조회[구매론미지급관리]
+******************************************************************************* */
+ -->
+	<select id="TRMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+		  SELECT /* TRMD0010.SEARCH00.구매론미지급관리 조회 */
+                 '' 		                        AS CHK
+               , B.SLIP_NUMB || B.SLIP_LINE     AS SLIP_NUMB	/* 현재번호를 결재전표번호로 한다. */
+               , B.SLIP_NUMB					AS SEND_SLIP_NUMB	/* 전표번호 */
+               , B.SLIP_LINE					AS SEND_SLIP_LINE	/* 전표행번호 */
+               , E.PUCD_NUMB   					AS JOIN_NO 		/* 가맹점번호 */
+               , C.COND_VACD 					AS CUST_CODE	/* 거래처 */
+               , E.CUST_NAME  					AS CUST_NAME  	/* 거래처명 */
+               , E.BIZR_NUMB 					AS BIZR_NUMB 	/* 사업자번호 */
+               , B.SLIP_AMNT  					AS SLIP_AMNT	/* 원화금액 */
+               , B.ACCT_INTL  					AS ACCT_INTL	/* 계정명 */
+               , D.ACCT_NAME 					AS ACCT_NAME    /* 계정명 */
+               , B.ACCT_DATE  					AS ACCT_DATE	/* 승인(회계)일 */
+               , A.SLIP_DATE					AS SLIP_DATE	/* 전표일자 */
+               , B.OSLI_NUMB || B.OSLI_LINE		AS OSLI_NUMB  	/* 이전번호를 발생전표번호로 한다 */
+               , B.DRCR_GUBN 					AS DRCR_GUBN  	/* 차대구분 */
+               , B.ACCT_GUBN   					AS ACCT_GUBN	/* 회계단위 */
+               , B.REMK_NAME  					AS REMK_NAME	/* 적요 */                 
+               , C1.COND_VACD 					AS ISSU_DATE	/* 발행일 */
+               , C2.COND_VACD 					AS MANA_NO		/* 관리번호 */
+               , NVL(C3.COND_VACD, B.ACCT_DATE) AS PAY_DATE		/* 지급일 */                 
+               , 'A' || B.SLIP_NUMB || B.SLIP_LINE		AS SEND_KEY	/* 이체KEY */
+               , ''                             AS SENDSTS          /* 이체상태 */
+               , F.BANK_CODE 					AS BANK_CODE        /* 금융기관 */
+			   , S.SENDSTS					    AS SEND_STATUS		/* 처리진행상태 */
+            FROM TA_SLIPXM A
+                 LEFT JOIN TA_SLIPNT B
+                        ON B.SLIP_NUMB = A.SLIP_NUMB          /* 전표번호 */
+                       AND B.DRCR_GUBN = 'C' /* 출납계정 차변금액 > 0 -> 20150107 대변으로 변경 */
+                       AND B.SLIP_AMNT > 0
+                 LEFT JOIN TA_SLIPRF C
+                        ON B.SLIP_NUMB = C.SLIP_NUMB
+                       AND B.SLIP_LINE = C.SLIP_LINE
+                       AND C.COND_CODE = '0002' /* 관리항목값이 '거래처'인것만 */
+                 LEFT JOIN TA_SLIPRF C1
+                        ON B.SLIP_NUMB  = C1.SLIP_NUMB
+                       AND B.SLIP_LINE  = C1.SLIP_LINE
+                       AND C1.COND_CODE = '0042' /* 관리항목값이 '발행일'인것만 */
+                 LEFT JOIN TA_SLIPRF C2
+                        ON B.SLIP_NUMB  = C2.SLIP_NUMB
+                       AND B.SLIP_LINE  = C2.SLIP_LINE
+                       AND C2.COND_CODE = '0021' /* 관리항목값이 '관리번호'인것만 */
+                 LEFT JOIN TA_SLIPRF C3
+                        ON B.SLIP_NUMB  = C3.SLIP_NUMB
+                       AND B.SLIP_LINE  = C3.SLIP_LINE
+                       AND C3.COND_CODE = '0046' /* 관리항목값이 '지급일'인것만 */
+                 LEFT JOIN TA_SLIPRF C4
+                        ON B.SLIP_NUMB  = C4.SLIP_NUMB
+                       AND B.SLIP_LINE  = C4.SLIP_LINE
+                       AND C4.COND_CODE = '0001' /* 관리항목값이 '금융기관'인것만 */
+                 LEFT JOIN TA_ACCTXM D
+                        ON D.ACCT_INTL = B.ACCT_INTL
+                 LEFT JOIN TA_CUSTXM E
+                        ON E.CUST_CODE = C.COND_VACD
+                 LEFT JOIN TA_BANKBR F
+                        ON F.BABR_CODE = C4.COND_VACD 
+                 LEFT JOIN BICNET_E2C_AWFB_ELOAN S  
+                        ON S.FILENAME = B.SEND_KEY1 
+                       AND S.SENDSEQ	 = B.SEND_KEY2
+           WHERE A.ACCT_UNIT =  #ACCT_UNIT#      /* 회계단위 */
+             AND D.CHUL_YSNO = '1'   /* 출납전표사용여부 */
+             AND B.ACCT_INTL IN ( SELECT L.COMD_CODE
+					              FROM TM_CODEXD L
+					             WHERE L.COMM_CODE = 'PUCD_ACCT'
+					               AND L.COMD_CODE = NVL(#ACCT_INTL#, L.COMD_CODE)     /* 계정코드 */ )
+        ]]>
+        <isEmpty prepend="AND" property="ACCT_DATE2">
+        <![CDATA[
+        	B.ACCT_DATE = #ACCT_DATE1# /* 회계전표 FROM */ 
+        ]]> 
+        </isEmpty>
+        <isNotEmpty prepend="AND" property="ACCT_DATE2">
+        <![CDATA[
+            B.ACCT_DATE BETWEEN #ACCT_DATE1# AND #ACCT_DATE2# /* 회계전표 TO */ 
+        ]]> 
+        </isNotEmpty>	              
+	    <isNotEmpty prepend="AND" property="ACCT_GUBN">
+	    <![CDATA[
+            B.ACCT_GUBN = #ACCT_GUBN#   /* 사업장 */
+        ]]>        
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="CUST_CODE">
+        <![CDATA[
+            C.COND_VACD = #CUST_CODE#   /* 거래처 */
+        ]]>        
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="ISSU_DATE">
+        <![CDATA[
+            C1.COND_VACD = #ISSU_DATE#  /* 발행일 */
+        ]]>    
+        </isNotEmpty>
+           ORDER BY B.ACCT_DATE
+               , B.SLIP_NUMB
+               , B.SLIP_LINE
+	</select>
+<!--
+/* ******************************************************************************
+	 작  성  자 : 김준수
+	 작  성  일 : 2016.07.13
+	 내      용 : 이체[구매론미지급관리 이체]
+******************************************************************************* */
+ -->
+	<insert id="TRMD0010.PROC00" parameterClass="hashmap" >
+		<![CDATA[
+		BEGIN
+	        /* 구매카드론 */
+	        INSERT INTO BICNET_E2C_AWFB_ELOAN (
+		           FILENAME                     /* 첨부파일명 */
+		         , SENDSEQ                      /* 일련번호 */
+		         , CUSTID                       /* 사업자번호 */
+		         , ENTDATE                      /* INSERT 일자 */
+		         , ENTTIME                      /* INSERT 시간 */
+		         , ENTR_CD                      /* 업체코드 */
+		         , PCH_CORP_CMTM_NO             /* 구매기업약정번호 */
+		         , SALE_CORP_CMTM_NO            /* 판매기업약정번호 */
+		         , BOND_AMT                     /* 채권금액 */
+		         , ISRP_MMS_CNT                 /* 분할상환개월수 */
+		         , ISRP_INT_ALOT_TGT_CD         /* 분할상환이자부담대상코드 */
+		         , DFRM_TRM_INT_ALOT_TGT_CD     /* 거치기간이자부담대상코드 */
+		         , CUST_INP_PRCM_RPAY_DT        /* 구매기업결제일 */
+		         , CUST_INP_PRCM_PAYM_DT        /* 판매기업입금일 */
+		         , DEAL_SFGD_YN                 /* 매매보호여부 */
+		         , DC_POSS_DT                   /* 선입금가능일 */
+		         , TXBL_ISS_DT                  /* 세금계산서발행일자 */
+		         , RPS_MITM_NM                  /* 대표품목명 */
+		         , RMK_CTT                      /* 비고내용 */
+		         , REFN_CTT                     /* 참조내용 */
+		         , SENDSTS                      /* 처리진행상태 */
+		         , BOND_NO                      /* 승인번호 */
+		         , CBS_ENTDATE                  /* 등록일자 */
+		         , CBS_ENTTIME                  /* 등록시간 */
+		         , ERR_MSG                      /* 오류내용 */
+		         , ERP_KEY1					  /* ERP확인키1(전표번호) */
+		         , ERP_KEY2					  /* ERP확인키2(전표라인번호) */
+		         )
+	        VALUES
+		         (
+		           #FILE_NAME#    /* 첨부파일명 */
+		         , #SEND_SEQ#     /* 일련번호 */
+		         , '1188114916'   /* 사업자번호 */
+		         , TO_CHAR(SYSDATE,'YYYYMMDD') /* INSERT 일자 */
+		         , TO_CHAR(SYSDATE,'HH24MISS') /* INSERT 시간 */
+		         , 'E0026'            		 /* 업체코드 */
+		         , '9460819001000263'  		 /* 구매기업약정번호 */
+		         , #JOIN_NO#   	/* 판매기업약정번호 */
+		         , #SLIP_AMNT#    /* 채권금액 */
+		         , '0'       		/* 분할상환개월수(0:일시불) */
+		         , '1' 			/* 분할상환이자부담대상코드(1:구매기업, 2:판매기업) */
+		         , '2' 			/* 거치기간이자부담대상코드(1:구매기업, 2:판매기업) */
+		         , #PAY_DATE# 	/* 구매기업결제일(관리항목<지급일>) */
+		         , #PAY_DATE# 	/* 판매기업입금일(관리항목<지급일>) */
+		         , 'N'      		/* 매매보호여부(Y:매매보호,N:일반) */
+		         , #ISSU_DATE#    /* 선입금가능일(관리항목<발행일>) */
+		         , TO_CHAR(LAST_DAY(ADD_MONTHS(TO_DATE(#ISSU_DATE#,'YYYYMMDD'),-1)),'YYYYMMDD')    /* 세금계산서발행일자(관리항목<발행일> 전월말일자) */
+		         , ''		        /* 대표품목명 */
+		         , #BIZR_NUMB#    /* 거래처 사업자번호 */
+		         , ''           	/* 참조내용 */
+		         , '0'            /* 처리진행상태 */
+		         , ''             /* 승인번호 */
+		         , ''         	/* 등록일자 */
+		         , ''         	/* 등록시간 */
+		         , ''             /* 오류내용 */
+		         , #SEND_SLIP_NUMB# /* ERP확인키1(전표번호) */
+		         , #SEND_SLIP_LINE# /* ERP확인키2(전표라인번호) */
+		         );
+
+			UPDATE TA_SLIPNT B
+	           SET B.SEND_KEY1	= #FILE_NAME#   /* 첨부파일명 */
+	        	 , B.SEND_KEY2	= #SEND_SEQ#    /* 송금일련번호 */
+			 WHERE B.SLIP_NUMB		= #SEND_SLIP_NUMB#
+	           AND B.SLIP_LINE		= #SEND_SLIP_LINE#
+	           ;
+		END;
+		]]>
+	</insert>
+	
+	<!--
+/* ******************************************************************************
+	 작  성  자 : 김기환
+	 작  성  일 : 2016.11.25
+	 내      용 : 조회[동일 전송자료 존재여부 체크]
+******************************************************************************* */
+ -->
+	<select id="TRMD0010.SEARCH01" parameterClass="hashmap" resultClass="Integer">
+	<![CDATA[
+		SELECT /* TRMD0010.SEARCH01 조회[동일 전송자료 존재여부 체크] */
+			   NVL(MAX(SENDSTS), -1) AS SENDSTS
+		  FROM BICNET_E2C_AWFB_ELOAN
+		 WHERE ERP_KEY1 = #SEND_SLIP_NUMB# /* 전표번호     */
+		   AND ERP_KEY2 = #SEND_SLIP_LINE# /* 전표라인번호 */
+		   AND SENDSTS IN ('0','1','2')    /* 0:등록, 1:전송, 2:성공 */
+	]]>	
+	</select>
+	
+</sqlMap>

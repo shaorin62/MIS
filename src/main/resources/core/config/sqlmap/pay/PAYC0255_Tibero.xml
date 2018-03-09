@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYC0255">
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.18
+     내    용 : 소급상세내역 조회
+********************************************************************************/
+-->
+    <select id="PAYC0255.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYC0255.SEARCH00 소급상세내역 조회  */
+                   A.PAYX_DATE                         /*지급일*/
+                 , A.WAGE_CODE                         /*급여코드*/
+                 , A.EMPL_NUMB                         /*사원번호*/
+                 , B.EMPL_NAME                         /*성명*/
+                 , SF_GET_SECTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS SECT_NAME     /*부실*/
+                 , SF_GET_DEPTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS DEPT_NAME     /*부서*/
+                 , F.COMD_CDNM        AS CPOS_NAME     /*직급*/
+                 , SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME /*직위*/
+                 , A.RTBS_YMTH                         /*소급년월*/
+                 , NVL(A.RTB1_AMOT, 0) AS RTB1_AMOT    /*소급전금액1(기본급)*/
+                 , NVL(A.RTB2_AMOT, 0) AS RTB2_AMOT    /*소급전금액2(연장수당)*/
+                 , NVL(A.RTB3_AMOT, 0) AS RTB3_AMOT    /*소급전금액3(인원상여)*/
+                 , NVL(A.RTB4_AMOT, 0) AS RTB4_AMOT    /*소급전금액4(휴일근무수당)*/
+                 , NVL(A.HOWK_DAYS, 0) AS HOWK_DAYS    /*휴일근무일수*/
+                 , NVL(A.RTA1_AMOT, 0) AS RTA1_AMOT    /*소급후금액1(기본급)*/
+                 , NVL(A.RTA2_AMOT, 0) AS RTA2_AMOT    /*소급후금액2(연장수당)*/
+                 , NVL(A.RTA3_AMOT, 0) AS RTA3_AMOT    /*소급후금액3(인원상여)*/
+                 , NVL(A.RTA4_AMOT, 0) AS RTA4_AMOT    /*소급후금액4(휴일근무수당)*/
+                 , NVL(A.RTR1_AMOT, 0) AS RTR1_AMOT    /*소급금액1(기본급)*/
+                 , NVL(A.RTR2_AMOT, 0) AS RTR2_AMOT    /*소급금액2(연장수당)*/
+                 , NVL(A.RTR3_AMOT, 0) AS RTR3_AMOT    /*소급금액3(인원상여)*/
+                 , NVL(A.RTR4_AMOT, 0) AS RTR4_AMOT    /*소급금액4(휴일근무수당)*/
+                 , D.DEPT_FCOD
+                 , F.SORT_ORDR
+              FROM PY_REPAYD A
+             INNER JOIN HR_MASTXM B
+                     ON A.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN VI_DEPTXM D
+                           ON B.DEPT_CODE = D.DEPT_CODE
+              LEFT OUTER JOIN TM_CODEXD F
+                           ON F.COMM_CODE = 'CPOS_CODE'
+                          AND F.COMD_CODE = B.CPOS_CODE
+             WHERE A.PAYX_DATE = #PAYX_DATE#
+               AND A.WAGE_CODE = #WAGE_CODE#
+    ]]>
+       <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                   A.EMPL_NUMB = #EMPL_NUMB#
+       </isNotEmpty>
+             ORDER BY D.DEPT_FCOD, F.SORT_ORDR, A.EMPL_NUMB, A.RTBS_YMTH
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.18
+     내    용 : 소급상세 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYC0255.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+            UPDATE PY_REPAYD /* PAYC0255.UPDATE00 소급상세 테이블 수정  */
+               SET RTA1_AMOT = #RTA1_AMOT#
+                 , RTA2_AMOT = #RTA2_AMOT#
+                 , RTA3_AMOT = #RTA3_AMOT#
+                 , RTA4_AMOT = #RTA4_AMOT#
+                 , RTR1_AMOT = #RTR1_AMOT#
+                 , RTR2_AMOT = #RTR2_AMOT#
+                 , RTR3_AMOT = #RTR3_AMOT#
+                 , RTR4_AMOT = #RTR4_AMOT#
+                 , UPDT_USID = #UPDT_USID#
+                 , UPDT_DATE = SYSDATE
+             WHERE PAYX_DATE = #PAYX_DATE#
+               AND WAGE_CODE = #WAGE_CODE#
+               AND EMPL_NUMB = #EMPL_NUMB#
+               AND RTBS_YMTH = #RTBS_YMTH#
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.18
+     내    용 : 소급상세 테이블 삭제
+********************************************************************************/
+-->
+    <update id="PAYC0255.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+            DELETE FROM PY_REPAYD /* PAYC0255.DELETE00 소급상세 테이블 삭제  */
+             WHERE PAYX_DATE = #PAYX_DATE#
+               AND WAGE_CODE = #WAGE_CODE#
+               AND EMPL_NUMB = #EMPL_NUMB#
+               AND RTBS_YMTH = #RTBS_YMTH#
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.18
+     내    용 : 소급계산 처리
+********************************************************************************/
+-->
+    <procedure id="PAYC0255.PROC00" parameterClass="hashmap">
+    <![CDATA[
+            { call PKG_PAYC0255.SP_PAYC0255_PROC00( #UPDT_USID#, #PAYX_DATE#, #WAGE_CODE#, #RTBG_YMTH#, #RTED_YMTH#) }  /* PAYC0255.PROC00.소급계산 처리 */
+    ]]>
+    </procedure>
+</sqlMap>

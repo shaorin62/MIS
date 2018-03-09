@@ -1,0 +1,904 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PACA0010">
+
+<!--  
+ *   프로그램명 : 제작 세금계산서  
+ *   작 성 일 : 2016.10.10
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+
+	<!-- 미완료  검색 조건 -->
+	<sql id="search">
+   	    <isNotEmpty prepend="AND" property="DEND_DATE1" >
+			 B.DEND_DATE BETWEEN #DEND_DATE1# AND '99999999'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="DEND_DATE2" >
+			 B.DEND_DATE BETWEEN '00000000' AND #DEND_DATE2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  B.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  C.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="MEDA_CODE" >
+			  B.MEDA_CODE = #MEDA_CODE#
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 완료 세금계산서 조회 -->
+	<sql id="search2">
+   	    <isNotEmpty prepend="AND" property="DEND_DATE1" >
+			 A.DEND_DATE BETWEEN #DEND_DATE1# AND '99999999'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="DEND_DATE2" >
+			 A.DEND_DATE BETWEEN '00000000' AND #DEND_DATE2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  A.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  A.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="MEDA_CODE" >
+			  A.MEDA_CODE = #MEDA_CODE#
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.10
+     내      용 : 제작 세금계산서 생성 제작명세서 데이터 (세금계산서 미생성)
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					SELECT												 /* PACA0010.SEARCH00.제작 세금계산서 미완료 [제작명세내용] */
+					'0' CHK												 /* 선택 */
+					,B.CUST_CODE										 /* 광고주코드 */
+					,C.CUST_NAME									 /* 광고주명 */
+					,B.JOBN_NUMB										 /* 제작번호 */
+					,B.JOBN_NAME										 /* 제작명 */
+					,A.DEND_AMTX AS TAXX_AMTX		 			/* 청구금액 */	
+					,TRUNC(NVL(A.DEND_AMTX,0) * 0.1) AS TAXX_VATX		/* 부가세 */
+					,A.DEND_AMTX + TRUNC(NVL(A.DEND_AMTX,0) * 0.1) AS SUMM_AMTX /* 합계금액 */    
+					,CASE NVL(B.DEND_DATE,' ') WHEN ' ' THEN 
+					TO_CHAR(SYSDATE, 'YYYYMMDD') 
+					ELSE NVL(B.DEND_DATE,' ') END AS DEND_DATE                  /* 청구일자 */
+					,TO_CHAR(SYSDATE, 'YYYYMMDD') AS PRNT_DATE					/* 발행일자 */
+					,C.BIZR_NUMB										 /* 광고주사업자번호 */
+					,CASE NVL(A.MEMO_FILD,' ') WHEN ' ' THEN B.JOBN_NAME ELSE A.MEMO_FILD END AS MEMO_FILD  /* 비고 */
+					,B.MEDA_CODE										 /* 제작종류 */
+					,C.OWNR_NAME									 /* 광고주대표자명 */
+					,C.ADDR_DESC										 /* 주소 */
+					,C.DTL1_ADDR										 /* 상세주소1 */
+					,C.DTL2_ADDR										 /* 상세주소2 */
+					,A.SATX_NUMB										 /* 세금계산서번호 */
+					, '01' AS DTIX_TYPE                              /* 세금계산서종류 */
+					, '02' AS TAXX_DMND                             /* 청구구분 */
+					, '01' AS TAXX_GUBN                               /* 세금계산서분류 */
+					,DENSE_RANK() OVER (ORDER BY C.BIZR_NUMB) RANK_TANS /* 광고주합산구분 */
+					FROM PD_SUJUMH A
+					LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+					LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+					WHERE 1=1
+					AND NVL(A.SATX_NUMB,'') IS NULL
+					AND B.DEND_DATE IS NOT NULL
+					AND B.COMP_DATE IS NOT NULL     /* 청구완료일 입력된 사항 만 세금계산서 생성 할 수 있음 */
+			]]>
+			     <include refid="search" />	
+			<![CDATA[
+				 ORDER BY  C.BIZR_NUMB, B.MEDA_CODE
+			]]>
+	</select>
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.17
+     내      용 : 제작 세금계산서 완료 데이터 조회
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					SELECT												 /* PACA0010.SEARCH01.제작세금계산서 완료 데이터 [세금계산서] */
+					'0' CHK												/* 선택 */
+					,A.TAXY_MONT									/* 세금계산서년월 */
+					,A.TAXX_NUMB										/* 세금계산서순번 */
+					,A.DTIX_TYPE 										/* 세금계산서종류 */
+					,A.TAXX_GUBN 									/* 세금계산서분류 */
+					,A.TAXX_DMND 									/* 영수구분 */
+					,A.TAXX_SANB										/* 세금계산서번호 */
+					,A.CUST_CODE										/* 광고주코드 */
+					,A.CUST_NAME									/* 광고주명 */
+					,A.TAXX_AMTX									/* 청구금액 */
+					,A.TAXX_VATX										/* 부가세액 */
+					,A.SUMM_AMTX									/* 총금액 */
+					,A.DEND_DATE										/* 청구일자 */
+					,A.PRNT_DATE										/* 발행일자 */
+					,A.MEMO_FILD										/* 비고 */
+					,A.MEDA_CODE									/* 제작내용 */
+					,A.BIZR_NUMB										/* 사업자번호 */
+					,A.OWNR_NAME									/* 대표자명 */
+					,A.ADDR_DESC										/* 주소 */
+					,A.DTL1_ADDR										/* 상세주소1 */
+					,A.DTL2_ADDR										/* 상세주소2 */
+					,B.CONT_CONT									/* 상세내역수 */
+					,A.CONVERSATION_ID                           /* 전자세금계산서번호 */
+					,A.ORI_ISSUE_ID 									/* 원세금계산서번호 */
+					FROM PD_SATXXH A 								
+					LEFT JOIN (
+					    SELECT 
+					    TAXY_MONT
+					    ,TAXX_NUMB
+					    ,COUNT(*) CONT_CONT 
+					    FROM PD_SATXXD
+					    GROUP BY TAXY_MONT,TAXX_NUMB 
+					)B ON A.TAXY_MONT = B.TAXY_MONT AND A.TAXX_NUMB = B.TAXX_NUMB
+					WHERE 1=1
+			]]>
+			 <include refid="search2" />	
+			<![CDATA[
+				 ORDER BY  A.CUST_CODE
+				 , CASE WHEN NVL(A.ORI_ISSUE_ID,' ') = ' ' THEN A.TAXX_SANB ELSE A.ORI_ISSUE_ID END
+				 , CAST(A.TAXX_NUMB AS NUMBER) ASC
+			]]>
+	</select>
+	
+	
+<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.17
+     내      용 : 제작 세금계산서 완료 및 미완료 전체 조회
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+					SELECT                                                 /* PACA0010.SEARCH02.제작 세금계산서 미완료 [제작명세내용] */
+			        CASE NVL(A.SATX_NUMB,' ') WHEN ' ' THEN '미완료' ELSE '완료' END GUBN_FLAG
+			        ,B.CUST_CODE                                        /* 광고주코드 */
+			        ,C.CUST_NAME                                     	/* 광고주명 */
+			        ,B.JOBN_NUMB                                         /* 제작번호 */
+			        ,B.JOBN_NAME                                         /* 제작명 */
+			        ,NVL(A.DEND_AMTX,0) AS TAXX_AMTX         /* 청구금액 */    
+			        ,TRUNC(NVL(A.DEND_AMTX,0) * 0.1) AS TAXX_VATX        /* 부가세 */
+			        ,NVL(A.DEND_AMTX,0) + TRUNC(NVL(A.DEND_AMTX,0) * 0.1) AS SUMM_AMTX /* 합계금액 */  
+			        ,CASE NVL(D.DEND_DATE,' ') WHEN ' ' THEN TO_CHAR(SYSDATE, 'YYYYMMDD') ELSE NVL(D.DEND_DATE,' ') END AS DEND_DATE                  /* 청구일자 */
+					,CASE NVL(D.PRNT_DATE,' ') WHEN ' ' THEN TO_CHAR(SYSDATE, 'YYYYMMDD') ELSE NVL(D.PRNT_DATE,' ') END AS PRNT_DATE                    /* 발행일자 */
+			        ,C.BIZR_NUMB                                         /* 광고주사업자번호 */
+			        ,A.MEMO_FILD                                         /* 비고 */
+			        ,B.MEDA_CODE                                        /* 제작종류 */
+			        ,C.OWNR_NAME                                     	/* 광고주대표자명 */
+			        ,C.ADDR_DESC                                         /* 주소 */
+			        ,C.DTL1_ADDR                                         /* 상세주소1 */
+			        ,C.DTL2_ADDR                                         /* 상세주소2 */
+			        ,D.TAXX_SANB AS SATX_NUMB                   /* 세금계산서번호 */
+			        FROM PD_SUJUMH A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+			        LEFT JOIN PD_SATXXH D ON REGEXP_SUBSTR(A.SATX_NUMB, '[^-]+',1,1) = D.TAXY_MONT 
+					AND REGEXP_SUBSTR(A.SATX_NUMB, '[^-]+',1,2) = D.TAXX_NUMB
+			        WHERE 1=1
+			        AND B.DEND_DATE IS NOT NULL
+			        AND B.COMP_DATE IS NOT NULL     /* 청구완료일 입력된 사항 만 세금계산서 생성 할 수 있음 */
+			        AND NVL(A.SATX_NUMB,' ') = ' '
+					]]>
+					     <include refid="search" />    
+					<![CDATA[
+					UNION ALL
+					SELECT
+					TO_CHAR('완료') AS GUBN_FLAG 					/* 완료구분 */
+					, B.CUST_CODE										/* 광고주코드 */
+					, C.CUST_NAME										/* 광고주명 */
+					, TO_CHAR('') AS JOBN_NUMB						/* 제작번호 */
+					, TO_CHAR('') AS JOBN_NAME						/* 제작명 */
+					, NVL(B.TAXX_AMTX,0) AS TAXX_AMTX		/* 금액 */
+					, NVL(B.TAXX_VATX,0) AS TAXX_VATX			/* 부가세액 */
+					, NVL(B.SUMM_AMTX,0) AS SUMM_AMTX		/* 합계금액 */
+					, B.DEND_DATE										/* 청구일자 */
+					, B.PRNT_DATE											/* 발행일자 */
+					, C.BIZR_NUMB											/* 사업자번호 */
+					, B.MEMO_FILD										/* 비고 */
+					, B.MEDA_CODE										/* 제작구분 */
+					, C.OWNR_NAME										/* 광고주대표자명 */
+					, C.ADDR_DESC                                        /* 주소 */
+					, C.DTL1_ADDR                                        /* 주소2 */
+					, C.DTL2_ADDR 										/* 주소3 */
+					, B.TAXX_SANB AS SATX_NUMB					/* 광고주코드 */
+					FROM PD_SATXXH B 
+					LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+					WHERE 1=1
+					]]>
+					     <include refid="search" />    
+					<![CDATA[
+					
+					]]>
+	</select>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.29
+     내      용 : 제작 세금계산서 완료  상세 내역 조회
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0010.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+					SELECT 					/* PACA0010.SEARCH03.제작 세금계산서 완료 상세 [세금계산서 완료 상세] */
+					A.CUST_CODE			/* 광고주코드 */
+					, C.CUST_NAME		/* 광고주명 */
+					, A.JOBN_NUMB		/* 제작번호 */
+					, CASE WHEN NVL(A.ITEM_MEMO,' ') = ' ' THEN B.JOBN_NAME ELSE A.ITEM_MEMO END AS JOBN_NAME		/* 제작건명 */
+					, SF_GET_CLASNAME(B.MEDA_CODE) AS MEDA_NAME		/* 제작내용 */
+					, A.TAXX_AMTX		/* 금액 */
+					, A.TAXX_VATX		/* 부가세액 */
+					, A.PRNT_DATE		/* 발행일자 */
+					, A.DEND_DATE		/* 청구일자 */
+					, A.MEMO_FILD		/* 비고 */
+					, A.TAXY_MONT		/* 세금계산서 년월 */
+					, A.TAXX_NUMB		/* 세금계산서번호 */
+					, A.TAXX_IDXX			/* 세금계산서순번 */
+					FROM PD_SATXXD A
+					LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+					LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+					WHERE 1=1
+					AND TAXY_MONT = #TAXY_MONT#
+					AND TAXX_NUMB = #TAXX_NUMB#
+
+					]]>
+	</select>
+	
+	
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.11
+     내      용 : 세금계산서 생성 헤더
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+
+             INSERT INTO PD_SATXXH (  	/* PACA0010.SAVE00.세금계산서 헤더 저장*//* [세금계산서 헤더저장] */
+                TAXY_MONT        			/* 세금계산서년월 */
+               ,TAXX_NUMB       	 			/* 세금계산서순번 */
+               ,CUST_CODE        			/* 광고주코드 */
+               ,CUST_NAME        			/* 광고주명 */
+               ,TAXX_AMTX        			/* 청구금액 */
+               ,TAXX_VATX        				/* 부가세액 */
+               ,SUMM_AMTX        			/* 합계금액 */
+               ,DEND_DATE        				/* 청구일자 */
+               ,PRNT_DATE        				/* 발행일자 */
+               ,SACH_NUMB        			/* 매출전표번호 */
+               ,BIZR_NUMB        				/* 광고주사업자번호 */
+               ,MEMO_FILD        				/* 비고 */
+               ,MEDA_CODE        			/* 제작내용 */
+               ,OWNR_NAME        			/* 광고주대표자명 */
+               ,ADDR_DESC        				/* 주소 */
+               ,DTL1_ADDR        				/* 주소1 */
+               ,DTL2_ADDR        				/* 주소2 */
+               ,TAXX_SANB        				/* 세금계산서번호 */
+               ,REF1_FILD        				/* 여분1 */
+               ,REF2_FILD        				/* 여분2 */
+               ,REF3_FILD        				/* 여분3 */
+               ,REF4_FILD        				/* 여분4 */
+               ,DTIX_TYPE						/* 세금계산서 종류 */
+               ,TAXX_DMND					/* 영수구분 */
+               ,TAXX_GUBN						/* 과세구분 */
+               ,AMEND_CODE					/* 수정사유 */
+               ,ORI_ISSUE_ID					/* 원세금계산서번호 */
+               ,INST_USID        				/* 생성자 */
+               ,INST_DATE        				/* 생성일자 */
+               ,UPDT_USID        				/* 수정자  */
+               ,UPDT_DATE        				/* 수정일자 */
+              )
+       VALUES (
+               #TAXY_MONT#       			/* 세금계산서년월 */
+              ,#TAXX_NUMB#       			/* 세금계산서번호 */
+              ,#CUST_CODE#       			/* 광고주코드 */
+              ,#CUST_NAME#       			/* 광고주명 */
+              ,#TAXX_AMTX#       			/* 청구금액 */
+              ,#TAXX_VATX#       			/* 부가세액 */
+              ,#SUMM_AMTX#       			/* 합계금액 */
+              ,#DEND_DATE#       			/* 청구일자 */
+              ,#PRNT_DATE#       			/* 발행일자 */
+              ,#SACH_NUMB#      			/* 매출전표번호 */
+              ,#BIZR_NUMB#       			/* 광고주사업자번호 */
+              ,#MEMO_FILD#       			/* 비고 */
+              ,#MEDA_CODE#       			/* 제작내용 */
+              ,#OWNR_NAME#       			/* 광고주대표자명 */
+              ,#ADDR_DESC#       			/* 주소 */
+              ,#DTL1_ADDR#       			/* 주소1 */
+              ,#DTL2_ADDR#       			/* 주소2 */
+              ,#TAXX_SANB#       			/* 세금계산서번호 */
+              ,#REF1_FILD#       				/* 여분1 */
+              ,#REF2_FILD#       				/* 여분2 */
+              ,#REF3_FILD#       				/* 여분3 */
+              ,#REF4_FILD#       				/* 여분4 */
+              ,#DTIX_TYPE#					/* 세금계산서종류 */
+              ,#TAXX_DMND#					/* 영수구분 */
+              ,#TAXX_GUBN#					/* 과세구분 */
+              ,#AMEND_CODE#				/* 수정사유 */
+              ,#ORI_ISSUE_ID#				/* 원세금계산서번호 */
+              ,#UPDT_USID#   	 			/* 수정작업자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+		      ,#UPDT_USID#   	 			/* 수정작업자 */
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              )
+
+	]]>
+	</insert>
+	
+	
+	<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.11
+     내      용 : 세금계산서 생성 상세
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0010.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+
+            INSERT INTO PD_SATXXD (  		/* PACA0010.SAVE01.세금계산서 상세 저장*//* [세금계산서 상세 저장] */
+                TAXY_MONT        				/* 세금계산서년월 */
+               ,TAXX_NUMB        				/* 세금계산서번호 */
+               ,TAXX_IDXX        					/* 세금계산서ID */
+               ,JOBN_NUMB        					/* 제작번호 */
+               ,CUST_CODE        				/* 광고주코드 */
+               ,TAXX_AMTX        				/* 청구금액 */
+               ,TAXX_VATX        					/* 부가세액 */
+               ,DEND_DATE        					/* 청구일자 */
+               ,PRNT_DATE        					/* 발행일자 */
+               ,MEMO_FILD        					/* 비고 */
+               ,ITEM_MEMO						/* 세금계산서 품목 */
+               ,REF1_FILD        					/* 여분1 */
+               ,REF2_FILD        					/* 여분2 */
+               ,REF3_FILD        					/* 여분3 */
+               ,REF4_FILD        					/* 여분4 */
+               ,REF5_FILD        					/* 여분5 */
+               ,INST_USID        					/* 생성자 */
+               ,INST_DATE        					/* 생성일자 */
+               ,UPDT_USID        					/* 수정자 */
+               ,UPDT_DATE        					/* 수정일자 */
+              )
+       VALUES (
+               #TAXY_MONT#       				/* 세금계산서년월 */
+              ,#TAXX_NUMB#       				/* 세금계산서번호 */
+              ,#TAXX_IDXX#       				/* 세금계산서ID */
+              ,#JOBN_NUMB#       				/* 제작번호 */
+              ,#CUST_CODE#       				/* 광고주코드 */
+              ,#TAXX_AMTX#       				/* 청구금액 */
+              ,#TAXX_VATX#       				/* 부가세액 */
+              ,#DEND_DATE#       				/* 청구일자 */
+              ,#PRNT_DATE#       				/* 발행일자 */
+              ,#MEMO_FILD#       				/* 비고 */
+              ,#ITEM_MEMO#						/* 세금계산서 품목 */
+              ,#REF1_FILD#       					/* 여분1 */
+              ,#REF2_FILD#       					/* 여분2 */
+              ,#REF3_FILD#       					/* 여분3 */
+              ,#REF4_FILD#       					/* 여분4 */
+              ,#REF5_FILD#       					/* 여분5 */
+              ,#UPDT_USID#   	 				/* 생성작업자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+		      ,#UPDT_USID#   	 				/* 수정작업자 */
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+              )
+
+	]]>
+	</insert>
+	
+	
+	<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.26
+     내      용 : 세금계산서 품목 내역 업데이트
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PACA0010.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+	
+			DECLARE
+				BEGIN
+					UPDATE PD_SATXXD			/* PACA0010.SAVE02.세금계산서 하단 품목 저장*//* [세금계산서 품목 저장] */
+					SET ITEM_MEMO = #JOBN_NAME# 
+					WHERE 1=1
+					AND TAXY_MONT = #TAXY_MONT#
+					AND TAXX_NUMB = #TAXX_NUMB#
+					AND TAXX_IDXX = #TAXX_IDXX#
+					;
+								                
+		       	END; 
+	]]>
+	</update>
+	
+		<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2017.02.06
+     내      용 : 세금계산서 품목 내역 업데이트
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PACA0010.SAVE03" parameterClass="hashmap">
+	<![CDATA[
+	
+			DECLARE
+				BEGIN
+					
+					UPDATE PD_SATXXH
+					SET TAXX_DMND = #TAXX_DMND#
+					WHERE 1=1
+					AND TAXY_MONT = #TAXY_MONT#
+					AND TAXX_NUMB = #TAXX_NUMB# 
+					;
+								                
+		       	END; 
+	]]>
+	</update>
+	
+	
+	
+	
+<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.17
+     내      용 : 세금계산서 번호 업데이트
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PACA0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	
+	               UPDATE PD_SUJUMH     					/* PACA0010.UPDATE00.세금계산서 번호 업데이트*//* [세금계산서 번호 업데이트] */  
+		           SET SATX_NUMB = #SATX_NUMB#  		/* 세금계산서 번호 */
+		     	   WHERE 1=1
+		     	   AND JOBN_NUMB = #JOBN_NUMB#
+
+	]]>
+	</update>
+	
+	
+		
+<!-- 
+      작  성  자 : 오세훈
+    작  성  일 : 2016.10.18
+    내      용 : 제작 세금계산서 삭제 
+    파라미터   :  			  	
+   -->
+	<delete id="PACA0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[		
+			 DECLARE
+				BEGIN
+				
+			    DELETE FROM PD_SATXXH
+				WHERE 1=1
+				AND TAXY_MONT = #TAXY_MONT#
+				AND TAXX_NUMB = #TAXX_NUMB#
+				;
+				
+				DELETE FROM PD_SATXXD
+				WHERE 1=1
+				AND TAXY_MONT = #TAXY_MONT#
+				AND TAXX_NUMB = #TAXX_NUMB#
+				;
+				
+				UPDATE  PD_SUJUMH
+				SET SATX_NUMB = NULL
+				WHERE 1=1
+				AND REGEXP_SUBSTR(SATX_NUMB, '[^-]+',1,1) = #TAXY_MONT#
+				AND REGEXP_SUBSTR(SATX_NUMB, '[^-]+',1,2) = #TAXX_NUMB#
+				;
+								                
+		       	END; 
+	]]>		
+	</delete>
+	
+	<!-- 세금계산서번호 채번 -->
+	<select id="PACA0010.getTAXX_NUMB" resultClass="String">			
+			SELECT 
+			NVL(MAX(CAST(TAXX_NUMB AS NUMERIC)),0) + 1 
+			FROM PD_SATXXH
+			WHERE 1=1
+			AND TAXY_MONT = #TAXY_MONT#
+	</select>
+	
+	<!-- 세금계산서ID 채번 -->
+	<select id="PACA0010.getTAXX_IDXX" resultClass="String">			
+			SELECT 
+			NVL(MAX(CAST(TAXX_IDXX AS NUMERIC)),0)+1 
+			FROM PD_SATXXD
+			WHERE 1=1
+			AND TAXY_MONT = #TAXY_MONT#
+			AND TAXX_NUMB = #TAXX_NUMB#
+	</select>
+	
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.24
+     내      용 : 세금계산서 출력 
+     파라미터   :
+     
+     -->
+	<select id="PACA0010.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		            
+					SELECT									/* PACA0010.PRINT00.세금계산서 출력*/
+					A.TAXY_MONT
+					, A.TAXX_NUMB
+					, SUBSTR(A.TAXY_MONT,0,4) AS TAX_NUMB1
+					, SUBSTR(A.TAXY_MONT,5,2) AS TAX_NUMB2
+					, LPAD(A.TAXX_NUMB,4,'0') AS TAX_NUMB3
+					, A.BIZR_NUMB
+					, A.CUST_NAME
+					, A.OWNR_NAME
+					, A.ADDR_DESC || A.DTL1_ADDR || A.DTL2_ADDR AS ADDR_DESC
+					, B.BSNS_STAT
+					, B.BSNS_TYPE
+					, SUBSTR(A.PRNT_DATE,0,4) AS YEAR
+					, SUBSTR(A.PRNT_DATE,5,2) AS MONTH
+					, SUBSTR(A.PRNT_DATE,7,2) AS DAY 
+					, 11 - LENGTH(A.TAXX_AMTX) AS A0
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX) END , 1 ) AS A1
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-1 END , 1 ) AS A2
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-2 END , 1 ) AS A3
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-3 END , 1 ) AS A4
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-4 END , 1 ) AS A5
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-5 END , 1 ) AS A6
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-6 END , 1 ) AS A7
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-7 END , 1 ) AS A8
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-8) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-8 END , 1 ) AS A9
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-9) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-9 END , 1 ) AS A10
+					, SUBSTR(CAST(A.TAXX_AMTX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_AMTX)-10) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_AMTX)-10 END , 1 ) AS A11
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX) END , 1 ) AS V1
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-1) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-1 END , 1 ) AS V2
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-2) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-2 END , 1 ) AS V3
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-3) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-3 END , 1 ) AS V4
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-4) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-4 END , 1 ) AS V5
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-5) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-5 END , 1 ) AS V6
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-6) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-6 END , 1 ) AS V7
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-7) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-7 END , 1 ) AS V8
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-8) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-8 END , 1 ) AS V9
+					, SUBSTR(CAST(A.TAXX_VATX AS VARCHAR(20)),CASE SIGN(LENGTH(A.TAXX_VATX)-9) WHEN -1 THEN NULL WHEN 0 THEN NULL WHEN 1 THEN LENGTH(A.TAXX_VATX)-9 END , 1 ) AS V10
+					, A.TAXX_AMTX
+					, A.TAXX_VATX
+					, SF_GET_COMMNAME('TAXX_DEND',A.TAXX_DMND) AS TAXX_DEND
+					, C.BSNS_NUMB
+					, C.OFFI_NAME
+					, C.OWNR_NAME AS EOWN_NAME
+					, C.ADDR_DESC AS EADD_DESC
+					, D.BSNS_STAT AS EBSN_STAT
+					, D.BSNS_TYPE AS EBSN_TYPE
+					, E.APPROVE_ID
+					, A.ORI_ISSUE_ID
+					, A.TAXX_SANB
+					FROM PD_SATXXH A
+					LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+					LEFT JOIN TM_OFFICE C ON C.ACCT_GUBN = '100' AND C.OFFI_GUBN ='1'
+					LEFT JOIN TA_CUSTXM D ON D.BIZR_NUMB = C.BSNS_NUMB
+					LEFT JOIN XXSB_DTI_MAIN E ON A.CONVERSATION_ID = E.CONVERSATION_ID
+					WHERE 1=1
+					AND A.TAXY_MONT = #TAXY_MONT#
+					AND A.TAXX_NUMB IN ($TAXX_NUMB_QUERY$)
+				 
+			]]>
+	</select>
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.24
+     내      용 :  세금계산서 상세 내용 
+     파라미터   : 
+     
+     -->
+	<select id="PACA0010.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		            
+					SELECT
+					A.TAXY_MONT
+					, A.TAXX_NUMB
+					, SUBSTR(A.DEND_DATE,5,2) AS MONTH
+					, SUBSTR(A.DEND_DATE,7,2) AS DAY
+					, CASE WHEN NVL(A.ITEM_MEMO,' ') = ' ' THEN B.JOBN_NAME ELSE A.ITEM_MEMO END AS JOBN_NAME
+					, B.JOBN_SIZE
+					, A.TAXX_AMTX
+					, A.TAXX_VATX
+					, NULL AS MEMO_FILD
+					FROM PD_SATXXD A
+					LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+					WHERE 1=1
+					AND A.TAXY_MONT = #TAXY_MONT#
+					AND A.TAXX_NUMB IN ($TAXX_NUMB_QUERY$)
+				 
+			]]>
+	</select>
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.09
+     내      용 : 수정 세금계산서 생성을 위한 조회
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0010.SEARCH10" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					SELECT												 /* PACA0010.SEARCH10.제작세금계산서 완료 데이터 [세금계산서] */
+					'0' CHK												/* 선택 */
+					,A.TAXY_MONT									/* 세금계산서년월 */
+					,A.TAXX_NUMB										/* 세금계산서순번 */
+					,A.DTIX_TYPE 										/* 세금계산서종류 */
+					,A.TAXX_DMND 									/* 영수구분 */
+					,A.TAXX_SANB										/* 세금계산서번호 */
+					,A.AMEND_CODE                                  /* 수정세금계산서구분 */
+					,A.TAXX_GUBN                                    /* 과세종류 */
+					,A.CUST_CODE										/* 광고주코드 */
+					,A.CUST_NAME									/* 광고주명 */
+					,A.TAXX_AMTX									/* 청구금액 */
+					,A.TAXX_VATX										/* 부가세액 */
+					,A.SUMM_AMTX									/* 총금액 */
+					,A.DEND_DATE										/* 청구일자 */
+					,A.PRNT_DATE										/* 발행일자 */
+					,A.MEMO_FILD										/* 비고 */
+					,A.CONVERSATION_ID                           /* 전자세금계산서번호 */
+					,A.ORI_ISSUE_ID                                  /* 당초승인번호 */
+					,B.APPROVE_ID                                   /* 전자세금계산서 국세청 키*/
+					,A.ORI_TAXX_SANB							   /* 원 세금계산서번호*/
+					FROM PD_SATXXH A 		
+					LEFT JOIN XXSB_DTI_MAIN B ON A.CONVERSATION_ID = B.CONVERSATION_ID							
+					WHERE 1=1
+					AND A.TAXX_SANB = #TAXX_SANB#
+					UNION ALL
+					SELECT												 /* PACA0010.SEARCH10.제작세금계산서 완료 데이터 [세금계산서] */
+					'0' CHK												/* 선택 */
+					,A.TAXY_MONT									/* 세금계산서년월 */
+					,A.TAXX_NUMB										/* 세금계산서순번 */
+					,A.DTIX_TYPE 										/* 세금계산서종류 */
+					,A.TAXX_DMND 									/* 영수구분 */
+					,A.TAXX_SANB										/* 세금계산서번호 */
+					,A.AMEND_CODE                                  /* 수정세금계산서구분 */
+					,A.TAXX_GUBN                                    /* 과세종류 */
+					,A.CUST_CODE										/* 광고주코드 */
+					,A.CUST_NAME									/* 광고주명 */
+					,A.TAXX_AMTX									/* 청구금액 */
+					,A.TAXX_VATX										/* 부가세액 */
+					,A.SUMM_AMTX									/* 총금액 */
+					,A.DEND_DATE										/* 청구일자 */
+					,A.PRNT_DATE										/* 발행일자 */
+					,A.MEMO_FILD										/* 비고 */
+					,A.CONVERSATION_ID                           /* 전자세금계산서번호 */
+					,A.ORI_ISSUE_ID                                 /* 당초승인번호 */
+					,B.APPROVE_ID                                   /* 전자세금계산서 국세청 키*/
+					,A.ORI_TAXX_SANB							   /* 원 세금계산서번호*/
+					FROM PD_SATXXH A 								
+					LEFT JOIN XXSB_DTI_MAIN B ON A.CONVERSATION_ID = B.CONVERSATION_ID
+					WHERE 1=1
+					AND A.ORI_TAXX_SANB = #TAXX_SANB#
+					ORDER BY CAST(TAXX_NUMB AS NUMBER) ASC  
+			]]>
+	</select>
+	
+	
+	
+		
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.13
+     내      용 : 수정 세금계산서 생성
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0010.SAVE10" parameterClass="hashmap">
+	<![CDATA[
+
+             INSERT INTO PD_SATXXH (
+				TAXY_MONT        			/* 세금계산서년월 */
+				,TAXX_NUMB       	 			/* 세금계산서순번 */
+				,CUST_CODE        			/* 광고주코드 */
+				,CUST_NAME        			/* 광고주명 */
+				,TAXX_AMTX        			/* 청구금액 */
+				,TAXX_VATX        				/* 부가세액 */
+				,SUMM_AMTX        			/* 합계금액 */
+				,DEND_DATE        				/* 청구일자 */
+				,PRNT_DATE        				/* 발행일자 */
+				,SACH_NUMB        			/* 매출전표번호 */
+				,BIZR_NUMB        				/* 광고주사업자번호 */
+				,MEMO_FILD        				/* 비고 */
+				,MEDA_CODE        			/* 제작내용 */
+				,OWNR_NAME        			/* 광고주대표자명 */
+				,ADDR_DESC        				/* 주소 */
+				,DTL1_ADDR        				/* 주소1 */
+				,DTL2_ADDR        				/* 주소2 */
+				,TAXX_SANB        				/* 세금계산서번호 */
+				,REF1_FILD        				/* 여분1 */
+				,REF2_FILD        				/* 여분2 */
+				,REF3_FILD        				/* 여분3 */
+				,REF4_FILD        				/* 여분4 */
+				,DTIX_TYPE						/* 세금계산서 종류 */
+				,TAXX_DMND					/* 영수구분 */
+				,TAXX_GUBN						/* 과세구분 */
+				,AMEND_CODE					/* 수정사유 */
+				,ORI_ISSUE_ID					/* 당초승인번호 */
+				,ORI_TAXX_SANB				/* 원세금계산서번호 */
+				,INST_USID        				/* 생성자 */
+				,INST_DATE        				/* 생성일자 */
+				,UPDT_USID        				/* 수정자  */
+				,UPDT_DATE        				/* 수정일자 */
+				)
+				SELECT
+				TAXY_MONT        			/* 세금계산서년월 */
+				,#TAXX_NUMB# 	 			/* 세금계산서순번 */
+				,CUST_CODE        			/* 광고주코드 */
+				,CUST_NAME        			/* 광고주명 */
+				,#TAXX_AMTX#        			/* 청구금액 */
+				,#TAXX_VATX#        				/* 부가세액 */
+				,#SUMM_AMTX#        			/* 합계금액 */
+				,#DEND_DATE#        				/* 청구일자 */
+				,#PRNT_DATE#        				/* 발행일자 */
+				,NULL AS SACH_NUMB        			/* 매출전표번호 */
+				,BIZR_NUMB        				/* 광고주사업자번호 */
+				,MEMO_FILD        				/* 비고 */
+				,MEDA_CODE        			/* 제작내용 */
+				,OWNR_NAME        			/* 광고주대표자명 */
+				,ADDR_DESC        				/* 주소 */
+				,DTL1_ADDR        				/* 주소1 */
+				,DTL2_ADDR        				/* 주소2 */
+				,#TAXX_SANB#        				/* 세금계산서번호 */
+				,REF1_FILD        				/* 여분1 */
+				,REF2_FILD        				/* 여분2 */
+				,REF3_FILD        				/* 여분3 */
+				,REF4_FILD        				/* 여분4 */
+				,#DTIX_TYPE#						/* 세금계산서 종류 */
+				,#TAXX_DMND#					/* 영수구분 */
+				,#TAXX_GUBN#						/* 과세구분 */
+				,#AMEND_CODE#					/* 수정사유 */
+				,#ORI_ISSUE_ID#					/* 당초승인번호 */
+				,#ORI_TAXX_SANB#				/* 원세금계산서번호 */
+				,#UPDT_USID#       /* 입력작업자 */
+		        ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+		        ,#UPDT_USID#   /* 수정작업자 */
+		        ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+				FROM PD_SATXXH
+				WHERE 1=1
+				AND TAXY_MONT = #TAXY_MONT#
+				AND TAXX_NUMB = #TAXX_NUMB_old#
+
+	]]>
+	</insert>
+	
+	
+	<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.15
+     내      용 : 수정 세금계산서 상세 생성
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0010.SAVE11" parameterClass="hashmap">
+	<![CDATA[
+
+           
+			INSERT INTO PD_SATXXD (  /* 저장주석수정바람 *//* [제작세금계산서 상세테이블] */
+			    TAXY_MONT        /* 세금계산서년월 */
+			   ,TAXX_NUMB        /* 세금계산서번호 */
+			   ,TAXX_IDXX        /* 세금계산서ID */
+			   ,JOBN_NUMB        /* 제작번호 */
+			   ,CUST_CODE        /* 광고주코드 */
+			   ,TAXX_AMTX        /* 청구금액 */
+			   ,TAXX_VATX        /* 부가세액 */
+			   ,DEND_DATE        /* 청구일자 */
+			   ,PRNT_DATE        /* 발행일자 */
+			   ,MEMO_FILD        /* 비고 */
+			   ,REF1_FILD        /* 여분1 */
+			   ,REF2_FILD        /* 여분2 */
+			   ,REF3_FILD        /* 여분3 */
+			   ,REF4_FILD        /* 여분4 */
+			   ,REF5_FILD        /* 여분5 */
+			   ,INST_USID        /* 생성자 */
+			   ,INST_DATE        /* 생성일자 */
+			   ,UPDT_USID        /* 수정자 */
+			   ,UPDT_DATE        /* 수정일자 */
+			)
+			SELECT
+			TAXY_MONT        /* 세금계산서년월 */
+			,#TAXX_NUMB#        /* 세금계산서번호 */
+			,TAXX_IDXX        /* 세금계산서ID */
+			,JOBN_NUMB        /* 제작번호 */
+			,CUST_CODE        /* 광고주코드 */
+			,#TAXX_AMTX#        /* 청구금액 */
+			,#TAXX_VATX#         /* 부가세액 */
+			,#DEND_DATE#        /* 청구일자 */
+			,#PRNT_DATE#        /* 발행일자 */
+			,MEMO_FILD        /* 비고 */
+			,REF1_FILD        /* 여분1 */
+			,REF2_FILD        /* 여분2 */
+			,REF3_FILD        /* 여분3 */
+			,REF4_FILD        /* 여분4 */
+			,REF5_FILD        /* 여분5 */
+			,#UPDT_USID#       /* 입력작업자 */
+			,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 입력일시 */
+			,#UPDT_USID#   /* 수정작업자 */
+			,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /* 수정일시 */
+			FROM 
+			PD_SATXXD
+			WHERE 1=1
+			AND TAXY_MONT = #TAXY_MONT#
+			AND TAXX_NUMB = #TAXX_NUMB_old#
+			AND ROWNUM = 1
+			
+
+	]]>
+	</insert>
+	
+	<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.14
+     내      용 : 수정 세금계산서 금액 부분 업데이트 
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PACA0010.UPDATE20" parameterClass="hashmap">
+	<![CDATA[
+	  
+	  		BEGIN
+		           UPDATE PD_SATXXH							/* PACA0010.UPDATE20.수정 세금계산서 업데이트*//* [세금계산서 업데이트] */
+					SET TAXX_AMTX = #TAXX_AMTX#  	/* 금액 */
+					, TAXX_VATX = #TAXX_VATX#			/* 부가세액 */
+					, SUMM_AMTX = #SUMM_AMTX#		/* 합계금액 */
+					, DEND_DATE = #DEND_DATE#			/* 청구일자 */
+					, PRNT_DATE = #PRNT_DATE#			/* 발행일자 */
+					, MEMO_FILD = #MEMO_FILD#			/* 비고 */
+					WHERE 1=1
+					AND TAXY_MONT = #TAXY_MONT#
+					AND TAXX_NUMB = #TAXX_NUMB#
+					AND ORI_ISSUE_ID IS NOT NULL
+					AND CONVERSATION_ID IS NULL
+					;
+					
+					
+					UPDATE PD_SATXXD							/* PACA0010.UPDATE20.수정 세금계산서 업데이트*//* [세금계산서 업데이트] */
+					SET TAXX_AMTX = #TAXX_AMTX#  	/* 금액 */
+					, TAXX_VATX = #TAXX_VATX#			/* 부가세액 */
+					, DEND_DATE = #DEND_DATE#			/* 청구일자 */
+					, PRNT_DATE = #PRNT_DATE#			/* 발행일자 */
+					, MEMO_FILD = #MEMO_FILD#			/* 비고 */
+					WHERE 1=1
+					AND TAXY_MONT = #TAXY_MONT#
+					AND TAXX_NUMB = #TAXX_NUMB#
+			
+					;
+	
+        END;
+
+	]]>
+	</update>
+	
+	
+</sqlMap>
+
+

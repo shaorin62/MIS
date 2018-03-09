@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="sample_comm_combo" classname="sample_comm_combo" left="0" top="0" width="1946" height="886" titletext="콤보 처리 예제" onload="fn_FormLoadSetting">
+    <Layouts>
+      <Layout>
+        <Div id="Div00" taborder="23" text="Div00" left="13" top="6" width="880" height="625"/>
+        <Static id="Static00" taborder="1" text="콤보 필터" cssclass="sta_WF_Subtitle" left="33" width="294" height="21" top="330"/>
+        <Static id="Static01" taborder="2" text="그리드 컬럼콤보" cssclass="sta_WF_Subtitle" left="476" width="294" height="21" top="330"/>
+        <Grid id="Grid00" taborder="3" useinputpanel="false" left="33" top="43" width="408" height="249" binddataset="dsMaster">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Col size="80"/>
+                <Col size="80"/>
+                <Col size="80"/>
+              </Columns>
+              <Rows>
+                <Row band="head" size="24"/>
+                <Row band="body" size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell col="0" disptype="normal" text="COLX_SEQ1"/>
+                <Cell col="1" disptype="normal" text="COLX_SEQ2"/>
+                <Cell col="2" disptype="normal" text="COLX_NAME"/>
+              </Band>
+              <Band id="body">
+                <Cell col="0" disptype="normal" text="bind:COLX_SEQ1"/>
+                <Cell col="1" disptype="normal" text="bind:COLX_SEQ2"/>
+                <Cell col="2" disptype="normal" text="bind:COLX_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="Grid01" taborder="4" useinputpanel="false" left="476" top="43" width="408" height="249" binddataset="dsSlave">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Col size="80"/>
+                <Col size="80"/>
+                <Col size="80"/>
+              </Columns>
+              <Rows>
+                <Row band="head" size="24"/>
+                <Row band="body" size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell col="0" disptype="normal" text="COLX_MST1"/>
+                <Cell col="1" disptype="normal" text="COLX_SUB1"/>
+                <Cell col="2" disptype="normal" text="COLX_NAME"/>
+              </Band>
+              <Band id="body">
+                <Cell col="0" disptype="normal" text="bind:COLX_MST1"/>
+                <Cell col="1" disptype="normal" text="bind:COLX_SUB1"/>
+                <Cell col="2" disptype="normal" text="bind:COLX_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Combo id="Combo00" taborder="6" left="33" top="381" width="170" height="25" innerdataset="@dsMaster" codecolumn="COLX_SEQ2" datacolumn="COLX_NAME"/>
+        <Combo id="Combo01" taborder="7" text="Combo00" left="230" top="380" width="170" height="25" ondropdown="Combo01_ondropdown" oncloseup="Combo01_oncloseup" innerdataset="@dsSlave" codecolumn="COLX_MST1" datacolumn="COLX_NAME"/>
+        <Static id="Static95" taborder="0" text="데이터 정보 - MASTER" cssclass="sta_WF_Subtitle" left="33" width="294" height="21" top="10"/>
+        <Static id="Static02" taborder="5" text="데이터 정보 - DETAIL" cssclass="sta_WF_Subtitle" left="476" width="294" height="21" top="10"/>
+        <Static id="Static03" taborder="8" text="마스터콤보" left="33" top="356" width="168" height="23"/>
+        <Static id="Static04" taborder="9" text="상세콤보" left="230" top="354" width="168" height="23"/>
+        <Static id="Static05" taborder="10" text="마스터콤보 변경 시  상세콤보에 바인딩되어 있는 Inner Dataset에 필터를 설정합니다." left="33" top="434" width="367" height="36" wordwrap="english"/>
+        <Grid id="grdData" taborder="11" useinputpanel="false" left="476" top="368" width="397" height="179" binddataset="dsGridData" ondropdown="grdData_ondropdown" oncloseup="grdData_oncloseup">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="컬럼"/>
+                <Cell col="1" text="컬럼마스터"/>
+                <Cell col="2" text="컬컬럼세부"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:DATA_COL1"/>
+                <Cell col="1" displaytype="combo" edittype="combo" text="bind:DATA_COL2" combodataset="dsMaster" combocodecol="COLX_SEQ2" combodatacol="COLX_NAME"/>
+                <Cell col="2" displaytype="combo" edittype="combo" text="bind:DATA_COL3" combodataset="dsSlave" combocodecol="COLX_MST1" combodatacol="COLX_NAME" combodisplay="edit" combotype="filter"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static06" taborder="12" text="공통콤보 처리방법" cssclass="sta_WF_Subtitle" left="944" top="21" width="294" height="21"/>
+        <TextArea id="txtDesc1" taborder="13" left="941" top="47" width="459" height="209" value="1. 공통콤보 데이터셋 생성&#13;&#10;   - 컬럼은 &quot;DSNAME,CODEID,HEADFLAG,USEYN&quot; 으로 구성&#13;&#10;   - DSNAME 컬럼 : 공통코드데이터를 가져와서 데이터셋을 만들 때 데이터셋명&#13;&#10;   - CODEID 컬럼 : 공통코드 코드값&#13;&#10;   - HEADFLAG 컬럼 : 콤보에 기본 헤더 설정 값.&#13;&#10;     -&gt; ALL : &quot;전체&quot; 라는 아이템을 추가&#13;&#10;     -&gt; SELECT : &quot;선택&quot; 이라는 아이템을 추가&#13;&#10;     -&gt; EMPTY : 비어있는 (&quot;&quot;) 아이템을 추가&#13;&#10;     -&gt; ETC : &quot;기타&quot; 라는 아이템을 추가&#13;&#10;   - &quot;USEYN&quot; 컬럼 : 공통코드 조회 시 코드 사용여부 조건.&#13;&#10;     -&gt; &quot;Y&quot;, &quot;1&quot; 입력 시 사용하는 코드만&#13;&#10;     -&gt; &quot;N&quot;, &quot;0&quot; 입력 시 사용하지 않는 공통코드만&#13;&#10;     -&gt; &quot;A&quot; 는 사용여부 상관없이 모든 코드 조회" readonly="true"/>
+        <Static id="Static07" taborder="14" text="▶ 콤보 데이터셋 구조" left="944" top="276" width="154" height="23"/>
+        <TextArea id="txtDsText" taborder="15" left="946" top="300" width="453" height="214"/>
+        <Static id="Static08" taborder="16" text="2. 스크립트 처리&#13;&#10;   1) 처리함수 실행 " left="1415" top="43" width="252" height="35"/>
+        <Static id="Static09" taborder="17" text="- 공통함수, 이벤트 함수 등 필요한 위치에서&#13;&#10;   this.fnc_GetComboDs(this.dsCombo);&#13;&#10;   함수 실행" left="1429" top="80" width="320" height="45"/>
+        <Static id="Static10" taborder="18" text="   2) 트랜젝션 콜백 부분에서 처리 " left="1413" top="131" width="252" height="35"/>
+        <TextArea id="TextArea00" taborder="19" left="1428" top="162" width="443" height="232" value="/*-------------------------------------+&#13;&#10; |  Transaction 후 Post Process!       |&#13;&#10; +-------------------------------------*/&#13;&#10;this.fn_PostProcess = function (sMethodName) {&#13;&#10;&#9;&#13;&#10;&#9;if (sMethodName == &quot;GetCommCode&quot;) {&#13;&#10;&#9;&#9;var arrParam = new Array();&#13;&#10;&#9;&#9;// 콤보바인딩 : 콤보지시자,객체ID,데이터셋명,기본순번&#13;&#10;&#9;&#9;arrParam[0] = &quot;COMBO,cmbSHRSYST_CODE,dsSHRSYST_CODE,1&quot;;&#13;&#10;&#9;&#9;// 컬럼바인딩 : 그리드지시자,그리드ID,데이터셋명,(데이터셋의)컬럼명&#13;&#10;&#9;&#9;arrParam[1] = &quot;GRID,grdGRID_SAMPLE,dsSYST_CODE,COLX_SEQ1&quot;;&#13;&#10;&#9;&#9;this.fnc_CommonCodeInnerBind(arrParam);&#13;&#10;&#9;}"/>
+        <Combo id="cmbSHRSYST_CODE" taborder="20" text="Combo02" left="1422" top="451" width="190" height="33"/>
+        <Static id="Static11" taborder="21" text="실행예제" cssclass="sta_WF_Subtitle" left="1421" top="422" width="294" height="21"/>
+        <Grid id="grdGRID_SAMPLE" taborder="22" useinputpanel="false" left="1424" top="499" width="439" height="149" binddataset="dsMaster">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="COLX_SEQ1"/>
+                <Cell col="1" text="COLX_SEQ2"/>
+                <Cell col="2" text="COLX_NAME"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="combo" edittype="combo" text="bind:COLX_SEQ1"/>
+                <Cell col="1" text="bind:COLX_SEQ2"/>
+                <Cell col="2" text="bind:COLX_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static12" taborder="24" text="Static12" left="908" top="1" width="1" style="border:1 solid #808080ff ;" bottom="1"/>
+        <Static id="Static13" taborder="25" text="그리드 컬럼콤보(바인딩 이용)" cssclass="sta_WF_Subtitle" left="16" top="600" width="294" height="21"/>
+        <Grid id="Grid02" taborder="26" useinputpanel="false" left="16" top="634" width="336" height="225" binddataset="dsGridData2">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="data1"/>
+                <Cell col="1" text="data2"/>
+                <Cell col="2" text="data3"/>
+                <Cell col="3" text="data4"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:data1"/>
+                <Cell col="1" displaytype="combo" edittype="combo" text="bind:data2" combodataset="dsCol00" combocodecol="code" combodatacol="name"/>
+                <Cell col="2" text="bind:data3"/>
+                <Cell col="3" displaytype="combo" edittype="combo" text="bind:data4" combodataset="bind:data3" combocodecol="code" combodatacol="name"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsMaster">
+        <ColumnInfo>
+          <Column id="COLX_SEQ1" type="STRING" size="256"/>
+          <Column id="COLX_SEQ2" type="STRING" size="256"/>
+          <Column id="COLX_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COLX_SEQ1">DATA11</Col>
+            <Col id="COLX_SEQ2">MST1</Col>
+            <Col id="COLX_NAME">데이터1</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_SEQ1">DATA12</Col>
+            <Col id="COLX_SEQ2">MST2</Col>
+            <Col id="COLX_NAME">데이터2</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_SEQ1">DATA13</Col>
+            <Col id="COLX_SEQ2">MST3</Col>
+            <Col id="COLX_NAME">데이터3</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_SEQ1">DATA14</Col>
+            <Col id="COLX_SEQ2">MST4</Col>
+            <Col id="COLX_NAME">데이터4</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsSlave">
+        <ColumnInfo>
+          <Column id="COLX_MST1" type="STRING" size="256"/>
+          <Column id="COLX_SUB1" type="STRING" size="256"/>
+          <Column id="COLX_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COLX_MST1">MST1</Col>
+            <Col id="COLX_SUB1">SUB1</Col>
+            <Col id="COLX_NAME">서브1</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_MST1">MST2</Col>
+            <Col id="COLX_SUB1">SUB2</Col>
+            <Col id="COLX_NAME">서브2</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_MST1">MST3</Col>
+            <Col id="COLX_SUB1">SUB3</Col>
+            <Col id="COLX_NAME">서브3</Col>
+          </Row>
+          <Row>
+            <Col id="COLX_MST1">MST4</Col>
+            <Col id="COLX_SUB1">SUB4</Col>
+            <Col id="COLX_NAME">서브4</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsGridData">
+        <ColumnInfo>
+          <Column id="DATA_COL1" type="STRING" size="256"/>
+          <Column id="DATA_COL2" type="STRING" size="256"/>
+          <Column id="DATA_COL3" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DATA_COL1">데이터1</Col>
+          </Row>
+          <Row>
+            <Col id="DATA_COL1">데이터2</Col>
+          </Row>
+          <Row>
+            <Col id="DATA_COL1">데이터3</Col>
+          </Row>
+          <Row>
+            <Col id="DATA_COL1">데이터4</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING" description="데이터셋명"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING" description="공통코드"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING" description="콤보값헤더"/>
+          <Column id="USEYN" type="STRING" size="256" prop="default" description="코드사용여부필터"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsSYST_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYN">A</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">SYST_CODE</Col>
+            <Col id="DSNAME">dsSHRSYST_CODE</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+            <Col id="USEYN">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCol00">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="dsname" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">a</Col>
+            <Col id="name">a</Col>
+            <Col id="dsname">dsCol11</Col>
+          </Row>
+          <Row>
+            <Col id="code">b</Col>
+            <Col id="name">b</Col>
+            <Col id="dsname">dsCol12</Col>
+          </Row>
+          <Row>
+            <Col id="code">c</Col>
+            <Col id="name">c</Col>
+            <Col id="dsname">dsCol13</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCol11">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">a</Col>
+            <Col id="name">a</Col>
+          </Row>
+          <Row>
+            <Col id="code">b</Col>
+            <Col id="name">b</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCol12">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">a</Col>
+            <Col id="name">가</Col>
+          </Row>
+          <Row>
+            <Col id="code">b</Col>
+            <Col id="name">나</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCol13">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">a</Col>
+            <Col id="name">1</Col>
+          </Row>
+          <Row>
+            <Col id="code">b</Col>
+            <Col id="name">2</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsGridData2" onvaluechanged="dsGridData2_onvaluechanged">
+        <ColumnInfo>
+          <Column id="data1" type="STRING" size="256"/>
+          <Column id="data2" type="STRING" size="256"/>
+          <Column id="data3" type="STRING" size="256"/>
+          <Column id="data4" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="data1">a</Col>
+          </Row>
+          <Row>
+            <Col id="data1">b</Col>
+          </Row>
+          <Row>
+            <Col id="data1">c</Col>
+          </Row>
+          <Row>
+            <Col id="data1">a</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	sample_comm_combo.xfdl	콤보 샘플
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.08		장성환		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**
+ * 01. 화면 초기화 함수
+ */
+this.fn_FormLoadSetting = function(obj:Form, e:nexacro.LoadEventInfo)
+{
+	this.txtDsText.insertText(this.dsCombo.saveXML(), 0);
+	this.fnc_GetComboDs(this.dsCombo);
+}
+
+
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+		// 콤보바인딩 : 콤보지시자,객체ID,데이터셋명,기본순번
+		arrParam[0] = "COMBO,cmbSHRSYST_CODE,dsSHRSYST_CODE,1";
+		// 컬럼바인딩 : 그리드지시자,그리드ID,데이터셋명,(데이터셋의)컬럼명
+		arrParam[1] = "GRID,grdGRID_SAMPLE,dsSYST_CODE,COLX_SEQ1";
+		this.fnc_CommonCodeInnerBind(arrParam);
+	}
+
+}
+
+
+
+/**
+ * 콤보를 사용자가 클릭하여 펼쳐지는 시점에 실행되는 이벤트 핸들러 함수입니다.
+ * 필터 처리하고자 하는 해당 콤보의 Inner Dataset에 필터링 처리를 합니다.
+ * 사용자가 선택하지 않거나 데이터셋이 다른 콤보/그리드의 Inner Dataset으로 바인딩되어 있더라도
+ * 영향을 미치지 않고, 단지 해당 콤보의 실제 드롭다운 시 표시데이터만 변경됩니다.
+ */
+this.Combo01_ondropdown = function(obj:Combo, e:nexacro.EventInfo)
+{
+	obj.getInnerDataset().filter("COLX_MST1=='" + this.Combo00.value + "'");
+}
+
+/**
+ * 콤보의 드롭다운 메뉴가 닫힐 때의 이벤트 핸들러 함수입니다.
+ * 사용자가 값을 선택하였거나 포커스 아웃 등으로 드롭다운 영역이 접힐 때, 해당 이벤트가 동작하며
+ * 이 때, 콤보에 바인딩된  Inner Dataset의 펠터를 제거하여 처리합니다.
+ */
+this.Combo01_oncloseup = function(obj:Combo, e:nexacro.ComboCloseUpEventInfo)
+{
+	this.Combo01.getInnerDataset().filter("");
+}
+
+
+/**
+ * 편집 가능한 그리드에서 컬럼의 콤보를 사용자가 클릭하여 펼쳐지는 시점에 실행되는 이벤트 핸들러 함수입니다.
+ * 필터링이 필요한 그리드 컬럼 콤보의 Inner Dataset에 필터링 처리를 합니다.
+ */
+this.grdData_ondropdown = function(obj:Grid, e:nexacro.GridEditEventInfo)
+{
+	// 그리드에서 사용 시 이벤트가 발생하는 컬럼을 체크하여 처리합니다.
+	if (e.col == 2) {
+		this.dsSlave.filter("COLX_MST1 == '" + this.dsGridData.getColumn(this.dsGridData.rowposition, "DATA_COL2") + "'");
+	}
+}
+
+/**
+ * 편집가능한 그리드에서 컬럼의 타입이 콤보일 때 콤보의 드롭다운 영역이 접힐 때 실행되는 이벤트 핸들러입니다.
+ * 처리가 필요한 컬럼의 Inner Dataset의 필터를 해제합니다.
+ */
+this.grdData_oncloseup = function(obj:Grid, e:nexacro.GridEditEventInfo)
+{
+	// 그리드에서 사용 시 이벤트가 발생하는 컬럼을 체크하여 처리합니다.
+	if (e.col == 2) {
+		this.dsSlave.filter("");
+	}
+}
+
+
+this.dsGridData2_onvaluechanged = function(obj:Dataset,  e:nexacro.DSColChangeEventInfo)
+{
+	if (e.columnid == "data1") {
+
+	} else if (e.columnid == "data2") {
+		var ref_row = this.dsCol00.findRow("code", e.newvalue);
+		var ref_dsname = this.dsCol00.getColumn(ref_row, "dsname");
+		obj.setColumn(e.row, "data3", ref_dsname);
+	}
+}
+]]></Script>
+  </Form>
+</FDL>

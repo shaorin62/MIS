@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="TRMC0010">
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 마스터 조회 처리
+******************************************************************************* */
+ -->
+	<select id="TRMC0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT   /* TRMC0010.SEARCH00 차입금 관리 마스터 조회 처리 */
+			         ACCT_UNIT   /* 회계단위[ACCT_UNIT] */
+                    ,DBPY_NUMB   /* 차입금번호 */
+                    ,DBPY_NAME   /* 차입금명 */
+                    ,DBPY_KIND   /* 차입종류[DBPY_KIND] */
+                    ,DBPY_CUST   /* 차입기관 */
+                    ,SF_GET_CUSTNAME(DBPY_CUST) AS DBPY_CUNM /* 차입기관명 */
+                    ,DBPY_DATE   /* 차입일 */
+                    ,EXPN_DATE   /* 만기일 */
+                    ,DBPY_ACCT   /* 차입계정과목 */
+                    ,SF_GET_ACCTNAME(DBPY_ACCT) AS DBPY_ACNM /* 차입계정과목명 */
+                    ,INTE_ACCT   /* 이자계정과목 */
+                    ,SF_GET_ACCTNAME(INTE_ACCT) AS INTE_ACNM /* 이자계정과목명 */
+                    ,INTE_RATE   /* 이자율 */
+                    ,FUND_TYPE   /* 자금유형[FUND_TYPE] */
+                    ,DPAC_NUMB   /* 차입계좌번호 */
+                    ,SF_GET_ACNTNAME(DPAC_NUMB) AS DPAC_NAME   /* 차입계좌번호 */
+                    ,DBPY_LIMT   /* 차입한도액 */
+                    ,DBPY_AMOT   /* 차입금액 */
+                    ,LIMT_BALE   /* 한도잔액 */
+                    ,RPTM_YSNO   /* 상환완료여부 */
+                    ,PRRP_COND   /* 원금상환조건[PRRP_COND] */
+                    ,FSRP_DATE   /* 최초상환일 */
+                    ,FNRP_DATE   /* 최종상환일 */
+                    ,RPAY_AMOT   /* 상환금액 */
+                    ,INTP_COND   /* 이자납입조건[INTP_COND] */
+                    ,INPT_DATE   /* 이자납일일 */
+                    ,INTF_DATE   /* 최종납입일 */
+                    ,PAID_INTE   /* 납입이자 */
+                    ,SECU_DETL   /* 담보내역 */
+                    ,GUAR_DETL   /* 보증내역 */
+                    ,DESC_REMK   /* 비고(100) */
+               FROM TA_DBPYXM
+              WHERE ACCT_UNIT = NVL(#ACCT_UNIT#,  ACCT_UNIT) /* 회계단위 */
+              ]]>
+            <isNotEmpty prepend="AND" property="DBPY_KIND">
+                DBPY_KIND = #DBPY_KIND# /* 차입종류 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="FUND_TYPE">
+                FUND_TYPE = #FUND_TYPE# /* 자금유형 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="DBPY_NUMB">
+                DBPY_NUMB = #DBPY_NUMB# /* 차입금번호 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="RPTM_YSNO">
+                RPTM_YSNO = #RPTM_YSNO# /* 차입금번호 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="DBPY_DAT1">
+                DBPY_DATE = #DBPY_DAT1# /* 차입일 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="DBPY_DAT2">
+                DBPY_DATE = #DBPY_DAT2# /* 차입일 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="EXPN_DAT1">
+                EXPN_DATE = #EXPN_DAT1# /* 만기일 */
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="EXPN_DAT2">
+                EXPN_DATE = #EXPN_DAT2# /* 만기일 */
+            </isNotEmpty>	
+	</select>
+	
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 차입내역 조회 처리
+******************************************************************************* */
+ -->
+
+	<select id="TRMC0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  /* TRMC0010.SEARCH01 차입금관리 차입내역 조회 처리 */
+			         CASE WHEN B.APPS_CODE = 'FA1' THEN '실적' ELSE '계획' END AS DBPY_GUBN /* 구분 */
+                    ,A.ACCT_UNIT   /* 회계단위[ACCT_UNIT] */
+                    ,A.DBPY_NUMB   /* 차입금번호 */
+                    ,A.SEQN_NUMB   /* 일련번호 */
+                    ,A.TRAN_DATE   /* 거래일 */
+                    ,A.DBPY_TYPE   /* 차입거래유형[DBPY_TYPE] */
+                    ,A.DBPY_AMOT   /* 차입금액 */
+                    ,A.RPAY_AMOT   /* 상환금액 */
+                    ,NVL(SUM(A.DBPY_AMOT) OVER (PARTITION BY A.DBPY_NUMB
+                    							ORDER BY A.TRAN_DATE, A.SEQN_NUMB
+                    							ROWS UNBOUNDED PRECEDING) , 0)
+                 	 - NVL(SUM(A.RPAY_AMOT) OVER (PARTITION BY A.DBPY_NUMB
+					                              ORDER BY A.TRAN_DATE, A.SEQN_NUMB
+					                              ROWS UNBOUNDED PRECEDING), 0) AS DBPY_BALE /* 차입잔액 */
+                    ,A.INTE_AMOT   /* 이자금액 */
+                    ,A.MAJR_REMK   /* 대표적요 */
+                    ,A.OTHR_ACCT   /* 상대계정과목 */
+                    ,A.OTHR_ACNT   /* 상대계좌번호 */
+                    ,A.REOC_NUMB   /* 관련발생전표번호 */
+                    ,A.SLIP_NUMB   /* 전표번호 */
+                    ,B.APPR_DATE   /* 회계일자 */
+                    ,B.APPS_CODE   /* 승인상태 */
+                    ,'취소' AS SLIP_CANC
+               FROM TA_DBPYXD A
+                    LEFT JOIN VI_SLIPSTATE B
+                           ON A.ACCT_UNIT = B.ACCT_UNIT
+                          AND A.SLIP_NUMB = B.SLIP_NUMB
+              WHERE A.ACCT_UNIT = #ACCT_UNIT# /* 회계단위 */
+                AND A.DBPY_NUMB = #DBPY_NUMB# /* 차입금번호 */
+              ORDER BY A.TRAN_DATE, A.SEQN_NUMB
+		]]>
+	</select>
+	
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 마스터  저장 처리
+******************************************************************************* */
+ -->
+	<insert id="TRMC0010.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+            /* TRMC0010.SAVE00.차입금관리 마스터  저장 처리 */
+			sDBPY_NUMB  TA_DBPYXM.DBPY_NUMB%TYPE;   /* 차입금번호 채번 */
+
+	    BEGIN
+
+	        SELECT NVL(MAX(DBPY_NUMB),SUBSTR(#DBPY_DATE#,1,4)||'0000') + 1 /* 채번 */
+	          INTO sDBPY_NUMB
+	          FROM TA_DBPYXM
+	         WHERE DBPY_DATE LIKE  SUBSTR(#DBPY_DATE#,1,4) || '%'
+	           AND ACCT_UNIT = #ACCT_UNIT#;
+
+
+	        INSERT INTO TA_DBPYXM (
+	               ACCT_UNIT   /* 회계단위[ACCT_UNIT] */
+	              ,DBPY_NUMB   /* 차입금번호 */
+	              ,DBPY_NAME   /* 차입금명 */
+	              ,DBPY_KIND   /* 차입종류[DBPY_KIND] */
+	              ,DBPY_CUST   /* 차입기관 */
+	              ,DBPY_DATE   /* 차입일 */
+	              ,EXPN_DATE   /* 만기일 */
+	              ,DBPY_ACCT   /* 차입계정과목 */
+	              ,INTE_ACCT   /* 이자계정과목 */
+	              ,INTE_RATE   /* 이자율 */
+	              ,FUND_TYPE   /* 자금유형[FUND_TYPE] */
+	              ,DPAC_NUMB   /* 차입계좌번호 */
+	              ,DBPY_LIMT   /* 차입한도액 */
+	              ,DBPY_AMOT   /* 차입금액 */
+	              ,LIMT_BALE   /* 한도잔액 */
+	              ,RPTM_YSNO   /* 상환완료여부 */
+	              ,PRRP_COND   /* 원금상환조건[PRRP_COND] */
+	              ,FSRP_DATE   /* 최초상환일 */
+	              ,FNRP_DATE   /* 최종상환일 */
+	              ,RPAY_AMOT   /* 상환금액 */
+	              ,INTP_COND   /* 이자납입조건[INTP_COND] */
+	              ,INPT_DATE   /* 이자납일일 */
+	              ,INTF_DATE   /* 최종납입일 */
+	              ,PAID_INTE   /* 납입이자 */
+	              ,SECU_DETL   /* 담보내역 */
+	              ,GUAR_DETL   /* 보증내역 */
+	              ,DESC_REMK   /* 비고(100) */
+	              ,INST_DATE   /* 등록일시 */
+	              ,INST_USID   /* 등록자 */
+	              ,UPDT_DATE   /* 수정일시 */
+	              ,UPDT_USID   /* 수정자 */
+	              )
+	       VALUES (
+	               #ACCT_UNIT#
+	              ,sDBPY_NUMB  /* 채번 */
+	              ,#DBPY_NAME#
+	              ,#DBPY_KIND#
+	              ,#DBPY_CUST#
+	              ,#DBPY_DATE#
+	              ,#EXPN_DATE#
+	              ,#DBPY_ACCT#
+	              ,#INTE_ACCT#
+	              ,#INTE_RATE#
+	              ,#FUND_TYPE#
+	              ,#DPAC_NUMB#
+	              ,#DBPY_LIMT#
+	              ,#DBPY_AMOT#
+	              ,#LIMT_BALE#
+	              ,#RPTM_YSNO#
+	              ,#PRRP_COND#
+	              ,#FSRP_DATE#
+	              ,#FNRP_DATE#
+	              ,#RPAY_AMOT#
+	              ,#INTP_COND#
+	              ,#INPT_DATE#
+	              ,#INTF_DATE#
+	              ,#PAID_INTE#
+	              ,#SECU_DETL#
+	              ,#GUAR_DETL#
+	              ,#DESC_REMK#
+	              ,SYSDATE
+	              ,#UPDT_USID#
+	              ,SYSDATE
+	              ,#UPDT_USID#
+	              );
+        END;
+		]]>
+	</insert>
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 마스터 수정 처리
+******************************************************************************* */
+ -->
+	<update id="TRMC0010.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE TA_DBPYXM    /* TRMC0010.UPDATE00.차입금관리 마스터 수정 처리 */
+	           SET  DBPY_NAME = #DBPY_NAME#   /* 차입금명 */
+	               ,DBPY_KIND = #DBPY_KIND#   /* 차입종류[DBPY_KIND] */
+	               ,DBPY_CUST = #DBPY_CUST#   /* 차입기관 */
+	               ,DBPY_DATE = #DBPY_DATE#   /* 차입일 */
+	               ,EXPN_DATE = #EXPN_DATE#   /* 만기일 */
+	               ,DBPY_ACCT = #DBPY_ACCT#   /* 차입계정과목 */
+	               ,INTE_ACCT = #INTE_ACCT#   /* 이자계정과목 */
+	               ,INTE_RATE = #INTE_RATE#   /* 이자율 */
+	               ,FUND_TYPE = #FUND_TYPE#   /* 자금유형[FUND_TYPE] */
+	               ,DPAC_NUMB = #DPAC_NUMB#   /* 차입계좌번호 */
+	               ,DBPY_LIMT = #DBPY_LIMT#   /* 차입한도액 */
+	               ,DBPY_AMOT = #DBPY_AMOT#   /* 차입금액 */
+	               ,LIMT_BALE = #LIMT_BALE#   /* 한도잔액 */
+	               ,RPTM_YSNO = #RPTM_YSNO#   /* 상환완료여부 */
+	               ,PRRP_COND = #PRRP_COND#   /* 원금상환조건[PRRP_COND] */
+	               ,FSRP_DATE = #FSRP_DATE#   /* 최초상환일 */
+	               ,FNRP_DATE = #FNRP_DATE#   /* 최종상환일 */
+	               ,RPAY_AMOT = #RPAY_AMOT#   /* 상환금액 */
+	               ,INTP_COND = #INTP_COND#   /* 이자납입조건[INTP_COND] */
+	               ,INPT_DATE = #INPT_DATE#   /* 이자납일일 */
+	               ,INTF_DATE = #INTF_DATE#   /* 최종납입일 */
+	               ,PAID_INTE = #PAID_INTE#   /* 납입이자 */
+	               ,SECU_DETL = #SECU_DETL#   /* 담보내역 */
+	               ,GUAR_DETL = #GUAR_DETL#   /* 보증내역 */
+	               ,DESC_REMK = #DESC_REMK#   /* 비고(100) */
+	               ,UPDT_DATE = SYSDATE   /* 수정일시 */
+	               ,UPDT_USID = #UPDT_USID#   /* 수정자 */
+	         WHERE ACCT_UNIT  = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB  = #DBPY_NUMB#   /* 차입금번호 */
+
+		]]>
+	</update>
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 마스터 삭제 처리
+******************************************************************************* */
+ -->
+	<delete id="TRMC0010.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN
+			
+			/* TRMC0010.DELETE00 디테일 삭제 */
+	        DELETE FROM TA_DBPYXD  /* TRMC0010.DELETE00.차입금관리 디테일 삭제 처리 */
+	         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB = #DBPY_NUMB#   /* 차입금번호 */
+	           ;
+
+	        /* 디테일 마스터 */
+	        DELETE FROM TA_DBPYXM  /* TRMC0010.DELETE00.차입금관리 마스터 삭제 처리 */
+	         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB = #DBPY_NUMB#   /* 차입금번호 */
+	           ;
+	           
+		END;
+		]]>
+	</delete>
+	
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 차입내역 저장 처리
+******************************************************************************* */
+ -->
+	<insert id="TRMC0010.SAVE01" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+            /* TRMC0010.SAVE01.차입금관리 차입내역 저장 처리 */
+			sSEQN_NUMB  TA_DBPYXD.SEQN_NUMB%TYPE;   /* 일련번호 채번 */
+	        sDBPY_BALE  TA_DBPYXD.DBPY_BALE%TYPE;   /* 차입잔액 */
+	        
+	    BEGIN
+
+	        /* ======================================================================================
+	            STEP 1. 차입금 거래내역 일련번호 채번
+	        ====================================================================================== */
+	        sSEQN_NUMB := #SEQN_NUMB#;
+	        
+	        IF sSEQN_NUMB IS NULL THEN
+		        SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+		          INTO sSEQN_NUMB
+		          FROM TA_DBPYXD
+		         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+		           AND DBPY_NUMB = #DBPY_NUMB#;  /* 차입금번호 */
+          	END IF;
+
+	        /* ======================================================================================
+	            STEP 2. 잔액 및 차인지급액 계산
+	        ====================================================================================== */
+	        BEGIN
+	
+	            SELECT NVL(DBPY_BALE, 0)   /* 금융상품잔액(전회차) */
+	              INTO sDBPY_BALE
+	              FROM TA_DBPYXD
+		         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+		           AND DBPY_NUMB = #DBPY_NUMB#   /* 차입금번호 */
+	               AND SEQN_NUMB = sSEQN_NUMB - 1
+	            ;
+	
+		        EXCEPTION
+		            WHEN NO_DATA_FOUND THEN
+		                sDBPY_BALE := 0;
+	        END;
+	
+	        /* 잔액 */
+	        sDBPY_BALE := sDBPY_BALE + NVL(#DBPY_AMOT#, 0) - NVL(#RPAY_AMOT#, 0);     /* 잔액 = 전차수잔액 + 입금액 + 출금액 */
+	
+			/* 
+	        IF sDBPY_BALE < 0 THEN
+	            RAISE_APPLICATION_ERROR(-20000, '출금액이 잔액을 초과 할 수 없습니다.');
+	        END IF;
+	        */
+	        
+	        /* ======================================================================================
+	            STEP 3. 차입금 거래내역 저장
+	        ====================================================================================== */
+	        INSERT INTO TA_DBPYXD ( /* [차입금거래내역] */
+	               ACCT_UNIT        /* 회계단위[ACCT_UNIT] */
+	              ,DBPY_NUMB        /* 차입금번호 */
+	              ,SEQN_NUMB        /* 일련번호 */
+	              ,TRAN_DATE        /* 거래일 */
+	              ,DBPY_TYPE        /* 차입거래유형[DBPY_TYPE] */
+	              ,DBPY_AMOT        /* 차입금액 */
+	              ,RPAY_AMOT        /* 상환금액 */
+	              ,DBPY_BALE        /* 차입잔액 */
+	              ,INTE_AMOT        /* 이자금액 */
+	              ,MAJR_REMK        /* 대표적요 */
+	              ,OTHR_ACCT        /* 상대계정과목 */
+	              ,OTHR_ACNT        /* 상대계좌번호 */
+	              ,REOC_NUMB        /* 관련발생전표번호 */
+	              ,REOC_SEQN        /* 관련발생전표순번 */
+	              ,SLIP_NUMB        /* 전표번호 */
+	              ,DESC_REMK        /* 비고(100) */
+	              ,INST_DATE        /* 등록일시 */
+	              ,INST_USID        /* 등록자 */
+	              ,UPDT_DATE        /* 수정일시 */
+	              ,UPDT_USID        /* 수정자 */
+	              )
+	       VALUES (
+	               #ACCT_UNIT#       /* 회계단위[ACCT_UNIT] */
+	              ,#DBPY_NUMB#       /* 차입금번호 */
+	              ,sSEQN_NUMB        /* 일련번호 */
+	              ,#TRAN_DATE#       /* 거래일 */
+	              ,#DBPY_TYPE#       /* 차입거래유형[DBPY_TYPE] */
+	              ,#DBPY_AMOT#       /* 차입금액 */
+	              ,#RPAY_AMOT#       /* 상환금액 */
+	              ,sDBPY_BALE        /* 차입잔액 */
+	              ,#INTE_AMOT#       /* 이자금액 */
+	              ,#MAJR_REMK#       /* 대표적요 */
+	              ,NULL              /* 상대계정과목 */
+	              ,NULL              /* 상대계좌번호 */
+	              ,NULL              /* 관련발생전표번호 */
+	              ,NULL              /* 관련발생전표순번 */
+	              ,#SLIP_NUMB#       /* 전표번호 */
+	              ,#DESC_REMK#       /* 비고(100) */
+	              ,SYSDATE           /* 등록일시 */
+	              ,#UPDT_USID#       /* 등록자 */
+	              ,SYSDATE           /* 수정일시 */
+	              ,#UPDT_USID#       /* 수정자 */
+	              );
+	        
+		END;
+		]]>
+	</insert>
+
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 차입내역 삭제 처리
+******************************************************************************* */
+ -->
+	<delete id="TRMC0010.DELETE01" parameterClass="hashmap">
+		<![CDATA[
+			DELETE FROM TA_DBPYXD     /* TRMC0010.DELETE01 차입금 관리 차입내역 삭제 처리 */
+	         WHERE ACCT_UNIT = #ACCT_UNIT#   /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB = #DBPY_NUMB#   /* 차입금번호 */
+	           AND SEQN_NUMB = #SEQN_NUMB#   /* 일련번호 */
+		]]>
+	</delete>
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금관리 차입금마스터 정보 갱신 처리
+******************************************************************************* */
+-->
+	<insert id="TRMC0010.UPDATE01" parameterClass="hashmap">
+		<![CDATA[
+		 DECLARE
+
+			rTA_DBPYXM      TA_DBPYXM%ROWTYPE;          /* 차입금마스터 */
+
+	        sTRAN_DATE      TA_DBPYXD.TRAN_DATE%TYPE;   /* 최종_거래일 */
+	        sDBPY_TYPE      TA_DBPYXD.DBPY_TYPE%TYPE;   /* 최종_차입거래유형[DBPY_TYPE] */
+	        nLAST_INTE      TA_DBPYXD.INTE_AMOT%TYPE;   /* 최종_이자금액 */
+
+	        nDBPY_AMOT      TA_DBPYXD.DBPY_AMOT%TYPE;   /* 합계_차입금액 */
+	        nRPAY_AMOT      TA_DBPYXD.RPAY_AMOT%TYPE;   /* 합계_상환금액 */
+	        nINTE_AMOT      TA_DBPYXD.INTE_AMOT%TYPE;   /* 합계_이자금액 */
+	        sDBPY_BALE      TA_DBPYXD.DBPY_BALE%TYPE;   /* 차입잔액 */
+
+
+	    BEGIN
+
+	        /* ======================================================================================
+	            STEP 1. 차입금마스터 정보 조회
+	        ====================================================================================== */
+	        SELECT  *
+	          INTO rTA_DBPYXM
+	          FROM TA_DBPYXM A               /* [차입금마스터] */
+	         WHERE A.ACCT_UNIT = #ACCT_UNIT# /* 회계단위[ACCT_UNIT] */
+	           AND A.DBPY_NUMB = #DBPY_NUMB# /* 차입금번호 */
+	        ;
+
+	        /* ======================================================================================
+	            STEP 2. 차입금거래 정보 집계
+	        ====================================================================================== */
+	        SELECT  MAX(TRAN_DATE) KEEP(DENSE_RANK LAST ORDER BY TRAN_DATE, SEQN_NUMB) /* 최종_거래일 */
+	               ,MAX(DBPY_TYPE) KEEP(DENSE_RANK LAST ORDER BY TRAN_DATE, SEQN_NUMB) /* 최종_차입거래유형[DBPY_TYPE] */
+	               ,MAX(INTE_AMOT) KEEP(DENSE_RANK LAST ORDER BY TRAN_DATE, SEQN_NUMB) /* 최종_이자금액 */
+	               ,SUM(A.DBPY_AMOT)                                        /* 합계_차입금액 */
+	               ,SUM(A.RPAY_AMOT)                                        /* 합계_상환금액 */
+	               ,SUM(A.INTE_AMOT)                                        /* 합계_이자금액 */
+	          INTO  sTRAN_DATE
+	               ,sDBPY_TYPE
+	               ,nLAST_INTE
+	               ,nDBPY_AMOT
+	               ,nRPAY_AMOT
+	               ,nINTE_AMOT
+	          FROM TA_DBPYXD A                  /* [차입금거래내역] */
+	         WHERE A.ACCT_UNIT = #ACCT_UNIT#    /* 회계단위[ACCT_UNIT] */
+	           AND A.DBPY_NUMB = #DBPY_NUMB#    /* 차입금번호 */
+	           AND A.SLIP_NUMB IS NOT NULL  
+	        ;
+
+	        /* 차입잔액 */
+	        sDBPY_BALE := nDBPY_AMOT - nRPAY_AMOT;
+
+	        /* ======================================================================================
+	            STEP 2. 차입금마스터 정보 갱신
+	        ====================================================================================== */
+	        /* ITEM.건별거래 */
+	        IF rTA_DBPYXM.DBPY_KIND = 'ITEM' THEN
+
+	            UPDATE TA_DBPYXM                                                        /* [차입금마스터] */
+	               SET  DBPY_AMOT = nDBPY_AMOT                                          /* 차입금액 */
+	                   ,LIMT_BALE = 0                                                   /* 한도잔액 */
+	                   ,RPTM_YSNO = DECODE(sDBPY_BALE, 0, '1', '0')                     /* 상환완료여부 */
+	                   ,FNRP_DATE = CASE WHEN sTRAN_DATE IS NULL THEN sTRAN_DATE ELSE DECODE(sDBPY_TYPE, 'REPT', sTRAN_DATE, FNRP_DATE) END   /* 최종상환일 */
+	                   ,RPAY_AMOT = nRPAY_AMOT                                          /* 상환금액 */
+	                   ,INTF_DATE = DECODE(nLAST_INTE, 0, INTF_DATE, sTRAN_DATE)        /* 최종납입일 */
+	                   ,PAID_INTE = nINTE_AMOT                                          /* 납입이자 */
+	                   ,UPDT_DATE = SYSDATE  /* 수정일시 */
+	                   ,UPDT_USID = #UPDT_USID#  /* 수정자 */
+	             WHERE ACCT_UNIT  = #ACCT_UNIT#  /* 회계단위[ACCT_UNIT] */
+	               AND DBPY_NUMB  = #DBPY_NUMB#  /* 차입금번호 */
+	            ;
+
+	        /* MAXI.한도거래 */
+	        ELSIF rTA_DBPYXM.DBPY_KIND = 'MAXI' THEN
+
+	            UPDATE TA_DBPYXM               											/* [차입금마스터] */
+	               SET  DBPY_AMOT = sDBPY_BALE                                          /* 차입금액 = 차입잔액 */
+	                   ,LIMT_BALE = rTA_DBPYXM.DBPY_LIMT - sDBPY_BALE                   /* 한도잔액 = 차입한도액 - 차입잔액 */
+	                   ,RPTM_YSNO = DECODE(sDBPY_BALE, 0, '1', '0')                     /* 상환완료여부 */
+	                   ,FNRP_DATE = CASE WHEN sTRAN_DATE IS NULL THEN sTRAN_DATE ELSE DECODE(sDBPY_TYPE, 'REPT', sTRAN_DATE, FNRP_DATE) END   /* 최종상환일 */
+	                   ,RPAY_AMOT = 0                                                   /* 상환금액 */
+	                   ,INTF_DATE = DECODE(nLAST_INTE, 0, INTF_DATE, sTRAN_DATE)        /* 최종납입일 */
+	                   ,PAID_INTE = nINTE_AMOT                                          /* 납입이자 */
+	                   ,UPDT_DATE = SYSDATE  /* 수정일시 */
+	                   ,UPDT_USID = #UPDT_USID#  /* 수정자 */
+	             WHERE ACCT_UNIT  = #ACCT_UNIT#  /* 회계단위[ACCT_UNIT] */
+	               AND DBPY_NUMB  = #DBPY_NUMB#  /* 차입금번호 */
+	            ;
+
+	        END IF;
+
+	    END;
+		]]>
+	</insert>
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금 거래내역 전표 생성 처리
+******************************************************************************* */
+ -->
+	<insert id="TRMC0010.PROC00" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+            /* TRMC0010.PROC00.차입금 거래내역 전표 생성 처리 */
+			CURSOR CUR_TA_DBPYXD (
+	             P_ACCT_UNIT TA_DBPYXD.ACCT_UNIT%TYPE   /* 회계단위[ACCT_UNIT] */
+	            ,P_DBPY_NUMB TA_DBPYXD.DBPY_NUMB%TYPE   /* 차입금번호 */
+	            ,P_SEQN_NUMB TA_DBPYXD.SEQN_NUMB%TYPE   /* 일련번호 */
+	        )
+	        IS
+	            SELECT  A.ACCT_UNIT     /* 회계단위[ACCT_UNIT] */
+	                   ,A.DBPY_NUMB     /* 차입금번호 */
+	                   ,A.DBPY_NAME     /* 차입금명 */
+	                   ,A.DBPY_CUST     /* 차입기관(거래처코드) */
+	                   ,A.DBPY_ACCT     /* 차입계정과목 */
+	                   /* ,C.MANG_ITE2 */     /* 차입계정과목_관리항목[MANG_ITEM]2_은행계좌 */
+	                   ,A.DPAC_NUMB     /* 차입계좌번호 */
+	                   ,NVL(D.DEPT_CODE, #DEPT_CODE#) AS DEPT_CODE /* 관리부서 */
+	                   ,D.MANG_ACCT                  AS DPAC_ACCT /* 차입계좌번호_관리계정과목 */
+	                   ,A.INTE_ACCT     /* 이자계정과목 */
+	                   ,B.TRAN_DATE     /* 거래일 */
+	                   ,B.DBPY_TYPE     /* 차입거래유형[DBPY_TYPE] */
+	                   ,B.DBPY_AMOT     /* 차입금액 */
+	                   ,B.RPAY_AMOT     /* 상환금액 */
+	                   ,B.DBPY_BALE     /* 차입잔액 */
+	                   ,B.INTE_AMOT     /* 이자금액 */
+	                   ,B.MAJR_REMK     /* 대표적요 */
+	                   ,B.OTHR_ACCT     /* 상대계정과목 */
+	                   ,B.OTHR_ACNT     /* 상대계좌번호 */
+	                   ,B.REOC_NUMB     /* 관련발생전표번호 */
+	                   ,B.REOC_SEQN     /* 관련발생전표순번 */
+	                   ,B.SLIP_NUMB     /* 전표번호 */
+	              FROM TA_DBPYXM A      /* [차입금마스터] */
+	                   INNER JOIN TA_DBPYXD B               /* [차입금거래내역] */
+	                           ON A.ACCT_UNIT = B.ACCT_UNIT
+	                          AND A.DBPY_NUMB = B.DBPY_NUMB
+	                          AND B.SEQN_NUMB = P_SEQN_NUMB /* 일련번호 */
+	                    LEFT JOIN TA_ACCTXM C               /* [계정코드] */
+	                           ON C.ACCT_YEAR = SUBSTR(DBPY_DATE, 0, 4)
+	                          AND A.DBPY_ACCT = C.ACCT_INTL
+	                    LEFT JOIN TA_ACNTXM D
+	                           ON A.DPAC_NUMB = D.ACNT_NUMB
+	             WHERE A.ACCT_UNIT = P_ACCT_UNIT            /* 회계단위[ACCT_UNIT] */
+	               AND A.DBPY_NUMB = P_DBPY_NUMB            /* 차입금번호 */
+	        ;
+
+	        rTA_DBPYXD      CUR_TA_DBPYXD%ROWTYPE;          /* [차입금거래내역] */
+
+	        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /* 발의일자 */
+	        sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /* 전표번호 */
+	        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /* 전표순번 */
+	        sMAJR_REMK      TA_SLIPXM.TITL_NAME%TYPE;   /* 대표적요 */
+
+	        nCURS_SEQN      TA_SLIPNT.SLIP_LINE%TYPE;   /* 커서SEQ */
+
+	    BEGIN
+
+	        /* ======================================================================================
+	            STEP 1. 차입금거래 전표 생성 여부 체크
+	        ====================================================================================== */
+	        BEGIN
+	            /* [차입금거래정보] */
+	            OPEN CUR_TA_DBPYXD( #ACCT_UNIT#     /* 회계단위[ACCT_UNIT] */
+	                               ,#DBPY_NUMB#     /* 차입금번호 */
+	                               ,#SEQN_NUMB#     /* 일련번호 */
+	                               );
+	            FETCH CUR_TA_DBPYXD INTO rTA_DBPYXD;
+	            CLOSE CUR_TA_DBPYXD;
+
+	            /* 차입계정과목 금융계좌 관리여부 체크. */
+	            /* 
+	            IF rTA_DBPYXD.MANG_ITE2 IN ('1', '2') AND rTA_DBPYXD.DPAC_NUMB IS NULL THEN
+	                RAISE_APPLICATION_ERROR(-20000, '선택한 차입금의 [차입계정과목]은 금융계좌 관리 대상 계정과목입니다. 차입금 마스터의 [차입계좌번호]를 등록 후 진행하세요!');
+	            END IF;
+	            */
+
+	            /* 차입계정과목과 금융계좌의 관리 계정 일치여부 체크. */
+	            IF rTA_DBPYXD.DPAC_NUMB IS NOT NULL AND rTA_DBPYXD.DBPY_ACCT <> rTA_DBPYXD.DPAC_ACCT THEN
+	                RAISE_APPLICATION_ERROR(-20000, '선택한 차입금의 [차입계정과목]이 연계된 [차입계좌번호]의 [관리계정과목]과 일치하지 않습니다.');
+	            END IF;
+
+	        EXCEPTION
+	            WHEN OTHERS THEN
+	                RAISE_APPLICATION_ERROR(-20000, '차입금거래 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+
+	        IF rTA_DBPYXD.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 차입금거래 전표(' || rTA_DBPYXD.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+
+	        /* ======================================================================================
+	            STEP 2. 차입금거래 전표 생성
+	        ====================================================================================== */
+
+	        /* 발의일자 :  거래일 */
+	        sSLIP_DATE := rTA_DBPYXD.TRAN_DATE;
+
+	        /* 대표적요 구성 */
+	        sMAJR_REMK := '[차입금] ' || rTA_DBPYXD.MAJR_REMK;
+
+	        /* ==============================================================
+	            2-0.차입금거래 전표 > HEADER 추가
+	        ============================================================== */
+	        /* PARAM 전표 처리로직은 다시 확인해야함
+	        sSLIP_NUMB := PKG_FAMACOMM.SF_ADD_SLIPHEAD (
+	                           iACCT_UNIT                         --회계단위[ACCT_UNIT]
+	                          ,'TR002'                            --전표유형코드
+	                          ,sSLIP_DATE                         --발의일
+	                          ,iUPDT_USID                         --발의자
+	                          ,iDEPT_CODE                         --발의부서
+	                          ,sMAJR_REMK                         --대표적요
+	                          ,'0'                                --익월초역분개수행여부
+	                          ,'TRM_TR002'                        --연계출처내용
+	                          ,iACCT_UNIT||'-'||iDBPY_NUMB||'-'||iSEQN_NUMB --연계출처링크키
+	                          ,'차입금관리에서 최초 생성.'        --비고(100)
+	                          ,NULL                               --미사용 여분 인수 1
+	                          ,NULL                               --미사용 여분 인수 2
+	                          ,NULL                               --미사용 여분 인수 3
+	                          ,NULL                               --미사용 여분 인수 4
+	                          ,NULL                               --미사용 여분 인수 5
+	                      );
+	                 */
+	        /* ==============================================================
+	            2-1.차입금거래 전표 > LINE 추가 : 차입금액,상환금액 / 상대계정
+	        ============================================================== */
+	        nSLIP_LINE := 0;
+
+	        /* ==============================================================
+	            2-1-1. 차입금거래 전표 > LINE 추가 > 차입금_관리계정과목(차변 OR 대변)
+	        ============================================================== */
+	        IF rTA_DBPYXD.DBPY_AMOT > 0 OR rTA_DBPYXD.RPAY_AMOT > 0 THEN
+
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            /* PARAM 전표 처리로직은 다시 확인해야함
+	            PKG_FAMACOMM.SP_ADD_SLIPLINE_ACCT (
+	                 rTA_DBPYXD.ACCT_UNIT                                       --회계단위[ACCT_UNIT]
+	                ,'TR002'                                                    --전표유형코드
+	                ,sSLIP_NUMB                                                 --전표번호
+	                ,nSLIP_LINE                                                 --전표순번
+	                ,'0'                                                        --전표생성완료여부(0/1)
+	                ,iUPDT_USID                                                 --발의자
+	                ,rTA_DBPYXD.DBPY_ACCT                                       --계정코드      >> 차입금_관리계정과목
+	                ,CASE WHEN rTA_DBPYXD.DBPY_AMOT > 0 THEN 'CR' ELSE 'DR' END --차대구분      >> 차입:대변, 상환:차변
+	                ,rTA_DBPYXD.DEPT_CODE                                       --부서코드
+	                ,rTA_DBPYXD.DBPY_CUST                                       --거래처코드
+	                ,rTA_DBPYXD.DBPY_AMOT + rTA_DBPYXD.RPAY_AMOT                --전표원화금액  >> 차입액 OR 상환액
+	                ,sMAJR_REMK                                                 --세부적요
+	                ,'XXXX'                                                     --증빙구분[EVDC_GUBN]
+	                ,NULL                       --통화코드[CURR_CODE]
+	                ,NULL                       --전표외화금액
+	                ,NULL                       --환율
+	                ,NULL                       --프로젝트코드
+	                ,NULL                       --예산관리항목코드
+	                ,NULL                       --예산항목유형[BUGT_ITCD]
+	                ,NULL                       --품의번호
+	                ,CASE WHEN rTA_DBPYXD.MANG_ITE2 IN ('1', '2') THEN rTA_DBPYXD.DPAC_NUMB
+	                      ELSE NULL
+	                 END                        --계좌번호
+	                ,NULL                       --부가세_계산서발행구분[TAXI_GUBN]
+	                ,NULL                       --부가세_계산서일련번호
+	                ,NULL                       --부가세_유형코드
+	                ,NULL                       --부가세_발행일자
+	                ,NULL                       --부가세_공급가액
+	                ,NULL                       --부가세_부가세액
+	                ,NULL                       --부가세_합계금액
+	                ,NULL                       --카드_번호
+	                ,NULL                       --카드_승인일
+	                ,NULL                       --카드_승인번호
+	                ,NULL                       --자산_품목분류코드
+	                ,NULL                       --비고1(100)
+	                ,NULL                       --비고2(100)
+	                ,NULL                       --발생_전표번호
+	                ,NULL                       --발계_전표순번
+	                ,CASE WHEN rTA_DBPYXD.DBPY_AMOT > 0 THEN '301001' ELSE '302001' END --자금수지코드(지급그룹) >> 301001.차입, 302001.상환
+	                ,NULL                       --미사용 여분 인수 1
+	                ,NULL                       --미사용 여분 인수 2
+	                ,NULL                       --미사용 여분 인수 3
+	                ,NULL                       --미사용 여분 인수 4
+	                ,NULL                       --미사용 여분 인수 5
+	            );
+	            */
+	            /* ==============================================================
+	                2-1-2. 차입금거래 전표 > LINE 추가 > 상대계정(차변 OR 대변)
+	            ============================================================== */
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	                /* PARAM 전표 처리로직은 다시 확인해야함
+	            PKG_FAMACOMM.SP_ADD_SLIPLINE_ACCT (
+	                 rTA_DBPYXD.ACCT_UNIT                           --회계단위[ACCT_UNIT]
+	                ,'TR002'                                        --전표유형코드
+	                ,sSLIP_NUMB                                     --전표번호
+	                ,nSLIP_LINE                                     --전표순번
+	                ,CASE WHEN rTA_DBPYXD.INTE_AMOT > 0 THEN
+	                           '0'
+	                      ELSE '1'
+	                 END                                            --전표생성완료여부(0/1)
+	                ,iUPDT_USID                                     --발의자
+	                ,iOTHR_ACCT                                     --계정코드      >> 상대계정과목
+	                ,CASE rTA_DBPYXD.DBPY_TYPE
+	                      WHEN 'DBPY' THEN 'DR'                     --DBPY.차입
+	                      WHEN 'REPT' THEN 'CR'                     --REPT.상환
+	                      WHEN 'INTE' THEN 'DR'                     --INTE.이자비용
+	                 END                                            --차대구분      >> 가변적
+	                ,rTA_DBPYXD.DEPT_CODE                           --부서코드
+	                ,rTA_DBPYXD.DBPY_CUST                           --거래처코드
+	                ,CASE rTA_DBPYXD.DBPY_TYPE
+	                      WHEN 'DBPY' THEN rTA_DBPYXD.DBPY_AMOT     --DBPY.차입 : 차입금액
+	                      WHEN 'REPT' THEN rTA_DBPYXD.RPAY_AMOT     --RPAY.상환 : 상환금액
+	                 END                                            --전표원화금액  >> 차입금액 OR 상환금액
+	                ,sMAJR_REMK                                     --세부적요
+	                ,'XXXX'                                         --증빙구분[EVDC_GUBN]
+	                ,NULL                       --통화코드[CURR_CODE]
+	                ,NULL                       --전표외화금액
+	                ,NULL                       --환율
+	                ,NULL                       --프로젝트코드
+	                ,NULL                       --예산관리항목코드
+	                ,NULL                       --예산항목유형[BUGT_ITCD]
+	                ,NULL                       --품의번호
+	                ,iOTHR_ACNT                 --계좌번호      >> 상대계좌번호
+	                ,NULL                       --부가세_계산서발행구분[TAXI_GUBN]
+	                ,NULL                       --부가세_계산서일련번호
+	                ,NULL                       --부가세_유형코드
+	                ,NULL                       --부가세_발행일자
+	                ,NULL                       --부가세_공급가액
+	                ,NULL                       --부가세_부가세액
+	                ,NULL                       --부가세_합계금액
+	                ,NULL                       --카드_번호
+	                ,NULL                       --카드_승인일
+	                ,NULL                       --카드_승인번호
+	                ,NULL                       --자산_품목분류코드
+	                ,NULL                       --비고1(100)
+	                ,NULL                       --비고2(100)
+	                ,iREOC_NUMB                 --발생_전표번호   >> 관련발생전표번호
+	                ,iREOC_SEQN                 --발계_전표순번   >> 관련발생전표순번
+	                ,CASE WHEN rTA_DBPYXD.DBPY_AMOT > 0 THEN '301001' ELSE '302001' END --자금수지코드(지급그룹) >> 301001.차입, 302001.상환
+	                ,NULL                       --미사용 여분 인수 1
+	                ,NULL                       --미사용 여분 인수 2
+	                ,NULL                       --미사용 여분 인수 3
+	                ,NULL                       --미사용 여분 인수 4
+	                ,NULL                       --미사용 여분 인수 5
+	            );
+	            */
+	        END IF;
+
+	        /* ==============================================================
+	            2-2.차입금거래 전표 > LINE 추가 : 이자금액 / 상대계정
+	        ============================================================== */
+	        IF rTA_DBPYXD.INTE_AMOT > 0 THEN
+
+	            /* ============================================================
+	                2-2-1. 차입금거래 전표 > LINE 추가 > 이자비용(차변)
+	            ============================================================== */
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	            /* PARAM 전표 처리로직은 다시 확인해야함
+	            PKG_FAMACOMM.SP_ADD_SLIPLINE_ACCT (
+	                 rTA_DBPYXD.ACCT_UNIT                                       --회계단위[ACCT_UNIT]
+	                ,'TR002'                                                    --전표유형코드
+	                ,sSLIP_NUMB                                                 --전표번호
+	                ,nSLIP_LINE                                                 --전표순번
+	                ,'0'                                                        --전표생성완료여부(0/1)
+	                ,iUPDT_USID                                                 --발의자
+	                ,rTA_DBPYXD.INTE_ACCT                                       --계정코드      >> 차입금_이자비용계정과목
+	                ,'DR'                                                       --차대구분      >> 대변
+	                ,rTA_DBPYXD.DEPT_CODE                                       --부서코드
+	                ,rTA_DBPYXD.DBPY_CUST                                       --거래처코드
+	                ,rTA_DBPYXD.INTE_AMOT                                       --전표원화금액  >> 이자비용
+	                ,sMAJR_REMK                                                 --세부적요
+	                ,'XXXX'                                                     --증빙구분[EVDC_GUBN]
+	                ,NULL                       --통화코드[CURR_CODE]
+	                ,NULL                       --전표외화금액
+	                ,NULL                       --환율
+	                ,NULL                       --프로젝트코드
+	                ,NULL                       --예산관리항목코드
+	                ,NULL                       --예산항목유형[BUGT_ITCD]
+	                ,NULL                       --품의번호
+	                ,NULL                       --계좌번호
+	                ,NULL                       --부가세_계산서발행구분[TAXI_GUBN]
+	                ,NULL                       --부가세_계산서일련번호
+	                ,NULL                       --부가세_유형코드
+	                ,NULL                       --부가세_발행일자
+	                ,NULL                       --부가세_공급가액
+	                ,NULL                       --부가세_부가세액
+	                ,NULL                       --부가세_합계금액
+	                ,NULL                       --카드_번호
+	                ,NULL                       --카드_승인일
+	                ,NULL                       --카드_승인번호
+	                ,NULL                       --자산_품목분류코드
+	                ,NULL                       --비고1(100)
+	                ,NULL                       --비고2(100)
+	                ,NULL                       --발생_전표번호
+	                ,NULL                       --발계_전표순번
+	                ,NULL                       --자금수지코드(지급그룹)
+	                ,NULL                       --미사용 여분 인수 1
+	                ,NULL                       --미사용 여분 인수 2
+	                ,NULL                       --미사용 여분 인수 3
+	                ,NULL                       --미사용 여분 인수 4
+	                ,NULL                       --미사용 여분 인수 5
+	            );
+	 */
+	            /* ==============================================================
+	                2-2-2. 차입금거래 전표 > LINE 추가 > 상대계정(대변)
+	            ============================================================== */
+	            nSLIP_LINE := nSLIP_LINE + 1;
+	                /* PARAM  전표 처리로직은 다시 확인해야함
+	            PKG_FAMACOMM.SP_ADD_SLIPLINE_ACCT (
+	                 rTA_DBPYXD.ACCT_UNIT       --회계단위[ACCT_UNIT]
+	                ,'TR002'                    --전표유형코드
+	                ,sSLIP_NUMB                 --전표번호
+	                ,nSLIP_LINE                 --전표순번
+	                ,'1'                        --전표생성완료여부(0/1)
+	                ,iUPDT_USID                 --발의자
+	                ,iOTHR_ACCT                 --계정코드      >> 상대계정과목
+	                ,'CR'                       --차대구분      >> INTE.이자비용 : 대변
+	                ,rTA_DBPYXD.DEPT_CODE       --부서코드
+	                ,rTA_DBPYXD.DBPY_CUST       --거래처코드
+	                ,rTA_DBPYXD.INTE_AMOT       --전표원화금액  >> INTE.이자비용
+	                ,sMAJR_REMK                 --세부적요
+	                ,'XXXX'                     --증빙구분[EVDC_GUBN]
+	                ,NULL                       --통화코드[CURR_CODE]
+	                ,NULL                       --전표외화금액
+	                ,NULL                       --환율
+	                ,NULL                       --프로젝트코드
+	                ,NULL                       --예산관리항목코드
+	                ,NULL                       --예산항목유형[BUGT_ITCD]
+	                ,NULL                       --품의번호
+	                ,iOTHR_ACNT                 --계좌번호      >> 상대계좌번호
+	                ,NULL                       --부가세_계산서발행구분[TAXI_GUBN]
+	                ,NULL                       --부가세_계산서일련번호
+	                ,NULL                       --부가세_유형코드
+	                ,NULL                       --부가세_발행일자
+	                ,NULL                       --부가세_공급가액
+	                ,NULL                       --부가세_부가세액
+	                ,NULL                       --부가세_합계금액
+	                ,NULL                       --카드_번호
+	                ,NULL                       --카드_승인일
+	                ,NULL                       --카드_승인번호
+	                ,NULL                       --자산_품목분류코드
+	                ,NULL                       --비고1(100)
+	                ,NULL                       --비고2(100)
+	                ,iREOC_NUMB                 --발생_전표번호   >> 관련발생전표번호
+	                ,iREOC_SEQN                 --발계_전표순번   >> 관련발생전표순번
+	                ,'302001'                   --자금수지코드(지급그룹) >> 302001.상환
+	                ,NULL                       --미사용 여분 인수 1
+	                ,NULL                       --미사용 여분 인수 2
+	                ,NULL                       --미사용 여분 인수 3
+	                ,NULL                       --미사용 여분 인수 4
+	                ,NULL                       --미사용 여분 인수 5
+	            );
+	 */
+	        END IF;
+
+	        /* ======================================================================================
+	            STEP 3. 차입금거래 전표번호 업데이트
+	        ====================================================================================== */
+	        UPDATE TA_DBPYXD                /* [차입금거래내역] */
+	           SET  OTHR_ACCT = #OTHR_ACCT#  /* 상대계정과목 */
+	               ,OTHR_ACNT = #OTHR_ACNT#  /* 상대계좌번호 */
+	               ,REOC_NUMB = #REOC_NUMB#  /* 관련발생전표번호 */
+	               ,REOC_SEQN = #REOC_SEQN#  /* 관련발생전표순번 */
+	               ,SLIP_NUMB = #SLIP_NUMB#  /* 전표번호 */
+	               ,UPDT_DATE = SYSDATE  /* 수정일시 */
+	               ,UPDT_USID = #UPDT_USID#  /* 수정자 */
+	         WHERE ACCT_UNIT  = #ACCT_UNIT#  /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB  = #DBPY_NUMB#  /* 차입금번호 */
+	           AND SEQN_NUMB  = #SEQN_NUMB#  /* 일련번호 */
+	           ;
+
+	        /* ======================================================================================
+	            STEP 4. 차입금마스터 정보 업데이트
+	        ====================================================================================== */
+	        /* PARAM 전표 처리로직은 다시 확인해야함
+	        SP_UPDATE_TA_DBPYXM( iUPDT_DATE  --수정일시
+	                            ,iUPDT_USID  --수정자
+	                            ,iACCT_UNIT  --회계단위[ACCT_UNIT]
+	                            ,iDBPY_NUMB  --차입금번호
+	                            );
+	                            */
+
+	    END;
+		]]>
+	</insert>
+<!--
+/* ******************************************************************************
+     작  성  자 : 권미영
+     작  성  일 : 2016.06.28
+     내      용 : 차입금 거래내역 전표 삭제 처리
+******************************************************************************* */
+ -->
+	<insert id="TRMC0010.PROC01" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+            /* TRMC0010.PROC01.차입금 거래내역 전표 삭제 처리 */
+			sMAJR_REMK  TA_DBPYXD.MAJR_REMK%TYPE;       /* 대표적요 */
+	        sSLIP_NUMB  TA_DBPYXD.SLIP_NUMB%TYPE;       /* 차입금거래_전표번호 */
+
+	    BEGIN
+
+	        /* ======================================================================================
+	            STEP 1-1. 이후 차입금거래 내역 존재 여부 체크
+	        ====================================================================================== */
+	        BEGIN
+	            SELECT A.MAJR_REMK              /* 대표적요 */
+	              INTO sMAJR_REMK
+	              FROM TA_DBPYXD A              /* [차입금거래내역] */
+	             WHERE A.ACCT_UNIT = #ACCT_UNIT# /* 회계단위[ACCT_UNIT] */
+	               AND A.DBPY_NUMB = #DBPY_NUMB# /* 차입금번호 */
+	               AND A.SEQN_NUMB > #SEQN_NUMB# /* 일련번호 */
+	               AND ROWNUM <= 1
+	            ;
+
+		        EXCEPTION
+		            WHEN NO_DATA_FOUND THEN
+		                sMAJR_REMK := NULL;
+	        END;
+
+	        IF sMAJR_REMK IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '선택한 거래 이후에 추가 차입금거래('''||sMAJR_REMK||''') 내역이 존재하여 삭제 할 수 없습니다. 최종 거래 내역의 전표만 삭제 가능 합니다.');
+	        END IF;
+
+	        /* ======================================================================================
+	            STEP 1-2. 차입금거래 전표 생성 여부 체크
+	        ====================================================================================== */
+	        SELECT A.SLIP_NUMB              /* 전표번호 */
+	          INTO sSLIP_NUMB
+	          FROM TA_DBPYXD A              /* [차입금거래내역] */
+	         WHERE A.ACCT_UNIT = #ACCT_UNIT# /* 회계단위[ACCT_UNIT] */
+	           AND A.DBPY_NUMB = #DBPY_NUMB# /* 차입금번호 */
+	           AND A.SEQN_NUMB = #SEQN_NUMB# /* 일련번호 */
+	        ;
+
+	        IF sSLIP_NUMB IS NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '생성 된 차입금거래 전표가 없습니다.');
+	        END IF;
+
+	        /* ======================================================================================
+	            STEP 2. 차입금거래 전표 삭제
+	        ====================================================================================== */
+	        /* 
+	        PKG_FAMACOMM.SP_DEL_SLIPWHOLE (
+	             iACCT_UNIT     --회계단위[ACCT_UNIT]
+	            ,sSLIP_NUMB     --전표번호
+	            ,iUPDT_USID     --작업자
+	        );
+	 */
+	        /* ======================================================================================
+	            STEP 3. 차입금거래 전표번호 업데이트
+	        ====================================================================================== */
+	        UPDATE TA_DBPYXD                /* [차입금거래내역] */
+	           SET  OTHR_ACCT = NULL        /* 상대계정과목 */
+	               ,OTHR_ACNT = NULL        /* 상대계좌번호 */
+	               ,REOC_NUMB = NULL        /* 관련발생전표번호 */
+	               ,REOC_SEQN = NULL        /* 관련발생전표순번 */
+	               ,SLIP_NUMB = NULL        /* 전표번호 */
+	               ,UPDT_DATE = SYSDATE  /* 수정일시 */
+	               ,UPDT_USID = #UPDT_USID#  /* 수정자 */
+	         WHERE ACCT_UNIT  = #ACCT_UNIT#  /* 회계단위[ACCT_UNIT] */
+	           AND DBPY_NUMB  = #DBPY_NUMB#  /* 차입금번호 */
+	           AND SEQN_NUMB  = #SEQN_NUMB#  /* 일련번호 */
+	           ;
+
+	        /* ======================================================================================
+	            STEP 4. 차입금마스터 정보 업데이트
+	        ====================================================================================== */
+	        /* 
+	        SP_UPDATE_TA_DBPYXM( iUPDT_DATE  --수정일시
+	                            ,iUPDT_USID  --수정자
+	                            ,iACCT_UNIT  --회계단위[ACCT_UNIT]
+	                            ,iDBPY_NUMB  --차입금번호
+	                            );
+	          */
+	    END;
+
+		]]>
+	</insert>
+</sqlMap>

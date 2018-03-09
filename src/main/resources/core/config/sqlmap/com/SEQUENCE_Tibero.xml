@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SEQUENCE">
+
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.05.23
+     내      용 : SEQUENCE 조회
+     파라미터   : TABLE_NAME : 테이블명
+     			  COLUMN_NAME : 컬럼명 
+     			  RPLC_VALU	: REPLACE값
+     			  SECH_COND : 조건값		  	
+     -->
+	<select id="SEQUENCE.getSeq" parameterClass="hashmap" resultClass="hashmap">		
+		
+	<![CDATA[
+		
+		SELECT /* SEQUENCE.getSeq SEQUENCE 조회 */
+		          SF_GET_SEQUENCE(#TABLE_NAME#, #COLUMN_NAME#, #SECH_COND#, #RPLC_VALU#) AS SRAL_NUMB 
+		  FROM DUAL		
+		
+	]]>	
+	
+	
+	</select>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.05.23
+     내      용 : SEQUENCE 수정
+     파라미터   : TABLE_NAME : 테이블명
+     			  COLUMN_NAME : 컬럼명
+     -->
+	<update id="SEQUENCE.setSeq" parameterClass="hashmap">	
+	<![CDATA[
+        
+        UPDATE TM_SEQUNC /* SEQUENCE.setSeq SEQUENCE 수정 */
+           SET NOWX_VALU = CASE WHEN NVL(NOWX_VALU, MINX_VALU) + 1 > MAXX_VALU THEN MAXX_VALU ELSE NVL(NOWX_VALU, MINX_VALU) + 1 END             
+         WHERE TABLE_NAME = #TABLE_NAME#
+		   AND COLUMN_NAME = #COLUMN_NAME#
+	]]>
+	</update>
+	
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.05.23
+     내      용 : SEQUENCE 상세 수정
+     파라미터   : TABLE_NAME : 테이블명
+     			  COLUMN_NAME : 컬럼명  
+     			  SECH_COND : 조건값			  	
+     -->
+	<update id="SEQUENCE.setSeqDtl" parameterClass="hashmap">	
+	<![CDATA[
+	    DECLARE /* SEQUENCE.setSeqDtl SEQUENCE 상세 수정 */
+			  v_MINX_VALU NUMBER(15,0);
+			  v_MAXX_VALU NUMBER(15,0);
+			  v_ROWCNT INT;
+	    BEGIN  
+	        SELECT MINX_VALU
+	             , MAXX_VALU
+	          INTO v_MINX_VALU, v_MAXX_VALU
+	          FROM TM_SEQUNC
+	         WHERE TABLE_NAME = #TABLE_NAME#
+	           AND COLUMN_NAME = #COLUMN_NAME#;
+	        
+	        SELECT COUNT(TABLE_NAME) 
+	          INTO v_ROWCNT
+	          FROM TM_SEQDTL
+	         WHERE TABLE_NAME = #TABLE_NAME#
+	           AND COLUMN_NAME = #COLUMN_NAME#
+	           AND SECH_COND = #SECH_COND#;
+	         
+	        IF v_ROWCNT > 0 THEN 
+	        
+	              UPDATE TM_SEQDTL
+	                 SET  NOWX_VALU = CASE WHEN NVL(NOWX_VALU, v_MINX_VALU) + 1 > v_MAXX_VALU THEN v_MAXX_VALU ELSE NVL(NOWX_VALU, v_MAXX_VALU) + 1 END   /*현재값*/	          
+	               WHERE TABLE_NAME  = #TABLE_NAME#   /*테이블명*/
+	                 AND COLUMN_NAME  = #COLUMN_NAME#   /*컬럼명*/
+	                 AND SECH_COND  = #SECH_COND#   /*조회조건명*/
+	              ;
+	        ELSE
+	       
+	               INSERT INTO TM_SEQDTL (
+	                      TABLE_NAME   /*테이블명*/
+	                     ,COLUMN_NAME   /*컬럼명*/
+	                     ,SECH_COND   /*조회조건명*/
+	                     ,NOWX_VALU   /*현재값*/
+	             ) VALUES (
+	                      #TABLE_NAME#   /*테이블명*/
+	                     ,#COLUMN_NAME#   /*컬럼명*/
+	                     ,#SECH_COND#   /*조회조건명*/
+	                     ,v_MINX_VALU   /*현재값*/
+	              );	
+	        END IF;
+	    END;        
+	
+	]]>	
+	</update>
+	
+</sqlMap>

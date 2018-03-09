@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMA0070">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : FAME0030_Oracle 화면의 관리코드등록 대분류 조회
+    실행 예제  :
+   ********************************************************************************/
+-->
+	<select id="FAMA0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  CODH_FLNM,              /*공통코드*/
+	                CODH_LENG,              /*필드길이*/
+	                CODH_DESC,              /*필드명*/
+	                CODH_RMRK,              /*비고*/
+	                SYST_NAME,              /*시스템코드*/
+	                KIND_YSNO               /*관리코드사용여부*/
+	        FROM    TM_CODEXH
+	        /*WHERE   SYST_NAME = 'GO010020' */ /*재무관리용*/
+	        /* 2014-10-08 : 팀장님 변경 요청.. 위험한데. ㅜㅠ*/
+	        WHERE   SYST_NAME <> 'GO010001'  /*공통빼고 전부 오픈*/
+	        AND     CODH_DESC LIKE '%' || NVL(#CODH_DESC#, CODH_DESC) || '%'
+	        ORDER BY SYST_NAME, CODH_FLNM;
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : KISDI_ERP.FAME0030_Oracle 화면의 관리코드등록 소분류 조회
+    실행 예제  :
+********************************************************************************/
+-->
+	<select id="FAMA0070.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  A.CODH_FLNM,        /*공통코드*/
+	                A.CODD_VALU,        /*세부필드명*/
+	                SUBSTR(A.CODD_VALU, 1, 4) AS FOWD_VALU, /*세부필드 앞 4자리*/
+	                SUBSTR(A.CODD_VALU, 5) AS BACK_VALU,    /*세부필드 뒤 4자리*/
+	                A.CODD_DESC,        /*세부필드명*/
+	                A.CODD_REF1,        /*보조필드1*/
+	                A.CODD_REF2,        /*보조필드2*/
+	                A.CODD_REF3,        /*보조필드3*/
+	                A.CODD_REF4,        /*보조필드4*/
+	                A.CODD_REF5,        /*보조필드5*/
+	                A.CODD_REF6,        /*보조필드6*/
+	                A.SORT_ORDE,        /*소팅순서*/
+	                A.CODD_YSNO,        /*사용여부*/
+	                (CASE WHEN POSX_YSNO = 'Y' THEN 1 ELSE 0 END) AS POSX_YSNO  /*POS사용여부*/
+	         FROM    TM_CODEXD A
+	        INNER JOIN TM_CODEXH B
+	           ON A.CODH_FLNM = B.CODH_FLNM
+	        WHERE A.CODH_FLNM = #CODH_FLNM#
+	        ORDER BY SORT_ORDE, CODD_VALU;
+			
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : KISDI_ERP.FAME0030_Oracle 화면의 관리코드등록 대분류 저장
+    실행 예제  :
+********************************************************************************/
+-->
+	<insert id="FAMA0070.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+			INSERT INTO TM_CODEXH (
+		            CODH_FLNM,
+		            CODH_LENG,
+		            CODH_DESC,
+		            CODH_RMRK,
+		            SYST_NAME,
+		            KIND_YSNO,
+		            INST_DATE,
+					INST_USID,
+					WORK_USID,
+					WORK_DATE
+	        ) VALUES (
+		            #CODH_FLNM#,
+		            #CODH_LENG#,
+		            #CODH_DESC#,
+		            #CODH_RMRK#,
+		            #SYST_NAME#,
+		            #KIND_YSNO#,
+		            #WORK_DATE#,
+					#WORK_USID#,
+					#WORK_USID#,
+					#WORK_DATE#
+	        );            
+		]]>
+	</insert>
+	
+	<insert id="FAMA0070.SAVE01" parameterClass="hashmap">
+		<![CDATA[
+			INSERT INTO TM_CODEXD (
+		            CODH_FLNM,
+		            CODD_VALU,
+		            CODD_DESC,
+		            CODD_REF1,
+		            CODD_REF2,
+		            CODD_REF3,
+		            CODD_REF4,
+		            CODD_REF5,
+		            CODD_REF6,
+		            SORT_ORDE,
+		            CODD_YSNO,
+		            POSX_YSNO,
+		            INST_DATE,
+					INST_USID,
+					WORK_DATE,
+					WORK_USID
+	        ) VALUES (
+		            #CODH_FLNM#,
+		            #CODD_VALU#,
+		            #CODD_DESC#,
+		            #CODD_REF1#,
+		            #CODD_REF2#,
+		            #CODD_REF3#,
+		            #CODD_REF4#,
+		            #CODD_REF5#,
+		            #CODD_REF6#,
+		            #SORT_ORDE#,
+		            #CODD_YSNO#,
+		            (CASE WHEN To_Number(#POSX_YSNO#) = 1 THEN 'Y' ELSE 'N' END),
+		            #WORK_DATE#,
+					#WORK_USID#,
+					#WORK_DATE#,
+					#WORK_USID#
+	        );            
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : FAME0030_Oracle 화면의 관리코드등록 대분류 수정
+    실행 예제  :
+********************************************************************************/
+-->
+	<update id="FAMA0070.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			 UPDATE TM_CODEXH
+	       	    SET CODH_LENG = #CODH_LENG#,
+	                CODH_DESC = #CODH_DESC#,
+	                CODH_RMRK = #CODH_RMRK#,
+	                SYST_NAME = #SYST_NAME#,
+	                KIND_YSNO = #KIND_YSNO#,
+	                WORK_DATE = #WORK_DATE#,
+	                WORK_USID = #WORK_USID#
+	         WHERE  CODH_FLNM = #CODH_FLNM#;
+	                                    
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : FAME0030_Oracle 화면의 관리코드등록 소분류 수정
+    실행 예제  :
+********************************************************************************/
+-->
+	<update id="FAMA0070.UPDATE01" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE TM_CODEXD
+	        SET     CODD_DESC  = #CODD_DESC#,
+	                CODD_REF1  = #CODD_REF1#,
+	                CODD_REF2  = #CODD_REF2#,
+	                CODD_REF3  = #CODD_REF3#,
+	                CODD_REF4  = #CODD_REF4#,
+	                CODD_REF5  = #CODD_REF5#,
+	                CODD_REF6  = #CODD_REF6#,
+	                SORT_ORDE  = #SORT_ORDE#,
+	                CODD_YSNO  = #CODD_YSNO#,
+	                POSX_YSNO  = (CASE WHEN To_Number(#POSX_YSNO#) = '1' THEN 'Y' ELSE 'N' END),
+	                WORK_DATE  = #WORK_DATE#,
+	                WORK_USID  = #WORK_USID#
+	        WHERE   CODH_FLNM  = #CODH_FLNM#
+	        AND     CODD_VALU  = #CODD_VALU#;
+	                                    
+		]]>
+	</update>
+<!--
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : FAME0030_Oracle 화면의 관리코드등록 대분류 삭제
+    실행 예제  :
+********************************************************************************/ 
+-->
+	<delete id="FAMA0070.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+			 DELETE FROM TM_CODEXH
+	          WHERE   CODH_FLNM = #CODH_FLNM#;
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 장복두
+    작  성  일 : 2011.05.04
+    내      용 : FAME0030_Oracle 화면의 관리코드등록 소분류 삭제
+    실행 예제  :
+********************************************************************************/
+-->
+	<delete id="FAMA0070.DELETE01" parameterClass="hashmap">
+		<![CDATA[
+			DELETE FROM TM_CODEXD
+	         WHERE CODH_FLNM = #CODH_FLNM#
+	           AND CODD_VALU = #CODD_VALU#;
+			
+		]]>
+	</delete>
+</sqlMap>

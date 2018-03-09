@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATD0030">
+
+ <!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차관리 조회
+********************************************************************************/
+-->
+    <select id="HATD0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+	SELECT /* HATD0030.SEARCH00.연차조정 */
+			C.STDS_YEAR	 /*기준년도*/
+			,A.EMPL_NUMB  /*사원번호*/
+			,A.EMPL_NAME  /*사원명*/
+			,B.DEPT_NAME	 /*부서명*/
+			,SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME    /*직위 */
+			,A.ENCO_DATE	 /*입사일*/
+			,C.ANSD_DATE	 /*연차기산일*/
+			,NVL(C.OCUR_ANDC, 0)	OCUR_ANDC /*발생연차개수*/
+			,NVL(D.ADJT_ANDC, 0)	ADJT_ANDC /*조정연차개수*/
+			,NVL(C.OCUR_ANDC,0) + NVL(D.ADJT_ANDC,0) TOTL_ANDC	 /*총연차개수*/
+			,NVL(E.USEX_ANDC, 0)	USEX_ANDC /*사용연차개수*/
+			,NVL(C.OCUR_ANDC,0) + NVL(D.ADJT_ANDC,0) - NVL(E.USEX_ANDC, 0)	USEB_ANDC /*잔여연차개수*/
+			,NVL(C.PROM_ANDC, 0)	PROM_ANDC /*촉진연차개수*/
+			,NVL(C.OCUR_VADC, 0)	OCUR_VADC /*발생휴가일수*/
+			,NVL(E.USEX_VADC, 0)	USEX_VADC /*사용휴가일수*/
+			,NVL(C.OCUR_VADC,0) - NVL(E.USEX_VADC,0) USEB_VADC	 /*사용가능휴가일수*/
+			,C.ANSD_DATE	 /*연차기산일*/
+			,C.INST_USID	 /*등록자*/
+			,C.INST_DATE	 /*등록일시*/
+			,C.UPDT_USID	 /*수정자*/
+			,C.UPDT_DATE	 /*수정일시*/
+		FROM HR_MASTXM A /*인사마스터 */
+			INNER JOIN TM_DEPTXM B /*부서마스터*/
+					ON A.DEPT_CODE = B.DEPT_CODE
+			INNER JOIN  AT_ANNUXM C /*연차관리*/
+					ON A.EMPL_NUMB = C.EMPL_NUMB  
+			LEFT OUTER JOIN (SELECT STDS_YEAR
+									,EMPL_NUMB
+									,SUM(ADJT_ANDC) ADJT_ANDC
+								FROM AT_ANNUXD
+								WHERE STDS_YEAR = #STDS_YEAR#
+								GROUP BY STDS_YEAR, EMPL_NUMB
+							) D /* 조정연차 */
+					ON A.EMPL_NUMB = D.EMPL_NUMB
+			LEFT OUTER JOIN (SELECT EMPL_NUMB
+									,SUM(DECODE(WORK_GUBN, '4', WORK_TIME, 0)) USEX_ANDC /*연차휴가*/
+									,SUM(DECODE(WORK_GUBN, '6', WORK_TIME, 0)) USEX_VADC /*정기휴가*/
+								FROM AT_ATTEDY
+								WHERE SUBSTR(ATTE_DATE, 1, 4) = #STDS_YEAR#
+							GROUP BY EMPL_NUMB
+							) E /*일근태*/
+					ON A.EMPL_NUMB = E.EMPL_NUMB
+		WHERE 1=1
+    ]]>
+    
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+        A.DEPT_CODE LIKE #DEPT_CODE# || '%'            /* 부서 */ 
+    </isNotEmpty> 
+    
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">                    
+       A.EMPL_NUMB = #EMPL_NUMB#										/* 사원번호 */
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="STDS_YEAR">                     
+       C.STDS_YEAR = #STDS_YEAR#										/* 기준년도 */
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="WODN_CODE">                     
+       A.WODN_CODE LIKE #WODN_CODE#										/* 재직구분 */
+    </isNotEmpty>
+
+    <![CDATA[
+         ORDER BY A.DEPT_CODE, A.OPOS_CODE, A.EMPL_NUMB
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차관리 저장
+********************************************************************************/
+-->
+	<update id="HATD0030.SAVE00" parameterClass="hashmap">
+    	UPDATE AT_ANNUXM
+    	SET OCUR_ANDC = #OCUR_ANDC#		/*발생연차개수*/
+    	   ,STDS_ANDC = #OCUR_ANDC#		/*기준연차개수*/
+    	   ,APLY_ANDC = #OCUR_ANDC#		/*적용연차개수*/
+    	   ,USEB_ANDC = #OCUR_ANDC#		/*사용가능연차개수*/
+    	   ,PROM_ANDC = #PROM_ANDC#	/*촉진연차개수*/
+    	   ,OCUR_VADC = #OCUR_VADC#	/*발생휴가개수*/
+    	WHERE STDS_YEAR = #STDS_YEAR#	/* 기준년도 */
+    	  AND EMPL_NUMB  = #EMPL_NUMB#	/*사원번호*/
+	</update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차관리 삭제
+********************************************************************************/
+-->
+	<delete id="HATD0030.DELETE00" parameterClass="hashmap">
+		DELETE FROM AT_ANNUXM
+		WHERE STDS_YEAR = #STDS_YEAR#	/*기준년도*/
+		  AND ALAD_SEQN = NVL(#ALAD_SEQN#, 0)	/*연차조정일련번호*/
+		  AND EMPL_NUMB  = #EMPL_NUMB#	/*사원번호  ss*/
+	</delete>	
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 김칠석
+     작  성  일 : 2016.09.09
+     내       용 : 연차관리 프로시저 호출
+********************************************************************************/
+-->
+	<procedure id="HATD0030.CREATE00" parameterClass="hashmap">
+	<![CDATA[
+         {CALL PKG_HRAN0010.SP_HRAN0010_PROC00( #STDS_YEAR# )}
+	]]>
+	</procedure>
+</sqlMap>

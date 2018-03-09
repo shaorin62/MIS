@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="YEAA0070T04" classname="YEAA0070T01" left="0" top="0" width="1024" height="493" titletext="연금저축">
+    <Layouts>
+      <Layout>
+        <Static id="Static12" taborder="6" text="월세액 소득공제 명세서" cssclass="sta_WF_Subtitle" left="9" top="12" width="159" height="21"/>
+        <Grid id="grdYEA_RENTA1" taborder="0" useinputpanel="false" left="10" top="34" right="10" binddataset="dsYEA_RENTA1" height="166" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="60"/>
+                <Column size="100"/>
+                <Column size="80"/>
+                <Column size="70"/>
+                <Column size="160"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="33" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="임대인&#10;성명" wordwrap="true"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="주민(사업자)&#10;번호" wordwrap="true"/>
+                <Cell col="2" style="backgroundimage: ;" text="주택유형" wordwrap="true"/>
+                <Cell col="3" style="backgroundimage: ;" text="주택계약&#10;면적(㎡)" wordwrap="true"/>
+                <Cell col="4" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="임대차계약서상&#10;주소지" wordwrap="true"/>
+                <Cell col="5" displaytype="text" style="backgroundimage: ;" text="임대차계약&#10;개시일" wordwrap="true"/>
+                <Cell col="6" displaytype="text" style="backgroundimage: ;" text="임대차계약&#10;종료일" wordwrap="true"/>
+                <Cell col="7" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="연간월세액"/>
+                <Cell col="8" displaytype="text" style="backgroundimage:&#10;;" text="공제금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="normal" style="align:left;background:&#10;;" text="bind:YEA_RT1_STR001" editlimit="20" editimemode="hangul" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="1" displaytype="text" edittype="normal" style="align:center;background:&#10;;" text="bind:YEA_RT1_STR002" editlimit="20" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="2" displaytype="combo" edittype="combo" text="bind:YEA_RT1_STR003"/>
+                <Cell col="3" displaytype="number" edittype="masknumber" text="bind:YEA_RT1_NUM003" mask="###.##" editlimit="-1" editautoselect="true" editlimitbymask="both"/>
+                <Cell col="4" displaytype="text" edittype="normal" style="align:left;background:&#10;;" text="bind:YEA_RT1_STR004" editlimit="100" editlengthunit="ascii"/>
+                <Cell col="5" displaytype="date" edittype="date" style="align:center;background:&#10;;" text="bind:YEA_RT1_STR005" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="date" edittype="date" style="align:center;background:&#10;;" text="bind:YEA_RT1_STR006" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="number" edittype="text" editfilter="number" style="align:right;background:&#10;;" text="bind:YEA_RT1_NUM001" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="8" displaytype="number" style="align:right;" text="bind:YEA_RT1_NUM002" mask="#,##0" editautoselect="true"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation" taborder="1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="183" top="12" width="168" height="21"/>
+        <Button id="btnAddRow01" taborder="2" text="행추가" onclick="btnAddRow01_OnClick" cssclass="btn_WF_Module" top="9" width="62" height="21" right="77"/>
+        <Button id="btnDelRow01" taborder="3" text="행삭제" onclick="btnDelRow01_OnClick" cssclass="btn_WF_Module" top="9" height="21" right="10" width="64"/>
+        <Static id="Static09" taborder="4" text="h 6" visible="false" left="8" top="28" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation04" taborder="5" cssclass="sta_WF_line" left="175" top="15" width="10" height="13"/>
+        <Static id="Static00" taborder="7" text="금전소비대차 계약내용" cssclass="sta_WF_Subtitle" left="9" top="209" width="165" height="21"/>
+        <Grid id="grdYEA_RENTA2_1" taborder="8" binddataset="dsYEA_RENTA2" useinputpanel="false" left="10" top="231" right="10" height="107" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="70"/>
+                <Column size="111"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="50"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="23" band="head"/>
+                <Row size="23" band="head"/>
+                <Row size="20"/>
+              </Rows>
+              <Band id="head">
+                <Cell rowspan="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="대주&#10;성명" wordwrap="true"/>
+                <Cell col="1" rowspan="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="주민등록번호" wordwrap="true"/>
+                <Cell col="2" rowspan="2" displaytype="text" style="backgroundimage: ;" text="금전소비&#10;대차계약&#10;시작일" wordwrap="true"/>
+                <Cell col="3" rowspan="2" displaytype="text" style="backgroundimage: ;" text="금전소비&#10;대차계약&#10;종료일" wordwrap="true"/>
+                <Cell col="4" rowspan="2" displaytype="text" style="backgroundimage: ;" text="차입금&#10;이자율&#10;(%)" wordwrap="true"/>
+                <Cell col="5" colspan="3" displaytype="text" text="원리금 상환액"/>
+                <Cell col="8" rowspan="2" displaytype="text" text="공제금액"/>
+                <Cell row="1" col="5" displaytype="text" cssclass="Cellgrd_WF_essential" text="계"/>
+                <Cell row="1" col="6" displaytype="text" style="backgroundimage: ;" text="원리금"/>
+                <Cell row="1" col="7" displaytype="text" style="backgroundimage: ;" text="이자"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="normal" style="align:left;background:&#10;;" text="bind:YEA_RT2_STR001" editlimit="20" editimemode="hangul" editautoselect="true" editlengthunit="utf8"/>
+                <Cell col="1" displaytype="text" edittype="mask" style="align:center;background:&#10;;" text="bind:YEA_RT2_STR002" mask="######-#######"/>
+                <Cell col="2" displaytype="date" edittype="date" style="align:center;" text="bind:YEA_RT2_STR003" calendardisplaynulltype="none"/>
+                <Cell col="3" displaytype="date" edittype="date" style="align:center;" text="bind:YEA_RT2_STR004" calendardisplaynulltype="none"/>
+                <Cell col="4" displaytype="number" edittype="masknumber" editfilter="none" style="align:right;background:&#10;;" text="bind:YEA_RT2_NUM001" mask="##.##" editlimit="2" editautoselect="true" editlimitbymask="both"/>
+                <Cell col="5" displaytype="number" style="align:right;" text="bind:YEA_RT2_NUM002" mask="#,##0" editlimit="15" editlengthunit="ascii"/>
+                <Cell col="6" displaytype="number" edittype="text" editfilter="number" style="align:right;background:&#10;;" text="bind:YEA_RT2_NUM003" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="7" displaytype="number" edittype="text" editfilter="number" style="align:right;background:&#10;;" text="bind:YEA_RT2_NUM004" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="8" displaytype="number" style="align:right;" text="bind:YEA_RT2_NUM005" mask="#,##0" editlimit="15" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation00" taborder="9" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="175" top="209" width="168" height="21"/>
+        <Button id="btnAddRow02" taborder="10" text="행추가" onclick="btnAddRow02_OnClick" cssclass="btn_WF_Module" top="206" right="77" width="62" height="21"/>
+        <Button id="btnDelRow02" taborder="11" text="행삭제" onclick="btnDelRow02_OnClick" cssclass="btn_WF_Module" top="206" right="10" width="64" height="21"/>
+        <Static id="Static01" taborder="12" text="h 6" visible="false" left="8" top="225" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation01" taborder="13" cssclass="sta_WF_line" left="167" top="212" width="10" height="13"/>
+        <Static id="Static02" taborder="14" text="임대차 계약내용" cssclass="sta_WF_Subtitle" left="9" top="348" width="127" height="21"/>
+        <Grid id="grdYEA_RENTA2_2" taborder="15" binddataset="dsYEA_RENTA2" useinputpanel="false" left="10" top="370" right="10" height="107" onexpandup="fn_HelpDialoge" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="60"/>
+                <Column size="100"/>
+                <Column size="80"/>
+                <Column size="60"/>
+                <Column size="180"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="33" band="head"/>
+                <Row size="20"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="임대인&#10;성명" wordwrap="true"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="주민등록번호" wordwrap="true"/>
+                <Cell col="2" style="backgroundimage: ;" text="주택유형" wordwrap="true"/>
+                <Cell col="3" style="backgroundimage: ;" text="주택계약&#10;면적(㎡)" wordwrap="true"/>
+                <Cell col="4" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="임대차계약서상&#10;주소지" wordwrap="true"/>
+                <Cell col="5" displaytype="text" style="backgroundimage: ;" text="임대차계약&#10;개시일" wordwrap="true"/>
+                <Cell col="6" displaytype="text" style="backgroundimage: ;" text="임대차계약&#10;종료일" wordwrap="true"/>
+                <Cell col="7" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="전세보증금" wordwrap="true"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_RT2_STR005" editlimit="20" editimemode="hangul" editautoselect="true" editlengthunit="utf8"/>
+                <Cell col="1" displaytype="text" edittype="mask" style="align:center;background: ;" text="bind:YEA_RT2_STR006" mask="######-#######"/>
+                <Cell col="2" displaytype="combo" edittype="combo" text="bind:YEA_RT2_STR007"/>
+                <Cell col="3" displaytype="number" edittype="masknumber" text="bind:YEA_RT2_NUM006" mask="###.##" editautoselect="true" editlimitbymask="both"/>
+                <Cell col="4" displaytype="text" edittype="normal" style="align:left;background: ;" text="bind:YEA_RT2_STR008" editlimit="100" editlengthunit="ascii"/>
+                <Cell col="5" displaytype="date" edittype="date" style="align:center;background: ;" text="bind:YEA_RT2_STR009" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="date" edittype="date" style="align:center;background: ;" text="bind:YEA_RT2_STR010" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_RT2_NUM007" mask="#,##0" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation02" taborder="16" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="135" top="348" width="168" height="21"/>
+        <Static id="Static03" taborder="19" text="h 6" visible="false" left="8" top="364" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation03" taborder="20" cssclass="sta_WF_line" left="127" top="351" width="10" height="13"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.0"><![CDATA[this.btnAddRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_RentaAddRow(obj,e);
+}
+
+this.btnDelRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_RentaDelRow(obj,e);
+}
+
+this.btnAddRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_RentaAddRow(obj,e);
+}
+
+this.btnDelRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_RentaDelRow(obj,e);
+}]]></Script>
+  </Form>
+</FDL>

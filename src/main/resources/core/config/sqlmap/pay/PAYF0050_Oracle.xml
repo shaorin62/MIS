@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYF0050">
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 28
+     내    용 : 퇴직금정산내역 조회
+******************************************************************************* */
+-->
+    <select id="PAYF0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* PAYF0050.SEARCH00.퇴직금정산내역 조회 */
+                   A.EMPL_NUMB     /* 사원번호 */
+                 , B.EMPL_NAME
+                 , SF_GET_DEPTNAME(B.DEPT_CODE) AS DEPT_NAME
+                 , A.RECE_SEQN     /* 퇴직정산회차 */
+                 , A.RSTR_DATE     /* 귀속연도시작일 */
+                 , A.REND_DATE     /* 귀속연도종료일 */
+                 , SF_GET_COMMNAME('RERE_CODE',A.RERE_CODE) AS RERE_CODE /* 퇴직사유[RERE_CODE] */
+                 , A.PFIR_NAME     /* 종근무처명 */
+                 , A.PBUS_NUMB     /* 종사업자번호 */
+                 , A.MIDL_RPAY     /* 중간퇴직급여 */
+                 , A.MINT_RPAY     /* 중간비과세퇴직급여 */
+                 , A.MITA_RPAY     /* 중간과세대상퇴직급여 */
+                 , A.FINL_RPAY     /* 최종퇴직급여 */
+                 , A.FINT_RPAY     /* 최종비과세퇴직급여 */
+                 , A.FITA_RPAY     /* 최종과세대상퇴직급여 */
+                 , A.TOTL_RPAY     /* 합산퇴직급여 */
+                 , A.TLNT_RPAY     /* 합산비과세퇴직급여 */
+                 , A.TLTA_RPAY     /* 합산과세대상퇴직급여 */
+                 , A.MIDL_ISDT     /* 중간입사일 */
+                 , A.MIDL_STDT     /* 중간기산일 */
+                 , A.MIDL_ENDT     /* 중간퇴사일 */
+                 , A.MIDL_PYDT     /* 중간지급일 */
+                 , A.MICT_MONT     /* 중간근속월수 */
+                 , A.MIEX_MONT     /* 중간제외월수 */
+                 , A.MIAD_MONT     /* 중간가산월수 */
+                 , A.MICT_YEAR     /* 중간근속연수 */
+                 , A.FINL_ISDT     /* 최종입사일 */
+                 , A.FINL_STDT     /* 최종기산일 */
+                 , A.FINL_ENDT     /* 최종퇴사일 */
+                 , A.FINL_PYDT     /* 최종지급일 */
+                 , A.FICT_MONT     /* 최종근속월수 */
+                 , A.FIEX_MONT     /* 최종제외월수 */
+                 , A.FIAD_MONT     /* 최종가산월수 */
+                 , A.FICT_YEAR     /* 최종근속연수 */
+                 , A.TOTL_ISDT     /* 합산입사일 */
+                 , A.TOTL_STDT     /* 합산기산일 */
+                 , A.TOTL_ENDT     /* 합산퇴사일 */
+                 , A.TLCT_MONT     /* 합산근속월수 */
+                 , A.TLEX_MONT     /* 합산제외월수 */
+                 , A.TLAD_MONT     /* 합산가산월수 */
+                 , A.TLOL_MONT     /* 합산중복월수 */
+                 , A.TLCT_YEAR     /* 합산근속연수 */
+                 , A.BEFO_STDT     /* 이전기산일 */
+                 , A.BEFO_ENDT     /* 이전퇴사일 */
+                 , A.BFCT_MONT     /* 이전근속월수 */
+                 , A.BFEX_MONT     /* 이전제외월수 */
+                 , A.BFAD_MONT     /* 이전가산월수 */
+                 , A.BFCT_YEAR     /* 이전근속연수 */
+                 , A.AFTR_STDT     /* 이후기산일 */
+                 , A.AFTR_ENDT     /* 이후퇴사일 */
+                 , A.AFCT_MONT     /* 이후근속월수 */
+                 , A.AFEX_MONT     /* 이후제외월수 */
+                 , A.AFAD_MONT     /* 이후가산월수 */
+                 , A.AFCT_YEAR     /* 이후근속연수 */
+                 , A.AFRD_AMOT     /* 정률공제액 */
+                 , A.CSYD_AMOT     /* 근속연수공제액 */
+                 , A.STAN_ASST     /* 퇴직소득과세표준 */
+                 , A.BFST_ASST     /* 이전과세표준 */
+                 , A.BFYA_STAD     /* 이전연평균과세표준 */
+                 , A.BFYA_CTAX     /* 이전연평균산출세액 */
+                 , A.BEFO_CTAX     /* 이전산출세액 */
+                 , A.AFST_ASST     /* 이후과세표준 */
+                 , A.AFYA_STAD     /* 이후연평균과세표준 */
+                 , A.AFCS_ASST     /* 이후환산과세표준 */
+                 , A.AFCC_TAXX     /* 이후환산산출세액 */
+                 , A.AFYA_CTAX     /* 이후연평균산출세액 */
+                 , A.AFTR_CTAX     /* 이후산출세액 */
+                 , A.TLST_ASST     /* 합산과세표준 */
+                 , A.TLYA_STAD     /* 합산연평균과세표준 */
+                 , A.TLCS_ASST     /* 합산환산과세표준 */
+                 , A.TLCC_TAXX     /* 합산환산산출세액 */
+                 , A.TLYA_CTAX     /* 합산연평균산출세액 */
+                 , A.TOTL_CTAX     /* 합산산출세액 */
+                 , A.TOTL_PPTX     /* 합산기납부세액 */
+                 , A.TLSR_TAMT     /* 합산신고대상세액 */
+                 , A.TAPS_TAMT     /* 과세이연신고대상세액 */
+                 , A.TAPF_NAME     /* 과세이연기관사업자명 */
+                 , A.TAPB_NUMB     /* 과세이연기관사업자번호 */
+                 , A.TAPA_NUMB     /* 과세이연입금계좌번호 */
+                 , A.TAPD_DATE     /* 과세이연계좌입금일 */
+                 , A.TAPD_AMOT     /* 과세이연입금액 */
+                 , A.TAPT_RPAY     /* 과세이연퇴직급여 */
+                 , A.TAPT_TAMT     /* 과세이연적용세액 */
+                 , A.SURE_ITAX     /* 신고대상소득세 */
+                 , A.SURE_RTAX     /* 신고대상주민세 */
+                 , A.SURE_FTAX     /* 신고대상농특세 */
+                 , A.PORE_ITAX     /* 이연퇴직소득세 */
+                 , A.PORE_RTAX     /* 이연퇴직주민세 */
+                 , A.PORE_FTAX     /* 이연퇴직농특세 */
+                 , A.DEDU_ITAX     /* 차감징수소득세 */
+                 , A.DEDU_RTAX     /* 차감징수주민세 */
+                 , A.DEDU_FTAX     /* 차감징수농특세 */
+                 , NVL(A.DEDU_ITAX,0) + NVL(A.DEDU_RTAX,0) + NVL(A.DEDU_FTAX,0) AS DEDU_TOT
+                 , C.CLSE_YSNO /* 마감여부 */
+                 /* 2016 퇴직반영 */
+                 , A.CALC_REIN     /* 정산퇴직소득_2016.01.01이후 */
+                 , A.CWYC_DDUC     /* 근속연수공제_2016.01.1이후 */
+                 , A.CONV_WAGE     /* 환산급여_2016.01.01이후 */
+                 , A.COWA_DDUC     /* 환산급여공제_2016.01.01이후 */
+                 , A.REIN_STAS     /* 퇴직소득과세표준_2016.01.01이후 */
+                 , A.CONV_CLTX     /* 환산산출세액_2016.01.01이후 */
+                 , A.CLCR_TXAM     /* 산출세액_2016.01.01이후 */
+                 , A.TAXX_YEAR     /* 퇴직일이 속하는 과세연도 */
+                 , A.SPUE_CLTX     /* 특례적용산출세액 */
+                 , A.SURE_ITAX + A.SURE_RTAX + A.SURE_FTAX AS SURE_TAMT /* 신고대상합계 */
+              FROM PY_RTPWXM A      /* [퇴직소득원천징수영수증] */
+              LEFT OUTER JOIN HR_MASTXM B
+                ON A.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN PY_RTPCXM C
+                ON A.EMPL_NUMB = C.EMPL_NUMB
+               AND A.RECE_SEQN = C.RECE_SEQN
+             WHERE SUBSTR(A.REND_DATE, 1, 4) = #BASE_YEAR#
+        ]]>
+            <isNotEmpty prepend="AND" property="RERE_CODE">
+                   A.RERE_CODE = #RERE_CODE#
+            </isNotEmpty>
+        ORDER BY REND_DATE DESC, A.EMPL_NUMB
+    </select>
+<!--
+/* ******************************************************************************
+     작 성 자 : 신일용
+     작 성 일 : 2014.10.14
+     내    용 : 퇴직정산 입력마감, 확정수정
+******************************************************************************* */
+-->
+    <insert id="PAYF0050.SAVE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+                UPDATE PY_RTPCXM /* PAYF0050.SAVE00.퇴직정산 입력마감, 확정수정 */
+                   SET CLOS_YSNO = #CLOS_YSNO#
+                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                   AND RECE_SEQN = #RECE_SEQN#
+        ]]>
+    </insert>
+<!--
+/* ******************************************************************************
+     작 성 자 : 신일용
+     작 성 일 : 2014.10.14
+     내    용 : 퇴직정산 삭제
+******************************************************************************* */
+-->
+    <delete id="PAYF0050.DELETE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+                DECLARE /* PAYF0050.DELETE00.퇴직정산 삭제 */
+                    v_CLOS_YSNO PY_RTPCXM.CLOS_YSNO%TYPE;
+                BEGIN
+
+                    SELECT CLOS_YSNO INTO v_CLOS_YSNO
+                      FROM PY_RTPCXM
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                       ;
+
+                    /* 마감되었다면 수정불가 */
+                    IF v_CLOS_YSNO = '1' THEN
+                      RAISE_APPLICATION_ERROR(-20000,'이미 퇴직처리가 마감되었습니다. 삭제가 불가 합니다!');
+                    END IF;
+
+                    /* 상여삭제 */
+                    DELETE FROM PY_RTBONU
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                      ;
+
+                    /* 급여삭제 */
+                    DELETE FROM PY_RTPAYX
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                      ;
+
+                    /* 퇴직소득과세이연계좌 */
+                    DELETE FROM PY_RTPPXM
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                    ;
+
+                    /* 퇴직처리삭제 */
+                    DELETE FROM PY_RTPWXM
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                    ;
+
+                    /* 퇴직지급조서삭제 */
+                    DELETE FROM PY_RTPCXM
+                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                       AND RECE_SEQN = #RECE_SEQN#
+                    ;
+
+                END;
+        ]]>
+    </delete>
+</sqlMap>

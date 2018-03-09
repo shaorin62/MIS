@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYD0030">
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.11.08
+     내    용 : 급여 수당목록 조회
+********************************************************************************/
+-->
+    <select id="PAYD0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYD0030.SEARCH00.급여 수당목록 조회 */
+                   DISTINCT 
+                   A.EXPD_CODE                  AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상전지급액'               AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , G.SORT_ORDR * 10 + 1         AS  SORT_ORDR           /*정렬순서*/
+                 , A.EXPD_CODE||TO_NCHAR('_SMLB_AMOT')    AS  BIND_NAME   /*그리드 Cell의 BindDataset 설정 값*/
+                 , G.EXPD_NAME  AS  HEAD_LINE               /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM PY_SIMUXA A
+		              LEFT OUTER JOIN PY_ALLDED G
+		                ON A.EXPD_CODE = G.EXPD_CODE
+             WHERE A.SMUL_SEQN = #SMUL_SEQN#
+             
+            UNION ALL
+            SELECT
+                   DISTINCT 
+                   A.EXPD_CODE                  AS  EXPD_CODE           /*수당공제코드*/
+                 , '시뮬레이션결과'             AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , G.SORT_ORDR * 10 + 2         AS  SORT_ORDR           /*정렬순서*/
+                 , A.EXPD_CODE||TO_NCHAR('_SMLA_AMOT')    AS  BIND_NAME   /*그리드 Cell의 BindDataset 설정 값*/
+                 , G.EXPD_NAME  AS  HEAD_LINE               /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM PY_SIMUXA A
+                      LEFT OUTER JOIN PY_ALLDED G
+                        ON A.EXPD_CODE = G.EXPD_CODE
+             WHERE A.SMUL_SEQN = #SMUL_SEQN#
+             
+            UNION ALL
+            SELECT
+                   DISTINCT 
+                   A.EXPD_CODE                  AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상금액'                   AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , G.SORT_ORDR * 10 + 3         AS  SORT_ORDR           /*정렬순서*/
+                 , A.EXPD_CODE||TO_NCHAR('_CALC_AMOT')    AS  BIND_NAME   /*그리드 Cell의 BindDataset 설정 값*/
+                 , G.EXPD_NAME  AS  HEAD_LINE               /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM PY_SIMUXA A
+                      LEFT OUTER JOIN PY_ALLDED G
+                        ON A.EXPD_CODE = G.EXPD_CODE
+             WHERE A.SMUL_SEQN = #SMUL_SEQN#
+             
+            UNION ALL
+            SELECT
+                   DISTINCT 
+                   A.EXPD_CODE                  AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상율'                     AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , G.SORT_ORDR * 10 + 4         AS  SORT_ORDR           /*정렬순서*/
+                 , A.EXPD_CODE||TO_NCHAR('_CALC_RATE')    AS  BIND_NAME   /*그리드 Cell의 BindDataset 설정 값*/
+                 , G.EXPD_NAME  AS  HEAD_LINE               /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM PY_SIMUXA A
+                      LEFT OUTER JOIN PY_ALLDED G
+                        ON A.EXPD_CODE = G.EXPD_CODE
+             WHERE A.SMUL_SEQN = #SMUL_SEQN#
+            UNION ALL
+            SELECT TO_NCHAR('A9999')              AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상전지급액'               AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , 99991                        AS  SORT_ORDR           /*정렬순서*/
+                 , TO_NCHAR('SMLB_AMOT')          AS  BIND_NAME           /*그리드 Cell의 BindDataset 설정 값*/
+                 , TO_NCHAR('합계')               AS  HEAD_LINE           /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM DUAL
+            UNION ALL
+            SELECT TO_NCHAR('A9999')              AS  EXPD_CODE           /*수당공제코드*/
+                 , '시뮬레이션결과'             AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , 99992                        AS  SORT_ORDR           /*정렬순서*/
+                 , TO_NCHAR('SMLA_AMOT')          AS  BIND_NAME           /*그리드 Cell의 BindDataset 설정 값*/
+                 , TO_NCHAR('합계')               AS  HEAD_LINE           /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM DUAL             
+            UNION ALL
+            SELECT TO_NCHAR('A9999')              AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상금액'                   AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , 99993                        AS  SORT_ORDR           /*정렬순서*/
+                 , TO_NCHAR('CALC_AMOT')          AS  BIND_NAME           /*그리드 Cell의 BindDataset 설정 값*/
+                 , TO_NCHAR('합계')               AS  HEAD_LINE           /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM DUAL             
+            UNION ALL
+            SELECT TO_NCHAR('A9999')              AS  EXPD_CODE           /*수당공제코드*/
+                 , '인상율'                     AS  EXPD_NAME           /*수당공제명*/
+                 , 'number'                     AS  DISP_TYPE           /*그리드 컬럼 표시 속성*/
+                 , 'none'                       AS  EDIT_TYPE           /*그리드 컬럼의 편집 속성*/
+                 , 'A'                          AS  EXPD_GUBN           /*수당공제구분 A:수당, D:공제*/
+                 , 99994                        AS  SORT_ORDR           /*정렬순서*/
+                 , TO_NCHAR('CALC_RATE')          AS  BIND_NAME           /*그리드 Cell의 BindDataset 설정 값*/
+                 , TO_NCHAR('합계')               AS  HEAD_LINE           /*그리드 Header의 Line 1에 표시할 제목*/
+                 
+                 , 0            AS  ROWX_SPAN               /*그리드 Header의 rowspan 값*/                 
+                 , 'white'      AS  BACK_COLR               /*그리드 Body BackGround Color */
+              FROM DUAL             
+       
+            ORDER BY EXPD_GUBN, SORT_ORDR
+     ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.11.08
+     내    용 : 급여상세(개인) 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYD0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap" remapResults="true">
+    <![CDATA[
+            SELECT /* PAYD0030.SEARCH01.급여상세(개인) 테이블 조회 */
+                   B.EMPL_NUMB    /* 사원번호 */
+                 , E.EMPL_NAME    /* 성명 */
+                 , SF_GET_COMMNAME('DTGN_CODE', D.DTGN_CODE) AS DTGN_NAME   /* 부문 */
+                 , SF_GET_SECTNAME2(B.DEPT_CODE,A.STDS_DATE) AS SECT_NAME   /* 부실 */
+                 , SF_GET_DEPTNAME2(B.DEPT_CODE,A.STDS_DATE) AS DEPT_NAME   /* 부서 */
+                 , F.COMD_CDNM AS CPOS_NAME                                 /* 직급 */
+                 , SF_GET_COMMNAME('DUTY_CODE', B.DUTY_CODE) AS DUTY_NAME   /* 직무 */
+                 , SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+                 
+                 , C.SMB1_AMOT   /*시뮬레이션이전1금액(기본급 인상전지급액)*/
+                 , C.SMB2_AMOT   /*시뮬레이션이전2금액(기본급 시뮬레이션결과)*/
+                 , C.SMB3_AMOT   /*시뮬레이션이전3금액(기본급 인상금액)*/
+                 , C.SMB1_AMOT + C.SMB2_AMOT + C.SMB3_AMOT  AS   SMB4_AMOT    /*합계 인상전금액*/
+                 
+                 , C.SMA1_AMOT   /*시뮬레이션이후1금액(연장수당 인상전지급액)*/
+                 , C.SMA2_AMOT   /*시뮬레이션이후2금액(연장수당 시뮬레이션결과)*/
+                 , C.SMA3_AMOT   /*시뮬레이션이후3금액(연장수당 인상금액)*/
+                 , C.SMA1_AMOT + C.SMA2_AMOT + C.SMA3_AMOT  AS   SMA4_AMOT    /*합계 시뮬레이션결과*/
+
+                 , C.SMC1_AMOT   /*시뮬레이션인상1금액(상여금 인상전지급액)*/
+                 , C.SMC2_AMOT   /*시뮬레이션인상2금액(상여금 시뮬레이션결과)*/
+                 , C.SMC3_AMOT   /*시뮬레이션인상3금액(상여금 인상금액)*/
+                 , C.SMC1_AMOT + C.SMC2_AMOT + C.SMC3_AMOT  AS   SMC4_AMOT    /*합계 인상금액*/
+                 
+                 
+                 , CASE WHEN C.SMB1_AMOT = 0 THEN 0 ELSE ROUND(C.SMC1_AMOT / C.SMB1_AMOT * 100, 2) END AS  SMC1_RATE   /*기본급 인상율*/
+                 , CASE WHEN C.SMB2_AMOT = 0 THEN 0 ELSE ROUND(C.SMC2_AMOT / C.SMB2_AMOT * 100, 2) END AS  SMC2_RATE   /*연장수당 인상율*/
+                 , CASE WHEN C.SMB3_AMOT = 0 THEN 0 ELSE ROUND(C.SMC3_AMOT / C.SMB3_AMOT * 100, 2) END AS  SMC3_RATE   /*상여금 인상율*/
+                 , CASE WHEN (C.SMB1_AMOT + C.SMB2_AMOT + C.SMB3_AMOT) = 0 THEN 0 
+                        ELSE ROUND((C.SMC1_AMOT + C.SMC2_AMOT + C.SMC3_AMOT) / (C.SMB1_AMOT + C.SMB2_AMOT + C.SMB3_AMOT) * 100, 2) 
+                        END AS   SMC4_RATE    /*합계 인상율*/
+
+              FROM PY_SIMUXM A
+		             INNER JOIN PY_SIMUXA C
+		                ON A.SMUL_SEQN = C.SMUL_SEQN
+		             INNER JOIN TABLE(SF_HR_MASTXM( C.EMPL_NUMB, A.STDS_DATE ) ) B
+		                ON B.EMPL_NUMB = C.EMPL_NUMB               
+		              LEFT OUTER JOIN VI_DEPTXM D
+		                ON B.DEPT_CODE = D.DEPT_CODE
+		              LEFT OUTER JOIN HR_MASTXM E
+		                ON E.EMPL_NUMB = B.EMPL_NUMB
+		              LEFT OUTER JOIN TM_CODEXD F
+		                ON F.COMM_CODE = 'CPOS_CODE'
+		               AND F.COMD_CODE = B.CPOS_CODE
+		              LEFT OUTER JOIN TM_CODEXD G
+		                ON G.COMM_CODE = 'OPOS_CODE'
+		               AND G.COMD_CODE = B.OPOS_CODE
+            WHERE A.SMUL_SEQN = #SMUL_SEQN#
+
+            ORDER BY B.OPOS_CODE, E.CPOS_CODE, E.ENCO_DATE
+    ]]>
+    </select>
+
+</sqlMap>

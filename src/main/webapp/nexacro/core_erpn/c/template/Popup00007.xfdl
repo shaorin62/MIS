@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Popup00007" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="[예외]공통버튼사용한 팝업2" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadProcess" left="0" width="1070" top="0" height="763">
+    <Layouts>
+      <Layout>
+        <Grid autoenter="TRUE" binddataset="dsFS_ASSPXD" cellsizingtype="both" enable="true" id="grdFS_ASSPXD" useinputpanel="false" selecttype="multirow" taborder="17" tabstop="false" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="15" right="15" top="187" bottom="15" cssclass="styGrid01" onexpandup="fn_HelpDialoge">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="200" band="left"/>
+                <Column size="90"/>
+                <Column size="140"/>
+                <Column size="80"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="257"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="분할자산명"/>
+                <Cell col="1" displaytype="text" text="신규부서코드"/>
+                <Cell col="2" displaytype="text" text="신규부서명"/>
+                <Cell col="3" displaytype="text" text="분할수량"/>
+                <Cell col="4" displaytype="text" text="분할금액"/>
+                <Cell col="5" displaytype="text" text="분할단가"/>
+                <Cell col="6" displaytype="text" text="충당금누계액"/>
+                <Cell col="7" displaytype="text" text="미상각잔액"/>
+                <Cell col="8" displaytype="text" text="비고"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="normal" style="align: left;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:SPLT_NAME" editlimit="100" editimemode="native"/>
+                <Cell col="1" displaytype="text" style="align:center middle;" text="bind:NEWX_DEPT"/>
+                <Cell col="2" displaytype="text" edittype="normal" style="align: left;" text="bind:NEWX_DPNM" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="3" displaytype="number" edittype="text" editfilter="number" style="align: right;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:SPLT_NUMB" editlimit="15"/>
+                <Cell col="4" displaytype="number" edittype="text" editfilter="number" style="align: right;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:SPLT_PRIC" editlimit="15"/>
+                <Cell col="5" displaytype="number" style="align: right;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:SPLT_COST" editlimit="15"/>
+                <Cell col="6" displaytype="number" style="align: right;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:DPCT_AMOT" editlimit="15"/>
+                <Cell col="7" displaytype="number" style="align: right;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:UNDP_BALE" editlimit="15"/>
+                <Cell col="8" displaytype="text" edittype="normal" style="background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align: left;" text="bind:DESC_REMK" editlimit="100"/>
+              </Band>
+              <Band id="summary">
+                <Cell displaytype="text" style="align: center;" text="합  계"/>
+                <Cell col="1" displaytype="text" style="align: left;"/>
+                <Cell col="2" displaytype="text" style="align: left;"/>
+                <Cell col="3" displaytype="number" style="align: right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;SPLT_NUMB&quot;, 0)"/>
+                <Cell col="4" displaytype="number" style="align: right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;SPLT_PRIC&quot;, 0)"/>
+                <Cell col="5" displaytype="number" style="align: right;"/>
+                <Cell col="6" displaytype="number" style="align: right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;DPCT_AMOT&quot;, 0)"/>
+                <Cell col="7" displaytype="number" style="align: right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;UNDP_BALE&quot;, 0)"/>
+                <Cell col="8" displaytype="number" style="align: right;"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox0" type="roundrectangle" position="absolute" left="15" right="15" top="35" height="117" cssclass="styFormItemBoxOut" taborder="20"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskUNDP_BALE" onsetfocus="fn_EditFocus" taborder="13" position="absolute" mask="#,###" left="896" width="130" top="96" height="21" cssclass="styFormItemText" style=":disabled {align:right;}"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="utf8" id="edtDESC_REMK" imemode="native" maxlength="100" taborder="40" position="absolute" left="651" width="375" top="122" height="21" cssclass="styFormItemText"/>
+        <Calendar binddataset="dsFS_ASSPXM" dateformat="yyyy-MM-dd" id="calSPLT_DATE" onsetfocus="fn_EditFocus" taborder="0" position="absolute" left="117" width="100" top="44" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="asciii" enable="false" id="edtASCL_NAME" taborder="37" position="absolute" left="651" width="135" top="70" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="asciii" enable="false" id="edtCLSF_NAME" taborder="38" position="absolute" left="896" width="130" top="70" height="21" cssclass="styFormItemText" style=":disabled {align:left middle;}"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskACQS_DATE" mask="####-##-##" onsetfocus="fn_EditFocus" taborder="10" type="string" position="absolute" style=":disabled {align:center;}" left="117" width="100" top="96" height="21" cssclass="styFormItemText"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskACQU_PRIC" onsetfocus="fn_EditFocus" taborder="39" position="absolute" style=":disabled {align:right;}" mask="#,###" left="651" width="135" top="96" height="21" cssclass="styFormItemText"/>
+        <Static id="imgHelpASST_NUMB" image="URL('image::btnHelpPop.bmp')" onclick="fn_HelpDialoge" transparenthittest="false" taborder="36" tabstop="false" position="absolute" imagealign="left middle" left="788" width="21" top="44" height="21" cssclass="sytHelpPopup"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="asciii" id="edtASST_NAME" imemode="hangul" maxlength="100" onkillfocus="fn_HelpDialoge" taborder="4" position="absolute" left="811" width="215" top="44" height="21" cssclass="styFormItemText"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskACQU_NUMB" onsetfocus="fn_EditFocus" taborder="11" position="absolute" style=":disabled {align:right;}" mask="#,###" left="353" width="201" top="96" height="21" cssclass="styFormItemText"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskTOTL_SPLT" onsetfocus="fn_EditFocus" taborder="14" position="absolute" mask="#,###" style=":disabled {align:right;}" left="117" width="100" top="122" height="21" cssclass="styFormItemText"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" id="mskASAF_NUMB" onsetfocus="fn_EditFocus" taborder="5" position="absolute" style="align:right;" enable="false" left="117" width="100" top="70" height="21" cssclass="styFormItemText"/>
+        <MaskEdit autoselect="true" binddataset="dsFS_ASSPXM" enable="false" id="mskSPDP_TSUM" onsetfocus="fn_EditFocus" taborder="15" position="absolute" style=":disabled {align:right;}" mask="#,###" left="353" width="201" top="122" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtCURR_DEPT" taborder="1" position="absolute" style="align: center;" left="353" width="58" top="44" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" lengthunit="asciii" id="edtCURR_NAME" imemode="native" maxlength="100" taborder="2" position="absolute" onkillfocus="fn_HelpDialoge" left="435" width="119" top="44" height="21" cssclass="styFormItemText"/>
+        <Static id="imgHelpCURR_DEPT" image="URL('image::btnHelpPop.bmp')" onclick="fn_HelpDialoge" transparenthittest="false" taborder="34" tabstop="false" position="absolute" imagealign="left middle" left="412" width="21" top="44" height="21" cssclass="sytHelpPopup"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="asciii" enable="false" id="edtDEPT_CODE" taborder="6" position="absolute" style="align: center;" left="353" width="58" top="70" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" binddataset="dsFS_ASSPXM" lengthunit="asciii" enable="false" id="edtDEPT_NAME" imemode="native" maxlength="100" taborder="7" position="absolute" left="412" width="142" top="70" height="21" cssclass="styFormItemText"/>
+        <Static id="title01" text="분할일자" position="absolute" left="35" width="81" top="44" height="21" cssclass="styFormSearchCapBe" taborder="27"/>
+        <Static id="Static05" text="분할후수량" position="absolute" left="35" width="81" top="70" height="21" cssclass="styFormSearchCapBe" taborder="28"/>
+        <Static id="Static06" text="취득일자" position="absolute" left="35" width="81" top="96" height="21" cssclass="styFormSearchCap" taborder="29"/>
+        <Static id="Static12" text="분할합계" position="absolute" left="35" width="81" top="122" height="21" cssclass="styFormSearchCap" taborder="30"/>
+        <Static id="title00" text="자산조회부서" position="absolute" left="246" width="102" top="44" height="21" cssclass="styFormSearchCap" taborder="31"/>
+        <Static id="Static00" text="자산부서" position="absolute" left="246" width="102" top="70" height="21" cssclass="styFormSearchCap" taborder="32"/>
+        <Static id="Static03" text="취득수량" position="absolute" left="246" width="102" top="96" height="21" cssclass="styFormSearchCap" taborder="33"/>
+        <Static id="Static04" text="분할충당금합계" position="absolute" left="246" width="102" top="122" height="21" cssclass="styFormSearchCap" taborder="18"/>
+        <Static id="title02" text="자산번호" position="absolute" left="583" width="71" top="44" height="21" cssclass="styFormSearchCapBe" taborder="19"/>
+        <Static id="Static08" text="자산분류" position="absolute" left="583" width="71" top="70" height="21" cssclass="styFormSearchCap" taborder="22"/>
+        <Static id="Static10" text="취득금액" position="absolute" left="583" width="71" top="96" height="21" cssclass="styFormSearchCap" taborder="23"/>
+        <Static id="Static14" text="비고" position="absolute" left="583" width="71" top="122" height="21" cssclass="styFormSearchCap" taborder="24"/>
+        <Static id="Static16" text="품목분류" position="absolute" left="815" width="81" top="70" height="21" cssclass="styFormSearchCap" taborder="25"/>
+        <Static id="Static18" text="미상각잔액" position="absolute" left="815" width="81" top="96" height="21" cssclass="styFormSearchCap" taborder="26"/>
+        <Edit id="edtACCT_UNIT" taborder="43" autoselect="true" enable="false" style="align: center;" visible="false" position="absolute" left="756" width="29" top="44" height="21" cssclass="styFormItemText"/>
+        <MaskEdit id="edtASST_NUMB" taborder="35" type="string" mask="####-####-####" autoselect="true" onsetfocus="fn_EditFocus" enable="false" position="absolute" style=":disabled {align:center;}" binddataset="dsFS_ASSTXM" left="651" width="135" top="44" height="21" cssclass="styFormItemText"/>
+        <Button id="btnAdd" taborder="44" onclick="fn_Input" position="absolute" right="80" width="62" top="162" height="21" text="행추가" cssclass="btn_WF_Module"/>
+        <Button id="btnDel" taborder="45" onclick="fn_Delete" position="absolute" right="15" width="62" top="162" height="21" text="행삭제" cssclass="btn_WF_Module"/>
+        <Static id="Static11" taborder="46" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="461"/>
+        <Static id="Static02" taborder="47" text="개발시 ==&gt;즐겨찾기 버튼 없애주세요" left="27" top="0" width="307" height="22" style="background:crimson;color:#ffffffff;"/>
+        <Static id="Static07" taborder="48" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="1055" top="0" width="15" height="461"/>
+        <Static id="Static15" taborder="52" text="w30" visible="false" left="16" top="62" width="30" height="63" style="background:#fb7b7b7a;"/>
+        <Div id="div_ButtonList" taborder="53" tabstop="false" url="common::comButtonType01.xfdl" top="8" right="15" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Static id="Static01" taborder="54" text="h15" visible="false" left="439" top="748" width="110" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="55" text="h4" visible="false" left="561" top="31" width="110" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation" taborder="56" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" left="14" top="166" width="262" height="21" class="styFormSearchInfo" cssclass="styFormSearchInfo"/>
+        <Static id="Static09" taborder="57" text="h8" visible="false" left="541" top="0" width="110" height="8" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind>
+      <BindItem id="mskUNDP_BALE_value" compid="mskUNDP_BALE" propid="value" datasetid="dsFS_ASSPXM" columnid="UNDP_BALE"/>
+      <BindItem id="edtDESC_REMK_value" compid="edtDESC_REMK" propid="value" datasetid="dsFS_ASSPXM" columnid="DESC_REMK"/>
+      <BindItem id="calSPLT_DATE_value" compid="calSPLT_DATE" propid="value" datasetid="dsFS_ASSPXM" columnid="SPLT_DATE"/>
+      <BindItem id="edtASCL_NAME_value" compid="edtASCL_NAME" propid="value" datasetid="dsFS_ASSPXM" columnid="ASCL_NAME"/>
+      <BindItem id="edtCLSF_NAME_value" compid="edtCLSF_NAME" propid="value" datasetid="dsFS_ASSPXM" columnid="CLSF_NAME"/>
+      <BindItem id="mskACQS_DATE_value" compid="mskACQS_DATE" propid="value" datasetid="dsFS_ASSPXM" columnid="ACQS_DATE"/>
+      <BindItem id="mskACQU_PRIC_value" compid="mskACQU_PRIC" propid="value" datasetid="dsFS_ASSPXM" columnid="ACQU_PRIC"/>
+      <BindItem id="edtASST_NAME_value" compid="edtASST_NAME" propid="value" datasetid="dsFS_ASSPXM" columnid="ASST_NAME"/>
+      <BindItem id="mskACQU_NUMB_value" compid="mskACQU_NUMB" propid="value" datasetid="dsFS_ASSPXM" columnid="ACQU_NUMB"/>
+      <BindItem id="mskTOTL_SPLT_value" compid="mskTOTL_SPLT" propid="value" datasetid="dsFS_ASSPXM" columnid="TOTL_SPLT"/>
+      <BindItem id="mskASAF_NUMB_value" compid="mskASAF_NUMB" propid="value" datasetid="dsFS_ASSPXM" columnid="ASAF_NUMB"/>
+      <BindItem id="mskSPDP_TSUM_value" compid="mskSPDP_TSUM" propid="value" datasetid="dsFS_ASSPXM" columnid="SPDP_TSUM"/>
+      <BindItem id="edtDEPT_CODE_value" compid="edtDEPT_CODE" propid="value" datasetid="dsFS_ASSPXM" columnid="DEPT_CODE"/>
+      <BindItem id="edtDEPT_NAME_value" compid="edtDEPT_NAME" propid="value" datasetid="dsFS_ASSPXM" columnid="DEPT_NAME"/>
+      <BindItem id="item0" compid="edtACCT_UNIT" propid="value" datasetid="dsFS_ASSPXM" columnid="ACCT_UNIT"/>
+      <BindItem id="item1" compid="edtASST_NUMB" propid="value" datasetid="dsFS_ASSPXM" columnid="ASST_NUMB"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

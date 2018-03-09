@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TC_COM_4" onload="fn_FormLoadSetting" position="absolute" left="0" width="218" top="0" height="285" scrollbars="none" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[기획]실적현황차트">
+    <Layouts>
+      <Layout>
+        <Static id="Static26" taborder="6" text="h 21" visible="false" left="61" top="0" width="151" height="18" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="7" text="w25" visible="false" left="0" top="9" width="27" height="65" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="9" text="2016년 실적현황(누계)" cssclass="sta_MF_name" left="26" top="9" width="191" height="32"/>
+        <Static id="Static21" taborder="11" text="합계" usedecorate="true" cssclass="sta_MF_text7" left="53" top="223" width="35" height="24" style="font:antialias 9 Malgun Gothic;"/>
+        <Static id="Static22" taborder="12" text="계열" usedecorate="true" cssclass="sta_MF_text7" left="102" top="223" width="35" height="24" style="font:antialias 9 Malgun Gothic;"/>
+        <Static id="Static23" taborder="13" text="비계열" usedecorate="true" cssclass="sta_MF_text7" left="147" top="223" width="45" height="24" style="font:antialias 9 Malgun Gothic;"/>
+        <Static id="Static30" taborder="14" cssclass="sta_MF_line2" left="45" top="224" width="150" height="1"/>
+        <Static id="Static20" taborder="15" cssclass="sta_MF_chart1" left="155" top="175" width="28" height="50"/>
+        <Static id="Static18" taborder="16" onclick="Static18_onclick" cssclass="sta_MF_chart1" left="57" top="63" width="28" height="162"/>
+        <Static id="Static19" taborder="17" cssclass="sta_MF_chart1" left="106" top="95" width="28" height="130"/>
+        <Static id="Static36" taborder="18" text="650" usedecorate="true" cssclass="sta_MF_text8" left="53" top="45" width="35" height="20"/>
+        <Static id="Static37" taborder="19" text="500" usedecorate="true" cssclass="sta_MF_text8" left="102" top="77" width="35" height="20"/>
+        <Static id="Static38" taborder="20" text="150" usedecorate="true" cssclass="sta_MF_text8" left="152" top="157" width="35" height="20"/>
+        <Static id="Static35" taborder="21" text="110&#13;&#10;73%" cssclass="sta_MF_chart2" left="155" top="191" width="28" height="34"/>
+        <Static id="Static32" taborder="22" text="560&#13;&#10;86%" onclick="Static18_onclick" cssclass="sta_MF_chart2" left="57" top="80" width="28" height="145"/>
+        <Static id="Static33" taborder="23" text="450&#13;&#10;90%" cssclass="sta_MF_chart2" left="106" top="113" width="28" height="112"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

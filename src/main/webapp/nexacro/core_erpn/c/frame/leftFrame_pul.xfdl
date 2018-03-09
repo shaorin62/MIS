@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="mnuleft" classname="mnuleft" inheritanceid="" position="absolute" onload="fn_FormLoadSetting" left="0" width="290" top="0" height="750" scrollbars="none">
+    <Layouts>
+      <Layout>
+        <Div id="Div00" taborder="26" left="0" top="0" width="60" cssclass="div_LF_box" bottom="0">
+          <Layouts>
+            <Layout>
+              <Button id="Button00" taborder="0" cssclass="btn_LF_MenuClose" left="0" top="0" width="60" height="60"/>
+              <Button id="Button01" taborder="1" cssclass="btn_LF_SubMenu" left="0" top="60" width="60" height="60"/>
+              <Button id="Button02" taborder="2" cssclass="btn_LF_Bookmark" left="0" top="120" width="60" height="60"/>
+              <Button id="btn_shortCut1" taborder="3" text="1" cssclass="btn_LF_MenuNm" left="19" top="193" width="22" height="22"/>
+              <Button id="btn_shortCut00" taborder="4" text="2" cssclass="btn_LF_MenuNm" left="19" top="226" width="22" height="22"/>
+              <Button id="btn_shortCut02" taborder="5" text="3" cssclass="btn_LF_MenuNm" left="19" top="259" width="22" height="22"/>
+              <Button id="btn_shortCut03" taborder="6" text="4" cssclass="btn_LF_MenuNm" left="19" top="292" width="22" height="22" enable="false"/>
+              <Button id="btn_shortCut04" taborder="7" text="5" cssclass="btn_LF_MenuNm" left="19" top="325" width="22" height="22" enable="false"/>
+              <Button id="btn_shortCut05" taborder="8" text="6" cssclass="btn_LF_MenuNm" left="19" top="358" width="22" height="22" enable="false"/>
+              <Button id="btn_shortCut06" taborder="9" text="7" cssclass="btn_LF_MenuNm" enable="false" left="19" top="391" width="22" height="22"/>
+              <Button id="btn_shortCut07" taborder="10" text="8" cssclass="btn_LF_MenuNm" enable="false" left="19" top="424" width="22" height="22"/>
+              <Button id="btn_shortCut08" taborder="11" text="9" cssclass="btn_LF_MenuNm" enable="false" left="19" top="457" width="22" height="22"/>
+              <Button id="btn_shortCut09" taborder="12" text="10" cssclass="btn_LF_MenuNm" enable="false" left="19" top="490" width="22" height="22"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Div id="Div01" taborder="27" text="Div01" left="60" top="0" width="230" cssclass="div_LF_box02" bottom="0">
+          <Layouts>
+            <Layout width="230" height="750">
+              <Grid id="Grid00" cssclass="grd_LF_Mymenu" taborder="8" binddataset="dsFavMenu" autoenter="select" useinputpanel="false" cellsizingtype="col" autofittype="col" treeusecheckbox="false" treeinitstatus="expand,null" left="14" top="44" width="201" bottom="44">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="25" band="left"/>
+                      <Column size="175"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell displaytype="image" style="align:center middle;" text="expr:currow &lt; 10 ?  &quot;URL('theme://images/grd_LF_0&quot; + (currow+1) + &quot;.png')&quot; : &quot;URL('theme://images/grd_LF_Bkmk.png')&quot;"/>
+                      <Cell col="1" style="padding: ;" text="bind:Column1"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="Button06" taborder="5" text="↑ 위로" left="15" width="64" height="21" bottom="12"/>
+              <Button id="Button07" taborder="6" text="↓ 아래로" left="82" width="65" height="21" bottom="12"/>
+              <Button id="Button08" taborder="7" text="저장" left="150" width="64" height="21" bottom="12"/>
+              <Edit id="Edit00" taborder="0" left="14" top="14" width="201" height="27" cssclass="Edit_LF_search"/>
+              <Button id="Button00" taborder="1" left="185" top="16" width="28" height="23" cssclass="btn_LF_search"/>
+              <Grid id="Grid03" taborder="2" useinputpanel="false" treeinitstatus="expand,null" left="14" top="44" width="201" binddataset="grd" cssclass="grd_LF_Mymenu" treeusecheckbox="false" autoenter="select" cellsizingtype="col" bottom="44">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="201"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell displaytype="tree" edittype="tree" style="padding:0 0 0 -3;" text="bind:Column" treelevel="bind:Lev"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="Button20" taborder="3" text="전체펼침" left="15" width="96" height="21" bottom="12"/>
+              <Button id="Button01" taborder="4" text="전체닫힘" left="118" width="96" height="21" bottom="12"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Button id="Button00" taborder="29" cssclass="btn_LF_MenuClose_S" left="328" top="0" width="60" height="60" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="30" cssclass="btn_LF_SubMenu_S" left="328" top="68" width="60" height="60"/>
+        <Button id="Button02" taborder="31" cssclass="btn_LF_Bookmark_S" left="328" top="136" width="60" height="60"/>
+        <Button id="Button03" taborder="32" cssclass="btn_LF_MenuOpen" left="328" top="225" width="60" height="60"/>
+        <Button id="Button04" taborder="33" cssclass="btn_LF_MenuOpen_S" left="328" top="293" width="60" height="60"/>
+        <Static id="Static35" taborder="34" text="class = btn_LF_MenuClose_S" usedecorate="true" cssclass="sta_GID_txt" left="395" top="11" width="187" height="38"/>
+        <Static id="Static00" taborder="35" text="※ OFF, MENU, MYMENU 를 클릭하면&#13;&#10;기존 class에 _S로 변경됨" usedecorate="true" cssclass="sta_GID_txt" left="329" top="360" width="228" height="38" style="color:#ff0000ff;"/>
+        <Static id="Static01" taborder="36" text="class = btn_LF_SubMenu_S" usedecorate="true" cssclass="sta_GID_txt" left="395" top="75" width="187" height="38"/>
+        <Static id="Static02" taborder="37" text="class = btn_LF_Bookmark_S" usedecorate="true" cssclass="sta_GID_txt" left="395" top="144" width="187" height="38"/>
+        <Static id="Static03" taborder="38" text="class = btn_LF_MenuOpen" usedecorate="true" cssclass="sta_GID_txt" left="395" top="234" width="187" height="38"/>
+        <Static id="Static04" taborder="39" text="class = btn_LF_MenuOpen_S" usedecorate="true" cssclass="sta_GID_txt" left="395" top="302" width="187" height="38"/>
+        <PopupDiv id="PopupDiv00" left="74" top="41" width="201" height="266" cssclass="pdiv_LF_search">
+          <Layouts>
+            <Layout>
+              <Grid id="Grid03" cssclass="grd_LF_Mymenu" taborder="0" binddataset="grd" autoenter="select" useinputpanel="false" cellsizingtype="col" autofittype="col" treeusecheckbox="false" treeinitstatus="expand,null" left="2" top="1" width="197" style="background:#ffffffff;" height="262">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="201"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell style="padding:0 0 0 8;" text="bind:Column" treelevel="bind:Lev"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+      </Layout>
+    </Layouts>
+    <Bind/>
+    <Objects>
+      <Dataset id="grd" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="Lev" type="STRING" size="256"/>
+          <Column id="Column" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="Lev">0</Col>
+            <Col id="Column">1 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">1</Col>
+            <Col id="Column">2 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 03</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 04</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 05</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">1</Col>
+            <Col id="Column">2 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 02</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 03</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 04</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 05</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">0</Col>
+            <Col id="Column">1 depth title 02</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">1</Col>
+            <Col id="Column">2 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 02</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 03</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 04</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 05</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">1</Col>
+            <Col id="Column">2 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+          <Row>
+            <Col id="Lev">2</Col>
+            <Col id="Column">3 depth title 01</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsFavMenu">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴1</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴2</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴3</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴4</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴5</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴6</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴7</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴8</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴9</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴10</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴11</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴12</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴13</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴14</Col>
+            <Col id="Column0"/>
+          </Row>
+          <Row>
+            <Col id="Column1">즐겨찾기메뉴15</Col>
+            <Col id="Column0"/>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYJ0002">
+
+<!--
+ *   프로그램명 : 월말인원생성 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.07.27
+ *   작 성 자 : 고민주
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 고민주
+	 작 성 일 : 2016.07.27
+	 내    용 : 월말인원 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="PAYJ0002.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		    SELECT  A.STDS_YMTH   /*기준년월*/
+		        ,   A.EMPL_NUMB   /*사원번호*/
+		        ,   A.EMPL_NAME   /*사원명*/
+		        ,   A.CLSD_CODE   /*직원구분코드*/
+		        ,   A.CLSD_NAME   /*직원구분명*/
+				,   A.DGGP_CODE   /*부문그룹코드*/
+				,   A.DGGP_NAME   /*부문그룹명*/
+		        ,   A.DTGN_CODE   /*부서구분코드*/
+		        ,   A.DTGN_NAME   /*부서구분명*/
+		        ,   A.SECT_CODE   /*소속코드*/
+		        ,   A.SECT_NAME   /*소속명*/
+		        ,   A.DEPT_CODE   /*부서코드*/
+		        ,   A.DEPT_NAME   /*부서명*/
+		        ,   A.CPOS_CODE   /*직급코드*/
+		        ,   A.CPOS_NAME   /*직급명*/
+		        ,   A.DUTY_CODE   /*직무코드*/
+		        ,   A.DUTY_NAME   /*직무명*/
+		        ,   A.DURS_CODE   /*직책코드*/
+		        ,   A.DURS_NAME   /*직책명*/
+		        ,   A.PSTP_CODE   /*호봉코드*/
+		        ,   A.PSTP_NAME   /*호봉명*/
+				,   A.WRTY_CODE   /*정규여부코드*/
+		        ,   A.ENCO_DATE   /*입사일*/
+		    FROM    PY_EMPMTE A
+           WHERE 	A.STDS_YMTH = #STDS_YMTH#
+             
+           ORDER BY A.EMPL_NUMB
+    ]]>         
+	</select>
+
+
+
+	<!--
+	 작 성 자 : 고민주
+	 작 성 일 : 2016.07.27
+	 내    용 : 월말인원 테이블 저장
+	 파라미터 : 
+	-->
+	<statement id="PAYJ0002.SAVE00" parameterClass="hashmap" resultClass="java.lang.Integer">
+	<![CDATA[
+		DECLARE 
+				v_ROWCNT	INT;
+				
+		BEGIN
+		
+			SELECT	COUNT(PAYX_DATE)
+			INTO	v_ROWCNT
+			FROM 	PY_PMDIRY 
+			WHERE	SUBSTR(PAYX_DATE,1,6) = #STDS_YMTH#
+			;
+			
+	        IF v_ROWCNT < 1 THEN
+				RAISE_APPLICATION_ERROR(-20000, '급여일지가 생성되지 않았습니다. 확인바랍니다.'); 
+	        END IF;
+			
+			DELETE FROM PY_EMPMTE
+			WHERE	STDS_YMTH = #STDS_YMTH#
+			;
+			
+	       	INSERT INTO PY_EMPMTE ( 
+				    STDS_YMTH   /*기준년월*/ 
+				,   EMPL_NUMB   /*사원번호*/ 
+				,   EMPL_NAME   /*사원명*/ 
+				,   CLSD_CODE   /*직원구분코드*/
+				,   CLSD_NAME   /*직원구분명*/
+				,   DGGP_CODE   /*부문그룹코드*/
+				,   DGGP_NAME   /*부문그룹명*/
+				,   DTGN_CODE   /*부서구분코드*/ 
+				,   DTGN_NAME   /*부서구분명*/ 
+				,   SECT_CODE   /*소속코드*/ 
+				,   SECT_NAME   /*소속명*/ 
+				,   DEPT_CODE   /*부서코드*/ 
+				,   DEPT_NAME   /*부서명*/ 
+				,   CPOS_CODE   /*직급코드*/ 
+				,   CPOS_NAME   /*직급명*/ 
+				,   DUTY_CODE   /*직무코드*/ 
+				,   DUTY_NAME   /*직무명*/ 
+				,   DURS_CODE   /*직책코드*/ 
+				,   DURS_NAME   /*직책명*/ 
+				,   PSTP_CODE   /*호봉코드*/ 
+				,   PSTP_NAME   /*호봉명*/ 
+				,   WRTY_CODE   /*정규여부코드*/
+				,   ENCO_DATE   /*입사일*/ 
+				,   INST_USID   /*입력작업자*/ 
+				,   INST_DATE   /*입력일시*/ 
+				,   UPDT_USID   /*수정작업자*/ 
+				,   UPDT_DATE   /*수정일시*/ 
+	       	) 
+			SELECT	#STDS_YMTH#		/*기준년월*/ 
+				,	A.EMPL_NUMB		/*사원번호*/ 
+				,	A.EMPL_NAME		/*사원명*/ 
+				,   A.CLSD_CODE     /*직원구분코드*/
+				,   SF_GET_COMMNAME('CLSD_CODE', A.CLSD_CODE)   /*직원구분명*/
+				,	D.COMD_CODE		/*부문그룹코드*/ 
+				,	D.COMD_CDNM		/*부문그룹명*/ 
+				,	B.DTGN_CODE		/*부서구분코드*/ 
+				,	SF_GET_COMMNAME('DTGN_CODE', B.DTGN_CODE)   /*부서구분명*/ 
+				,	B.SECT_CODE		/*소속코드*/ 
+				,	B.SECT_NAME		/*소속명*/ 
+				,	B.DEPT_CODE		/*부서코드*/ 
+				,	B.DEPT_NAME		/*부서명*/ 
+				,	A.CPOS_CODE		/*직급코드*/ 
+				,	E.COMD_CDNM     /*직급명*/ 
+				,	A.DUTY_CODE		/*직무코드*/ 
+				,	SF_GET_COMMNAME('DUTY_CODE', A.DUTY_CODE)    /*직무명*/ 
+				,	A.DURS_CODE		/*직책코드*/ 
+				,	SF_GET_COMMNAME('DURS_CODE', A.DURS_CODE)    /*직책명*/ 
+				,	A.PSTP_CODE		/*호봉코드*/ 
+				,	SF_GET_COMMNAME('PSTP_CODE', A.PSTP_CODE)    /*호봉명*/ 
+				,	SF_GET_WRTYCODE(TO_CHAR(LAST_DAY(#STDS_YMTH# || '01'), 'YYYYMMDD'), A.EMPL_NUMB)		/*정규여부코드*/
+				,	A.ENCO_DATE		/*입사일*/ 
+				,	#UPDT_USID#		/*입력작업자*/ 
+				,	SYSDATE		    /*입력일시*/ 
+				,	#UPDT_USID#		/*수정작업자*/ 
+				,	SYSDATE		    /*수정일시*/ 
+			FROM TABLE(SF_HR_MASTXM(TO_CHAR(LAST_DAY(#STDS_YMTH# || '01'), 'YYYYMMDD'))) A 
+			INNER JOIN TABLE(SF_TM_DEPTXM(TO_CHAR(LAST_DAY(#STDS_YMTH# || '01'), 'YYYYMMDD'))) B 
+				ON A.DEPT_CODE = B.DEPT_CODE
+			LEFT OUTER  JOIN TM_CODEXD C
+				ON C.COMM_CODE = 'DTGN_CODE' AND B.DTGN_CODE=C.COMD_CODE
+			LEFT OUTER JOIN TM_CODEXD D
+				ON D.COMM_CODE = 'DGGP_CODE' AND C.REF1_FILD=D.COMD_CODE
+			LEFT OUTER JOIN TM_CODEXD E
+				ON E.COMM_CODE = 'CPOS_CODE' AND A.CPOS_CODE=E.COMD_CODE
+			WHERE A.WODN_CODE = '1'
+
+			UNION ALL
+			
+			SELECT	#STDS_YMTH#		/*기준년월*/ 
+				,	A.EMPL_NUMB		/*사원번호*/ 
+				,	A.EMPL_NAME		/*사원명*/ 
+				,   '99'    		/*직원구분코드*/
+				,   '용역'  		/*직원구분명*/
+				,	D.COMD_CODE		/*부문그룹코드*/ 
+				,	D.COMD_CDNM		/*부문그룹명*/ 
+				,	B.DTGN_CODE		/*부서구분코드*/ 
+				,	SF_GET_COMMNAME('DTGN_CODE', B.DTGN_CODE)  /*부서구분명*/ 
+				,	B.SECT_CODE		/*소속코드*/ 
+				,	B.SECT_NAME		/*소속명*/ 
+				,	B.DEPT_CODE		/*부서코드*/ 
+				,	B.DEPT_NAME		/*부서명*/ 
+				,	'999'		/*직급코드*/ 
+				,	'용역' AS CPOS_NAME   /*직급명*/ 
+				,	A.SVDT_CODE		/*직무코드*/ 
+				,	SVDT_NAME AS DUTY_NAME   /*직무명*/ 
+				,	NULL		/*직책코드*/ 
+				,	NULL        /*직책명*/ 
+				,	NULL		/*호봉코드*/ 
+				,	NULL        /*호봉명*/ 
+				,	'9' 		/*정규여부코드용역*/
+				,	NULL		/*입사일*/ 
+				,	#UPDT_USID#		/*입력작업자*/ 
+				,	SYSDATE		/*입력일시*/ 
+				,	#UPDT_USID#		/*수정작업자*/ 
+				,	SYSDATE		/*수정일시*/ 
+			FROM TABLE(SF_SV_ATRGLM(#STDS_YMTH#)) A 
+			INNER JOIN TABLE(SF_TM_DEPTXM(TO_CHAR(LAST_DAY(#STDS_YMTH# || '01'), 'YYYYMMDD'))) B 
+				ON A.DEPT_CODE = B.DEPT_CODE
+			LEFT OUTER  JOIN TM_CODEXD C
+				ON C.COMM_CODE = 'DTGN_CODE' AND B.DTGN_CODE=C.COMD_CODE
+			LEFT OUTER JOIN TM_CODEXD D
+				ON D.COMM_CODE = 'DGGP_CODE' AND C.REF1_FILD=D.COMD_CODE
+			;
+		END;
+	]]>
+	</statement>
+
+</sqlMap>

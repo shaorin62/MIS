@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >                          
+<sqlMap namespace="TMMD0130">
+                                                                                                                      
+	<!-- 
+	    제  목 : Object List 조회
+	    작성자 : 신일용
+	    작성일 : 2014.10.16
+	-->
+	<select id="TMMD0130.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+	             SELECT  TABLE_NAME         /*테이블 물리명      */
+	                    ,TABLE_COMMENTS     /*테이블 논리명      */
+	                    ,COLUMN_NAME        /*생성테이블:물리명  */
+	                    ,COMMENTS           /*생성테이블:논리명  */
+	                    ,DATA_TYPE          /*생성테이블:도메인  */
+	                    ,DATA_LENGTH1       /*생성테이블:자리수 1*/
+	                    ,DATA_LENGTH2       /*생성테이블:자리수 2*/
+	                    ,COLM_NAME          /*메타용어: 물리명   */
+	                    ,ATTR_NAME          /*메타용어: 논리명   */
+	                    ,REF1_FILD          /*메타용어: 도메인   */
+	                    ,DOMN_LEN1          /*메타용어: 자리수1  */
+	                    ,DOMN_LEN2          /*메타용어: 자리수 2 */
+	               FROM (SELECT  A.TABLE_NAME
+	                            ,E.COMMENTS AS TABLE_COMMENTS
+	                            ,A.COLUMN_NAME
+	                            ,B.COMMENTS
+	                            ,A.DATA_TYPE
+	                            ,DECODE(A.DATA_TYPE, 'VARCHAR2', A.DATA_LENGTH, 'CHAR', A.DATA_LENGTH, NVL(A.DATA_PRECISION, 0)) AS DATA_LENGTH1
+	                            ,DECODE(A.DATA_TYPE, 'VARCHAR2', 0, 'CHAR', 0, NVL(A.DATA_SCALE, 0)) AS DATA_LENGTH2
+	                            ,D.COLM_NAME
+	                            ,D.ATTR_NAME
+	                            ,D.REF1_FILD
+	                            ,D.DOMN_LEN1
+	                            ,D.DOMN_LEN2
+	                        FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME
+	                                                LEFT OUTER JOIN (SELECT  A.COLM_NAME
+	                                                                        ,A.ATTR_NAME
+	                                                                        ,B.REF1_FILD
+	                                                                        ,NVL(A.DOMN_LEN1, 0) AS DOMN_LEN1
+	                                                                        ,NVL(A.DOMN_LEN2, 0) AS DOMN_LEN2
+	                                                                   FROM TM_METAXM A INNER JOIN TM_CODEXD B
+	                                                                                            ON B.COMM_CODE = 'DOMN_CODE'
+	                                                                                           AND A.DOMN_CODE = B.COMD_CODE) D ON A.COLUMN_NAME = D.COLM_NAME
+	                                                INNER JOIN USER_TAB_COMMENTS E ON A.TABLE_NAME = E.TABLE_NAME
+	                                                INNER JOIN USER_OBJECTS      F ON A.TABLE_NAME = F.OBJECT_NAME
+	                      WHERE E.TABLE_TYPE = 'TABLE'
+	                        AND F.TEMPORARY = 'N')
+	               WHERE COLUMN_NAME  != COLM_NAME
+	                  OR COMMENTS     != ATTR_NAME
+	                  OR DATA_TYPE    != REF1_FILD
+	                  OR DATA_LENGTH1 != DOMN_LEN1
+	                  OR DATA_LENGTH2 != DOMN_LEN2
+	             ORDER BY COLUMN_NAME
+		]]>
+	</select>
+
+</sqlMap>

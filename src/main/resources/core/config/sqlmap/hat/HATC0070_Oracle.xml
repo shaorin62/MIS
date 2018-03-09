@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATC0070">
+
+<!--
+ *   프로그램명 : 외출자관리  SQLMAP
+ *   작 성 일 : 2016.09.26
+ *   작 성 자 : 김희정
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.26
+	 내    용 : 외출자관리 내역 조회
+********************************************************************************/
+-->
+	<select id="HATC0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT	/* HATC0070.SEARCH00.외출자관리 내역 조회 */
+			    A.GOOT_DATE				/*외출일자*/
+			   ,A.EMPL_NUMB				/*사원번호*/
+			   ,B.EMPL_NAME				/*성명*/
+			   ,B.DEPT_CODE				/*부서코드 */
+			   ,C.DEPT_NAME				/*부서명 */
+			   ,B.OPOS_CODE				/*직위코드 */
+			   ,SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME	 /*직위명*/
+			   ,B.DUTY_CODE				/*직위코드 */
+			   ,SF_GET_COMMNAME('DUTY_CODE', B.DUTY_CODE) AS DUTY_NAME	 /*직무명*/
+			   ,A.GOOT_SEQN				/*외출일련번호*/
+			   ,A.DTNT_NAME				/*행선지명*/
+			   ,A.TADU_CNTT				/*업무내용*/
+			   ,A.GOOS_HOUR				/*외출시작시간*/
+			   ,A.GOOE_HOUR				/*외출종료시간*/
+			   ,A.REMK_100X				/*비고100*/
+			   ,SF_GET_EMPLNAME(A.INST_USID) AS INST_USNM   /* 입력작업자명 */
+			   ,A.INST_USID				/*입력작업자*/
+			   ,A.INST_DATE				/*입력일시*/
+			   ,A.UPDT_USID				/*수정작업자*/
+			   ,A.UPDT_DATE				/*수정일시*/
+		  FROM AT_GOOUTX A				/*[외출자관리정보 ] */
+		  	LEFT JOIN HR_MASTXM B
+		  	  ON A.EMPL_NUMB	= B.EMPL_NUMB
+			LEFT OUTER JOIN VI_DEPTXM C
+			  ON B.DEPT_CODE	= C.DEPT_CODE
+		 WHERE A.GOOT_DATE BETWEEN #GOOT_DATE1# AND #GOOT_DATE2#
+	]]>
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+		   A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+		   B.DEPT_CODE = #DEPT_CODE#
+	</isNotEmpty>
+	<![CDATA[ 
+		ORDER BY A.GOOT_DATE DESC, A.GOOE_HOUR DESC, A.GOOS_HOUR DESC
+	]]>
+	</select>
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.26
+	 내    용 : 외출자관리 내역 저장
+********************************************************************************/
+-->
+	<insert id="HATC0070.SAVE00" parameterClass="hashmap">
+	
+	<selectKey keyProperty="GOOT_SEQN" resultClass="String">
+		<![CDATA[
+		  SELECT	NVL(MAX(GOOT_SEQN),0) + 1  /* 외출자관리관리 일련번호 seq */
+	      FROM 		AT_GOOUTX
+	      WHERE 	EMPL_NUMB = #EMPL_NUMB#
+	      AND		GOOT_DATE = #GOOT_DATE#
+		]]>
+	</selectKey>
+	
+	<![CDATA[
+        INSERT
+        INTO AT_GOOUTX ( 
+             GOOT_DATE		/* 외출일자 */
+            ,EMPL_NUMB		/* 사원번호 */
+            ,GOOT_SEQN		/* 외출일련번호 */
+            ,DTNT_NAME		/* 행선지명 */
+            ,TADU_CNTT		/* 업무내용 */
+            ,GOOS_HOUR		/* 외출시작시간 */
+            ,GOOE_HOUR		/* 외출종료시간 */
+			,REMK_100X		/* 비고100 */
+			,INST_USID		/* 입력작업자 */
+			,INST_DATE		/* 입력일시 */
+			,UPDT_USID		/* 수정작업자 */
+			,UPDT_DATE		/* 수정일시 */
+            ) 
+        VALUES 
+            ( 
+             #GOOT_DATE#		/* 외출일자 */
+			,#EMPL_NUMB#		/* 사원번호 */
+			,#GOOT_SEQN# 		/* 외출일련번호 */
+			,#DTNT_NAME#		/* 행선지명 */
+            ,#TADU_CNTT#		/* 업무내용 */
+            ,#GOOS_HOUR#		/* 외출시작시간 */
+            ,#GOOE_HOUR#		/* 외출종료시간 */
+			,#REMK_100X#		/* 비고100 */
+			,#UPDT_USID#		/* 입력작업자 */
+			,SYSDATE			/* 입력일시 */
+			,#UPDT_USID#		/* 수정작업자 */
+			,SYSDATE			/* 수정일시 */
+            ) 
+	
+	]]>
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 외출자관리 내역 수정
+********************************************************************************/
+-->
+	<update id="HATC0070.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE
+        AT_GOOUTX
+           SET  DTNT_NAME = #DTNT_NAME#		/* 행선지명 */
+           	   ,TADU_CNTT = #TADU_CNTT#		/* 업무내용 */
+           	   ,GOOS_HOUR = #GOOS_HOUR#		/* 외출시작시간 */
+           	   ,GOOE_HOUR = #GOOE_HOUR#		/* 외출종료시간 */
+			   ,REMK_100X = #REMK_100X#		/* 비고100 */
+			   ,UPDT_USID = #UPDT_USID#		/* 수정작업자 */
+			   ,UPDT_DATE = SYSDATE			/* 수정일시 */
+         WHERE GOOT_DATE  = #GOOT_DATE#  	/* 외출일자 */
+           AND EMPL_NUMB  = #EMPL_NUMB#  	/* 사원번호 */
+           AND GOOT_SEQN  = #GOOT_SEQN#  	/* 외출일련번호 */
+    ]]>
+	</update>
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 외출자관리 내역 삭제
+********************************************************************************/
+-->
+	<delete id="HATC0070.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE
+        AT_GOOUTX
+         WHERE 1 = 1
+           AND GOOT_DATE  = #GOOT_DATE#  /* 외출일자 */
+           AND EMPL_NUMB  = #EMPL_NUMB#  /* 사원번호 */
+           AND GOOT_SEQN  = #GOOT_SEQN#  /* 외출일련번호 */
+	]]>
+	</delete>
+
+</sqlMap>

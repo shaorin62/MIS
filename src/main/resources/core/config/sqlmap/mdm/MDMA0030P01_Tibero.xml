@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMA0030P01">
+
+<!--  
+ *   프로그램명 : 전파 개별청약
+ *   작 성 일 : 2016.10.12(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용 : 전파 개별청약 전체복사 저장 처리
+	-->
+	<insert id="MDMA0030P01.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_ETMDXM (	/* MDMA0030P01.SAVE00 전파 개별청약 전체복사 저장 */
+					 YEAR_MNTH	/*년월*/
+					,SEQX_FILD		/*일련번호*/
+					,CUST_CODE	/*광고주코드*/
+					,CTIM_CODE	/*광고주팀코드*/
+					,BRND_CODE	/*브랜드코드*/
+					,MEDX_CODE	/*청구지코드*/
+					,RMED_CODE	/*매체코드*/
+					,MEDX_FLAG	/*매체구분*/
+					,INPT_PATH		/*투입경로*/
+					,PLAN_FLAG		/*계획치구분*/
+					,APLY_DATE		/*적용일자*/
+					,PRGM_NAME	/*프로그램명*/
+					,EMPL_CODE	/*사원코드*/
+					,DEPT_CODE	/*부서코드*/
+					,HOUR_TYPE	/*시급*/
+					,BROD_MOND	/*월*/
+					,BROD_TUES	/*화*/
+					,BROD_WEDN	/*수*/
+					,BROD_THUR	/*목*/
+					,BROD_FRID		/*금*/
+					,BROD_SATU	/*토*/
+					,BROD_SUND	/*일*/
+					,STAR_TIME	/*방송시작시간*/
+					,ENDD_TIME	/*방송종료시간*/
+					,MNST_DATE	/*금월광고시작일*/
+					,MNED_DATE	/*금월광고종료일*/
+					,TTST_DATE	/*총광고시작일*/
+					,TTED_DATE	/*총광고종료일*/
+					,BROD_FLAG	/*방송구분*/
+					,ATCT_FLAG	/*자동계산*/
+					,CONT_FILD		/*회수*/
+					,PRCE_FILD		/*단가*/
+					,AMNT_FILD	/*광고비*/
+					,SECD_FILD		/*초수*/
+					,SUBS_FLAG	/*청약구분*/
+					,ADDX_FORM	/*광고형태*/
+					,CONT_FORM	/*계약형태*/
+					,ADDX_TYPE	/*광고유형*/
+					,AREA_FLAG	/*지역구분*/
+					,COMI_RATE	/*수수료율*/
+					,TRTX_FLAG	/*위수탁부가세*/
+					,CMTX_FLAG	/*수수료부가세*/
+					,CNMD_CODE	/*연계매체*/
+					,PRMN_SEQX	/*전월 이월 순번*/
+					,KBNT_YEAR	/*코바넷편성년도*/
+					,KBNT_OSEQ	/*코바넷편성일련번호*/
+					,KBNT_SSEQ	/*코바넷청약일련번호*/
+					,KBNT_MSEQ	/*코바넷운행일련번호*/
+					,EDIT_WKDY	/*편집요일*/
+					,MEMO_FILD	/*비고*/
+					,BRST_DATE	/*코바넷소재시작일*/
+					,BRED_DATE	/*코바넷소재종료일*/
+					,KBNT_ITEM	/*코바넷소재*/
+					,KBNT_BRSQ	/*코바넷품목일련번호*/
+					,KBNT_DISQ	/*코바넷대표소재일련번호*/
+					,KBNT_ITSQ	/*코바넷소재일련번호*/
+					,TRNS_FLAG	/*매체통신용코드*/
+					,AORX_FLAG	/*AOR구분*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+					,COMI_FILD		/*수수료금액*/
+					,KBNT_GUBN	/*코바넷구분*/
+		)SELECT #nYEAR_MNTH#/*년월*/
+					,#nSEQX_FILD# 	/*일련번호*/
+					,CUST_CODE	/*광고주코드*/
+					,CTIM_CODE	/*광고주팀코드*/
+					,BRND_CODE	/*브랜드코드*/
+					,MEDX_CODE	/*청구지코드*/
+					,RMED_CODE	/*매체코드*/
+					,MEDX_FLAG	/*매체구분*/
+					,INPT_PATH		/*투입경로*/
+					,PLAN_FLAG		/*계획치구분*/
+					,APLY_DATE		/*적용일자*/
+					,PRGM_NAME	/*프로그램명*/
+					,EMPL_CODE	/*사원코드*/
+					,DEPT_CODE	/*부서코드*/
+					,HOUR_TYPE	/*시급*/
+					,BROD_MOND	/*월*/
+					,BROD_TUES	/*화*/
+					,BROD_WEDN	/*수*/
+					,BROD_THUR	/*목*/
+					,BROD_FRID		/*금*/
+					,BROD_SATU	/*토*/
+					,BROD_SUND	/*일*/
+					,STAR_TIME	/*방송시작시간*/
+					,ENDD_TIME	/*방송종료시간*/
+					,MNST_DATE	/*금월광고시작일*/
+					,MNED_DATE	/*금월광고종료일*/
+					,TTST_DATE	/*총광고시작일*/
+					,TTED_DATE	/*총광고종료일*/
+					,BROD_FLAG	/*방송구분*/
+					,ATCT_FLAG	/*자동계산*/
+					,CONT_FILD		/*회수*/
+					,PRCE_FILD		/*단가*/
+					,AMNT_FILD	/*광고비*/
+					,SECD_FILD		/*초수*/
+					,SUBS_FLAG	/*청약구분*/
+					,ADDX_FORM	/*광고형태*/
+					,CONT_FORM	/*계약형태*/
+					,ADDX_TYPE	/*광고유형*/
+					,AREA_FLAG	/*지역구분*/
+					,COMI_RATE	/*수수료율*/
+					,TRTX_FLAG	/*위수탁부가세*/
+					,CMTX_FLAG	/*수수료부가세*/
+					,CNMD_CODE	/*연계매체*/
+					,PRMN_SEQX	/*전월 이월 순번*/
+					,KBNT_YEAR	/*코바넷편성년도*/
+					,KBNT_OSEQ	/*코바넷편성일련번호*/
+					,KBNT_SSEQ	/*코바넷청약일련번호*/
+					,KBNT_MSEQ	/*코바넷운행일련번호*/
+					,EDIT_WKDY	/*편집요일*/
+					,MEMO_FILD	/*비고*/
+					,BRST_DATE	/*코바넷소재시작일*/
+					,BRED_DATE	/*코바넷소재종료일*/
+					,KBNT_ITEM	/*코바넷소재*/
+					,KBNT_BRSQ	/*코바넷품목일련번호*/
+					,KBNT_DISQ	/*코바넷대표소재일련번호*/
+					,KBNT_ITSQ	/*코바넷소재일련번호*/
+					,TRNS_FLAG	/*매체통신용코드*/
+					,AORX_FLAG	/*AOR구분*/
+					,UPDT_USID		/*입력자*/
+					,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')			/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')			/*입력일*/
+					,COMI_FILD		/*수수료금액*/
+					,KBNT_GUBN	/*코바넷구분*/
+		FROM MD_ETMDXM
+		WHERE YEAR_MNTH = #oYEAR_MNTH#
+		AND SEQX_FILD=#oSEQX_FILD#
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.16(표준화 완료)
+		내      용  : 기존 년월 일련번호를 가져온다
+		파라미터  : 
+	-->
+	<select id="MDMA0030P01.GET_SEQX_FILD" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  /*  MDMA0030P01.COUNTSEQX_FILD 기존년월 데이터의 개수  */
+			SEQX_FILD		/* 일련번호 */
+		FROM MD_ETMDXM
+		WHERE YEAR_MNTH	=	#oYEAR_MNTH# /* 년월 */
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.16(표준화 완료)
+		내      용  : 신규 일련번호 코드 채번
+		파라미터  : 
+	-->
+	<select id="MDMA0030P01.NEW_SEQX_FILD" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MDMA0030P01.NEW_SEQX_FILD 신규 일련번호 채번  */
+				NVL(MAX(TO_NUMBER(SEQX_FILD)),0)+1		/* 신규 일련번호 */
+		FROM MD_ETMDXM
+		WHERE YEAR_MNTH	=	#nYEAR_MNTH# /* 년월 */
+	]]>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TXMA0990">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드헤더 조회
+********************************************************************************/
+-->
+	<select id="TXMA0990.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+            SELECT  /* TXMA0990.SEARCH00.부가세종류코드헤더 조회 */
+                    A.VATH_TYPECD     /* VAT_과세유형코드 */
+                   ,A.VATH_TYPENM     /* VAT_과세유형명 */
+                   ,A.SALE_TYPECD     /* VAT_매입매출구분 */
+                   ,A.IS_USED     /* VAT_코드사용여부 */
+                   ,A.IS_SHOWED     /* VAT_입력콤보표시여부 */
+              FROM TA_VATCDH A      /* [부가세종류코드헤더] */
+		]]>
+			<dynamic prepend="WHERE">
+				<isNotEmpty property="VATH_TYPENM">
+					A.VATH_TYPENM LIKE '%' || #VATH_TYPENM# || '%' /* VAT_과세유형명 */
+				</isNotEmpty>
+			
+			</dynamic>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드바디 조회
+********************************************************************************/
+-->
+	<select id="TXMA0990.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+            SELECT  /* TXMA0990.SEARCH01.부가세종류코드바디 조회 */
+                    A.VATH_TYPECD     /* VAT_과세유형코드 */
+                   ,A.VATD_TYPECD     /* VAT_세부유형코드 */
+                   ,A.VATD_TYPENM     /* VAT_세부유형명 */
+                   ,A.VAT_LINKCD1     /* VAT_부가세유형_연결키1 */
+                   ,A.VAT_LINKCD2     /* VAT_부가세유형_연결키2 */
+                   ,A.VAT_LINKCD3     /* VAT_부가세유형_연결키3 */
+                   ,A.VAT_LINKCD4     /* VAT_부가세유형_연결키4 */
+                   ,A.VAT_LINKCD5     /* VAT_부가세유형_연결키5 */
+                   ,A.IS_USED     /* VAT_코드사용여부 */
+                   ,A.IS_SHOWED     /* VAT_입력콤보표시여부 */
+                   ,A.APPL_V101     /* VAT_적용대상:일반과세자부가가치세신고서 */
+                   ,A.APPL_V102     /* VAT_적용대상:간이과세자부가가치세신고서 */
+                   ,A.APPL_V142     /* VAT_적용대상:사업장현황명세서 */
+                   ,A.APPL_V117     /* VAT_적용대상:신용카드매출전표발행금액등집계표 */
+                   ,A.APPL_V106     /* VAT_적용대상:영세율첨서류제출명세서 */
+                   ,A.APPL_V111     /* VAT_적용대상:의제매입세액공제신고서 */
+                   ,A.APPL_V120     /* VAT_적용대상:부동산임대공급가액명세서 */
+                   ,A.APPL_V112     /* VAT_적용대상:대손세액공제(변제)신고서 */
+                   ,A.APPL_V115     /* VAT_적용대상:사업장별부가가치세과세표준및납부세액(환급세액)신고명세서 */
+                   ,A.APPL_V104     /* VAT_적용대상:매출처별세금계산서합계표 */
+                   ,A.APPL_V105     /* VAT_적용대상:매입처별세금계산서합계표 */
+                   ,A.APPL_V109     /* VAT_적용대상:매입처별계산서합계표 */
+                   ,A.APPL_V110     /* VAT_적용대상:매출처별계산서합계표 */
+                   ,A.APPL_V141     /* VAT_적용대상:수출실적명세서 */
+                   ,A.APPL_V144     /* VAT_적용대상:전자화폐결제명세서 */
+                   ,A.APPL_V146     /* VAT_적용대상:면세유류공급명세서 */
+                   ,A.APPL_V147     /* VAT_적용대상:재활용폐자원및중고자동차매입세액공제신고서 */
+                   ,A.APPL_V148     /* VAT_적용대상:월별판매액합계표 */
+                   ,A.APPL_V149     /* VAT_적용대상:건물등감가상각자산취득명세서 */
+                   ,A.APPL_V153     /* VAT_적용대상:공제받지못할매입세액명세서 */
+                   ,A.APPL_V154     /* VAT_적용대상:매입자발행세금계산서합계표 */
+                   ,A.APPL_V155     /* VAT_적용대상:과세사업전환감가상각자산신고서 */
+                   ,A.APPL_V164     /* VAT_적용대상:신용카드매출전표등수취명세서 */
+                   ,A.APPL_V165     /* VAT_적용대상:건물관리명세서 */
+                   ,A.APPL_V166     /* VAT_적용대상:사업자단위과세의사업장별부가가치세과세표준 */
+                   ,A.APPL_V167     /* VAT_적용대상:현금매출명세서 */
+                   ,A.APPL_V168     /* VAT_적용대상:고금의제매입세액공제신고서 */
+                   ,A.APPL_V169     /* VAT_적용대상:과세표준및세액의결정(경정)청구서 */
+                   ,A.APPL_V170     /* VAT_적용대상:과세표준수정신고서및추가자진납부계산서 */
+                   ,A.APPL_V171     /* VAT_적용대상:전자세금계산서발급세액공제신고서 */
+                   ,A.APPL_V172     /* VAT_적용대상:일반(간이)과세전환시재고품등신고서 */
+                   ,A.APPL_V173     /* VAT_적용대상:세액공제신청서 */
+                   ,A.APPL_V174     /* VAT_적용대상:내국신용장구매확인서전자발급명세서 */
+              FROM TA_VATCDD A      /* [부가세종류코드세부] */
+		]]>
+			<dynamic prepend="WHERE">
+				<isNotEmpty prepend="AND" property="VATH_TYPECD">
+					A.VATH_TYPECD = #VATH_TYPECD#     /* VAT_과세유형코드 */
+               	</isNotEmpty>
+              	<isNotEmpty prepend="AND" property="VAT_LINKCD1">
+               		A.VAT_LINKCD1 = #VAT_LINKCD1#     /* 증빙구분 */
+               	</isNotEmpty>
+			</dynamic>
+			
+		ORDER	BY
+				    A.VAT_LINKCD1     /* VAT_부가세유형_연결키1 */
+                   ,A.VAT_LINKCD2     /* VAT_부가세유형_연결키2 */
+                   ,A.VAT_LINKCD3     /* VAT_부가세유형_연결키3 */
+                   ,A.VAT_LINKCD4     /* VAT_부가세유형_연결키4 */
+                   ,A.VAT_LINKCD5     /* VAT_부가세유형_연결키5 */
+											
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드헤더 저장
+********************************************************************************/
+-->
+	<insert id="TXMA0990.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+        INSERT INTO TA_VATCDH ( /* TXMA0990.SAVE00.부가세종류코드헤더 저장 *//* [부가세종류코드헤더] */
+               VATH_TYPECD 		/* VAT_과세유형코드 */
+              ,VATH_TYPENM 		/* VAT_과세유형명 */
+              ,SALE_TYPECD 		/* VAT_매입매출구분 */
+              ,IS_USED 			/* VAT_코드사용여부 */
+              ,IS_SHOWED 		/* VAT_입력콤보표시여부 */
+              ,INST_USID 		/* 입력작업자 */
+              ,INST_DATE 		/* 입력일시 */
+              ,UPDT_USID 		/* 수정작업자 */
+              ,UPDT_DATE 		/* 수정일시 */
+              )
+       VALUES (
+               #VATH_TYPECD# 	/* VAT_과세유형코드 */
+              ,#VATH_TYPENM# 	/* VAT_과세유형명 */
+              ,#SALE_TYPECD# 	/* VAT_매입매출구분 */
+              ,#IS_USED# 		/* VAT_코드사용여부 */
+              ,#IS_SHOWED# 		/* VAT_입력콤보표시여부 */
+              ,#UPDT_USID# 		/* 입력작업자 */
+              ,SYSDATE 			/* 입력일시 */
+              ,#UPDT_USID# 		/* 수정작업자 */
+              ,SYSDATE       	/* 수정일시 */
+              )
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드바디 저장
+********************************************************************************/
+-->
+	<insert id="TXMA0990.SAVE01" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN
+        INSERT INTO TA_VATCDD ( /* TXMA0990.SAVE01.부가세종류코드바디 저장 *//* [부가세종류코드세부] */
+               VATH_TYPECD        /* VAT_과세유형코드 */
+              ,VATD_TYPECD        /* VAT_세부유형코드 */
+              ,VATD_TYPENM        /* VAT_세부유형명 */
+              ,VAT_LINKCD1        /* VAT_부가세유형_연결키1 */
+              ,VAT_LINKCD2        /* VAT_부가세유형_연결키2 */
+              ,VAT_LINKCD3        /* VAT_부가세유형_연결키3 */
+              ,VAT_LINKCD4        /* VAT_부가세유형_연결키4 */
+              ,VAT_LINKCD5        /* VAT_부가세유형_연결키5 */
+              ,IS_USED        /* VAT_코드사용여부 */
+              ,IS_SHOWED        /* VAT_입력콤보표시여부 */
+              ,APPL_V101        /* VAT_적용대상:일반과세자부가가치세신고서 */
+              ,APPL_V102        /* VAT_적용대상:간이과세자부가가치세신고서 */
+              ,APPL_V142        /* VAT_적용대상:사업장현황명세서 */
+              ,APPL_V117        /* VAT_적용대상:신용카드매출전표발행금액등집계표 */
+              ,APPL_V106        /* VAT_적용대상:영세율첨서류제출명세서 */
+              ,APPL_V111        /* VAT_적용대상:의제매입세액공제신고서 */
+              ,APPL_V120        /* VAT_적용대상:부동산임대공급가액명세서 */
+              ,APPL_V112        /* VAT_적용대상:대손세액공제(변제)신고서 */
+              ,APPL_V115        /* VAT_적용대상:사업장별부가가치세과세표준및납부세액(환급세액)신고명세서 */
+              ,APPL_V104        /* VAT_적용대상:매출처별세금계산서합계표 */
+              ,APPL_V105        /* VAT_적용대상:매입처별세금계산서합계표 */
+              ,APPL_V109        /* VAT_적용대상:매입처별계산서합계표 */
+              ,APPL_V110        /* VAT_적용대상:매출처별계산서합계표 */
+              ,APPL_V141        /* VAT_적용대상:수출실적명세서 */
+              ,APPL_V144        /* VAT_적용대상:전자화폐결제명세서 */
+              ,APPL_V146        /* VAT_적용대상:면세유류공급명세서 */
+              ,APPL_V147        /* VAT_적용대상:재활용폐자원및중고자동차매입세액공제신고서 */
+              ,APPL_V148        /* VAT_적용대상:월별판매액합계표 */
+              ,APPL_V149        /* VAT_적용대상:건물등감가상각자산취득명세서 */
+              ,APPL_V153        /* VAT_적용대상:공제받지못할매입세액명세서 */
+              ,APPL_V154        /* VAT_적용대상:매입자발행세금계산서합계표 */
+              ,APPL_V155        /* VAT_적용대상:과세사업전환감가상각자산신고서 */
+              ,APPL_V164        /* VAT_적용대상:신용카드매출전표등수취명세서 */
+              ,APPL_V165        /* VAT_적용대상:건물관리명세서 */
+              ,APPL_V166        /* VAT_적용대상:사업자단위과세의사업장별부가가치세과세표준 */
+              ,APPL_V167        /* VAT_적용대상:현금매출명세서 */
+              ,APPL_V168        /* VAT_적용대상:고금의제매입세액공제신고서 */
+              ,APPL_V169        /* VAT_적용대상:과세표준및세액의결정(경정)청구서 */
+              ,APPL_V170        /* VAT_적용대상:과세표준수정신고서및추가자진납부계산서 */
+              ,APPL_V171        /* VAT_적용대상:전자세금계산서발급세액공제신고서 */
+              ,APPL_V172        /* VAT_적용대상:일반(간이)과세전환시재고품등신고서 */
+              ,APPL_V173        /* VAT_적용대상:세액공제신청서 */
+              ,APPL_V174        /* VAT_적용대상:내국신용장구매확인서전자발급명세서 */
+              ,INST_USID        /* 입력작업자 */
+              ,INST_DATE        /* 입력일시 */
+              ,UPDT_USID        /* 수정작업자 */
+              ,UPDT_DATE        /* 수정일시 */
+              )
+       VALUES (
+               #VATH_TYPECD#       /* VAT_과세유형코드 */
+              ,#VATD_TYPECD#       /* VAT_세부유형코드 */
+              ,#VATD_TYPENM#       /* VAT_세부유형명 */
+              ,#VAT_LINKCD1#       /* VAT_부가세유형_연결키1 */
+              ,#VAT_LINKCD2#       /* VAT_부가세유형_연결키2 */
+              ,#VAT_LINKCD3#       /* VAT_부가세유형_연결키3 */
+              ,#VAT_LINKCD4#       /* VAT_부가세유형_연결키4 */
+              ,#VAT_LINKCD5#       /* VAT_부가세유형_연결키5 */
+              ,#IS_USED#       /* VAT_코드사용여부 */
+              ,#IS_SHOWED#       /* VAT_입력콤보표시여부 */
+              ,#APPL_V101#       /* VAT_적용대상:일반과세자부가가치세신고서 */
+              ,#APPL_V102#       /* VAT_적용대상:간이과세자부가가치세신고서 */
+              ,#APPL_V142#       /* VAT_적용대상:사업장현황명세서 */
+              ,#APPL_V117#       /* VAT_적용대상:신용카드매출전표발행금액등집계표 */
+              ,#APPL_V106#       /* VAT_적용대상:영세율첨서류제출명세서 */
+              ,#APPL_V111#       /* VAT_적용대상:의제매입세액공제신고서 */
+              ,#APPL_V120#       /* VAT_적용대상:부동산임대공급가액명세서 */
+              ,#APPL_V112#       /* VAT_적용대상:대손세액공제(변제)신고서 */
+              ,#APPL_V115#       /* VAT_적용대상:사업장별부가가치세과세표준및납부세액(환급세액)신고명세서 */
+              ,#APPL_V104#       /* VAT_적용대상:매출처별세금계산서합계표 */
+              ,#APPL_V105#       /* VAT_적용대상:매입처별세금계산서합계표 */
+              ,#APPL_V109#       /* VAT_적용대상:매입처별계산서합계표 */
+              ,#APPL_V110#       /* VAT_적용대상:매출처별계산서합계표 */
+              ,#APPL_V141#       /* VAT_적용대상:수출실적명세서 */
+              ,#APPL_V144#       /* VAT_적용대상:전자화폐결제명세서 */
+              ,#APPL_V146#       /* VAT_적용대상:면세유류공급명세서 */
+              ,#APPL_V147#       /* VAT_적용대상:재활용폐자원및중고자동차매입세액공제신고서 */
+              ,#APPL_V148#       /* VAT_적용대상:월별판매액합계표 */
+              ,#APPL_V149#       /* VAT_적용대상:건물등감가상각자산취득명세서 */
+              ,#APPL_V153#       /* VAT_적용대상:공제받지못할매입세액명세서 */
+              ,#APPL_V154#       /* VAT_적용대상:매입자발행세금계산서합계표 */
+              ,#APPL_V155#       /* VAT_적용대상:과세사업전환감가상각자산신고서 */
+              ,#APPL_V164#       /* VAT_적용대상:신용카드매출전표등수취명세서 */
+              ,#APPL_V165#       /* VAT_적용대상:건물관리명세서 */
+              ,#APPL_V166#       /* VAT_적용대상:사업자단위과세의사업장별부가가치세과세표준 */
+              ,#APPL_V167#       /* VAT_적용대상:현금매출명세서 */
+              ,#APPL_V168#       /* VAT_적용대상:고금의제매입세액공제신고서 */
+              ,#APPL_V169#       /* VAT_적용대상:과세표준및세액의결정(경정)청구서 */
+              ,#APPL_V170#       /* VAT_적용대상:과세표준수정신고서및추가자진납부계산서 */
+              ,#APPL_V171#       /* VAT_적용대상:전자세금계산서발급세액공제신고서 */
+              ,#APPL_V172#       /* VAT_적용대상:일반(간이)과세전환시재고품등신고서 */
+              ,#APPL_V173#       /* VAT_적용대상:세액공제신청서 */
+              ,#APPL_V174#       /* VAT_적용대상:내국신용장구매확인서전자발급명세서 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE       	/* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE       	/* 수정일시 */
+              );
+              
+		END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드헤더 수정
+********************************************************************************/
+-->
+	<update id="TXMA0990.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+        UPDATE TA_VATCDH /* TXMA0990.UPDATE00.부가세종류코드헤더 수정 *//* [부가세종류코드헤더] */
+           SET  VATH_TYPENM = #VATH_TYPENM#  /* VAT_과세유형명 */
+               ,SALE_TYPECD = #SALE_TYPECD#  /* VAT_매입매출구분 */
+               ,IS_USED = #IS_USED#  /* VAT_코드사용여부 */
+               ,IS_SHOWED = #IS_SHOWED#  /* VAT_입력콤보표시여부 */
+               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE = SYSDATE  /* 수정일시 */
+         WHERE VATH_TYPECD  = #VATH_TYPECD#  /* VAT_과세유형코드 */
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드바디 수정
+********************************************************************************/
+-->
+	<update id="TXMA0990.UPDATE01" parameterClass="hashmap">
+		<![CDATA[
+        UPDATE TA_VATCDD /* TXMA0990.UPDATE01.부가세종류코드바디 수정 *//* [부가세종류코드세부] */
+           SET  VATD_TYPENM = #VATD_TYPENM#  /* VAT_세부유형명 */
+               ,VAT_LINKCD1 = #VAT_LINKCD1#  /* VAT_부가세유형_연결키1 */
+               ,VAT_LINKCD2 = #VAT_LINKCD2#  /* VAT_부가세유형_연결키2 */
+               ,VAT_LINKCD3 = #VAT_LINKCD3#  /* VAT_부가세유형_연결키3 */
+               ,VAT_LINKCD4 = #VAT_LINKCD4#  /* VAT_부가세유형_연결키4 */
+               ,VAT_LINKCD5 = #VAT_LINKCD5#  /* VAT_부가세유형_연결키5 */
+               ,IS_USED = #IS_USED#  /* VAT_코드사용여부 */
+               ,IS_SHOWED = #IS_SHOWED#  /* VAT_입력콤보표시여부 */
+               ,APPL_V101 = #APPL_V101#  /* VAT_적용대상:일반과세자부가가치세신고서 */
+               ,APPL_V102 = #APPL_V102#  /* VAT_적용대상:간이과세자부가가치세신고서 */
+               ,APPL_V142 = #APPL_V142#  /* VAT_적용대상:사업장현황명세서 */
+               ,APPL_V117 = #APPL_V117#  /* VAT_적용대상:신용카드매출전표발행금액등집계표 */
+               ,APPL_V106 = #APPL_V106#  /* VAT_적용대상:영세율첨서류제출명세서 */
+               ,APPL_V111 = #APPL_V111#  /* VAT_적용대상:의제매입세액공제신고서 */
+               ,APPL_V120 = #APPL_V120#  /* VAT_적용대상:부동산임대공급가액명세서 */
+               ,APPL_V112 = #APPL_V112#  /* VAT_적용대상:대손세액공제(변제)신고서 */
+               ,APPL_V115 = #APPL_V115#  /* VAT_적용대상:사업장별부가가치세과세표준및납부세액(환급세액)신고명세서 */
+               ,APPL_V104 = #APPL_V104#  /* VAT_적용대상:매출처별세금계산서합계표 */
+               ,APPL_V105 = #APPL_V105#  /* VAT_적용대상:매입처별세금계산서합계표 */
+               ,APPL_V109 = #APPL_V109#  /* VAT_적용대상:매입처별계산서합계표 */
+               ,APPL_V110 = #APPL_V110#  /* VAT_적용대상:매출처별계산서합계표 */
+               ,APPL_V141 = #APPL_V141#  /* VAT_적용대상:수출실적명세서 */
+               ,APPL_V144 = #APPL_V144#  /* VAT_적용대상:전자화폐결제명세서 */
+               ,APPL_V146 = #APPL_V146#  /* VAT_적용대상:면세유류공급명세서 */
+               ,APPL_V147 = #APPL_V147#  /* VAT_적용대상:재활용폐자원및중고자동차매입세액공제신고서 */
+               ,APPL_V148 = #APPL_V148#  /* VAT_적용대상:월별판매액합계표 */
+               ,APPL_V149 = #APPL_V149#  /* VAT_적용대상:건물등감가상각자산취득명세서 */
+               ,APPL_V153 = #APPL_V153#  /* VAT_적용대상:공제받지못할매입세액명세서 */
+               ,APPL_V154 = #APPL_V154#  /* VAT_적용대상:매입자발행세금계산서합계표 */
+               ,APPL_V155 = #APPL_V155#  /* VAT_적용대상:과세사업전환감가상각자산신고서 */
+               ,APPL_V164 = #APPL_V164#  /* VAT_적용대상:신용카드매출전표등수취명세서 */
+               ,APPL_V165 = #APPL_V165#  /* VAT_적용대상:건물관리명세서 */
+               ,APPL_V166 = #APPL_V166#  /* VAT_적용대상:사업자단위과세의사업장별부가가치세과세표준 */
+               ,APPL_V167 = #APPL_V167#  /* VAT_적용대상:현금매출명세서 */
+               ,APPL_V168 = #APPL_V168#  /* VAT_적용대상:고금의제매입세액공제신고서 */
+               ,APPL_V169 = #APPL_V169#  /* VAT_적용대상:과세표준및세액의결정(경정)청구서 */
+               ,APPL_V170 = #APPL_V170#  /* VAT_적용대상:과세표준수정신고서및추가자진납부계산서 */
+               ,APPL_V171 = #APPL_V171#  /* VAT_적용대상:전자세금계산서발급세액공제신고서 */
+               ,APPL_V172 = #APPL_V172#  /* VAT_적용대상:일반(간이)과세전환시재고품등신고서 */
+               ,APPL_V173 = #APPL_V173#  /* VAT_적용대상:세액공제신청서 */
+               ,APPL_V174 = #APPL_V174#  /* VAT_적용대상:내국신용장구매확인서전자발급명세서 */
+               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE = SYSDATE  /* 수정일시 */
+         WHERE VATH_TYPECD  = #VATH_TYPECD#  /* VAT_과세유형코드 */
+           AND VATD_TYPECD  = #VATD_TYPECD#  /* VAT_세부유형코드 */
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드헤더 삭제
+********************************************************************************/
+-->
+	<delete id="TXMA0990.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN
+		
+		DELETE FROM TA_VATCDD 
+         WHERE VATH_TYPECD = #VATH_TYPECD#   /* VAT_과세유형코드 */
+        ;
+        
+        DELETE FROM TA_VATCDH /* TXMA0990.DELETE00.부가세종류코드헤더 삭제 */            /* [부가세종류코드헤더] */
+         WHERE VATH_TYPECD = #VATH_TYPECD#   /* VAT_과세유형코드 */   
+		;
+		END;
+            
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 부가세종류코드바디 삭제
+********************************************************************************/
+-->
+	<delete id="TXMA0990.DELETE01" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN /* TXMA0990.DELETE01.부가세종류코드바디 삭제 */ /* [부가세종류코드세부] */
+        DELETE FROM TA_VATCDD 
+         WHERE VATH_TYPECD = #VATH_TYPECD#   /* VAT_과세유형코드 */
+           AND VATD_TYPECD = #VATD_TYPECD#   /* VAT_세부유형코드 */
+        ;
+		END;
+		]]>
+	</delete>
+
+</sqlMap>

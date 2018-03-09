@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PRPA0120">
+
+<!--  
+/***********************************************************************************
+ *   프로그램명 : 제작결산관리 실적집계표(업종별 업종 상세 집계)
+ *   작 성 일 : 2016.11.25
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved.
+ /*********************************************************************************** 
+ -->
+	<!-- 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="YEAR_MONT1" >
+			 SUBSTR(B.DEND_DATE,0,6) BETWEEN #YEAR_MONT1# AND '999999'
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="YEAR_MONT2" >
+			SUBSTR(B.DEND_DATE,0,6) BETWEEN '000000' AND #YEAR_MONT2#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="JOBN_NUMB" >
+			A.JOBN_NUMB =  #JOBN_NUMB# 
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="JOBN_NAME" >
+			B.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%'
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CLAS_TYPE" >
+			C.CLAS_CODE = #CLAS_TYPE#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="ITEM_CODE" >
+			C.ITEM_CODE = #ITEM_CODE#
+		</isNotEmpty>
+		
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.25
+     내      용 : 제작 결산관리 실적집계표(업종별 업종 상세 집계)
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0120.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        
+	        SELECT						/* PRPA0120.SEARCH00.실적집계표[업종별 업종 상세 집계] */
+			CLAS_CODE					/* 업종코드 */
+			, CLAS_NAME				/* 대표업종명 */
+			, ITEM_CODE				/* 업종상세코드 */
+			, ITEM_NAME				/* 업종상세명 */
+			, CUST_NAME				/* 업체명 */
+			, JOBN_NUMB				/* 제작번호 */
+			, JOBN_NAME				/* 제작명 */
+			, DEND_AMTX				/* 청구금액 */
+			FROM (
+			    SELECT
+			    1 AS SORT_GUBN
+			    , C.CLAS_CODE
+			    , SF_GET_CLASNAME(C.CLAS_CODE) AS CLAS_NAME
+			    , C.ITEM_CODE
+			    , SF_GET_ITEMNAME(C.ITEM_CODE) AS ITEM_NAME
+			    , A.OUTS_CODE
+				, D.CUST_NAME
+			    , A.JOBN_NUMB
+			    , B.JOBN_NAME
+			    , SUM(A.DEND_AMTX) AS DEND_AMTX
+			    , E.ROW_NUM
+			    , F.SORT_ORDR 
+			    FROM PD_SUJUMD A
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			    LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			    LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			    LEFT JOIN TM_CODEXD F ON C.CLAS_CODE = F.COMD_CODE AND F.COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (
+			        SELECT 
+			        A.OUTS_CODE
+			        ,A.JOBN_NUMB
+			        , SUM(A.DEND_AMTX) AS DEND_AMTX
+			        , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX), A.JOBN_NUMB  DESC) AS ROW_NUM
+			        FROM PD_SUJUMD A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			        LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			        WHERE 1=1
+			        AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			        GROUP BY A.OUTS_CODE, A.JOBN_NUMB
+			    )E ON A.JOBN_NUMB = E.JOBN_NUMB AND A.OUTS_CODE = E.OUTS_CODE
+			    WHERE 1=1
+			    AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			    GROUP BY A.JOBN_NUMB, B.JOBN_NAME
+			    , C.CLAS_CODE, C.ITEM_CODE, A.OUTS_CODE, D.CUST_NAME , E.ROW_NUM , F.SORT_ORDR 
+			    UNION ALL
+			    SELECT
+			    2 AS SORT_GUBN
+			    , C.CLAS_CODE
+			    , SF_GET_CLASNAME(C.CLAS_CODE) AS CLAS_NAME
+			    , C.ITEM_CODE
+			    , SF_GET_ITEMNAME(C.ITEM_CODE) || ' 소계' AS ITEM_NAME
+			    , NULL AS OUTS_CODE
+				, NULL AS CUST_NAME
+			    , NULL AS JOBN_NUMB
+			    , NULL AS JOBN_NAME
+			    , SUM(A.DEND_AMTX) AS DEND_AMTX
+			    , NULL AS ROW_NUM
+			    , F.SORT_ORDR
+			    FROM PD_SUJUMD A
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			    LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			    LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			    LEFT JOIN TM_CODEXD F ON C.CLAS_CODE = F.COMD_CODE AND COMM_CODE = 'CLAS_CODE'
+			     LEFT JOIN (
+			        SELECT 
+			        A.OUTS_CODE
+			        ,A.JOBN_NUMB
+			        , SUM(A.DEND_AMTX) AS DEND_AMTX
+			        , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX), A.JOBN_NUMB  DESC) AS ROW_NUM
+			        FROM PD_SUJUMD A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			        LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			        WHERE 1=1
+			        AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			        GROUP BY A.OUTS_CODE, A.JOBN_NUMB
+			    )E ON A.JOBN_NUMB = E.JOBN_NUMB AND A.OUTS_CODE = E.OUTS_CODE
+			    WHERE 1=1
+			    AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			    GROUP BY C.CLAS_CODE , C.ITEM_CODE    , F.SORT_ORDR 
+			    UNION ALL
+			    SELECT
+			    3 AS SORT_GUBN
+			    , C.CLAS_CODE
+			    , SF_GET_CLASNAME(C.CLAS_CODE) || ' 합계' AS CLAS_NAME
+			    , NULL AS ITEM_CODE
+			    , NULL AS ITEM_NAME
+			    , NULL AS OUTS_CODE
+				, NULL AS CUST_NAME
+			    , NULL AS JOBN_NUMB
+			    , NULL AS JOBN_NAME
+			    , SUM(A.DEND_AMTX) AS DEND_AMTX
+			    , NULL AS ROW_NUM
+			    , F.SORT_ORDR
+			    FROM PD_SUJUMD A
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			    LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			    LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			    LEFT JOIN TM_CODEXD F ON C.CLAS_CODE = F.COMD_CODE AND COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (
+			        SELECT 
+			        A.OUTS_CODE
+			        ,A.JOBN_NUMB
+			        , SUM(A.DEND_AMTX) AS DEND_AMTX
+			        , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX), A.JOBN_NUMB  DESC) AS ROW_NUM
+			        FROM PD_SUJUMD A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			        LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			        WHERE 1=1
+			        AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			        GROUP BY A.OUTS_CODE, A.JOBN_NUMB
+			    )E ON A.JOBN_NUMB = E.JOBN_NUMB AND A.OUTS_CODE = E.OUTS_CODE
+			    WHERE 1=1
+			    AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			    GROUP BY C.CLAS_CODE  , F.SORT_ORDR 
+			    UNION ALL
+			    SELECT
+			    4 AS SORT_GUBN
+			    , NULL AS CLAS_CODE
+			    , '총계' AS CLAS_CODE
+			    , NULL AS ITEM_CODE
+			    , NULL AS ITEM_NAME
+			    , NULL AS OUTS_CODE
+				, NULL AS CUST_NAME
+			    , NULL AS JOBN_NUMB
+			    , NULL AS JOBN_NAME
+			    , SUM(A.DEND_AMTX) AS DEND_AMTX
+			    , NULL AS ROW_NUM
+			    , NULL SORT_ORDR
+			    FROM PD_SUJUMD A
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			    LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			    LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			    LEFT JOIN TM_CODEXD F ON C.CLAS_CODE = F.COMD_CODE AND COMM_CODE = 'CLAS_CODE'
+			     LEFT JOIN (
+			        SELECT 
+			        A.OUTS_CODE
+			        ,A.JOBN_NUMB
+			        , SUM(A.DEND_AMTX) AS DEND_AMTX
+			        , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX), A.JOBN_NUMB  DESC) AS ROW_NUM
+			        FROM PD_SUJUMD A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			        LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			        WHERE 1=1
+			        AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			        GROUP BY A.OUTS_CODE, A.JOBN_NUMB
+			    )E ON A.JOBN_NUMB = E.JOBN_NUMB AND A.OUTS_CODE = E.OUTS_CODE
+			    WHERE 1=1
+			    AND C.CUST_CODE IS NOT NULL
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			)A    
+			ORDER BY SORT_ORDR, ITEM_CODE, CUST_NAME  ,SORT_GUBN ASC , ROW_NUM DESC
+
+			]]>
+	</select>
+
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표(업종별 업종 상세 집계)
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0120.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        SELECT						/* PRPA0120.SEARCH00.실적집계표[업종별 업종 상세 집계] */
+	        #YEAR_MONT1# YEAR_MONT1
+			,#YEAR_MONT2# YEAR_MONT2
+			, CLAS_CODE					/* 업종코드 */
+			, CLAS_NAME				/* 대표업종명 */
+			, ITEM_CODE				/* 업종상세코드 */
+			, ITEM_NAME				/* 업종상세명 */
+			, CUST_NAME				/* 업체명 */
+			, JOBN_NUMB				/* 제작번호 */
+			, JOBN_NAME				/* 제작명 */
+			, DEND_AMTX				/* 청구금액 */
+			FROM (
+			    SELECT
+			    1 AS SORT_GUBN
+			    , C.CLAS_CODE
+			    , SF_GET_CLASNAME(C.CLAS_CODE) AS CLAS_NAME
+			    , C.ITEM_CODE
+			    , SF_GET_ITEMNAME(C.ITEM_CODE) AS ITEM_NAME
+			    , A.OUTS_CODE
+				, D.CUST_NAME
+			    , A.JOBN_NUMB
+			    , B.JOBN_NAME
+			    , SUM(A.DEND_AMTX) AS DEND_AMTX
+			    , E.ROW_NUM
+			    , F.SORT_ORDR 
+			    FROM PD_SUJUMD A
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			    LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			    LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			    LEFT JOIN TM_CODEXD F ON C.CLAS_CODE = F.COMD_CODE AND F.COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (
+			        SELECT 
+			        A.OUTS_CODE
+			        ,A.JOBN_NUMB
+			        , SUM(A.DEND_AMTX) AS DEND_AMTX
+			        , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX), A.JOBN_NUMB  DESC) AS ROW_NUM
+			        FROM PD_SUJUMD A
+			        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+			        LEFT JOIN PD_CLASXM C ON C.CUST_CODE = A.OUTS_CODE
+			        LEFT JOIN TA_CUSTXM D ON A.OUTS_CODE = D.CUST_CODE
+			        WHERE 1=1
+			        AND C.CUST_CODE IS NOT NULL
+			        ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			        GROUP BY A.OUTS_CODE, A.JOBN_NUMB
+			    )E ON A.JOBN_NUMB = E.JOBN_NUMB AND A.OUTS_CODE = E.OUTS_CODE
+			    WHERE 1=1
+			    AND C.CUST_CODE IS NOT NULL
+			    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+			    GROUP BY A.JOBN_NUMB, B.JOBN_NAME
+			    , C.CLAS_CODE, C.ITEM_CODE, A.OUTS_CODE, D.CUST_NAME , E.ROW_NUM , F.SORT_ORDR 
+			)A    
+			ORDER BY SORT_ORDR, ITEM_CODE, CUST_NAME  ,SORT_GUBN ASC , ROW_NUM DESC
+		
+			]]>
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표 - 유비리포트 년월
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0120.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+						SELECT
+						#YEAR_MONT1# YEAR_MONT1
+						,#YEAR_MONT2# YEAR_MONT2
+						FROM DUAL
+			]]>
+	</select>
+	
+</sqlMap>

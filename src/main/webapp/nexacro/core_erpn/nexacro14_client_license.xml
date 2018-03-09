@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<license version="1.0">
+	<product>
+		<name>nexacro&#32;platform</name>
+		<version>14</version>
+		<function>Windows,&#32;WindowsRT,&#32;MAC</function>
+	</product>
+	<customer>
+		<name>신경영정보시스템</name>
+		<developerCount>0</developerCount>
+		<rootDomain>52.78.95.205,172.31.48.10,mis.nscom.co.kr</rootDomain>
+		<targetPlatform>Runtime,HTML5</targetPlatform>
+	</customer>
+	<date>
+		<activation>2017-01-09</activation>
+		<term>0</term>
+	</date>
+	<key>MBU9KERXKWP2VARCDNASS7BFSP8ZE6P7E</key>
+</license>

@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PCMA0030">
+
+<!--  
+ *   프로그램명 : 제작 견적템플릿 관리
+ *   작 성 일 : 2016.08.31
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+	
+	
+	<!-- 검색 조건 -->
+	<sql id="search">
+		<isNotEmpty prepend="AND" property="TYPE_NAME">
+			  TYPE_NAME LIKE '%' || #TYPE_NAME# || '%'
+		</isNotEmpty>
+	</sql>
+	
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적 템플릿관리 
+     파라미터   : TYPE_NAME : 템플릿 제목 조회
+     -->
+	<select id="PCMA0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		        SELECT												/* PCMA0030.SEARCH00.견적템플릿관리  조회 */
+		        '0' CHK												/* 선텍 */
+				,A.TYPE_CODE  									/* 템플릿코드 */
+				,A.TYPE_NAME   									/* 템플릿제목 */
+				,NVL(SUM(B.ESTI_PRCE),0) ESTI_PRICE   /* 견적단가 */ 
+				,NVL(SUM(B.ESTI_AMTX),0) ESTI_TAMT   /* 견적금액 */
+				,NVL(SUM(B.TYPE_QTYX),0) TYPE_QTYX    /* 수량 */
+				,COUNT(B.TYPE_CODE) TYPE_DTLX   		/* 상세항목수 */
+				FROM PD_TYPEXH A 
+				LEFT JOIN PD_TYPEXD B ON A.TYPE_CODE = B.TYPE_CODE
+				WHERE 1=1
+			]]>
+				<include refid="search" />	
+			<![CDATA[
+				 GROUP BY A.TYPE_CODE, A.TYPE_NAME,A.ESTI_PRCE, A.ESTI_TAMT
+				 ORDER BY A.TYPE_CODE DESC
+			]]>
+	</select>
+	
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적 템플릿 상세 견적관리 
+     파라미터   : TYPE_CODE : 템플릿 코드로 상세 조뢰
+     			  	
+     -->
+	<select id="PCMA0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+		        SELECT									/* PCMA0030.SEARCH01.견적템플릿관리 상세  조회 */
+		        '0' CHK 									/* 선택 */
+				, A.TYPE_CODE 						/* 템플릿번호 */
+				, A.ITEM_SEQE 						/* 항목번호 */
+				, B.TYPE_NAME 						/* 템플릿제목 */
+				, A.ITEM_CODE 						/* 제작항목코드 */
+				, SUBSTR(A.ITEM_CODE,1,3) HIGH_LEVL /* 대분류코드 */
+				, SUBSTR(A.ITEM_CODE,4,2) MIDD_LEVL /* 중분류코드 */
+				, SUBSTR(A.ITEM_CODE,6,2) SUBX_LEVL /* 소분류코드 */
+				, C.HIGH_NAME 								   /* 대분류명 */
+				, C.MIDD_NAME 								   /* 중분류명 */
+				, C.SUBX_NAME  AS ITEM_NAME  		   /* 소분류명 & 제작항목 */
+				, A.TYPE_STDX 								   /* 제작내용 */
+				, A.TYPE_QTYX 								   /* 수량 */
+				, A.ESTI_PRCE 								   /* 견적단가 */
+				, A.ESTI_AMTX 								   /* 견적금액 */
+				FROM PD_TYPEXD A 
+				LEFT JOIN  PD_TYPEXH B ON A.TYPE_CODE = B.TYPE_CODE
+				LEFT JOIN  PD_ITEMXD C ON A.ITEM_CODE = C.ITEM_CODE
+				WHERE 1=1
+				AND A.TYPE_CODE = #TYPE_CODE#
+			]]>
+	</select>
+
+
+	<!-- 
+      작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적템플릿 저장
+     파라미터   :  			  	
+     -->
+	<insert id="PCMA0030.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+			         
+        INSERT INTO PD_TYPEXH(			/* PCMA0030.SAVE00.견적템플릿관리 저장 */
+         TYPE_CODE  							/* 템플릿코드 */
+        ,TYPE_NAME 							/* 템플릿제목 */
+        ,ESTI_PRCE  							/* 견적단가 */
+        ,ESTI_TAMT 							/* 견적급액 */
+        ,INST_USID   							/* 입력작업자 */
+        ,INST_DATE   							/* 입력일시 */
+        ,UPDT_USID   							/* 수정작업자 */
+        ,UPDT_DATE   							/* 수정일시 */
+        ) VALUES (
+                    #TYPE_CODE#   			/* 템플릿코드 */
+                   ,#TYPE_NAME#   			/* 템플릿제목 */
+                   ,#ESTI_PRCE#   			/* 견적단가 */
+                   ,#ESTI_TAMT#   			/* 견적급액 */
+                   ,#UPDT_USID#   			/* 입력작업자 */
+                   ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+                   ,#UPDT_USID#   			/* 수정작업자 */
+                   ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+            )
+	]]>
+	</insert>
+	
+	<!-- 
+  	 작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적템플릿 수정
+     파라미터   :  			  	
+     -->
+	<update id="PCMA0030.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE PD_TYPEXH								/* PCMA0030.UPDATE00.견적템플릿관리 수정 */
+           SET  TYPE_NAME = #TYPE_NAME#   	/* 템플릿제목 */
+               ,ESTI_PRCE = #ESTI_PRCE#   			/* 견적단가 */
+               ,ESTI_TAMT = #ESTI_TAMT#   		/* 견적금액 */
+               ,UPDT_USID = #UPDT_USID#   		/* 입력작업자 */
+               ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+         WHERE TYPE_CODE  = #TYPE_CODE#    /* 템플릿코드 */
+         
+	]]>
+	</update>
+	
+	
+	<!-- 
+      작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적템플릿 상세 저장
+     파라미터   :  			  	
+     -->
+	<insert id="PCMA0030.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+	
+              INSERT INTO PD_TYPEXD (				/* PCMA0030.SAVE01.견적템플릿관리 상세저장 */
+					         TYPE_CODE  					/* 템플릿코드 */
+					        ,ITEM_SEQE  					/* 견적번호 */
+					        ,ITEM_CODE  					/* 제작항목코드 */
+					        ,ITEM_NAME  					/* 제작항목명 */
+					        ,TYPE_STDX  					/* 제작내용 */
+					        ,TYPE_QTYX  					/* 수량 */
+					        ,ESTI_PRCE   					/* 견적단가 */
+					        ,ESTI_AMTX  					/* 견적금액 */
+					        ,SORT_ORDR 					/* 정렬구분 */
+					        ,INST_USID   					/* 입력작업자 */
+					        ,INST_DATE   					/* 입력일시 */
+					        ,UPDT_USID   					/* 수정작업자 */
+					        ,UPDT_DATE   					/* 수정일시 */
+  				) VALUES(
+    				#TYPE_CODE#   						/* 템플릿코드 */
+                   ,#ITEM_SEQE#   						/* 견적번호 */
+                   ,#ITEM_CODE#   						/* 제작항목코드 */
+                   ,#ITEM_NAME#   						/* 제작항목명 */
+                   ,#TYPE_STDX#   						/* 제작내용 */
+                   ,#TYPE_QTYX#   						/* 수량 */
+                   ,#ESTI_PRCE#   						/* 견적단가 */
+                   ,#ESTI_AMTX#   						/* 견적금액 */
+                   ,#SORT_ORDR#   						/* 정렬구분 */
+                   ,#UPDT_USID#   						/* 입력작업자 */
+                   ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+                   ,#UPDT_USID#   						/* 수정작업자 */
+                   ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+  )
+	]]>
+	</insert>
+
+<!-- 
+  	 작  성  자 : 오세훈
+     작  성  일 : 2016.08.31
+     내      용 : 제작 견적템플릿 하단 수정
+     파라미터   :  			  	
+     -->
+	<update id="PCMA0030.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE PD_TYPEXD								/* PCMA0030.UPDATE01.견적템플릿관리 상세수정 */
+           SET  ITEM_CODE = #ITEM_CODE#   		/* 템플릿제목 */
+               ,ITEM_NAME = #ITEM_NAME#   		/* 제작항목명 */
+               ,TYPE_STDX = #TYPE_STDX#   		/* 제작내용 */
+               ,TYPE_QTYX = #TYPE_QTYX#   		/* 수량 */
+               ,ESTI_PRCE = #ESTI_PRCE#   			/* 견적단가 */
+               ,ESTI_AMTX = #ESTI_AMTX#   		/* 견적금액 */
+               ,SORT_ORDR = #SORT_ORDR#   		/* 정렬구분 */
+               ,UPDT_USID = #UPDT_USID#   		/* 수정자 */
+               ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+         WHERE TYPE_CODE  = #TYPE_CODE#   	/* 템플릿코드 */
+         AND ITEM_SEQE  = #ITEM_SEQE#   		/* 견적번호 */
+         
+	]]>
+	</update>
+	
+	<!-- 
+        작  성  자 : 오세훈
+	     작  성  일 : 2016.08.30
+	     내      용 : 견적 템플릿 상단 및 하단 데이터 모두 삭제 
+	     파라미터   :  			  	
+     -->
+	<delete id="PCMA0030.DELETE00" parameterClass="hashmap">
+	<![CDATA[		
+			 DECLARE
+				BEGIN
+				
+			    /* 상단 Head 템플릿 삭제 처리*/
+                DELETE FROM PD_TYPEXH
+                WHERE 1=1 
+                AND TYPE_CODE = #TYPE_CODE#;
+                
+                /* 하단 견적 Details 삭제 처리*/
+                DELETE FROM PD_TYPEXD
+                WHERE 1=1 
+                AND TYPE_CODE = #TYPE_CODE#;
+                
+	       	END; 
+	]]>		
+	</delete>
+	
+		<!-- 
+        작  성  자 : 오세훈
+	     작  성  일 : 2016.08.30
+	     내      용 : 제작 견적 템플릿 관리  템플릿하단 데이터 삭제  
+	     파라미터   :  			  	
+     -->
+	<delete id="PCMA0030.DELETE01" parameterClass="hashmap">
+	<![CDATA[		
+			 DELETE FROM PD_TYPEXD
+	     	WHERE 1=1
+            AND TYPE_CODE = #TYPE_CODE#
+            AND ITEM_SEQE = #ITEM_SEQE#
+	]]>		
+	</delete>
+	
+	
+	<!-- 템플릿 코드 생성하기-->
+	<select id="PCMA0030.getTYPE_CODE" resultClass="int">			
+			SELECT
+	        NVL(MAX(CAST(TYPE_CODE AS NUMERIC)),0) + 1
+	        FROM PD_TYPEXH
+	        WHERE 1=1
+	</select>
+	
+	
+	<!-- 견적 코드 생성하기-->
+	<select id="PCMA0030.getITEM_SEQE" resultClass="int">			
+			SELECT
+			NVL(MAX(CAST(ITEM_SEQE AS NUMERIC)),0) + 1
+			FROM PD_TYPEXD
+			WHERE 1=1
+			and TYPE_CODE = #TYPE_CODE#
+	</select>
+	
+	
+</sqlMap>

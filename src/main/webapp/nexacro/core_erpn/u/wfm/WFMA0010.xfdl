@@ -1,0 +1,546 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="WFMA0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" position="absolute" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess" titletext="경조금기준등록">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" taborder="30" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="Static02" taborder="0" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="1" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="st_FormTitle" taborder="2" text="경조금기준등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="3" text="홈 &gt; 1메뉴 &gt; 자금계획관리" top="0" right="25" width="640" height="29" cssclass="styFormLocation"/>
+        <Div id="div_ButtonList" taborder="5" tabstop="false" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList" url="common::comButtonType01.xfdl"/>
+        <Button id="btn_favorite" taborder="6" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="stInformation" taborder="8" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="8" top="107" width="262" height="21" usedecorate="true"/>
+        <Static id="Static30" taborder="31" text="기준일자" cssclass="styFormSearchCap" left="28" top="71" width="76" height="21"/>
+        <Static id="Static32" taborder="34" text="경조종류" cssclass="styFormSearchCap" left="227" top="71" width="77" height="21"/>
+        <Combo id="cmbSHRCOCO_KIND" taborder="35" autoselect="true" displayrowcount="20" left="296" top="71" width="200" height="21" innerdataset="@dsCombo"/>
+        <Static id="Static33" taborder="37" text="가족관계" cssclass="styFormSearchCap" left="525" top="71" width="70" height="21"/>
+        <Combo id="cmbSHRFRCW_CODE" taborder="38" autoselect="true" displayrowcount="20" left="593" top="71" width="200" height="21" innerdataset="@dsCombo"/>
+        <Static id="Static34" taborder="39" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="44" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="45" text="h 15" height="15" style="background:#fb7b7b7a;" right="31" bottom="0" left="14" visible="false"/>
+        <Static id="Static04" taborder="47" text="h 6" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="49" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="51" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Grid id="grdCW_COCOBS" taborder="108" binddataset="dsCW_COCOBS" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" autofittype="col" onexpanddown="fn_HelpDialoge" left="8" top="128" right="25" bottom="15">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="178"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell rowspan="2" cssclass="Cellgrd_WF_essential" text="경조명"/>
+                <Cell col="1" rowspan="2" cssclass="Cellgrd_WF_essential" text="경조종류"/>
+                <Cell col="2" rowspan="2" cssclass="Cellgrd_WF_essential" text="가족관계"/>
+                <Cell col="3" colspan="2" text="적용기간"/>
+                <Cell col="5" rowspan="2" cssclass="Cellgrd_WF_edit" text="경조금"/>
+                <Cell col="6" rowspan="2" cssclass="Cellgrd_WF_edit" text="근속연수"/>
+                <Cell col="7" rowspan="2" cssclass="Cellgrd_WF_edit" text="경조용품"/>
+                <Cell col="8" rowspan="2" cssclass="Cellgrd_WF_edit" text="비고"/>
+                <Cell row="1" col="3" cssclass="Cellgrd_WF_essential" text="시작일"/>
+                <Cell row="1" col="4" cssclass="Cellgrd_WF_essential" text="종료일"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="text" style="align:left middle;" text="bind:COCO_NAME"/>
+                <Cell col="1" displaytype="combo" edittype="combo" text="bind:COCO_KIND"/>
+                <Cell col="2" displaytype="combo" edittype="combo" style="align:left;" text="bind:FRCW_CODE"/>
+                <Cell col="3" displaytype="date" edittype="date" text="bind:CCBS_BEDE" calendardisplaynulltype="none"/>
+                <Cell col="4" displaytype="date" edittype="date" text="bind:CCBS_ENDD" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:EXCC_AMOT" editimemode="none"/>
+                <Cell col="6" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:WORK_PROD"/>
+                <Cell col="7" displaytype="combo" edittype="combo" text="bind:CCIT_CODE"/>
+                <Cell col="8" displaytype="text" edittype="text" style="align:left;" text="bind:REMK_200X"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Calendar id="calSHRCCBS_BEDE" taborder="112" dateformat="yyyy-MM-dd" left="98" top="71" width="100" height="21" value="null"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCW_COCOBS" onrowposchanged="fn_SetCodeUseCnt">
+        <ColumnInfo>
+          <Column id="COCO_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="COCO_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="COCO_KIND" size="256" prop="default" type="STRING"/>
+          <Column id="FRCW_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="CCBS_BEDE" size="256" prop="default" type="STRING"/>
+          <Column id="CCBS_ENDD" type="STRING" size="256"/>
+          <Column id="EXCC_AMOT" type="STRING" size="256"/>
+          <Column id="WORK_PROD" type="STRING" size="256"/>
+          <Column id="CCIT_CODE" type="STRING" size="256"/>
+          <Column id="REMK_200X" type="STRING" size="256"/>
+          <Column id="INST_USID" type="STRING" size="256"/>
+          <Column id="INST_DATE" type="STRING" size="256"/>
+          <Column id="UPDT_USID" type="STRING" size="256"/>
+          <Column id="UPDT_DATE" type="STRING" size="256"/>
+          <Column id="USE_CNT" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">COCO_KIND</Col>
+            <Col id="DSNAME">dsCOCO_KIND</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">FRCW_CODE</Col>
+            <Col id="DSNAME">dsFRCW_CODE</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCCIT_CODE</Col>
+            <Col id="CODEID">CCIT_CODE</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRCOCO_KIND</Col>
+            <Col id="CODEID">COCO_KIND</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRFRCW_CODE</Col>
+            <Col id="CODEID">FRCW_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCW_COCOBS_CHK">
+        <ColumnInfo>
+          <Column id="USE_CNT" type="INT" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[ /***************************************************************************************************
+ * # Program : 경조금기준등록
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.05		정한균		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ *****************************************************************************INBUS*CO*KR************/
+ 
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTT"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "WFMA0010";
+this.sKeyValue 		= new Array();
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.calSHRCCBS_BEDE.set_value(this.fnc_GetServerDateTime("DATE"));
+	this.fn_Search();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+	
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear('dsCW_COCOBS');
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsCW_COCOBS=dsCW_COCOBS";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	
+	var iRow = this.dsCW_COCOBS.insertRow(this.dsCW_COCOBS.rowposition + 1);
+	this.dsCW_COCOBS.set_rowposition(iRow);
+	this.dsCW_COCOBS.setColumn(iRow, "CCBS_BEDE", this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 8));
+	this.dsCW_COCOBS.setColumn(iRow, "CCBS_ENDD", "99991231");						//종료일
+	this.grdCW_COCOBS.setCellPos(this.fnc_GridColumnIndex(this.grdCW_COCOBS, 0));
+	this.grdCW_COCOBS.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	
+	if (this.fn_DeleteCheck()) this.dsCW_COCOBS.deleteRow(this.dsCW_COCOBS.rowposition);
+	this.grdCW_COCOBS.setFocus();
+
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	
+	this.fnc_DataSetCancel("dsCW_COCOBS");
+	this.grdCW_COCOBS.setFocus();
+	
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	
+	this.sKeyValue[0] = this.dsCW_COCOBS.getColumn(this.dsCW_COCOBS.rowposition,"COCO_CODE");
+	var sMethodName = "SAVE00";
+	var sInDataSet = "dsCW_COCOBS=dsCW_COCOBS:U";
+	var sOutDataSet = "";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdCW_COCOBS.setFocus();
+	
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+
+	this.fnc_ToExcel(this.name);
+	
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*------------------------------------+
+ |  10.화면 Close 時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsCW_COCOBS", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj, e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+	
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsCW_COCOBS")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	var iRow = this.dsCW_COCOBS.rowposition;
+	var sStatus = this.dsCW_COCOBS.getRowType(iRow);
+	
+	if (this.fnc_ToUpper(sStatus) != Dataset.ROWTYPE_INSERT) {
+		var use_cnt = this.dsCW_COCOBS_CHK.getColumn(0, "USE_CNT");
+		if(use_cnt > 0)
+			return this.fnc_Message("WFM006");
+	}
+	
+	if (this.dsCW_COCOBS.getRowCount() < 1) {
+		return this.fnc_Message("TMM007");
+	}
+
+	var sQuestionText = this.dsCW_COCOBS.getColumn(iRow, "COCO_NAME");
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsCW_COCOBS")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsCW_COCOBS.getRowCount(); i++) {
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "COCO_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "경조명", this.dsCW_COCOBS, i, this.grdCW_COCOBS, 'COCO_NAME');
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "COCO_KIND"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "경조종류코드", this.dsCW_COCOBS, i, this.grdCW_COCOBS, 'COCO_KIND');
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "FRCW_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "가족관계코드", this.dsCW_COCOBS, i, this.grdCW_COCOBS, 'FRCW_CODE');
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "FRCW_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "가족관계코드", this.dsCW_COCOBS, i, this.grdCW_COCOBS, 'EXCC_AMOT');
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "CCBS_BEDE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "시작일자", this.dsTA_DAYEXM, i, this.grdCW_COCOBS, "CCBS_BEDE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsCW_COCOBS.getColumn(i, "CCBS_ENDD"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "종료일자", this.dsCW_COCOBS, i, this.grdCW_COCOBS, "CCBS_ENDD");
+		}
+
+		if(nexacro.toNumber(this.dsCW_COCOBS.getColumn(i,"CCBS_BEDE")) > nexacro.toNumber(this.dsCW_COCOBS.getColumn(i,"CCBS_ENDD"))){
+			this.fnc_Message("TMM125", "시작일이 종료일보다 클 수 없습니다.");
+			this.dsCW_COCOBS.set_rowposition(i);
+			return false;
+		}
+	}
+
+	return true;
+	
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == 'SEARCH00') {
+	
+		sReturnString  = " pgm="             + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="          + this.fnc_Quote(sKind);
+		sReturnString += " CCBS_BEDE=" + this.fnc_Quote(this.fnc_Trim(this.calSHRCCBS_BEDE.value)); //기준일자
+		sReturnString += " COCO_KIND=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRCOCO_KIND.value)); //경조종류
+		sReturnString += " FRCW_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRFRCW_CODE.value)); //가족관계
+
+	} else if (sKind == 'SEARCH01') {
+	
+		sReturnString  = " pgm="             + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="          + this.fnc_Quote(sKind);
+		sReturnString += " COCO_CODE=" + this.dsCW_COCOBS.getColumn(this.dsCW_COCOBS.rowposition, "COCO_CODE"); //경조명코드
+		
+	} else if (sKind == 'SAVE00') {
+	
+		sReturnString  = " pgm="             + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="          + this.fnc_Quote(sKind);
+		
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == 'SEARCH00') {
+	
+		this.fnc_Information(this.stInformation, this.dsCW_COCOBS.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		
+		this.fnc_Message("TMM018", this.dsCW_COCOBS.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.grdCW_COCOBS.setFocus();
+		//this.fn_CodeCheck();
+		
+		if ( this.sKeyValue[0] != "" ) {
+			var irow = this.dsCW_COCOBS.findRow("COCO_CODE",this.sKeyValue[0]);
+			this.sKeyValue[0] = "";
+			if(irow<0) irow=0;
+			this.dsCW_COCOBS.set_rowposition(irow);
+		}
+	} else if (sMethodName == 'SEARCH01') {
+	
+		//this.fnc_Information(this.stInformation, this.dsCW_COCOBS_CHK.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsCW_COCOBS_CHK.getCaseCount("dataset.getRowLevel(currow)==0"));
+		
+		//var use_cnt = this.dsCW_COCOBS_CHK.getColumn(0, "USE_CNT");
+		//this.fnc_Message("TMM125" , use_cnt+"=>data get");
+		
+	} else if (sMethodName == 'SAVE00') {
+	
+		this.fn_SetCodeUseCnt(this.dsCW_COCOBS);
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+		
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+		arrParam[0] = "GRID,grdCW_COCOBS,dsCOCO_KIND,COCO_KIND";
+		arrParam[1] = "GRID,grdCW_COCOBS,dsFRCW_CODE,FRCW_CODE";
+		arrParam[2] = "GRID,grdCW_COCOBS,dsCCIT_CODE,CCIT_CODE";
+		arrParam[3] = "COMBO,cmbSHRCOCO_KIND,dsSHRCOCO_KIND,0";
+		arrParam[4] = "COMBO,cmbSHRFRCW_CODE,dsSHRFRCW_CODE,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+	
+	}
+
+}
+
+/*--------------------------------------+
+ |  row position 변경될 때마다 해당 경조코드 신청건수 조회     |
+ +-------------------------------------*/
+this.fn_SetCodeUseCnt = function (obj:Dataset) {
+
+	var iRow = this.dsCW_COCOBS.rowposition;
+	var sStatus = this.dsCW_COCOBS.getRowType(iRow);
+	
+	if (this.fnc_ToUpper(sStatus) != Dataset.ROWTYPE_INSERT) {
+		this.fn_CodeCheck();
+	}
+
+
+}
+
+/*------------------------+
+ |  삭제전 경조금 신청 이력이 있는 경조코드인지 체크  |
+ +------------------------*/
+this.fn_CodeCheck = function (obj) {
+	
+	this.fnc_DatasetClear('dsCW_COCOBS_CHK');
+
+	var sMethodName = "SEARCH01";
+	var sInDataSet = "";
+	var sOutDataSet = "dsCW_COCOBS_CHK=dsCW_COCOBS_CHK";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	//this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+]]></Script>
+  </Form>
+</FDL>

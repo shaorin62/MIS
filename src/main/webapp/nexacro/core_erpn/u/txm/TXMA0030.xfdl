@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TXMA0030" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="부가세자료 집계처리" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadCheckProcess" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess">
+    <Layouts>
+      <Layout>
+        <Grid selecttype="row" autoenter="none" autofittype="none" binddataset="dsTA_VATPROC" enable="true" id="grdTA_VATPROC" useinputpanel="false" autofitminwidth="100" taborder="3" tabstop="false" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" right="25" top="128" bottom="15" cssclass="styGrid01" onheadclick="grdTA_VATPROC_onheadclick">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="30"/>
+                <Column size="100"/>
+                <Column size="360"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="checkbox" edittype="checkbox"/>
+                <Cell col="1" displaytype="text" text="처리구분"/>
+                <Cell col="2" displaytype="text" text="서식명"/>
+                <Cell col="3" displaytype="text" text="최종집계자"/>
+                <Cell col="4" displaytype="text" text="최종집계일자"/>
+                <Cell col="5" displaytype="text" text="최초집계자"/>
+                <Cell col="6" displaytype="text" text="최초집계일자"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="expr:CODD_REF2 == '0' ? 'none' : 'checkbox'" edittype="expr:CODD_REF2 == '0' ? 'none' : 'checkbox'" style="align:center;background: ;" text="bind:VAT_PROCYN"/>
+                <Cell col="1" displaytype="text" style="align:center;background: ;" text="bind:CODD_REF2_NM"/>
+                <Cell col="2" displaytype="text" style="align:left;background: ;" text="bind:CODD_DESC"/>
+                <Cell col="3" displaytype="text" style="align:center;background: ;" text="bind:UPDT_USID"/>
+                <Cell col="4" displaytype="date" style="align:center;background: ;" text="bind:UPDT_DATE" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="text" style="align:center;background: ;" text="bind:INST_USID"/>
+                <Cell col="6" displaytype="date" style="align:center;background: ;" text="bind:INST_DATE" calendardisplaynulltype="none"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Div id="Div0" taborder="5" tabstop="false" scrollbars="none" left="7" width="133" top="35" height="21">
+          <Layouts>
+            <Layout>
+              <Button id="btn_PROC" taborder="0" text="집계처리" onclick="btn_PROC_OnClick" position="absolute" style="imagealign:left;" left="1" width="74" top="0" height="21" cssclass="styTextButtonBizProc"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="spSearchBox0" taborder="25" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43"/>
+        <Edit id="edtVAT_SMMDD" taborder="27" visible="false" left="588" top="71" width="60" height="21"/>
+        <Edit id="edtVAT_EMMDD" taborder="28" visible="false" left="653" top="71" width="60" height="21"/>
+        <Edit id="edtPRE_VAT_SMMDD" taborder="29" visible="false" left="718" top="71" width="60" height="21"/>
+        <Static id="Static1" taborder="30" text="사업장" cssclass="styFormSearchCapBe" left="26" top="71" width="68" height="21"/>
+        <Static id="Static0" taborder="32" text="연도" cssclass="styFormSearchCapBe" left="250" top="71" width="40" height="21"/>
+        <Static id="Static6" taborder="34" text="분기구분" cssclass="styFormSearchCapBe" left="400" top="71" width="76" height="21"/>
+        <Combo id="cmbVAT_QUARTER" taborder="2" left="468" top="71" width="80" height="21" onsetfocus="fn_EditFocus"/>
+        <Combo id="cmbSHRACCT_GUBN" taborder="0" left="81" top="71" width="140" height="21" onsetfocus="fn_EditFocus"/>
+        <Static id="st_FormTitle" taborder="36" text="부가세자료 집계처리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="37" text="홈 &gt; 세무관리 &gt; 세무회계 &gt; 부가세신고자료관리 &gt; 부가세자료 집계처리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="38" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="39" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="40" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="41" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="42" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="43" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="45" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="46" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="47" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="48" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="49" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="50" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="51" visible="false" left="73" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="52" text="w 40" visible="false" left="221" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="53" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation" taborder="54" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="107" width="262" height="21"/>
+        <Calendar id="calSHRVAT_YYYY" taborder="1" type="spin" dateformat="yyyy" editformat="yyyy" cssclass="styFormItemCalendar" left="293" top="71" width="80" height="21" onsetfocus="fn_EditFocus" onspin="calSHRVAT_YYYY_onspin"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTA_VATPROC" useclientlayout="true" oncolumnchanged="dsTA_VATPROC_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="CODH_FLNM" size="10" type="STRING"/>
+          <Column id="CODD_VALU" size="10" type="STRING"/>
+          <Column id="CODD_DESC" size="100" type="STRING"/>
+          <Column id="CODD_REF1" size="100" type="STRING"/>
+          <Column id="CODD_REF2" size="100" type="STRING"/>
+          <Column id="CODD_REF2_NM" type="STRING" size="256"/>
+          <Column id="BRANCH_CD" size="10" type="STRING"/>
+          <Column id="VAT_YYYY" size="4" type="STRING"/>
+          <Column id="VAT_QUARTER" size="1" type="STRING"/>
+          <Column id="VAT_APPL" size="9" type="STRING"/>
+          <Column id="VAT_PROCYN" size="1" type="STRING"/>
+          <Column id="VAT_PROCYN_GB" type="STRING" size="256"/>
+          <Column id="VAT_SMMDD" size="256" prop="default" type="STRING"/>
+          <Column id="VAT_EMMDD" size="256" prop="default" type="STRING"/>
+          <Column id="PRE_VAT_SMMDD" size="256" prop="default" type="STRING"/>
+          <Column id="UPDT_USID" size="256" prop="default" type="STRING"/>
+          <Column id="UPDT_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="INST_USID" size="256" prop="default" type="STRING"/>
+          <Column id="INST_DATE" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRVATX_QUTR</Col>
+            <Col id="CODEID">VATX_QUTR</Col>
+            <Col id="HEADFLAG">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsUserCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" type="STRING" size="256"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" type="STRING" size="256"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsSHRACCT_GUBN</Col>
+            <Col id="HEADFLAG">Y</Col>
+            <Col id="PARAM">사업장</Col>
+            <Col id="USEYSNO">0</Col>
+            <Col id="COMBOID">FAM0004</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TXMA0030 부가세자료 집계처리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.03		황치웅		Initial Created.
+ *   2016.08.03		안윤준		수정
+ *   2016.08.09		오혜성		수정
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  	= "TTFFFFTF";
+this.sPACKAGENAME 	= "TXMA0030";
+this.sSERVERDATE 	= this.fnc_SubStr(this.fnc_GetServerDateTime("date"), 0, 8);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 
+	 this.sUSERAUTH     = "";  
+	 this.sFORMCAPTION  = "";  
+	 this.sFORMLOCATION = "";  
+	 this.sUSERLAVEL    = "";  
+	 
+} else {
+
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fnc_GetUserComboDs(this.dsUserCombo);
+	
+	this.fnc_GetBranch();
+	
+	var sStds_Date	= this.fnc_AddMonth(this.sSERVERDATE, -1);
+	this.calSHRVAT_YYYY.set_value(this.fnc_SubStr(sStds_Date, 0, 4));
+	
+	var sTempStr 	= this.fnc_SubStr(this.sSERVERDATE, 4, 2);
+	var sVatQuarter = "";
+	
+	if (sTempStr >= "01" && sTempStr <= "03") {
+		sVatQuarter = "4";
+		this.edtVAT_SMMDD.set_value("1001");
+		this.edtVAT_EMMDD.set_value("1231");
+		this.edtPRE_VAT_SMMDD.set_value("0701");
+		
+	} else if (sTempStr >= "04" && sTempStr <= "06") {
+		sVatQuarter = "1";
+		this.edtVAT_SMMDD.set_value("0101");
+		this.edtVAT_EMMDD.set_value("0331");
+		this.edtPRE_VAT_SMMDD.set_value("0101"); //예정신고누락분 예정의 경우 체크 안함
+		
+	} else if (sTempStr >= "07" && sTempStr <= "09") {
+		sVatQuarter = "2";
+		this.edtVAT_SMMDD.set_value("0401");
+		this.edtVAT_EMMDD.set_value("0630");
+		this.edtPRE_VAT_SMMDD.set_value("0101");
+		
+	} else if (sTempStr >= "10" && sTempStr <= "12") {
+		sVatQuarter = "3";
+		this.edtVAT_SMMDD.set_value("0701");
+		this.edtVAT_EMMDD.set_value("0930");
+		this.edtPRE_VAT_SMMDD.set_value("0701"); //예정신고누락분 예정의 경우 체크 안함
+		
+	}
+	
+	this.cmbVAT_QUARTER.set_value(sVatQuarter);
+	this.cmbSHRACCT_GUBN.setFocus();
+	
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+	
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTA_VATPROC");
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTA_VATPROC=dsTA_VATPROC ";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTA_VATPROC.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+
+	this.fnc_DataSetCancel("dsTA_VATPROC");
+	this.grdTA_VATPROC.setFocus(); 
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this); //Export 할 화면 Call
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능없음.
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("", this);
+		
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	// 조회 시 검색 조건이 반드시 있어야 하는 경우 해당 조건을 나열하여 체크 한다.
+	
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRVAT_YYYY.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM001", "연도", this.calSHRVAT_YYYY);
+	}
+	
+	if(this.fnc_Length(this.cmbSHRACCT_GUBN.text) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM001", "사업장", this.cmbSHRACCT_GUBN);
+	}
+	
+	if(this.fnc_Length(this.cmbVAT_QUARTER.text) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM001", "분기구분", this.cmbVAT_QUARTER);
+	}
+	
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+	
+	if (sKind == "SEARCH00") {	
+		sReturnString  = " pgm=" 		   	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="        	+ this.fnc_Quote(sKind);
+		sReturnString += " ACCT_GUBN="     	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_GUBN.value)); //사업자등록번호
+		sReturnString += " VAT_YYYY="      	+ this.fnc_Quote(this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4)); //년도
+		sReturnString += " VAT_QUARTER="   	+ this.fnc_Quote(this.fnc_Trim(this.cmbVAT_QUARTER.value)); //VAT분기
+		sReturnString += " VAT_SMMDD="     	+ this.fnc_Quote(this.fnc_Trim(this.edtVAT_SMMDD.value)); //VAT조회 시작월일
+		sReturnString += " VAT_EMMDD="     	+ this.fnc_Quote(this.fnc_Trim(this.edtVAT_EMMDD.value)); //VAT조회 종료월일
+		sReturnString += " PRE_VAT_SMMDD=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtPRE_VAT_SMMDD.value));
+		
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm=" 		 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	 	+ this.fnc_Quote(sKind);
+		sReturnString += " BRANCH_CD="     	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRACCT_GUBN.value)); //사업자등록번호
+		sReturnString += " VAT_YYYY=" 	 	+ this.fnc_Quote(this.fnc_SubStr(this.fnc_Trim(this.calSHRVAT_YYYY.value), 0, 4)); //년도
+		sReturnString += " VAT_QUARTER=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbVAT_QUARTER.value)); //VAT분기
+		
+	}
+
+	return sReturnString;
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+		
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		
+		this.fnc_Information(this.stInformation, this.dsTA_VATPROC.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_VATPROC.getCaseCount("dataset.getRowLevel(currow)==0"));	
+		
+		for (var i = 0; i < this.dsTA_VATPROC.getRowCount(); i++) {
+			if (this.dsTA_VATPROC.getColumn(i, "VAT_PROCYN_GB") == "1") {
+				this.dsTA_VATPROC.setColumn(i, "VAT_PROCYN", "1");
+			}
+		}
+		
+	} else if (sMethodName == "GetBranch") {
+		
+		this.cmbSHRACCT_GUBN.set_index(0);
+ 		
+	} else if (sMethodName == "GetCommCode") {
+		
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbVAT_QUARTER,dsSHRVATX_QUTR,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+
+	} else if (sMethodName == "GetUserComboCode") {
+
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRACCT_GUBN,dsSHRACCT_GUBN,0";
+		this.fnc_UserComboInnerBind(arrParam);
+
+	} else if (sMethodName == "SAVE00") {
+		
+		this.fnc_Message("EVM003");
+		this.fn_Search();
+		
+	}
+
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+/*----------+
+ | 집계처리 |
+ +-----------*/
+this.btn_PROC_OnClick = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	if (this.dsTA_VATPROC.rowcount < 1) {
+		this.fnc_Message("TMM141");
+		return false;
+
+	}
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTA_VATPROC=dsTA_VATPROC:A";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	this.grdTA_VATPROC.setFocus();
+
+}
+
+/*-------------+
+ | 년도 변경 시 |
+ +-------------*/
+this.calSHRVAT_YYYY_onspin = function (obj:Calendar, e:nexacro.CalendarSpinEventInfo) {
+
+	this.fnc_DatasetClear("dsTA_VATPROC");
+	obj.setFocus();
+
+}
+
+/*--------------------+
+ | 그리드 헤더 클릭 시 |
+ +--------------------*/
+this.grdTA_VATPROC_onheadclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+	if ( e.col == 0 ) {
+		var iCheckValue = 0;
+
+		if (nexacro.toNumber(obj.getCellProperty("head", 0, "text"), 0) == 1) {
+			obj.setCellProperty("head", 0, "text", "0");
+			iCheckValue = 0;
+		} else {
+			obj.setCellProperty("head", 0, "text", "1");
+			iCheckValue = 1;
+		}
+		
+		for (var i=0; i < this.dsTA_VATPROC.rowcount; i++) {
+			if ( this.dsTA_VATPROC.getColumn(i, "CODD_REF2") != 0 ) {
+				this.dsTA_VATPROC.setColumn(i, "VAT_PROCYN", iCheckValue);
+			}
+		}
+	}
+}
+
+this.dsTA_VATPROC_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+
+	if (e.oldvalue == e.newvalue) return;
+	if (e.columnid == "CHK") {
+		obj.set_enableevent(false);
+		obj.set_updatecontrol(false);
+
+		obj.setRowType(e.row, Dataset.ROWTYPE_NORMAL);
+
+		obj.set_updatecontrol(true);
+		obj.set_enableevent(true);
+    } 
+    
+}
+]]></Script>
+  </Form>
+</FDL>

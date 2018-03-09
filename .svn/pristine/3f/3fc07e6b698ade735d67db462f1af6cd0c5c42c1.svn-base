@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		                                                                                                                                                  
+<sqlMap namespace="FAMB0030P04">
+
+	<!-- 예산금액 조회 -->
+<!-- 
+	/*******************************************************************************
+	   작  성  자 : 권미영
+	   작  성  일 : 2016.08.23
+	   내    용 : 예산 조회
+     *******************************************************************************/
+-->	
+	<select id="FAMB0030P04.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		<![CDATA[ 
+       		SELECT 	/* FAMB0030P04.SEARCH00 예산 조회 */
+                 	SF_GET_BUDG_AMNT(#ACCT_UNIT#, #CSTC_CODE#, #BDSB_CODE#, SUBSTR(#SLIP_DATE#, 0, 6), #BUDG_GUBN#) AS BUDG_AMNT   /*  배정금액 */
+                 	,SF_GET_BUDG_APPR_AMNT(#ACCT_UNIT#, #CSTC_CODE#, #BDSB_CODE#, #BUDG_YMST#, #BUDG_YMED#, #BUDG_GUBN#, #SLIP_NUMB#, #SLIP_LINE# ) AS EXEC_AMNT /* 실적금액(승인자료)  */
+                 	,SF_GET_BUDG_NOTX_AMNT(#ACCT_UNIT#, #CSTC_CODE#, #BDSB_CODE#, #BUDG_YMST#, #BUDG_YMED#, #BUDG_GUBN#, #SLIP_NUMB#, #SLIP_LINE# ) AS NEXE_AMNT /* 실적금액(미승인자료) */
+                 	,SF_GET_BUDG_AMNT(#ACCT_UNIT#, #CSTC_CODE#, #BDSB_CODE#, SUBSTR(#SLIP_DATE#, 0, 6), #BUDG_GUBN#)
+                 	 - SF_GET_BUDG_EXEC_AMNT(#ACCT_UNIT#, #CSTC_CODE#, #BDSB_CODE#, #BUDG_YMST#, #BUDG_YMED#, #BUDG_GUBN#, #SLIP_NUMB#, #SLIP_LINE# ) AS DIFF_AMNT /* 실적금액(잔액) */
+        	FROM	DUAL A
+		]]>
+	</select>
+	
+	<select id="FAMB0030P04.SEARCH01" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		<![CDATA[ 
+       		SELECT  /* FAMB0030P04.SEARCH01 실적 상세 조회 */
+          		  	B.SLIP_NUMB
+          		  	, A.SLIP_LINE
+          		  	, B.SLIP_NUMB||A.SLIP_LINE AS DISP_NUMB
+                	, A.SLIP_AMNT
+                	, SF_GET_ACCTNAME(A.ACCT_INTL) AS ACCT_NAME
+                	, A.REMK_NAME
+	                , SF_GET_COMMNAME('APPS_CODE', B.APPS_CODE) AS APPS_CDNM
+            FROM    TA_SLIPNT A
+                	JOIN TA_SLIPXM B ON A.SLIP_NUMB  = B.SLIP_NUMB
+            WHERE   B.ACCT_UNIT = #ACCT_UNIT#
+            AND     A.CSTC_CODE = #CSTC_CODE#
+            AND     A.BDSB_CODE = #BDSB_CODE#
+            AND     B.SLIP_DATE BETWEEN NVL(#BUDG_YMST#, '190001') || '01' AND NVL(#BUDG_YMED#, '210012') || '31'
+            AND     A.BUDG_GUBN = NVL(#BUDG_GUBN#, A.BUDG_GUBN)
+            /*AND     A.SLIP_NUMB <> NVL(iSLIP_NUMB, ' ')*/
+		]]>
+	</select>
+	
+</sqlMap>

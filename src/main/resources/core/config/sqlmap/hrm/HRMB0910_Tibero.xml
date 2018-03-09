@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="HRMB0910">
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Main 조회
+********************************************************************************/
+-->
+    <select id="HRMB0910.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+                SELECT  /* HRMB0910.SEARCH00.인재Pool관리 Main 조회 */
+                       A.SPPT_NUMB                 /* 지원번호 */
+                     , A.SPPT_NAME                 /* 지원자명 */
+                     , A.CCEM_NAME                 /* 한자사원명 */
+                     , A.ENEE_NAME                 /* 영문사원명 */
+                     , A.SPPT_PART                 /* 지원분야 */
+                     , A.EMPL_BIRT                 /* 사원생년월일 */
+                     , A.GNDR_CODE                 /* 성별코드 */
+                     , SF_GET_COMMNAME('GNDR_CODE',A.GNDR_CODE) AS GNDR_NAME /* 성별 */
+                     , A.RCDI_CODE                 /* 현장채용구분코드[RCDT_CODE] */
+                     , SF_GET_COMMNAME('RCDI_CODE',A.RCDI_CODE) AS RCDI_NAME /* 채용구분명 */
+                     , A.WITW_DATE                 /* 실무면접일자 */
+                     , A.EITW_DATE                 /* 임원면접일자 */
+                     , A.DEPT_CODE                 /* 부서코드 */
+                     , SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME /* 부서명 */
+                     , A.FILE_PATH                 /* 파일경로 */
+                     , A.HNPN_TENR                 /* 휴대전화번호 */
+                     , A.OHOM_TENR                 /* 자택전화번호 */
+                     , A.ELTR_MLAD                 /* 전자메일주소 */
+                     , A.POST_NUMB                 /* 우편번호 */
+                     , A.DTL1_ADDR                 /* 상세1주소 */
+                     , A.DTL2_ADDR                 /* 상세2주소 */
+                     , A.FILE_IDXX                 /* 파일ID */
+                  FROM HR_RCMSXM A                  /* [입사지원자] */
+        ]]>
+            <dynamic prepend="WHERE">
+                <isNotEmpty prepend="AND" property="SPPT_PART">
+                       A.SPPT_PART LIKE '%' || #SPPT_PART# || '%'  /* 지원번호 */
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="SPPT_NUMB">
+                       A.SPPT_NUMB = #SPPT_NUMB#   /* 지원번호 */
+                </isNotEmpty>
+                <isNotEmpty property="WITW_DATE1">
+                    <isNotEmpty prepend="AND" property="WITW_DATE2">
+                       A.WITW_DATE BETWEEN #WITW_DATE1# AND #WITW_DATE2#
+                    </isNotEmpty>
+                </isNotEmpty>
+                <isNotEmpty property="EITW_DATE1">
+                    <isNotEmpty prepend="AND" property="EITW_DATE2">
+                       A.EITW_DATE BETWEEN #EITW_DATE1# AND #EITW_DATE2#
+                    </isNotEmpty>
+                </isNotEmpty>
+            </dynamic>
+<![CDATA[        ORDER BY A.SPPT_NUMB DESC ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(0) 학력 조회
+********************************************************************************/
+-->
+    <select id="HRMB0910.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+                SELECT  /* HRMB0910.SEARCH01.인재Pool관리 Tab(0) 학력 조회 */
+                       A.SPPT_NUMB                 /* 지원번호 */
+                     , A.SRAL_NUMB                 /* 일련번호 */
+                     , A.SCDN_CODE                 /* 학교구분코드 */
+                     , A.DGDN_CODE                 /* 학위구분코드 */
+                     , SF_GET_COMMNAME('DGDN_CODE', A.DGDN_CODE) AS DGDN_CDNM /* 학위구분 */
+                     , A.SCHL_CODE                 /* 학교코드 */
+                     , A.SCHL_NAME                 /* 학교명 */
+                     , A.MJRA_CODE                 /* 전공계열코드 */
+                     , A.MAJR_CODE                 /* 전공코드 */
+                     , A.MAJR_NAME                 /* 전공명 */
+                     , A.ENIS_DATE                 /* 입학일 */
+                     , A.GRDT_DATE                 /* 졸업일*/
+                     , A.SCHL_SEAT                 /* 학교소재지 */
+                     , A.HISL_YSNO                 /* 최종학교여부 */
+                     , SF_GET_COMMNAME('SCHL_CODE', A.SCHL_CODE) AS SCHL_CDNM
+                     , SF_GET_COMMNAME('MAJR_CODE', A.MAJR_CODE) AS MAJR_CDNM
+                  FROM HR_RCSCHC A                  /* [지원자학력사항] */
+        ]]>
+            <dynamic prepend="WHERE">
+                <isNotEmpty prepend="AND" property="SPPT_NUMB">
+                       A.SPPT_NUMB = #SPPT_NUMB#   /* 지원번호 */
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                       A.SRAL_NUMB = #SRAL_NUMB#   /* 일련번호 */
+                </isNotEmpty>
+            </dynamic>
+<![CDATA[        ORDER BY A.HISL_YSNO DESC, A.GRDT_DATE DESC ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(1) 경력 조회
+********************************************************************************/
+-->
+    <select id="HRMB0910.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+                SELECT  /* HRMB0910.SEARCH02.인재Pool관리 Tab(1) 경력 조회 */
+                       A.SPPT_NUMB                 /* 지원번호 */
+                     , A.SRAL_NUMB                 /* 일련번호 */
+                     , A.WORK_ORGT                 /* 근무처 */
+                     , A.ENCO_DATE                 /* 입사일 */
+                     , A.RETR_DATE                 /* 퇴사일 */
+                     , A.DEPT_NAME                 /* 부서명 */
+                     , A.DUTY_NAME                 /* 직무명 */
+                     , A.OPOS_NAME                 /* 직위명 */
+                     , A.WOPA_CNTT                 /* 담당업무내용 */
+                     , A.REMK_100X                 /* 비고100 */
+                  FROM HR_RCBFCA A                  /* [지원자경력사항] */
+    ]]>
+            <dynamic prepend="WHERE">
+                <isNotEmpty prepend="AND" property="SPPT_NUMB">
+                       A.SPPT_NUMB = #SPPT_NUMB#   /* 지원번호 */
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                       A.SRAL_NUMB = #SRAL_NUMB#   /* 일련번호 */
+                </isNotEmpty>
+            </dynamic>
+<![CDATA[        ORDER BY A.ENCO_DATE DESC ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(2) 면접 조회
+********************************************************************************/
+-->
+    <select id="HRMB0910.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+                SELECT  /* HRMB0910.SEARCH03.인재Pool관리 Tab(2) 면접 조회 */
+                       A.SPPT_NUMB                 /* 지원번호 */
+                     , A.SRAL_NUMB                 /* 일련번호 */
+                     , A.INDV_CODE                 /* 면접구분코드 */
+                     , A.LARS_CNTT                 /* 최종결과문구내용 */
+                  FROM HR_RCINTW A                  /* [지원자면접사항] */
+        ]]>
+            <dynamic prepend="WHERE">
+                <isNotEmpty prepend="AND" property="SPPT_NUMB">
+                       A.SPPT_NUMB = #SPPT_NUMB#   /* 지원번호 */
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                       A.SRAL_NUMB = #SRAL_NUMB#   /* 일련번호 */
+                </isNotEmpty>
+            </dynamic>
+<![CDATA[        ORDER BY A.INDV_CODE ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(3) 파일첨부 조회
+********************************************************************************/
+-->
+    <select id="HRMB0910.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /*HRMB0910.SEARCH04.인재Pool관리 Tab(3) 파일첨부 조회 */
+                   D.FILE_IDXX                /* 파일ID */
+                 , D.FILE_PATH                /* 저장경로 */
+                 , D.PFIL_NAME                /* 물리파일명 */
+                 , D.LFIL_NAME                /* 논리파일명 */
+                 , D.EXTN_NAME                /* 확장자 */
+                 , D.FILE_SIZE                /* 파일크기 */
+                 , D.FITY_CODE                /* 파일종류 */
+              FROM TM_AFILED D                /* [첨부파일상세] */
+             INNER JOIN HR_RCMSXM A           /* [입사지원자] */
+                ON A.FILE_IDXX = D.FILE_IDXX
+               AND A.SPPT_NUMB = #SPPT_NUMB#  /* 사원번호 */
+             WHERE D.FILE_IDXX = #FILE_IDXX#  /* 파일ID */
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Main 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0910.SAVE00" parameterClass="hashmap">
+        <![CDATA[
+            INSERT INTO HR_RCMSXM ( /* HRMB0910.SAVE00.인재Pool관리 Main 저장 *//* [입사지원자] */
+                   SPPT_NUMB            /* 지원번호 */
+                 , SPPT_NAME            /* 지원자명 */
+                 , CCEM_NAME            /* 한자사원명 */
+                 , ENEE_NAME            /* 영문사원명 */
+                 , SPPT_PART            /* 지원분야 */
+                 , EMPL_BIRT            /* 사원생년월일 */
+                 , GNDR_CODE            /* 성별코드 */
+                 , RCDI_CODE            /* 현장채용구분코드[RCDT_CODE] */
+                 , WITW_DATE            /* 실무면접일자 */
+                 , EITW_DATE            /* 임원면접일자 */
+                 , DEPT_CODE            /* 부서코드 */
+                 , FILE_PATH            /* 파일경로 */
+                 , HNPN_TENR            /* 휴대전화번호 */
+                 , OHOM_TENR            /* 자택전화번호 */
+                 , ELTR_MLAD            /* 전자메일주소 */
+                 , POST_NUMB            /* 우편번호 */
+                 , DTL1_ADDR            /* 상세1주소 */
+                 , DTL2_ADDR            /* 상세2주소 */
+                 , FILE_IDXX            /* 파일ID */
+                 , INST_USID            /* 입력작업자 */
+                 , INST_DATE            /* 입력일시 */
+                 , UPDT_USID            /* 수정작업자 */
+                 , UPDT_DATE            /* 수정일시 */
+                 )
+           VALUES (
+                   (SELECT 'A'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(SPPT_NUMB, 6))+1),1), 3,'0') FROM HR_RCMSXM) /* 지원번호 */
+                 , #SPPT_NAME#          /* 지원자명 */
+                 , #CCEM_NAME#          /* 한자사원명 */
+                 , #ENEE_NAME#          /* 영문사원명 */
+                 , #SPPT_PART#          /* 지원분야 */
+                 , #EMPL_BIRT#          /* 사원생년월일 */
+                 , #GNDR_CODE#          /* 성별코드 */
+                 , #RCDI_CODE#          /* 현장채용구분코드[RCDT_CODE] */
+                 , #WITW_DATE#          /* 실무면접일자 */
+                 , #EITW_DATE#          /* 임원면접일자 */
+                 , #DEPT_CODE#          /* 부서코드 */
+                 , #FILE_PATH#          /* 파일경로 */
+                 , #HNPN_TENR#          /* 휴대전화번호 */
+                 , #OHOM_TENR#          /* 자택전화번호 */
+                 , #ELTR_MLAD#          /* 전자메일주소 */
+                 , #POST_NUMB#          /* 우편번호 */
+                 , #DTL1_ADDR#          /* 상세1주소 */
+                 , #DTL2_ADDR#          /* 상세2주소 */
+                 , #FILE_IDXX#          /* 파일ID */
+                 , #UPDT_USID#          /* 입력작업자 */
+                 , SYSDATE              /* 입력일시 */
+                 , #UPDT_USID#          /* 수정작업자 */
+                 , SYSDATE              /* 수정일시 */
+                 )
+        ]]>
+    </insert>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Main 수정
+********************************************************************************/
+-->
+    <update id="HRMB0910.UPDATE00" parameterClass="hashmap">
+        <![CDATA[
+            UPDATE HR_RCMSXM /* HRMB0910.UPDATE00.인재Pool관리 Main 수정 */ /* [입사지원자] */
+               SET SPPT_NAME = #SPPT_NAME#     /* 지원자명 */
+                 , CCEM_NAME = #CCEM_NAME#     /* 한자사원명 */
+                 , ENEE_NAME = #ENEE_NAME#     /* 영문사원명 */
+                 , SPPT_PART = #SPPT_PART#     /* 지원분야 */
+                 , EMPL_BIRT = #EMPL_BIRT#     /* 사원생년월일 */
+                 , GNDR_CODE = #GNDR_CODE#     /* 성별코드 */
+                 , RCDI_CODE = #RCDI_CODE#     /* 현장채용구분코드[RCDT_CODE] */
+                 , WITW_DATE = #WITW_DATE#     /* 실무면접일자 */
+                 , EITW_DATE = #EITW_DATE#     /* 임원면접일자 */
+                 , DEPT_CODE = #DEPT_CODE#     /* 부서코드 */
+                 , FILE_PATH = #FILE_PATH#     /* 파일경로 */
+                 , HNPN_TENR = #HNPN_TENR#     /* 휴대전화번호 */
+                 , OHOM_TENR = #OHOM_TENR#     /* 자택전화번호 */
+                 , ELTR_MLAD = #ELTR_MLAD#     /* 전자메일주소 */
+                 , POST_NUMB = #POST_NUMB#     /* 우편번호 */
+                 , DTL1_ADDR = #DTL1_ADDR#     /* 상세1주소 */
+                 , DTL2_ADDR = #DTL2_ADDR#     /* 상세2주소 */
+                 , FILE_IDXX = #FILE_IDXX#     /* 파일ID */
+                 , UPDT_USID = #UPDT_USID#     /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE         /* 수정일시 */
+             WHERE SPPT_NUMB  = #SPPT_NUMB#     /* 지원번호 */
+        ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Main 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0910.DELETE00" parameterClass="hashmap">
+        <![CDATA[
+            DELETE FROM HR_RCMSXM           /* HRMB0910.UPDATE00.인재Pool관리 Main 삭제 */ /* [입사지원자] */
+             WHERE SPPT_NUMB = #SPPT_NUMB#  /* 지원번호 */
+        ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(0) 학력 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0910.SAVE01" parameterClass="hashmap">
+        <![CDATA[
+            INSERT INTO HR_RCSCHC ( /* HRMB0910.SAVE01.인재Pool관리 Tab(0) 학력 저장 */ /* [지원자학력사항] */
+                   SPPT_NUMB        /* 지원번호 */
+                 , SRAL_NUMB        /* 일련번호 */
+                 , SCDN_CODE        /* 학교구분코드 */
+                 , DGDN_CODE        /* 학위구분코드 */
+                 , SCHL_CODE        /* 학교코드 */
+                 , SCHL_NAME        /* 학교명 */
+                 , MJRA_CODE        /* 전공계열코드 */
+                 , MAJR_CODE        /* 전공코드 */
+                 , MAJR_NAME        /* 전공명 */
+                 , ENIS_DATE        /* 입학일 */
+                 , GRDT_DATE        /* 졸업일*/
+                 , SCHL_SEAT        /* 학교소재지 */
+                 , HISL_YSNO        /* 최종학교여부 */
+                 , INST_USID        /* 입력작업자 */
+                 , INST_DATE        /* 입력일시 */
+                 , UPDT_USID        /* 수정작업자 */
+                 , UPDT_DATE        /* 수정일시 */
+                 )
+           VALUES (
+                   #SPPT_NUMB#      /* 지원번호 */
+                 , (SELECT NVL(MAX(SRAL_NUMB)+1,1) FROM HR_RCSCHC WHERE SPPT_NUMB = #SPPT_NUMB#)        /* 일련번호 */
+                 , #SCDN_CODE#      /* 학교구분코드 */
+                 , #DGDN_CODE#      /* 학위구분코드 */
+                 , #SCHL_CODE#      /* 학교코드 */
+                 , #SCHL_NAME#      /* 학교명 */
+                 , #MJRA_CODE#      /* 전공계열코드 */
+                 , #MAJR_CODE#      /* 전공코드 */
+                 , #MAJR_NAME#      /* 전공명 */
+                 , #ENIS_DATE#      /* 입학일 */
+                 , #GRDT_DATE#      /* 졸업일*/
+                 , #SCHL_SEAT#      /* 학교소재지 */
+                 , #HISL_YSNO#      /* 최종학교여부 */
+                 , #UPDT_USID#      /* 입력작업자 */
+                 , SYSDATE          /* 입력일시 */
+                 , #UPDT_USID#      /* 수정작업자 */
+                 , SYSDATE          /* 수정일시 */
+                 )
+        ]]>
+    </insert>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(0) 학력 수정
+********************************************************************************/
+-->
+    <update id="HRMB0910.UPDATE01" parameterClass="hashmap">
+        <![CDATA[
+            UPDATE HR_RCSCHC /* HRMB0910.UPDATE01.인재Pool관리 Tab(0) 학력 수정 *//* [지원자학력사항] */
+               SET SCDN_CODE = #SCDN_CODE#     /* 학교구분코드 */
+                 , SCHL_CODE = #SCHL_CODE#     /* 학교코드 */
+                 , DGDN_CODE = #DGDN_CODE#     /* 학위구분코드 */
+                 , SCHL_NAME = #SCHL_NAME#     /* 학교명 */
+                 , MJRA_CODE = #MJRA_CODE#     /* 전공계열코드 */
+                 , MAJR_CODE = #MAJR_CODE#     /* 전공코드 */
+                 , MAJR_NAME = #MAJR_NAME#     /* 전공명 */
+                 , ENIS_DATE = #ENIS_DATE#     /* 입학일 */
+                 , GRDT_DATE = #GRDT_DATE#     /* 졸업일*/
+                 , SCHL_SEAT = #SCHL_SEAT#     /* 학교소재지 */
+                 , HISL_YSNO = #HISL_YSNO#     /* 최종학교여부 */
+                 , UPDT_USID = #UPDT_USID#     /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE         /* 수정일시 */
+             WHERE SPPT_NUMB  = #SPPT_NUMB#     /* 지원번호 */
+               AND SRAL_NUMB  = #SRAL_NUMB#     /* 일련번호 */
+        ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(0) 학력 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0910.DELETE01" parameterClass="hashmap">
+        <![CDATA[
+            DELETE FROM HR_RCSCHC /* HRMB0910.DELETE01.인재Pool관리 Tab(0) 학력 삭제 */ /* [지원자학력사항] */
+             WHERE SPPT_NUMB = #SPPT_NUMB#      /* 지원번호 */
+        ]]>
+            <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                   SRAL_NUMB = #SRAL_NUMB#     /* 일련번호 */
+            </isNotEmpty>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(1) 경력 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0910.SAVE02" parameterClass="hashmap">
+        <![CDATA[
+            INSERT INTO HR_RCBFCA ( /* HRMB0910.SAVE02.인재Pool관리 Tab(1) 경력 저장 *//* [지원자경력사항] */
+                   SPPT_NUMB        /* 지원번호 */
+                 , SRAL_NUMB        /* 일련번호 */
+                 , WORK_ORGT        /* 근무처 */
+                 , ENCO_DATE        /* 입사일 */
+                 , RETR_DATE        /* 퇴사일 */
+                 , DEPT_NAME        /* 부서명 */
+                 , DUTY_NAME        /* 직무명 */
+                 , OPOS_NAME        /* 직위명 */
+                 , WOPA_CNTT        /* 담당업무내용 */
+                 , REMK_100X        /* 비고100 */
+                 , INST_USID        /* 입력작업자 */
+                 , INST_DATE        /* 입력일시 */
+                 , UPDT_USID        /* 수정작업자 */
+                 , UPDT_DATE        /* 수정일시 */
+                 )
+           VALUES (
+                   #SPPT_NUMB#      /* 지원번호 */
+                 , (SELECT NVL(MAX(SRAL_NUMB)+1,1) FROM HR_RCBFCA WHERE SPPT_NUMB = #SPPT_NUMB#)        /* 일련번호 */
+                 , #WORK_ORGT#      /* 근무처 */
+                 , #ENCO_DATE#      /* 입사일 */
+                 , #RETR_DATE#      /* 퇴사일 */
+                 , #DEPT_NAME#      /* 부서명 */
+                 , #DUTY_NAME#      /* 직무명 */
+                 , #OPOS_NAME#      /* 직위명 */
+                 , #WOPA_CNTT#      /* 담당업무내용 */
+                 , #REMK_100X#      /* 비고100 */
+                 , #UPDT_USID#      /* 입력작업자 */
+                 , SYSDATE          /* 입력일시 */
+                 , #UPDT_USID#      /* 수정작업자 */
+                 , SYSDATE          /* 수정일시 */
+                 )
+        ]]>
+    </insert>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(1) 경력 수정
+********************************************************************************/
+-->
+    <update id="HRMB0910.UPDATE02" parameterClass="hashmap">
+        <![CDATA[
+            UPDATE HR_RCBFCA /* HRMB0910.UPDATE02.인재Pool관리 Tab(1) 경력 수정 */ /* [지원자경력사항] */
+               SET WORK_ORGT = #WORK_ORGT#     /* 근무처 */
+                 , ENCO_DATE = #ENCO_DATE#     /* 입사일 */
+                 , RETR_DATE = #RETR_DATE#     /* 퇴사일 */
+                 , DEPT_NAME = #DEPT_NAME#     /* 부서명 */
+                 , DUTY_NAME = #DUTY_NAME#     /* 직무명 */
+                 , OPOS_NAME = #OPOS_NAME#     /* 직위명 */
+                 , WOPA_CNTT = #WOPA_CNTT#     /* 담당업무내용 */
+                 , REMK_100X = #REMK_100X#     /* 비고100 */
+                 , UPDT_USID = #UPDT_USID#     /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE         /* 수정일시 */
+             WHERE SPPT_NUMB  = #SPPT_NUMB#     /* 지원번호 */
+               AND SRAL_NUMB  = #SRAL_NUMB#     /* 일련번호 */
+        ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(1) 경력 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0910.DELETE02" parameterClass="hashmap">
+        <![CDATA[
+            DELETE FROM HR_RCBFCA /* HRMB0910.DELETE02.인재Pool관리 Tab(1) 경력 삭제 *//* [지원자경력사항] */
+             WHERE SPPT_NUMB = #SPPT_NUMB#      /* 지원번호 */
+        ]]>
+            <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                   SRAL_NUMB = #SRAL_NUMB#     /* 일련번호 */
+            </isNotEmpty>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(2) 면접 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0910.SAVE03" parameterClass="hashmap">
+        <![CDATA[
+            INSERT INTO HR_RCINTW ( /* HRMB0910.SAVE03.인재Pool관리 Tab(2) 면접 저장 *//* [지원자면접사항] */
+                   SPPT_NUMB        /* 지원번호 */
+                 , SRAL_NUMB        /* 일련번호 */
+                 , INDV_CODE        /* 면접구분코드 */
+                 , LARS_CNTT        /* 최종결과문구내용 */
+                 , INST_USID        /* 입력작업자 */
+                 , INST_DATE        /* 입력일시 */
+                 , UPDT_USID        /* 수정작업자 */
+                 , UPDT_DATE        /* 수정일시 */
+                 )
+           VALUES (
+                   #SPPT_NUMB#      /* 지원번호 */
+                 , (SELECT NVL(MAX(SRAL_NUMB)+1,1) FROM HR_RCINTW WHERE SPPT_NUMB = #SPPT_NUMB#)        /* 일련번호 */
+                 , #INDV_CODE#      /* 면접구분코드 */
+                 , #LARS_CNTT#      /* 최종결과문구내용 */
+                 , #UPDT_USID#      /* 입력작업자 */
+                 , SYSDATE      /* 입력일시 */
+                 , #UPDT_USID#      /* 수정작업자 */
+                 , SYSDATE      /* 수정일시 */
+                 )
+        ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(2) 면접 수정
+********************************************************************************/
+-->
+    <update id="HRMB0910.UPDATE03" parameterClass="hashmap">
+        <![CDATA[
+            UPDATE HR_RCINTW /* HRMB0910.UPDATE03.인재Pool관리 Tab(2) 면접 수정 */ /* [지원자면접사항] */
+               SET INDV_CODE = #INDV_CODE#     /* 면접구분코드 */
+                 , LARS_CNTT = #LARS_CNTT#     /* 최종결과문구내용 */
+                 , UPDT_USID = #UPDT_USID#     /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE     /* 수정일시 */
+             WHERE SPPT_NUMB  = #SPPT_NUMB#     /* 지원번호 */
+               AND SRAL_NUMB  = #SRAL_NUMB#     /* 일련번호 */
+        ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 인재Pool관리 Tab(2) 면접 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0910.DELETE03" parameterClass="hashmap">
+        <![CDATA[
+            DELETE FROM HR_RCINTW /* HRMB0910.DELETE03.인재Pool관리 Tab(2) 면접 삭제 */ /* [지원자면접사항] */
+             WHERE SPPT_NUMB = #SPPT_NUMB#      /* 지원번호 */
+        ]]>
+            <isNotEmpty prepend="AND" property="SRAL_NUMB">
+                   SRAL_NUMB = #SRAL_NUMB#     /* 일련번호 */
+            </isNotEmpty>
+    </delete>
+</sqlMap>

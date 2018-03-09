@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMA0110">
+
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회양식 테이블 조회
+******************************************************************************* */
+ -->
+    <select id="TMMA0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TMMA0110.SEARCH00.자료조회양식 테이블 조회 */ 
+               A.VIEW_CODE   /* 양식코드 */
+             , A.VIEW_NAME   /* 양식명 */
+             , A.SYST_CODE   /* 시스템코드 */
+             , A.SEBU_CNTT   /* 조회업무내용 */
+             , A.HEAD_CNTT   /* 헤더내용 */
+             , A.SRCH_CNTT   /* 검색내용 */
+             , A.FXCL_INDX   /* 고정컬럼인덱스 */
+             , A.AGGR_YSNO   /* 집계여부 */
+             , A.CBCL_INDX   /* 통합컬럼인덱스 */
+             , A.SUTR_IDXX   /* 소계컬럼ID */
+             , A.USEX_YSNO   /* 사용여부 */
+             , A.ATHR_LEVL   /* 권한레벨 */
+             , A.OWNN_NAME   /* 소유자성명 */
+          FROM TM_VIMNXM A
+         INNER JOIN TM_CODEXD B
+                 ON B.COMM_CODE = 'SYST_CODE'
+                AND A.SYST_CODE = B.COMD_CODE
+         WHERE A.VIEW_CODE || A.VIEW_NAME LIKE '%' || #VIEW_NAME# || '%'    
+    ]]>
+    <isNotEmpty prepend="AND" property="SYST_CODE">
+        A.SYST_CODE = #SYST_CODE#
+    </isNotEmpty>        
+    <![CDATA[
+         ORDER BY B.SORT_ORDR, A.VIEW_CODE
+    ]]>
+    </select>
+
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회조건 테이블 조회
+******************************************************************************* */
+ -->
+    <select id="TMMA0110.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TMMA0110.SEARCH01.자료조회조건 테이블 조회    */
+               VIEW_CODE   /* 양식코드 */
+             , SRAL_NUMB   /* 일련번호 */
+             , SECH_COND   /* 조회조건명 */
+             , SECN_CLID   /* 조회조건컬럼ID */
+             , CDIT_CODE   /* 조건입력형태코드 */
+             , POPP_XDAX   /* 팝업XDA */
+             , CODE_IDXX   /* 코드ID */
+             , CODE_NAME   /* 코드명 */
+             , INIT_DATA   /* 초기데이터 */
+             , CDRI_YSNO   /* 조건필수입력여부 */
+             , CDIS_HELP   /* 조건입력도움말 */
+          FROM TM_VICDXL    
+         WHERE VIEW_CODE = #VIEW_CODE#    
+         ORDER BY SRAL_NUMB ASC 
+    ]]>    
+    </select>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 권한그룹 테이블 조회
+******************************************************************************* */
+ -->
+    <select id="TMMA0110.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TMMA0110.SEARCH02.권한그룹 테이블 조회 */
+               A.GRUP_IDXX   /* 그룹ID */
+             , A.GRUP_NAME   /* 그룹명 */
+             , #VIEW_CODE# AS VIEW_CODE   /* 양식코드 */
+             , CASE WHEN B.VIEW_CODE IS NULL THEN '0' ELSE '1' END AS CHK_SEL
+          FROM TM_ATGPXM A
+          LEFT OUTER JOIN (SELECT VIEW_CODE, GRUP_IDXX
+                             FROM TM_VILVXL
+                            WHERE VIEW_CODE = #VIEW_CODE#) B
+                       ON  A.GRUP_IDXX = B.GRUP_IDXX
+         WHERE A.USEX_YSNO = '1'
+         ORDER BY A.SORT_ORDR ASC
+    ]]>    
+    </select>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 공통코드마스터 테이블 조회
+******************************************************************************* */
+ -->
+    <select id="TMMA0110.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TMMA0110.SEARCH03.공통코드마스터 테이블 조회 */ 
+                DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '','|') || B.COMMENTS || ',70,' || 
+                CASE WHEN A.DATA_TYPE = 'NUMBER' THEN 'N' 
+                     WHEN SUBSTR(A.COLUMN_NAME, LENGTH(A.COLUMN_NAME)-3, 4) = 'DATE' AND DATA_LENGTH = '8' THEN 'D'
+                     WHEN SUBSTR(A.COLUMN_NAME, LENGTH(A.COLUMN_NAME)-3, 4) = 'YMTH' AND DATA_LENGTH = '6' THEN 'M'
+                ELSE '<' 
+                 END AS TITLE
+          FROM ALL_TAB_COLUMNS A
+           INNER JOIN ALL_COL_COMMENTS B
+              ON A.TABLE_NAME = B.TABLE_NAME
+             AND A.COLUMN_NAME = B.COLUMN_NAME
+             AND A.OWNER = B.OWNER
+         WHERE A.TABLE_NAME = #TABLE_NAME#
+           AND A.COLUMN_NAME NOT IN ('INST_DATE','INST_USID', 'UPDT_DATE', 'UPDT_USID')
+           AND A.OWNER = (     SELECT MAX(GRANTEE)
+                            FROM USER_ROLE_PRIVS
+                            WHERE GRANTED_ROLE = 'CONNECT' )
+         ORDER BY A.COLUMN_ID
+    ]]>    
+    </select>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 공통코드상세 테이블 조회
+******************************************************************************* */
+ -->
+    <select id="TMMA0110.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TMMA0110.SEARCH04.공통코드상세 테이블 조회 */
+                 SELECTSYN  AS QUERY
+          FROM (
+            
+            SELECT  A.COLUMN_ID AS ORD
+                   ,DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, 'SELECT ','     , ') || A.COLUMN_NAME || '   /* ' || TRIM(B.COMMENTS) || ' */' AS SELECTSYN
+              FROM ALL_TAB_COLUMNS A
+               INNER JOIN ALL_COL_COMMENTS B
+                  ON A.TABLE_NAME = B.TABLE_NAME
+                 AND A.COLUMN_NAME = B.COLUMN_NAME
+                 AND A.OWNER = B.OWNER
+             WHERE A.TABLE_NAME = #TABLE_NAME#
+               AND A.COLUMN_NAME NOT IN ('INST_USID','INST_DATE', 'UPDT_USID', 'UPDT_DATE')
+               AND A.OWNER = (     SELECT MAX(GRANTEE)
+                                FROM USER_ROLE_PRIVS
+                                WHERE GRANTED_ROLE = 'CONNECT' )
+            UNION ALL
+            SELECT  1000 
+                   ,'  FROM ' || A.TABLE_NAME 
+              FROM ALL_TABLES A
+             WHERE A.TABLE_NAME = #TABLE_NAME#
+                  AND A.OWNER = (     SELECT MAX(GRANTEE)
+                                FROM USER_ROLE_PRIVS
+                                WHERE GRANTED_ROLE = 'CONNECT' )
+          ) A 
+         ORDER BY ORD  
+    ]]>    
+    </select>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회양식 테이블 저장
+******************************************************************************* */
+ -->
+    <insert id="TMMA0110.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+         INSERT INTO TM_VIMNXM (/* TMMA0110.SAVE00.자료조회양식 테이블 저장 */
+                     VIEW_CODE    /* 양식코드 */
+                   , VIEW_NAME    /* 양식명 */
+                   , SYST_CODE    /* 시스템코드 */
+                   , SEBU_CNTT    /* 조회업무내용 */
+                   , HEAD_CNTT    /* 헤더내용 */
+                   , SRCH_CNTT    /* 검색내용 */
+                   , FXCL_INDX    /* 고정컬럼인덱스 */
+                   , AGGR_YSNO    /* 집계여부 */
+                   , CBCL_INDX    /* 통합컬럼인덱스 */
+                   , SUTR_IDXX    /* 소계컬럼ID */
+                   , USEX_YSNO    /* 사용여부 */
+                   , ATHR_LEVL    /* 권한레벨 */
+                   , OWNN_NAME    /* 소유자성명 */
+                   , INST_USID    /* 입력작업자 */
+                   , INST_DATE    /* 입력일시 */
+                   , UPDT_USID    /* 수정작업자 */
+                   , UPDT_DATE    /* 수정일시 */
+            ) VALUES (
+                     #VIEW_CODE#  /* 양식코드 */
+                   , #VIEW_NAME#  /* 양식명 */
+                   , #SYST_CODE#  /* 시스템코드 */
+                   , #SEBU_CNTT#  /* 조회업무내용 */
+                   , #HEAD_CNTT#  /* 헤더내용 */
+                   , #SRCH_CNTT#  /* 검색내용 */
+                   , #FXCL_INDX#  /* 고정컬럼인덱스 */
+                   , #AGGR_YSNO#  /* 집계여부 */
+                   , #CBCL_INDX#  /* 통합컬럼인덱스 */
+                   , #SUTR_IDXX#  /* 소계컬럼ID */
+                   , #USEX_YSNO#  /* 사용여부 */
+                   , #ATHR_LEVL#  /* 권한레벨 */
+                   , #OWNN_NAME#  /* 소유자성명 */
+                   , #UPDT_USID#  /* 입력작업자 */
+                   , SYSDATE      /* 입력일시 */
+                   , #UPDT_USID#  /* 수정작업자 */
+                   , SYSDATE      /* 수정일시 */
+            )
+    ]]>
+    </insert>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회조건 테이블 저장
+******************************************************************************* */
+ -->
+    <insert id="TMMA0110.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+        INSERT INTO TM_VICDXL (/* TMMA0110.SAVE01.자료조회조건 테이블 저장  */
+               VIEW_CODE    /* 양식코드 */
+             , SRAL_NUMB    /* 일련번호 */
+             , SECH_COND    /* 조회조건명 */
+             , SECN_CLID    /* 조회조건컬럼ID */
+             , CDIT_CODE    /* 조건입력형태코드 */
+             , CDAU_CODE    /* 조건권한코드 */
+             , POPP_XDAX    /* 팝업XDA */
+             , CODE_IDXX    /* 코드ID */
+             , CODE_NAME    /* 코드명 */
+             , INIT_DATA    /* 초기데이터 */
+             , CDRI_YSNO    /* 조건필수입력여부 */
+             , CDIS_HELP    /* 조건입력도움말 */
+             , INST_USID    /* 입력작업자 */
+             , INST_DATE    /* 입력일시 */
+             , UPDT_USID    /* 수정작업자 */
+             , UPDT_DATE    /* 수정일시 */
+        ) VALUES (
+               #VIEW_CODE#    /* 양식코드 */
+             , #SRAL_NUMB#    /* 일련번호 */
+             , #SECH_COND#    /* 조회조건명 */
+             , #SECN_CLID#    /* 조회조건컬럼ID */
+             , #CDIT_CODE#    /* 조건입력형태코드 */
+             , #CDAU_CODE#    /* 조건권한코드 */
+             , #POPP_XDAX#    /* 팝업XDA */
+             , #CODE_IDXX#    /* 코드ID */
+             , #CODE_NAME#    /* 코드명 */
+             , #INIT_DATA#    /* 초기데이터 */
+             , #CDRI_YSNO#    /* 조건필수입력여부 */
+             , #CDIS_HELP#    /* 조건입력도움말 */
+             , #UPDT_USID#    /* 입력작업자 */
+             , SYSDATE        /* 입력일시 */
+             , #UPDT_USID#    /* 수정작업자 */
+             , SYSDATE        /* 수정일시 */
+        )
+    ]]>
+    </insert>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 권한그룹 테이블 저장
+******************************************************************************* */
+ -->
+    <insert id="TMMA0110.SAVE02" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE v_ROWCNT INT;
+           /* TMMA0110.SAVE02.권한그룹 테이블 저장  */                  
+        BEGIN
+            SELECT COUNT(VIEW_CODE) 
+              INTO v_ROWCNT     
+              FROM TM_VILVXL 
+             WHERE VIEW_CODE = #VIEW_CODE#  
+               AND GRUP_IDXX = #GRUP_IDXX#;
+               
+            IF v_ROWCNT < 1 THEN    
+            
+                 INSERT INTO TM_VILVXL (
+                             VIEW_CODE    /* 양식코드 */
+                           , GRUP_IDXX    /* 그룹ID */
+                           , INST_USID    /* 입력작업자 */
+                           , INST_DATE    /* 입력일시 */
+                           , UPDT_USID    /* 수정작업자 */
+                           , UPDT_DATE    /* 수정일시 */
+                    ) VALUES (
+                             #VIEW_CODE#  /* 양식코드 */
+                           , #GRUP_IDXX#  /* 그룹ID */
+                           , #UPDT_USID#  /* 입력작업자 */
+                           , SYSDATE      /* 입력일시 */
+                           , #UPDT_USID#  /* 수정작업자 */
+                           , SYSDATE      /* 수정일시 */
+                    );
+            END IF;
+        END;
+    ]]>
+    </insert>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회양식 테이블 수정
+******************************************************************************* */
+ -->
+    <update id="TMMA0110.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE TM_VIMNXM  /* TMMA0110.UPDATE00.자료조회양식 테이블 수정 */
+           SET VIEW_NAME = #VIEW_NAME#    /* 양식명 */
+             , SYST_CODE = #SYST_CODE#    /* 시스템코드 */
+             , SEBU_CNTT = #SEBU_CNTT#    /* 조회업무내용 */
+             , HEAD_CNTT = #HEAD_CNTT#    /* 헤더내용 */
+             , SRCH_CNTT = #SRCH_CNTT#    /* 검색내용 */
+             , FXCL_INDX = #FXCL_INDX#    /* 고정컬럼인덱스 */
+             , AGGR_YSNO = #AGGR_YSNO#    /* 집계여부 */
+             , CBCL_INDX = #CBCL_INDX#    /* 통합컬럼인덱스 */
+             , SUTR_IDXX = #SUTR_IDXX#    /* 소계컬럼ID */
+             , USEX_YSNO = #USEX_YSNO#    /* 사용여부 */
+             , ATHR_LEVL = #ATHR_LEVL#    /* 권한레벨 */
+             , OWNN_NAME = #OWNN_NAME#    /* 소유자성명 */
+             , UPDT_USID = #UPDT_USID#    /* 수정작업자 */
+             , UPDT_DATE = SYSDATE        /* 수정일시 */
+         WHERE VIEW_CODE = #VIEW_CODE#    /* 양식코드 */
+    ]]>
+    </update>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회조건 테이블 수정
+******************************************************************************* */
+ -->
+    <update id="TMMA0110.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE TM_VICDXL  /* TMMA0110.UPDATE01.자료조회조건 테이블 수정 */
+           SET SECH_COND = #SECH_COND#    /* 조회조건명 */
+             , SECN_CLID = #SECN_CLID#    /* 조회조건컬럼ID */
+             , CDIT_CODE = #CDIT_CODE#    /* 조건입력형태코드 */
+             , CDAU_CODE = #CDAU_CODE#    /* 조건권한코드 */
+             , POPP_XDAX = #POPP_XDAX#    /* 팝업XDA */
+             , CODE_IDXX = #CODE_IDXX#    /* 코드ID */
+             , CODE_NAME = #CODE_NAME#    /* 코드명 */
+             , INIT_DATA = #INIT_DATA#    /* 초기데이터 */
+             , CDRI_YSNO = #CDRI_YSNO#    /* 조건필수입력여부 */
+             , CDIS_HELP = #CDIS_HELP#    /* 조건입력도움말 */
+             , UPDT_USID = #UPDT_USID#    /* 수정작업자 */
+             , UPDT_DATE = SYSDATE        /* 수정일시 */
+         WHERE VIEW_CODE = #VIEW_CODE#    /* 양식코드 */
+           AND SRAL_NUMB = #SRAL_NUMB#    /* 일련번호 */
+    ]]>
+    </update>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회양식 테이블 삭제
+******************************************************************************* */
+ -->
+    <delete id="TMMA0110.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM TM_VIMNXM /* TMMA0110.DELETE00.자료조회양식 테이블 삭제 */
+         WHERE VIEW_CODE = #VIEW_CODE#   /* 양식코드 */         
+    ]]>        
+    </delete>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 자료조회조건 테이블 삭제
+******************************************************************************* */
+ -->
+    <delete id="TMMA0110.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM TM_VICDXL  /* TMMA0110.DELETE01.자료조회조건 테이블 삭제 */
+         WHERE VIEW_CODE = #VIEW_CODE#    /* 양식코드 */
+           AND SRAL_NUMB = #SRAL_NUMB#    /* 일련번호 */
+    ]]>
+    </delete>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 권한그룹 테이블 삭제
+******************************************************************************* */
+ -->
+    <delete id="TMMA0110.DELETE02" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE
+            /* TMMA0110.DELETE02.권한그룹 테이블 삭제 */ 
+            v_ROWCNT INT;
+        BEGIN
+            SELECT COUNT(VIEW_CODE)
+              INTO v_ROWCNT
+              FROM TM_VILVXL 
+             WHERE VIEW_CODE = #VIEW_CODE#  
+               AND GRUP_IDXX = #GRUP_IDXX#
+               ;
+            IF v_ROWCNT > 0 THEN
+        
+                DELETE FROM TM_VILVXL
+                 WHERE VIEW_CODE = #VIEW_CODE#   /* 양식코드 */
+                   AND GRUP_IDXX = #GRUP_IDXX#   /* 그룹ID */
+                   ; 
+            END IF;
+        END;                 
+    ]]>        
+    </delete>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 공통코드마스터 테이블 삭제
+******************************************************************************* */
+ -->
+    <delete id="TMMA0110.DELETE03" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM TM_VICDXL /* TMMA0110.DELETE03.공통코드마스터 테이블 삭제 */
+         WHERE VIEW_CODE = #VIEW_CODE#   /* 양식코드 */
+    ]]>        
+    </delete>
+<!--
+/* ******************************************************************************
+   작 성 자   : 최흥규
+   작 성 일   : 2016.08.02
+   내     용   : 공통코드상세 테이블 삭제
+******************************************************************************* */
+ -->
+    <delete id="TMMA0110.DELETE04" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM TM_VILVXL  /* TMMA0110.DELETE04.공통코드상세 테이블 삭제 */
+         WHERE VIEW_CODE = #VIEW_CODE#   /* 양식코드 */ 
+    ]]>        
+    </delete>
+
+</sqlMap>

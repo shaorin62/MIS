@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="COMATTACHFILE">
+
+    <typeAlias alias="listMap"
+        type="org.apache.commons.collections.map.ListOrderedMap" />
+    <typeAlias alias="inMap" type="java.util.HashMap" />
+
+	<!-- 공통첨부파일 첨부파일 조회 -->
+    <select id="COMATTACHFILE.selectFile" parameterClass="inMap"
+        resultClass="listMap">
+    <![CDATA[
+        SELECT /* COMATTACHFILE.selectFile [공통]첨부파일 조회 */
+        	   FILE_IDXX  /* 파일ID */
+              ,PFIL_NAME  /* 물리파일명 */
+              ,LFIL_NAME  /* 논리파일명 */
+              ,FILE_SIZE  /* 파일크기 */
+              ,EXTN_NAME  /* 확장자명 */ 
+              ,REMK_200X  /* 비고200 */
+              ,SYST_CODE  /* 시스템코드 */
+              ,MENU_IDXX  /* 메뉴ID */
+              ,FILE_PATH  /* 파일경로 */
+              ,FITY_CODE  /* 파일유형코드[FITY_CODE] */
+              ,FPTY_CODE  /* 경로유형코드[FPTY_CODE] */
+              ,INST_USID  /* 입력작업자 */ 
+              ,INST_DATE  /* 입력일시 */
+              ,UPDT_USID  /* 수정작업자 */
+              ,UPDT_DATE  /* 수정일시 */
+          FROM TM_AFILED  /* [첨부파일상세] */
+         WHERE FILE_IDXX = #FILE_IDXX#
+         ORDER BY PFIL_NAME
+    ]]>
+    </select>
+
+    <!-- 공통첨부파일 첨부파일 상세테이블 조회 -->
+    <select id="COMATTACHFILE.selectTM_AFILED" parameterClass="inMap"
+        resultClass="inMap">
+    <![CDATA[
+        SELECT /* COMATTACHFILE.selectTM_AFILED [공통] 첨부파일 상세테이블 조회 */
+        	   FILE_IDXX  /* 파일ID */
+              ,PFIL_NAME  /* 물리파일명 */
+              ,LFIL_NAME  /* 논리파일명 */
+              ,FILE_SIZE  /* 파일크기 */
+              ,EXTN_NAME  /* 확장자명 */ 
+              ,REMK_200X  /* 비고200 */
+              ,SYST_CODE  /* 시스템코드 */
+              ,MENU_IDXX  /* 메뉴ID */
+              ,FILE_PATH  /* 파일경로 */
+              ,FITY_CODE  /* 파일유형코드[FITY_CODE] */
+              ,FPTY_CODE  /* 경로유형코드[FPTY_CODE] */
+              ,INST_USID  /* 입력작업자 */ 
+              ,INST_DATE  /* 입력일시 */
+              ,UPDT_USID  /* 수정작업자 */
+              ,UPDT_DATE  /* 수정일시 */
+          FROM TM_AFILED A    /* [첨부파일상세] */
+         WHERE FILE_IDXX = #FILE_IDXX#
+           AND PFIL_NAME = #PFIL_NAME#
+    ]]>
+    </select>
+
+
+    <!-- 공통첨부파일 첨부파일 상세테이블 저장 -->
+    <insert id="COMATTACHFILE.insertTM_AFILED" parameterClass="inMap">
+    <![CDATA[  
+        INSERT INTO TM_AFILED ( /* COMATTACHFILE.insertTM_AFILED [공통] 첨부파일 상세테이블 저장 */
+             FILE_IDXX  /* 파일ID */
+            ,PFIL_NAME  /* 물리파일명 */
+            ,LFIL_NAME  /* 논리파일명 */
+            ,FILE_SIZE  /* 파일크기 */
+            ,EXTN_NAME  /* 확장자명 */ 
+            ,REMK_200X  /* 비고200 */
+            ,SYST_CODE  /* 시스템코드 */
+            ,MENU_IDXX  /* 메뉴ID */
+            ,FILE_PATH  /* 파일경로 */
+            ,FITY_CODE  /* 파일유형코드[FITY_CODE] */
+            ,FPTY_CODE  /* 경로유형코드[FPTY_CODE] */
+            ,INST_USID  /* 입력작업자 */ 
+            ,INST_DATE  /* 입력일시 */
+            ,UPDT_USID  /* 수정작업자 */
+            ,UPDT_DATE  /* 수정일시 */
+         ) VALUES (
+             #FILE_IDXX#
+            ,#PFIL_NAME#
+            ,#LFIL_NAME#
+            ,#FILE_SIZE#
+            ,#EXTN_NAME#
+            ,#REMK_200X#
+            ,#SYST_CODE#
+            ,#MENU_IDXX#
+            ,#FILE_PATH#
+            ,#FITY_CODE#
+            ,#FPTY_CODE#
+            ,#UPDT_USID#
+            ,SYSDATE
+            ,#UPDT_USID#
+            ,SYSDATE
+        )
+    ]]>
+    </insert>
+
+    <!-- 공통첨부파일 첨부파일 상세테이블 수정 -->
+    <update id="COMATTACHFILE.updateTM_AFILED" parameterClass="inMap">
+    <![CDATA[
+        UPDATE TM_AFILED /* COMATTACHFILE.updateTM_AFILED [공통] 첨부파일 상세테이블 수정*/
+           SET LFIL_NAME = #LFIL_NAME#    /*논리파일명*/
+              ,FILE_SIZE = #FILE_SIZE#    /*파일크기*/
+              ,EXTN_NAME = #EXTN_NAME#    /*확장자명*/
+              ,REMK_200X = #REMK_200X#    /*비고200*/
+              ,SYST_CODE = #SYST_CODE#    /*시스템코드*/
+              ,MENU_IDXX = #MENU_IDXX#    /*메뉴ID*/
+              ,FILE_PATH = #FILE_PATH#    /*파일경로*/
+              ,FITY_CODE = #FITY_CODE#    /*파일유형코드[FITY_CODE]*/
+              ,FPTY_CODE = #FPTY_CODE#    /* 경로유형코드[FPTY_CODE] */
+              ,UPDT_USID = #UPDT_USID#    /*수정작업자*/
+              ,UPDT_DATE=SYSDATE          /*수정일시*/
+         WHERE FILE_IDXX = #FILE_IDXX#    /*파일ID*/
+           AND PFIL_NAME = #PFIL_NAME#    /*물리파일명*/
+    ]]>
+    </update>
+
+    <!-- 공통첨부파일 첨부파일 상세테이블 삭제 -->
+    <delete id="COMATTACHFILE.deleteTM_AFILED">
+    <![CDATA[
+        DELETE FROM TM_AFILED /* COMATTACHFILE.deleteTM_AFILED [공통] 첨부파일 상세테이블 삭제 */
+         WHERE FILE_IDXX = #FILE_IDXX#    /*파일ID*/
+           AND PFIL_NAME = #PFIL_NAME#    /*물리파일명*/
+    ]]>
+    </delete>
+
+</sqlMap>

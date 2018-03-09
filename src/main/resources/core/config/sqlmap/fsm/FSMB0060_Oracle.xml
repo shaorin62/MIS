@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                 
+           "http://ibatis.apache.org/dtd/sql-map-2.dtd" >                              
+                                                                                                                      
+<sqlMap namespace="FSMB0060">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할관리 헤더 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMB0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT  /*FSMB0060.SEARCH00.자산분할관리 헤더 조회 처리*/
+			        '0' AS CHEK_YSNO           /*선택*/
+                    ,A.SPLT_DATE                /*분할일*/
+                    ,C.ASCL_NAME                /*자산 분류명*/
+                    ,C.SMAL_NAME AS CLSF_NAME   /*품목분류명*/
+                    ,A.ASST_NUMB                /*자산번호*/
+                    ,B.ASST_NAME                /*자산명*/
+                    ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME  /*부서명*/
+                    ,B.ACQS_DATE                /*취득일*/
+                    ,A.ACQU_NUMB                /*취득수량*/
+                    ,A.ACQU_PRIC                /*취득금액*/
+                    ,A.UNDP_BALE                /*미상각잔액*/
+                    ,A.ASAF_NUMB                /*분할후수량*/
+                    ,A.TOTL_SPLT                /*자산분할합계*/
+                    ,A.SPDP_TSUM              /*자산분할충당금합계*/
+                    ,A.RCGN_YSNO                /*확정여부*/
+                    ,A.APPV_DATE                /*확정일시*/
+                    ,A.APPR_EMPL                /*확정자*/
+                    ,SF_GET_EMPLNAME(A.APPR_EMPL) AS APPV_EMNM /*승인자명*/
+                    ,A.DESC_REMK                /*비고(100)*/
+               FROM FS_ASSPXM A  INNER JOIN FS_ASSTXM     B ON A.ASST_NUMB = B.ASST_NUMB
+                                 INNER JOIN VI_ASSETCLASS C ON B.CLSF_CODE = C.SMAL_CODE
+              WHERE A.SPLT_DATE >= #SPLT_DAT1#                     /*조회시작일(분할일)*/
+                AND A.SPLT_DATE <= #SPLT_DAT2#                     /*조회종료일(분할일)*/
+		]]>
+            <isNotEmpty prepend="AND" property="RCGN_YSNO">
+                A.RCGN_YSNO  = NVL(#RCGN_YSNO#, A.RCGN_YSNO)   /*승인여부*/
+            </isNotEmpty>                
+            <isNotEmpty prepend="AND" property="DEPT_CODE">
+                A.DEPT_CODE  = NVL(#DEPT_CODE#, A.DEPT_CODE)   /*부서코드*/
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="CLSF_CODE">
+                B.CLSF_CODE  = NVL(#CLSF_CODE#, B.CLSF_CODE)   /*품목분류*/
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="ASST_NUMB">
+                A.ASST_NUMB  = NVL(#ASST_NUMB#, A.ASST_NUMB)   /*자산번호*/
+            </isNotEmpty>
+            
+            <![CDATA[
+               ORDER BY A.SPLT_DATE DESC         
+            ]]>
+              
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할관리 디테일 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMB0060.SEARCH01" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT  /*FSMB0060.SEARCH01.자산분할관리 디테일 조회 처리 */
+			         A.SPLT_DATE     /*분할일*/
+                    ,A.ASST_NUMB    /*자산번호*/
+                    ,A.SEQN_NUMB    /*일련번호*/
+                    ,A.SPLT_ASST    /*분할자산번호*/
+                    ,A.SPLT_NAME    /*분할자산명*/
+                    ,SF_GET_DEPTNAME(A.NEWX_DEPT) AS NEWX_DPNM  /*부서명*/
+                    ,A.SPLT_COST    /*분할단가*/
+                    ,A.SPLT_NUMB    /*분할수량*/
+                    ,A.SPLT_PRIC    /*분할금액*/
+                    ,A.DPCT_AMOT    /*충당금누계액*/
+                    ,A.UNDP_BALE    /*미상각잔액*/
+                    ,A.DESC_REMK    /*비고(100)*/
+               FROM FS_ASSPXD A     /*[자산분할이력_상세]*/
+              WHERE A.SPLT_DATE = #SPLT_DATE#
+                AND A.ASST_NUMB = #ASST_NUMB#
+              ORDER BY SEQN_NUMB           
+               
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할관리 삭제 처리
+********************************************************************************/
+ -->
+	<delete id="FSMB0060.DELETE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0060.DELETE00.자산분할관리 삭제 처리*/
+			sRCGN_YSNO FS_ASSPXM.RCGN_YSNO%TYPE;   /*분할이력 승인여부*/
+	
+	    BEGIN
+	
+	        /************************************************
+		          변동, 분할, 감가상각 여부는 체크 하지 않음
+		          미확정 자료가 존재하면 신규 입력이 불가하고
+		          삭제 가능 자료는 미확정 자료만 가능함으로
+	        *************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASSPXM
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+	
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NAME# || ' 자산은 이미 승인 되었습니다!\n\n' ||
+	                                           '승인 자료는 삭제가 불가 합니다!');
+	        END IF;
+	
+	        /*디테일삭제*/
+	        DELETE FROM FS_ASSPXD
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+	
+	        /*헤더삭제*/
+	        DELETE FROM FS_ASSPXM
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+	
+	    END;
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할승인
+********************************************************************************/
+ -->
+	<delete id="FSMB0060.APPL00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0060.APPL00.자산분할승인*/
+			sRCGN_YSNO                  FS_ASSPXM.RCGN_YSNO%TYPE;   /*승인여부*/
+		    iDPCT_COUNT                 DECIMAL(15,0);              /*감가상각 자료 존재여부*/
+		    sASST_NUMB                  FS_ASSTXM.ASST_NUMB%TYPE;   /*신규자산번호 채번*/
+		    sSPLT_PRIC                  FS_ASSPXD.SPLT_PRIC%TYPE;   /*취득금액(자자산의 SUM)*/
+		    sUNDP_BALE                  FS_ASSPXD.UNDP_BALE%TYPE;   /*미상각잔액(자자산의 SUM)*/
+		
+		BEGIN
+		
+		        /*이미 승인된 자료인지 체크*/
+		        SELECT RCGN_YSNO INTO sRCGN_YSNO FROM FS_ASSPXM WHERE ASST_NUMB = #ASST_NUMB# AND SPLT_DATE = #SPLT_DATE#;
+		
+		        IF (sRCGN_YSNO = '1') THEN
+		           RAISE_APPLICATION_ERROR(-20000, '이미 승인된 자료가 존재합니다!!');
+		        END IF;
+		
+		
+		        /*분할년월의 감가상각여부 체크*/
+				SELECT COUNT(STDS_YMTH)
+	              INTO iDPCT_COUNT
+	              FROM FS_DPCTXM
+				 WHERE STDS_YMTH = SUBSTR(#SPLT_DATE#, 1, 6);
+				 
+		        IF (iDPCT_COUNT > 0) THEN
+		           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#SPLT_DATE#, 1, 4) || '년 ' || SUBSTR(#SPLT_DATE#, 5, 2) || '월의 감가상각 자료가 존재합니다!!');
+		        END IF;
+		
+		        /*자산 상세 내역*/
+		        FOR CUR_ASSPXD IN
+		        (
+		             SELECT  SPLT_DATE   /*분할일*/
+		                    ,ASST_NUMB   /*자산번호*/
+		                    ,SEQN_NUMB   /*일련번호*/
+		                    ,NEWX_DEPT   /*신규부서코드*/
+		                    ,SPLT_ASST   /*분할자산번호*/
+		                    ,SPLT_NAME   /*분할자산명*/
+		                    ,SPLT_COST   /*분할단가*/
+		                    ,SPLT_NUMB   /*분할수량*/
+		                    ,SPLT_PRIC   /*분할금액*/
+		                    ,DPCT_AMOT   /*충당금누계액*/
+		                    ,UNDP_BALE   /*미상각잔액*/
+		                    ,DESC_REMK   /*비고(100)*/
+		               FROM FS_ASSPXD
+		              WHERE SPLT_DATE = #SPLT_DATE#
+		                AND ASST_NUMB = #ASST_NUMB#
+		        )
+		
+		
+		      LOOP
+		
+		         IF CUR_ASSPXD.SEQN_NUMB IS NOT NULL THEN
+		
+		            BEGIN
+		
+		                /*  --2014.12 NDS 채번로직으로 변경. INBUS원본
+		                SELECT NVL(MAX(ASST_NUMB),SUBSTR(iWORK_DATE,1,4)||'00000') + 1 -- 채번
+		                  INTO sASST_NUMB
+		                  FROM FS_ASSTXM
+		                 WHERE ASST_NUMB LIKE  SUBSTR(iWORK_DATE,1,4) || '%';
+		                */
+		
+		                /*             취득년                       품목대.중분류                  MAX(0000)+1 숫자    */
+		                SELECT SUBSTR(#UPDT_DATE#, 1, 4) ||  SUBSTR(#ASST_NUMB#,5,4) || LPAD(TO_NUMBER(NVL(SUBSTR(MAX(ASST_NUMB), 9, 4), '0')) + 1, 4, '0')
+		                INTO sASST_NUMB
+		                FROM FS_ASSTXM
+		                WHERE ACQS_DATE LIKE  SUBSTR(#UPDT_DATE#,1,4) || '%'
+		                    AND CLSF_CODE LIKE SUBSTR(#ASST_NUMB#,5,4) || '%';
+		
+		                /*자산마스터 등록*/   /*        FILE_PATH  파일경로       ,FILE_PSNM   파일명물리        ,FILE_LGNM   파일명논리           제거 */
+		                INSERT INTO FS_ASSTXM (
+		                       ASST_NUMB   /*자산번호*/
+		                      ,ASST_NAME   /*자산명*/
+		                      ,ACQS_DATE   /*취득일*/
+		                      ,CLSF_CODE   /*품목분류코드*/
+		                      ,DPCT_METH   /*상각방법[DPCT_METH]*/
+		                      ,PRID_DPCT   /*내용년수*/
+		                      ,DPCT_RATE   /*감가상각율*/
+		                      ,DPCT_CYCL   /*상각주기[DPCT_CYCL]*/
+		                      ,ACCT_UNIT   /*회계단위[ACCT_UNIT]*/
+		                      ,ASST_STRD   /*자산규격*/
+		                      ,DETL_STRD   /*세부규격*/
+		                      ,ACQU_NUMB   /*취득수량*/
+		                      ,ACQU_COST   /*취득단가*/
+		                      ,ACQU_PRIC   /*취득금액*/
+		                      ,DEPT_CODE   /*부서코드*/
+		                      ,UNIT_CODE   /*자산단위코드[UNIT_CODE]*/
+		                      ,EMPL_NUMB   /*사원번호*/
+		                      ,BUYX_NAME   /*구매처명*/
+		                      ,MUFT_NAME   /*제조업체*/
+		                      ,BARX_CODE   /*자산바코드*/		                    
+		                      ,DESC_REMK   /*비고(100)*/
+		                      ,DPCT_STAT   /*상각상태[DPCT_STAT]*/
+		                      ,ASST_STAT   /*자산상태[ASST_STAT]*/
+		                      ,UNDP_BALE   /*미상각잔액*/
+		                      ,SAVG_VALU   /*잔존가액*/
+		                      ,ACQU_CHNL   /*취득경로[ACQU_CHNL]*/
+		                      ,PAST_NUMB   /*모자산번호*/
+		                      ,FCHG_DATE   /*최종변동일*/
+		                      ,PRID_LEGL   /*세무년수*/
+		                      ,IDLE_YSNO   /*유휴관리*/
+		                      ,CUST_CODE   /*구매처*/
+		                      ,DPCT_CMPT   /*상각완료기준*/
+		                      )
+		                 SELECT  sASST_NUMB                 /*자산번호*/
+		                        ,CUR_ASSPXD.SPLT_NAME       /*자산명*/
+		                        ,ACQS_DATE                  /*취득일*/
+		                        ,CLSF_CODE                  /*품목분류코드*/
+		                        ,DPCT_METH                  /*상각방법[DPCT_METH]*/
+		                        ,PRID_DPCT                  /*내용년수*/
+		                        ,DPCT_RATE                  /*감가상각율*/
+		                        ,DPCT_CYCL                  /*상각주기[DPCT_CYCL]*/
+		                        ,ACCT_UNIT                  /*회계단위[ACCT_UNIT]*/
+		                        ,ASST_STRD                  /*자산규격*/
+		                        ,DETL_STRD                  /*세부규격*/
+		                        ,CUR_ASSPXD.SPLT_NUMB       /*취득수량*/
+		                        ,CUR_ASSPXD.SPLT_COST       /*취득단가*/
+		                        ,CUR_ASSPXD.SPLT_PRIC       /*취득금액*/
+		                        ,CUR_ASSPXD.NEWX_DEPT       /*신규부서코드*/
+		                        ,UNIT_CODE                  /*자산단위코드[UNIT_CODE]*/
+		                        ,EMPL_NUMB                  /*사원번호*/
+		                        ,BUYX_NAME                  /*구매처명*/
+		                        ,MUFT_NAME                  /*제조업체*/
+		                        ,BARX_CODE                  /*자산바코드*/		                        
+		                        ,CUR_ASSPXD.DESC_REMK       /*비고(100)*/
+		                        ,DPCT_STAT                  /*상각상태[DPCT_STAT]*/
+		                        ,ASST_STAT                  /*자산상태[ASST_STAT]*/
+		                        ,CUR_ASSPXD.UNDP_BALE       /*미상각잔액*/
+		                        ,SAVG_VALU                  /*잔존가액*/
+		                        ,'SPLT'                     /*취득경로[ACQU_CHNL]*/
+		                        ,CUR_ASSPXD.ASST_NUMB       /*모자산번호*/
+		                        ,SUBSTR(#SPLT_DATE#, 1, 8)   /*최종변동일*/
+		                        ,PRID_LEGL                  /*세무년수*/
+		                        ,IDLE_YSNO                  /*유휴관리*/
+		                        ,CUST_CODE                  /*구매처*/
+		                        ,DPCT_CMPT                  /*상각완료기준*/
+		                   FROM FS_ASSTXM
+		                   WHERE ASST_NUMB = CUR_ASSPXD.ASST_NUMB;
+		
+		                /*분할된 데이터 변동테이블에 등록(자산변동구분 : 자자산)*/
+		                INSERT INTO FS_ASCHXM (
+		                       CHNG_DATE   /*변동일*/
+		                      ,ASST_NUMB   /*자산번호*/
+		                      ,SEQN_NUMB   /*일련번호*/
+		                      ,ASCH_GUBN   /*변동구분[ASCH_GUBN]*/
+		                      ,ASST_STAT   /*자산상태[ASST_STAT]*/
+		                      ,CHBF_DEPT   /*변경전부서코드*/
+		                      ,CHBF_EMPL   /*변경전사원번호*/
+		                      ,DEPT_CODE   /*부서코드*/
+		                      ,EMPL_NUMB   /*사원번호*/
+		                      ,ACQU_ENDX   /*취득가_기말잔액*/
+		                      ,DPCT_ENDX   /*충당금_기말잔액*/
+		                      ,UNDP_BALE   /*미상각잔액*/
+		                      ,CHNG_AMOT   /*변동금액*/
+		                      ,DSPS_AMOT   /*처분가액*/
+		                      ,DSPS_GILS   /*처분손익*/
+		                      ,DPCT_GRDC   /*충당금가감액*/
+		                      ,ACCT_INTL   /*계정과목코드*/
+		                      ,CUST_CODE   /*거래처코드*/
+		                      ,RCGN_YSNO   /*승인여부*/
+		                      ,APPV_DATE   /*승인일시*/
+		                      ,APPR_EMPL   /*승인자*/
+		                      ,SLIP_NUMB   /*전표번호*/
+		                      ,SLIP_LINE   /*전표순번*/
+		                      ,DESC_REMK   /*비고(100)*/
+		                      ,INST_DATE   /*등록일시*/
+		                      ,INST_USID   /*등록자*/
+		                      ,UPDT_DATE   /*수정일시*/
+		                      ,UPDT_USID   /*수정자*/
+		                      )
+		                 SELECT  #SPLT_DATE#     /*변동일*/
+		                        ,A.ASST_NUMB    /*자산번호*/
+		                        ,1              /*신규 자산으로 언제나 1*/
+		                        ,'SPCH'         /*변동구분(분할자 : SPCH)*/
+		                        ,A.ASST_STAT    /*자산상태[ASST_STAT]*/
+		                        ,A.DEPT_CODE    /*변경전부서코드*/
+		                        ,A.EMPL_NUMB    /*사원번호*/
+		                        ,CUR_ASSPXD.NEWX_DEPT    /*신규부서코드*/
+		                        ,A.EMPL_NUMB    /*사원번호*/
+		                        ,0              /*취득가_기말잔액*/
+		                        ,0              /*충당금_기말잔액*/
+		                        ,0              /*미상각잔액*/
+		                        ,A.ACQU_PRIC    /*변동금액*/
+		                        ,0              /*처분가액*/
+		                        ,0              /*처분손익*/
+		                        ,CUR_ASSPXD.DPCT_AMOT /*충당금가감액*/
+		                        ,(SELECT DPCT_ACT1 FROM VI_ASSETCLASS WHERE SMAL_CODE = A.CLSF_CODE)        /*계정과목코드*/
+		                        ,''             /*거래처코드*/
+		                        ,'1'            /*승인여부*/
+		                        ,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')     /*승인일시*/
+		                        ,#UPDT_USID#     /*승인자*/
+		                        ,NULL           /*전표번호*/
+		                        ,NULL           /*전표번호순번*/
+		                        ,A.ASST_NAME||'(자산분할(자))'          /*비고*/
+		                        ,SYSDATE     /*등록일시*/
+		                        ,#UPDT_USID#     /*등록자*/
+		                        ,SYSDATE     /*수정일시*/
+		                        ,#UPDT_USID#     /*수정자*/
+		                   FROM FS_ASSTXM A WHERE A.ASST_NUMB = sASST_NUMB;
+		
+		
+		                /*분할자산번호 업데이트*/
+		                UPDATE FS_ASSPXD
+		                   SET SPLT_ASST = sASST_NUMB             /*분할자산번호*/
+		                 WHERE SPLT_DATE  = CUR_ASSPXD.SPLT_DATE   /*분할일*/
+		                   AND ASST_NUMB  = CUR_ASSPXD.ASST_NUMB   /*자산번호*/
+		                   AND SEQN_NUMB  = CUR_ASSPXD.SEQN_NUMB   /*일련번호*/
+		                   ;
+		
+		            END;
+		
+		         END IF;
+		
+		      END LOOP;
+		
+		         /*모자산 취득수량 및 취득금액 변경 및 미상각잔액 변경*/
+		         SELECT SUM(SPLT_PRIC) INTO sSPLT_PRIC FROM FS_ASSPXD WHERE ASST_NUMB  = #ASST_NUMB# AND SPLT_DATE = #SPLT_DATE#; /*취득금액(자자산의 SUM) */
+		         SELECT SUM(UNDP_BALE) INTO sUNDP_BALE FROM FS_ASSPXD WHERE ASST_NUMB  = #ASST_NUMB# AND SPLT_DATE = #SPLT_DATE#; /*미상각잔액(자자산의 SUM)*/
+		
+		        UPDATE FS_ASSTXM                               /*[자산마스터]*/
+		           SET  ACQU_NUMB = #ASAF_NUMB#                /*취득수량*/
+		               ,ACQU_PRIC = (#ACQU_PRIC# - sSPLT_PRIC) /*취득금액*/
+		               ,UNDP_BALE = (#UNDP_BALE# - sUNDP_BALE) /*미상각잔액*/
+		         WHERE ASST_NUMB  = #ASST_NUMB#                /*자산번호*/
+		           ;
+		
+		        /*분할된 데이터 분할테이블에 등록(자산변동구분 : 모자산)*/
+		        INSERT INTO FS_ASCHXM (
+		               CHNG_DATE        /*변동일*/
+		              ,ASST_NUMB        /*자산번호*/
+		              ,SEQN_NUMB        /*일련번호*/
+		              ,ASCH_GUBN        /*변동구분[ASCH_GUBN]*/
+		              ,ASST_STAT        /*자산상태[ASST_STAT]*/
+		              ,CHBF_DEPT        /*변경전부서코드*/
+		              ,CHBF_EMPL        /*변경전사원번호*/
+		              ,DEPT_CODE        /*부서코드*/
+		              ,EMPL_NUMB        /*사원번호*/
+		              ,ACQU_ENDX        /*취득가_기말잔액*/
+		              ,DPCT_ENDX        /*충당금_기말잔액*/
+		              ,UNDP_BALE        /*미상각잔액*/
+		              ,CHNG_AMOT        /*변동금액*/
+		              ,DSPS_AMOT        /*처분가액*/
+		              ,DSPS_GILS        /*처분손익*/
+		              ,DPCT_GRDC        /*충당금가감액*/
+		              ,ACCT_INTL        /*계정과목코드*/
+		              ,CUST_CODE        /*거래처코드*/
+		              ,RCGN_YSNO        /*승인여부*/
+		              ,APPV_DATE        /*승인일시*/
+		              ,APPR_EMPL        /*승인자*/
+		              ,SLIP_NUMB        /*전표번호*/
+		              ,SLIP_LINE        /*전표순번*/
+		              ,DESC_REMK        /*비고(100)*/
+		              ,INST_DATE        /*등록일시*/
+		              ,INST_USID        /*등록자*/
+		              ,UPDT_DATE        /*수정일시*/
+		              ,UPDT_USID        /*수정자*/
+		              )
+		         SELECT  #SPLT_DATE#    /*변동일*/
+		                ,A.ASST_NUMB    /*자산번호*/
+		                ,(SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+		                    FROM FS_ASCHXM
+		                   WHERE ASST_NUMB = #ASST_NUMB#)
+		                ,'SPMT'         /*변동구분(분할모 : SPMT)*/
+		                ,A.ASST_STAT    /*자산상태[ASST_STAT]*/
+		                ,A.DEPT_CODE    /*부서코드*/
+		                ,A.EMPL_NUMB    /*사원번호*/
+		                ,A.DEPT_CODE    /*부서코드*/
+		                ,A.EMPL_NUMB    /*사원번호*/
+		                ,0              /*취득가_기말잔액*/
+		                ,0              /*충당금_기말잔액*/
+		                ,A.UNDP_BALE    /*미상각잔액*/
+		                ,#TOTL_SPLT#    /*변동금액*/
+		                ,0              /*처분가액*/
+		                ,0              /*처분손익*/
+		                ,#SPDP_TSUM#    /*충당금가감액*/
+		                ,(SELECT DPCT_ACT1 FROM VI_ASSETCLASS WHERE SMAL_CODE = A.CLSF_CODE)        /*계정과목코드*/
+		                ,''             /*거래처코드*/
+		                ,'1'            /*승인여부*/
+		                ,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')    /*승인일시*/
+		                ,#UPDT_USID#    /*승인자*/
+		                ,NULL           /*전표번호*/
+		                ,NULL           /*전표순번*/
+		                ,A.ASST_NAME||'(자산분할(모))'          /*비고*/
+		                ,SYSDATE    /*등록일시*/
+		                ,#UPDT_USID#    /*등록자*/
+		                ,SYSDATE    /*수정일시*/
+		                ,#UPDT_USID#    /*수정자*/
+		           FROM FS_ASSTXM A WHERE A.ASST_NUMB = #ASST_NUMB#;
+		
+		
+		        /*분할승인*/
+		        UPDATE FS_ASSPXM
+		           SET  RCGN_YSNO = '1'           /*승인여부*/
+		               ,APPV_DATE = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')   /*승인일시*/
+		               ,APPR_EMPL = #UPDT_USID#   /*승인자*/
+		         WHERE SPLT_DATE  = #SPLT_DATE#   /*분할일*/
+		           AND ASST_NUMB  = #ASST_NUMB#;  /*자산번호*/
+		
+		    END;
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할승인취소
+********************************************************************************/
+ -->
+	<delete id="FSMB0060.CANC00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	        /*FSMB0060.CANC00.자산분할승인취소*/
+			sRCGN_YSNO                  FS_ASSPXM.RCGN_YSNO%TYPE;   /*승인여부*/
+		    iDPCT_COUNT                 DECIMAL(15,0);              /*감가상각 자료 존재여부*/
+		    iCNT                        DECIMAL(15,0);              /*이력존재유무체크(변동,수리,분할)*/
+		    sASST_STAT                  FS_ASSTXM.ASST_STAT%TYPE;   /*자산상태[ASST_STAT]*/
+		
+	    BEGIN
+	
+	        /*이미 승인된 자료인지 체크*/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO FROM FS_ASSPXM WHERE ASST_NUMB = #ASST_NUMB# AND SPLT_DATE = #SPLT_DATE#;
+	
+	        IF (sRCGN_YSNO = '0') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '미승인된 자료가 존재합니다!!');
+	        END IF;
+	
+	
+	        /*분할년월의 감가상각여부 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO iDPCT_COUNT
+              FROM FS_DPCTXM
+			 WHERE STDS_YMTH = SUBSTR(#SPLT_DATE#, 1, 6);
+	
+	        IF (iDPCT_COUNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#SPLT_DATE#, 1, 4) || '년 ' || SUBSTR(#SPLT_DATE#, 5, 2) || '월의 감가상각 자료가 존재합니다!!');
+	        END IF;
+	
+	        /*자산 상세 내역*/
+	        FOR CUR_ASSPXD IN
+	        (
+	             SELECT  SPLT_DATE   /*분할일*/
+	                    ,ASST_NUMB   /*자산번호*/
+	                    ,SEQN_NUMB   /*일련번호*/
+	                    ,SPLT_ASST   /*분할자산번호*/
+	                    ,SPLT_NAME   /*분할자산명*/
+	               FROM FS_ASSPXD
+	              WHERE SPLT_DATE = #SPLT_DATE#
+	                AND ASST_NUMB = #ASST_NUMB#
+	        )
+	
+	
+	      LOOP
+	
+	         IF CUR_ASSPXD.SEQN_NUMB IS NOT NULL THEN
+	
+	            BEGIN
+	
+	                /*모자산 체크*/
+	                 SELECT
+	                  COUNT(ASST_NUMB) INTO iCNT
+	                 FROM FS_ASCHXM
+	                WHERE ASST_NUMB = #ASST_NUMB# AND RCGN_YSNO = '1'
+	                  AND CHNG_DATE > #SPLT_DATE#
+	                  AND ASCH_GUBN <> 'SPMT'; /* 자산이 분할이 아닌 코드*/
+	
+	                IF (iCNT > 0) THEN
+	                   RAISE_APPLICATION_ERROR(-20000, CUR_ASSPXD.SPLT_ASST || ':' || CUR_ASSPXD.SPLT_NAME || '의 모자산의 확정 변동이력이 있습니다.\n\n승인취소가 불가 합니다!');
+	                END IF;
+	
+	                /*변동 이력 존재 유무 체크*/
+	                 SELECT
+	                  COUNT(ASST_NUMB) INTO iCNT
+	                 FROM FS_ASCHXM
+	                WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST AND RCGN_YSNO = '1'
+	                AND ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD <> 'SPLT') /* 자산이 분할이 아닌 코드*/
+	                ;
+	
+	                IF (iCNT > 0) THEN
+	                   RAISE_APPLICATION_ERROR(-20000, CUR_ASSPXD.SPLT_ASST || ':' || CUR_ASSPXD.SPLT_NAME || '의 확정된 변동이력이 있습니다.\n\n승인취소가 불가 합니다!');
+	                END IF;
+	
+	                /*수리이력 존재 유무 체크*/
+	                SELECT COUNT(ASST_NUMB) INTO iCNT FROM FS_ASRPXM WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST AND REPR_YSNO = '1';
+	                IF (iCNT > 0) THEN
+	                   RAISE_APPLICATION_ERROR(-20000, CUR_ASSPXD.SPLT_ASST || ':' || CUR_ASSPXD.SPLT_NAME || '의 확정된 수리이력이 있습니다.\n\n승인취소가 불가 합니다!');
+	                END IF;
+	
+	                /*분할이력 존재 유무 체크*/
+	                SELECT COUNT(ASST_NUMB) INTO iCNT FROM FS_ASSPXM WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST AND RCGN_YSNO = '1';
+	                IF (iCNT > 0) THEN
+	                   RAISE_APPLICATION_ERROR(-20000, CUR_ASSPXD.SPLT_ASST || ':' || CUR_ASSPXD.SPLT_NAME || '의 확정된 분할이력이 있습니다.\n\n승인취소가 불가 합니다!');
+	                END IF;
+	
+	                /*재물조사 존재 유무 체크*/
+	                SELECT COUNT(ASST_NUMB) INTO iCNT FROM FS_INVTXD WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST;
+	                IF (iCNT > 0) THEN
+	                   RAISE_APPLICATION_ERROR(-20000, CUR_ASSPXD.SPLT_ASST || ':' || CUR_ASSPXD.SPLT_NAME || '의 재물조사이력이 있습니다.\n\n승인취소가 불가 합니다!');
+	                END IF;
+	
+	                /*RAISE_APPLICATION_ERROR(-20000, 'CUR_ASSPXD.SPLT_ASST: '|| CUR_ASSPXD.SPLT_ASST);*/
+	
+	                /*자료 삭제 처리*/
+	                DELETE FROM FS_ASCHXM WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST;                    /*변동이력 삭제(분할 자 자산)*/
+	                /*DELETE FROM FS_ASSTXM WHERE PAST_NUMB = CUR_ASSPXD.SPLT_ASST;  */ /*자산마스터 삭제(분할 자 자산) 원본. 모자산이 아닌 현재 분할된 자산을 삭제해야 하는것 아닌가?*/
+	                  DELETE FROM FS_ASSTXM WHERE ASST_NUMB = CUR_ASSPXD.SPLT_ASST;                    /*자산마스터 삭제(분할 자 자산)*/
+	
+	            END;
+	
+	         END IF;
+	
+	      END LOOP;
+	
+	    /*모자산 수정사항 원상복구*/
+	    UPDATE FS_ASSTXM                               /*[자산마스터]*/
+	       SET  ACQU_NUMB = #ACQU_NUMB#                 /*취득수량*/
+	           ,ACQU_PRIC = #ACQU_PRIC#                 /*취득금액*/
+	           ,UNDP_BALE = #UNDP_BALE#                 /*미상각잔액*/
+	     WHERE ASST_NUMB  = #ASST_NUMB#;                /*자산번호*/
+	
+	    /*모자산 변동이력 삭제*/
+	    DELETE FROM FS_ASCHXM
+	     WHERE ASST_NUMB = #ASST_NUMB#
+	       AND CHNG_DATE = #SPLT_DATE#
+	       AND ASCH_GUBN = 'SPMT';   /*모자산은 변동이력만 삭제하면 됨*/
+	
+	    /*분할자산번호 업데이트(원상복구)*/
+	    UPDATE FS_ASSPXD
+	       SET  SPLT_ASST = ''           /*분할자산번호*/
+	     WHERE SPLT_DATE  = #SPLT_DATE#   /*분할일*/
+	       AND ASST_NUMB  = #ASST_NUMB#;  /*자산번호*/
+	
+	    /*분할승인취소*/
+	    UPDATE FS_ASSPXM
+	       SET  RCGN_YSNO = '0'          /*승인여부*/
+	           ,APPV_DATE = ''           /*승인일시*/
+	           ,APPR_EMPL = ''           /*승인자*/
+	     WHERE SPLT_DATE  = #SPLT_DATE#   /*분할일*/
+	       AND ASST_NUMB  = #ASST_NUMB#;  /*자산번호*/
+	
+	    END;
+		]]>
+	</delete>
+</sqlMap>

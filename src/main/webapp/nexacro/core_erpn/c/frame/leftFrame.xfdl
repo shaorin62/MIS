@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="leftFrame" classname="mnuleft" inheritanceid="" position="absolute" onload="fn_FormLoadSetting" left="0" width="290" top="0" height="750" scrollbars="none">
+    <Layouts>
+      <Layout>
+        <Div id="divSNBLeft" taborder="26" left="0" top="0" width="60" bottom="0" cssclass="div_LF_box">
+          <Layouts>
+            <Layout>
+              <Button id="btnLNBClose" taborder="0" cssclass="btn_LF_MenuClose" left="0" top="0" width="60" height="60" tooltiptext="닫기" onclick="divSNBLeft_btnLNBClose_onclick"/>
+              <Button id="btnLNBMenu" taborder="1" cssclass="btn_LF_SubMenu" left="0" top="60" width="60" height="60" tooltiptext="메뉴" onclick="divSNBLeft_btnLNBMenu_onclick"/>
+              <Button id="btnLNBMyMenu" taborder="2" cssclass="btn_LF_Bookmark" left="0" top="120" width="60" height="60" tooltiptext="즐겨찾기" onclick="divSNBLeft_btnLNBMyMenu_onclick"/>
+              <Button id="btnShortCut01" taborder="3" text="1" cssclass="btn_LF_MenuNm" left="19" top="193" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut02" taborder="4" text="2" cssclass="btn_LF_MenuNm" left="19" top="226" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut03" taborder="5" text="3" cssclass="btn_LF_MenuNm" left="19" top="259" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut04" taborder="6" text="4" cssclass="btn_LF_MenuNm" left="19" top="292" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut05" taborder="7" text="5" cssclass="btn_LF_MenuNm" left="19" top="325" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut06" taborder="8" text="6" cssclass="btn_LF_MenuNm" left="19" top="358" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut07" taborder="9" text="7" cssclass="btn_LF_MenuNm" left="19" top="391" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut08" taborder="10" text="8" cssclass="btn_LF_MenuNm" left="19" top="424" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut09" taborder="11" text="9" cssclass="btn_LF_MenuNm" left="19" top="457" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+              <Button id="btnShortCut10" taborder="12" text="10" cssclass="btn_LF_MenuNm" left="19" top="490" width="22" height="22" onclick="divSNBLeft_btnShortCut_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Div id="divLNBMenu" taborder="27" text="Div01" left="60" top="0" width="230" cssclass="div_LF_box02" bottom="0">
+          <Layouts>
+            <Layout width="230" height="750">
+              <Grid id="grdMyMenu" cssclass="grd_LF_Mymenu" taborder="8" binddataset="dsMyMenuList" autoenter="select" useinputpanel="false" cellsizingtype="col" autofittype="col" treeusecheckbox="false" treeinitstatus="expand,null" left="14" top="44" width="201" bottom="44" oncelldblclick="divLNBMenu_grdMyMenu_oncelldblclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="25" band="left"/>
+                      <Column size="175"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell displaytype="image" style="align:center middle;" text=""/>
+                      <Cell col="1" style="padding: ;" text="bind:MENU_NAME"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="btnMoveUp" taborder="5" text="↑ 위로" left="15" width="64" height="21" bottom="12" tooltiptext="↑ 위로" onclick="divLNBMenu_btnMoveUp_onclick"/>
+              <Button id="btnMoveDown" taborder="6" text="↓ 아래로" left="82" width="65" height="21" bottom="12" tooltiptext="↓ 아래로" onclick="divLNBMenu_btnMoveDown_onclick"/>
+              <Button id="btnMyMenuSave" taborder="7" text="저장" left="150" width="64" height="21" bottom="12" tooltiptext="저장" onclick="divLNBMenu_btnMyMenuSave_onclick"/>
+              <Edit id="edtMenuSearch" taborder="0" left="14" top="14" width="201" height="27" cssclass="Edit_LF_search" tooltiptext="검색할 메뉴명" onkeydown="divLNBMenu_edtMenuSearch_onkeydown"/>
+              <Button id="btnMenuSearch" taborder="1" left="185" top="16" width="28" height="23" cssclass="btn_LF_search" tooltiptext="메뉴검색버튼" onclick="divLNBMenu_btnMenuSearch_onclick"/>
+              <Grid id="grdLeftMenu" taborder="2" useinputpanel="false" treeinitstatus="expand,null" left="14" top="44" width="201" cssclass="grd_LF_Mymenu" treeusecheckbox="false" autoenter="select" cellsizingtype="col" bottom="44" binddataset="dsMenuList" oncellclick="divLNBMenu_grdLeftMenu_oncellclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="201"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="25"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell displaytype="tree" edittype="tree" style="padding:0 0 0 -3;" text="bind:MENU_NAME" treestartlevel="1" treelevel="bind:MENU_LEVL"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="btnExpandAll" taborder="3" text="전체펼침" left="15" width="96" height="21" bottom="12" onclick="divLNBMenu_btnExpandAll_onclick" tooltiptext="전체펼침"/>
+              <Button id="btnCollapseAll" taborder="4" text="전체닫힘" left="118" width="96" height="21" bottom="12" onclick="divLNBMenu_btnCollapseAll_onclick" tooltiptext="전체닫힘"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <PopupDiv id="pdvFindMenu" left="74" top="41" width="201" height="266" cssclass="pdiv_LF_search" oncloseup="pdvFindMenu_oncloseup">
+          <Layouts>
+            <Layout>
+              <Grid id="grdFindMenu" cssclass="grd_LF_Mymenu" taborder="0" binddataset="dsFindMenuList" autoenter="select" useinputpanel="false" cellsizingtype="col" autofittype="col" treeusecheckbox="false" treeinitstatus="expand,null" left="2" top="1" width="197" style="background:#ffffffff;" height="262" oncellclick="pdvFindMenu_grdFindMenu_oncellclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="201"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="body">
+                      <Cell style="padding:0 0 0 8;" text="bind:MENU_NAME"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+      </Layout>
+    </Layouts>
+    <Bind/>
+    <Objects>
+      <Dataset id="dsAllMenuList" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false"/>
+    </Objects>
+    <InitValue/>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	leftframe 메인 좌측 메뉴프레임 (SNB, LNB 영역)
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.19		jsh			Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/**
+ * 공통 스크립트 Include
+ */
+include "script::lib_script_common.xjs"
+include "script::lib_script_dashboard.xjs"
+include "script::lib_script_theme.xjs"
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                  *
+ ***************************************************************************************************/
+ 
+/**
+ Form Load Process
+ */
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	// 화면 재정의
+	this.fnc_SetAdjustWindows();
+	
+	// 테마 설정 적용
+	this.fnc_ThemeSetting(this);
+	
+	// 즐겨찾기 메뉴의 그리드에 테마 설정 적용하여 값 적용
+	var themeType = application.GBL_THEMECD;
+	var shortThemeType = themeType.substr(0, 1);	
+	var exprStr = "expr:currow < 10 ?  \"URL('theme://images_" + shortThemeType + "/grd_LF_0\" + (currow+1) + \".png')\" : \"URL('theme://images_" + shortThemeType + "/grd_LF_Bkmk.png')\"";
+	this.divLNBMenu.grdMyMenu.setCellProperty("Body", 0, "text", exprStr);
+	
+	// 기본 좌측 메뉴 설정 - 일반 메뉴목록 표시
+	this.fn_ChangeMenuList("MENU");
+	
+	// 즐겨찾기 버튼 초기화
+	this.fn_InitFavoriteBtn();
+	
+	// 메뉴 목록 설정
+	this.divLNBMenu.menustatus = "MENU"
+	this.divLNBMenu.menuvisible = true;
+	
+	if (application.GBL_LANGCD != "ko") {
+		this.divSNBLeft.btnLNBClose.set_tooltiptext("Close");
+		this.divSNBLeft.btnLNBMenu.set_tooltiptext("Menu");
+		this.divSNBLeft.btnLNBMyMenu.set_tooltiptext("My Menu");
+		
+		this.divLNBMenu.btnMenuSearch.set_tooltiptext("Menu Search");
+		
+		this.divLNBMenu.btnCollapseAll.set_text("Collapse All");
+		this.divLNBMenu.btnCollapseAll.set_tooltiptext("Collapse All");
+		this.divLNBMenu.btnExpandAll.set_text("Expand All");
+		this.divLNBMenu.btnExpandAll.set_tooltiptext("Expand All");
+		
+		this.divLNBMenu.btnMoveUp.set_text("Up");
+		this.divLNBMenu.btnMoveUp.set_tooltiptext("Up");
+		this.divLNBMenu.btnMoveDown.set_text("Down");
+		this.divLNBMenu.btnMoveDown.set_tooltiptext("Down");
+		this.divLNBMenu.btnMyMenuSave.set_text("Save");
+		this.divLNBMenu.btnMyMenuSave.set_tooltiptext("Save");
+		
+		
+	}
+	
+}
+
+
+/**
+ * 업무 메뉴 그리드 클릭 시 이벤트
+ */
+this.divLNBMenu_grdLeftMenu_oncellclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+	// 메뉴 ID
+	var menuId = application.dsMenuList.getColumn(e.row, "MENU_IDXX");
+	this.fn_MenuOpen(obj, menuId);
+}
+
+
+/**
+ * MY메뉴 그리드 더블클릭 시 이벤트
+ */
+this.divLNBMenu_grdMyMenu_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo)
+{
+	var menuId = application.dsMyMenuList.getColumn(e.row, "MENU_IDXX");
+	this.fn_MenuOpen(obj, menuId);
+}
+
+
+/**
+ * 좌측 SNB의 메뉴 펼침/닫힘 버튼 클릭 이벤트
+ */
+this.divSNBLeft_btnLNBClose_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	var bVisible = this.divLNBMenu.menuvisible;
+	this.fn_LeftLNBShowHide(bVisible);
+}
+
+
+/**
+ * 좌측 SNB의 "MENU" 버튼 클릭 시 일반 메뉴목록 표시
+ */
+this.divSNBLeft_btnLNBMenu_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	this.fn_ChangeMenuList("MENU");
+}
+
+
+/**
+ * 좌측 SNB의 "MYMENU" 버튼 클릭 시 MY메뉴목록 표시
+ */
+this.divSNBLeft_btnLNBMyMenu_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	this.fn_ChangeMenuList("MYMENU");
+}
+
+
+/**
+ * 메뉴 전체펼침 버튼 클릭 시
+ */
+this.divLNBMenu_btnExpandAll_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.divLNBMenu.grdLeftMenu.set_treeinitstatus("expand,all");
+}
+
+
+/**
+ * 메뉴 전체닫힘 버튼 클릭 시
+ */
+this.divLNBMenu_btnCollapseAll_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.divLNBMenu.grdLeftMenu.set_treeinitstatus("collapse,all");
+}
+
+
+/**
+ * 좌측 SNB 내의 즐겨찾기 버튼 클릭 이벤트 처리
+ */
+this.divSNBLeft_btnShortCut_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	var menuId = obj.menuid;
+	
+	if (menuId) {
+		this.fn_MenuOpen(this.divLNBMenu.grdMyMenu, menuId);
+	}
+}
+
+
+/**
+ * 좌측 LNB 즐겨찾기 목록의 '↑ 위로' 버튼 클릭 처리
+ */
+this.divLNBMenu_btnMoveUp_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	var row = application.dsMyMenuList.rowposition;
+	
+	if (row > 0) {
+		// 선택된 행과 선택된 행의 -1 데이터를 교환
+		application.dsMyMenuList.exchangeRow(row, row - 1);
+		var pre = application.dsMyMenuList.getColumn(row - 1, "MENU_ORDR");
+		var next = application.dsMyMenuList.getColumn(row, "MENU_ORDR");
+		application.dsMyMenuList.setColumn(row, "MENU_ORDR", pre);
+		application.dsMyMenuList.setColumn(row - 1, "MENU_ORDR", next);
+	}
+}
+
+
+/**
+ * 좌측 LNB 즐겨찾기 목록의 '↓ 아래로' 버튼 클릭 처리
+ */
+this.divLNBMenu_btnMoveDown_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	var row = application.dsMyMenuList.rowposition;
+	
+	if ((row >= 0) && (row < application.dsMyMenuList.rowcount - 1)) {
+		// 선택된 행과 선택된 행의 -1 데이터를 교환
+		application.dsMyMenuList.exchangeRow(row, row + 1);
+		var pre = application.dsMyMenuList.getColumn(row + 1, "MENU_ORDR");
+		var next = application.dsMyMenuList.getColumn(row, "MENU_ORDR");
+		application.dsMyMenuList.setColumn(row, "MENU_ORDR", pre);
+		application.dsMyMenuList.setColumn(row + 1, "MENU_ORDR", next);
+	}
+}
+
+
+/**
+ * 좌측 LNB 즐겨찾기 목록의 '저장' 버튼 클릭 처리
+ */
+this.divLNBMenu_btnMyMenuSave_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+		
+	application.transaction("_favorite"
+						,application.GBL_HTTPURL + "/core/erp/com/ComMain_Favorite.do?CALL_TYPE=NEXACRO"
+						,"dsMyMenuList=dsMyMenuList:U"
+						,"dsMyMenuList=dsMyMenuList"
+						,"GBL_USERID=" + nexacro.wrapQuote(application.GBL_USERID)
+						,"fnc_AddFavoriteCallback"
+						,true
+	);
+	
+}
+
+
+/**
+ * 좌측 LNB 메뉴 검색 버튼 클릭 시
+ */
+this.divLNBMenu_btnMenuSearch_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.fn_SearchMenuList();
+}
+
+
+/**
+ * 좌측 LNB 메뉴 검색 텍스트 키 입력 이벤트
+ */
+this.divLNBMenu_edtMenuSearch_onkeydown = function(obj:Edit, e:nexacro.KeyEventInfo)
+{
+	if (e.keycode == 13) {
+		this.fn_SearchMenuList();
+	}
+}
+
+
+/**
+ * LNB 메뉴 검색 후 레이어가 사라질 때 검색 값을 없앰
+ */
+this.pdvFindMenu_oncloseup = function(obj:PopupDiv, e:nexacro.EventInfo)
+{
+	this.divLNBMenu.edtMenuSearch.set_value("");
+}
+
+
+/**
+ * 메뉴 검색 레이어의 그리드 셀 클릭 시 메뉴로 이동
+ */
+this.pdvFindMenu_grdFindMenu_oncellclick = function(obj:Grid, e:nexacro.GridClickEventInfo)
+{
+	var menuId = application.dsFindMenuList.getColumn(application.dsFindMenuList.rowposition, "MENU_IDXX");
+	var oTargetGrid = null;
+	if (this.divLNBMenu.menustatus == "MENU") {
+		oTargetGrid = this.divLNBMenu.grdLeftMenu;
+	} else if (this.divLNBMenu.menustatus == "MYMENU") {
+		oTargetGrid = this.divLNBMenu.grdMyMenu;
+	}
+	this.pdvFindMenu.closePopup();
+	this.fn_MenuOpen(oTargetGrid, menuId);
+}
+
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+
+/**
+ * 메뉴 트리의 레벨 시작 값을 변경
+ * @param {Number} startLevel 변경할 메뉴트리의 시작 레벨
+ */
+this.fn_SetMenuStartLevel = function(startLevel) {
+	if (startLevel == 1) {
+		this.divLNBMenu.grdLeftMenu.setCellProperty("body", 0, "treestartlevel", 1);
+	} else {
+		this.divLNBMenu.grdLeftMenu.setCellProperty("body", 0, "treestartlevel", 2);
+	}
+}
+
+
+/*----------------------------------+
+ |  Menu Tree Click Then Form Open   |
+ ------------------------------------*/
+this.fn_MenuOpen = function (obj, menuId) {
+
+	var dsObj = application.FRMTOP.form.dsAllMenuList;
+	
+	// MY메뉴 그리드라면..
+	if (obj.name == "grdMyMenu") {
+		dsObj = application.dsMyMenuList;
+	}
+	
+	var iRow = -1;
+	
+	iRow = dsObj.findRow("MENU_IDXX", menuId);
+	
+	// 찾는 메뉴가 없다면...
+	if (iRow == -1) return;
+
+	//Form이 아니면 종료
+	if (dsObj.getColumn(iRow, "MNUT_YSNO") != "0") return;
+
+	//미개발 메뉴는 그냥 RETURN
+	if (dsObj.getColumn(iRow, "DEVC_YSNO") != "1") {
+		this.fnc_Message("TMM125", "아직 개발이 완료되지 않았습니다. 완료 후 실행 하세요!");
+		return;
+	}
+
+	var sDisplay   = "maximize";
+	var sFormID    = dsObj.getColumn(iRow, "MENU_IDXX");
+	var sProgID    = dsObj.getColumn(iRow, "PROG_IDXX");
+	var sFormCapt  = dsObj.getColumn(iRow, "MENU_NAME");
+	var sFormLoca  = dsObj.getColumn(iRow, "MENU_FUNM");
+	var sUserAuth  = dsObj.getColumn(iRow, "USER_AUTH");
+	var sFilePath  = dsObj.getColumn(iRow, "PROG_PATH");
+	var sAuthLevel = dsObj.getColumn(iRow, "ATHR_LEVL");
+	
+	var sArgument  = new Array();
+	
+	//업무화면 상단에 타이틀 로케이션 표시할때
+	//기존   업무화면명[아아디]  로케이션
+	//로케이션[아이디]  (로케이션 표시 안함
+	// 업무화면명 [업무ID] 및 로케이션 사용 :: NSCOM
+	sArgument[0] = sFormCapt + "[" + sProgID + "]";
+	sArgument[1] = sFormLoca;
+	sArgument[2] = sUserAuth;
+	sArgument[3] = sAuthLevel;
+	
+	// 메뉴 오픈 전 프레임은 숨김
+	if (!application._wideview) {	// 화면 해상도가 크다면..
+		this.fn_LeftLNBShowHide(true);
+	}
+	
+	// 메뉴 오픈시에는 무조건 대시보드 숨김
+	application.FRMTOP.form.fn_ShowHome(false);
+	
+	this.fnc_NewWindow(sFormID, sFormCapt, sFilePath + "::" + sProgID + ".xfdl", sArgument, 0, 0, sDisplay, -1, -1);
+	
+}
+
+
+/**
+ * 좌측 LNB 메뉴 영역을 숨김 또는 펼침
+ */
+this.fn_LeftLNBShowHide = function(bVisible) {
+	
+	// 메뉴가 "펼침" 상태이면 닫는다
+	if (bVisible) {
+		
+		application.mainframe.VFrameSet.HFrameSet.set_separatesize("60,*");
+		
+		this.divSNBLeft.btnLNBClose.set_cssclass("btn_LF_MenuOpen");	//열기 버튼으로 스타일 변경
+		this.divSNBLeft.btnLNBClose.set_tooltiptext("Open");
+		this.divLNBMenu.menuvisible = false;
+		
+	} else {
+	
+		application.mainframe.VFrameSet.HFrameSet.set_separatesize("290,*");
+		
+		this.divSNBLeft.btnLNBClose.set_cssclass("btn_LF_MenuClose");	//닫기 버튼으로 스타일 변경
+		this.divSNBLeft.btnLNBClose.set_tooltiptext("Close");
+		this.divLNBMenu.menuvisible = true;
+		
+	}
+	
+}
+
+
+/**
+ * 메뉴 또는 마이메뉴 목록으로 메뉴프레임 레이어를 전환합니다.
+ * @param {String} listType 표시할 메뉴목록 타입입니다. 
+ *					"MENU"는 일반 메뉴목록, "MYMENU" 는 마이메뉴 목록을 표시합니다.
+ */
+this.fn_ChangeMenuList = function(listType) {
+	
+	this.divLNBMenu.menustatus = this.fnc_Trim(listType).toUpperCase();
+	
+	// 메뉴목록 표시
+	if (this.fnc_Trim(listType).toUpperCase() == "MENU") {
+	
+		// 메뉴 버튼 선택
+		this.divSNBLeft.btnLNBMenu.set_cssclass("btn_LF_SubMenu_S");
+		this.divLNBMenu.grdLeftMenu.set_visible(true);		// 메뉴트리
+		this.divLNBMenu.btnExpandAll.set_visible(true);		// 전체펼침 버튼
+		this.divLNBMenu.btnCollapseAll.set_visible(true);	// 전체닫힘 버튼
+		
+		this.divSNBLeft.btnLNBMyMenu.set_cssclass("btn_LF_Bookmark");
+		this.divLNBMenu.grdMyMenu.set_visible(false);		// 마이메뉴 목록
+		this.divLNBMenu.btnMoveUp.set_visible(false);		// 위로 버튼
+		this.divLNBMenu.btnMoveDown.set_visible(false);		// 아래로 버튼
+		this.divLNBMenu.btnMyMenuSave.set_visible(false);	// 저장 버튼
+		
+	// MY메뉴목록 표시
+	} else if (this.fnc_Trim(listType).toUpperCase() == "MYMENU") {
+		
+		this.divSNBLeft.btnLNBMenu.set_cssclass("btn_LF_SubMenu");
+		this.divLNBMenu.grdLeftMenu.set_visible(false);		// 메뉴트리
+		this.divLNBMenu.btnExpandAll.set_visible(false);	// 전체펼침 버튼
+		this.divLNBMenu.btnCollapseAll.set_visible(false);	// 전체닫힘 버튼
+		
+		this.divSNBLeft.btnLNBMyMenu.set_cssclass("btn_LF_Bookmark_S");
+		this.divLNBMenu.grdMyMenu.set_visible(true);		// 마이메뉴 목록
+		this.divLNBMenu.btnMoveUp.set_visible(true);		// 위로 버튼
+		this.divLNBMenu.btnMoveDown.set_visible(true);		// 아래로 버튼
+		this.divLNBMenu.btnMyMenuSave.set_visible(true);	// 저장 버튼
+		
+	}
+	
+	
+	this.fn_CheckAndShowMenuList();
+	
+}
+
+
+/**
+ * 메뉴가 숨김 상태이라면 메뉴 목록을 표시한다.
+ */
+this.fn_CheckAndShowMenuList = function() {
+		
+	var bMenuVisible = this.divLNBMenu.menuvisible;
+	
+	if (!bMenuVisible) {
+		this.fn_LeftLNBShowHide(bMenuVisible);
+	}
+	
+}
+
+
+/**
+ * 좌측 SNB의 즐겨찾기 목록 처리
+ */
+this.fn_InitFavoriteBtn = function() {
+	
+	var arrFavBtn = Eco.XComp.query(this.divSNBLeft, "prop[name] ^= 'btnShortCut'");
+	
+	// 버튼 초기화
+	for(var idx in arrFavBtn) {
+		arrFavBtn[idx].menuid = "";
+		arrFavBtn[idx].set_enable(false);
+		arrFavBtn[idx].set_tooltiptext("");
+	}
+	
+	
+	var maxRow = application.dsMyMenuList.rowcount;
+	if (maxRow > 10) maxRow = 10;
+	
+	var menuId = "";
+	for (var row = 0; row < maxRow; row++) {
+		menuId = application.dsMyMenuList.getColumn(row, "MENU_IDXX");
+		if (menuId) {
+			arrFavBtn[row].menuid = menuId;
+			arrFavBtn[row].set_enable(true);
+			arrFavBtn[row].set_tooltiptext(application.dsMyMenuList.getColumn(row, "MENU_NAME"));
+		}
+	}
+
+}
+
+
+/**
+ * 메뉴 또는 MY메뉴 검색
+ */
+this.fn_SearchMenuList = function() {
+	
+	var oTargetDs = null;
+	
+	if (this.divLNBMenu.menustatus == "MENU") {
+		oTargetDs = application.dsMenuList;
+	} else if (this.divLNBMenu.menustatus == "MYMENU") {
+		oTargetDs = application.dsMyMenuList;
+	}
+	
+	oTargetDs.set_enableevent(false);
+	var filterStr = oTargetDs.filterstr;
+	var findFilterStr = "(MENU_NAME.indexOf('" + this.divLNBMenu.edtMenuSearch.value + "') > -1";
+	findFilterStr = findFilterStr + " || MENU_IDXX.indexOf('" + this.divLNBMenu.edtMenuSearch.value + "') > -1)";
+	findFilterStr = findFilterStr + " && MNUT_YSNO == 0";
+	oTargetDs.filter(findFilterStr);
+	application.dsFindMenuList.clearData();
+	application.dsFindMenuList.copyData(oTargetDs, true);
+	oTargetDs.filter(filterStr);
+	oTargetDs.set_enableevent(true);
+	
+	var nTop = this.divLNBMenu.edtMenuSearch.getOffsetHeight();
+	var nLeft = 0;
+	var nWidth = 201;
+	var nHeight = 266;
+	this.pdvFindMenu.trackPopupByComponent(this.divLNBMenu.edtMenuSearch, nLeft, nTop, nWidth, nHeight);
+	
+}
+
+
+]]></Script>
+  </Form>
+</FDL>

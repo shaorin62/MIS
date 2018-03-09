@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MCMA0070P01">
+
+<!--  
+ *   프로그램명 : 카테고리조회팝업
+ *   작 성 일 : 2016.10.27(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.27(표준화 완료)
+		내      용  : 카테고리 조회
+		파라미터  : CATE_NAME : 카테고리명, CUST_NAME : 광고주명	
+	-->
+	<select id="MCMA0070P01.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	/* MCMA0070P01.SEARCH00 카테고리조회 */ 
+					A.CUST_CODE		/* 광고주코드 */
+					,B.CUST_NAME		/* 광고주명 */
+					,A.CATE_CODE		/* 카테고리코드 */
+					,A.CATE_NAME		/* 카테고리명 */
+				FROM MD_CATEXM A
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+				B.CUST_NAME LIKE '%' || #CUST_NAME# || '%'		/* 광고주명 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="CATE_NAME">
+				A.CATE_NAME LIKE '%' || #CATE_NAME# || '%'		/* 카테고리명 */
+		</isNotEmpty>		
+	</dynamic>
+	</select>
+
+</sqlMap>

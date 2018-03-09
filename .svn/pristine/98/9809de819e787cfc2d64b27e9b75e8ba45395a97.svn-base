@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMF0010P01">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 건설중 자산대체 등록 소스전표 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMF0010P01.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+           SELECT /* FSMF0010P01.SEARCH00.건설중 자산대체 등록 소스전표 조회 처리 */
+               '0'                             AS CHCK         /*선택*/
+               ,B.ACCT_UNIT                                    /*회계단위[ACCT_UNIT]*/
+               ,A.ACCT_DATE AS APPR_DATE                                    /*회계일자*/
+               ,''                             AS ASTF_NUMB    /*자산대체번호*/
+               ,''                             AS SLIP_LINE    /*전표라인번호*/
+               ,A.SLIP_NUMB                    AS SSSL_NUMB    /*소스전표번호*/
+               ,A.SLIP_LINE                    AS SSSL_SEQN    /*소스전표라인번호*/
+               ,A.ACCT_INTL                                    /*계정과목코드*/
+               ,SF_GET_ACCTNAME(A.ACCT_INTL)   AS ACCT_NAME    /*계정과목명*/
+               ,D.COND_VACD    AS CUST_CODE                    /*거래처코드*/
+               ,SF_GET_CUSTNAME(D.COND_VACD)   AS CUST_NAME    /*거래처명*/
+               ,A.USEX_DEPT     AS DEPT_CODE                   /*부서코드*/
+               ,SF_GET_DEPTNAME(A.USEX_DEPT)   AS DEPT_NAME    /*부서명*/
+               ,A.SLIP_AMNT                    AS OCCU_AMOT    /*발생금액 >> 발생금액*/
+               ,NVL(SUM(C.SLIP_AMNT),0)        AS SOKR_TAMT    /*상계금액 >> 기정리액*/
+               ,0                              AS SOKR_AMOT    /*계정잔액 >> 금회대체액*/
+               ,A.SLIP_AMNT - NVL(SUM(C.SLIP_AMNT),0)  AS SOKR_AMOT2    /*계정잔액 >> 금회대체액*/
+               ,C.REMK_NAME                    AS DETL_REMK    /*세부적요*/
+               /*,NVL(C.DESC_REM1, 1)            AS OCCU_NUMB    발생수량*/
+               /*,C.CLSF_CODE                                    품목분류코드*/
+               /*,D.SMAL_NAME                    AS CLSF_NAME    품목분류명*/
+               ,A.PROJ_CODE                                    /*프로젝트코드*/
+               ,SF_GET_PRJTNAME(A.PROJ_CODE)   AS PROJ_NAME    /*프로젝트명*/
+           FROM TA_SLIPNT A                                    /* [전표분개내역] - 발생*/
+              JOIN TA_SLIPXM B                                 /* 전표 마스터 내역*/
+                  ON A.SLIP_NUMB = B.SLIP_NUMB
+              LEFT JOIN TA_SLIPNT C   /* [전표분개내역] - 상계 */
+                  ON C.OSLI_NUMB = A.SLIP_NUMB
+                 AND C.OSLI_LINE = A.SLIP_LINE
+              LEFT JOIN TA_SLIPRF D
+                   ON A.SLIP_NUMB = D.SLIP_NUMB
+                  AND A.SLIP_LINE = D.SLIP_LINE
+                  AND D.COND_CODE ='0002'      /*거래처만*/
+            WHERE 1=1
+        ]]>
+        <isNotEmpty property = "ACCT_UNIT" prepend = "AND">
+           B.ACCT_UNIT           = #ACCT_UNIT#                                /*회계단위*/
+        </isNotEmpty> 
+        <isNotEmpty property = "ACCT_INTL" prepend = "AND">
+           A.ACCT_INTL          IN (#ACCT_INTL#, #ACCT_INT2#)                  /*계정과목*/
+        </isNotEmpty> 
+        <isNotEmpty property = "ACCT_DAT1" prepend = "AND">
+        <![CDATA[          A.ACCT_DATE          >= #ACCT_DAT1#    ]]>                           /*조회기간(시작일)*/
+        </isNotEmpty> 
+        <isNotEmpty property = "ACCT_DAT2" prepend = "AND">
+        <![CDATA[          A.ACCT_DATE          <= #ACCT_DAT2#    ]]>                            /*조회기간(종료일)*/
+        </isNotEmpty> 
+        <isNotEmpty property = "PROJ_CODE" prepend = "AND">
+           NVL(A.PROJ_CODE, ' ') = NVL(#PROJ_CODE#, NVL(A.PROJ_CODE, ' '))    /*프로젝트코드*/
+        </isNotEmpty>                       
+        <![CDATA[       	                 
+          GROUP BY  B.ACCT_UNIT, A.ACCT_DATE, A.SLIP_NUMB, A.SLIP_LINE, A.ACCT_INTL, D.COND_VACD
+                   ,A.USEX_DEPT, C.REMK_NAME /*, C.DESC_REM1, C.CLSF_CODE, D.SMAL_NAME, C.PROJ_CODE */
+                   ,A.SLIP_AMNT, A.PROJ_CODE
+          HAVING  A.SLIP_AMNT <> NVL(SUM(C.SLIP_AMNT),0)     /*발생금액<>기정리액 차이나는 금액만*/
+          ORDER BY  B.ACCT_UNIT, A.ACCT_INTL, A.SLIP_NUMB, A.SLIP_LINE
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 건설중 자산대체 자산대체번호 구하기
+********************************************************************************/
+ -->
+	<select id="FSMF0010P01.SEARCH01" parameterClass="hashmap" resultClass = "String">
+		<![CDATA[
+			SELECT  /* FSMF0010P01.SEARCH01.건설중 자산대체 자산대체번호 구하기 */
+			       'CONS' || #ASTF_DATE# || LPAD(NVL(SUBSTR(MAX(A.ASTF_NUMB), -4), 0) + 1, 4, '0') AS ASTF_NUMB
+	              FROM FS_ASTFXM A                  /*[자산대체]*/
+	             WHERE A.ASTF_GUBN = 'CONS'         /*자산대체구분*/
+        ]]>	             
+        <isNotEmpty property = "ASTF_DATE" prepend = "AND">	             
+                A.ASTF_DATE = #ASTF_DATE#    /*자산대체구분*/
+        </isNotEmpty>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :건설중 자산대체 헤더 저장 처리
+********************************************************************************/
+ -->	
+	<insert id="FSMF0010P01.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		INSERT INTO FS_ASTFXM ( /*[자산대체]*/
+		/* FSMF0010P01.SAVE00.건설중 자산대체 헤더 저장 처리 */
+               ACCT_UNIT        /*회계단위[ACCT_UNIT]*/
+              ,ASTF_NUMB        /*자산대체번호*/
+              ,ASTF_GUBN        /*자산대체구분[ASTF_GUBN]*/
+              ,ASTF_DATE        /*자산대체일*/
+              ,ASTF_TAMT        /*자산대체총액*/
+              ,SLIP_NUMB        /*전표번호*/
+              ,INST_DATE        /*등록일시*/
+              ,INST_USID        /*등록자*/
+              ,UPDT_DATE        /*수정일시*/
+              ,UPDT_USID        /*수정자*/
+              )
+       VALUES (
+               #ACCT_UNIT#       /*회계단위[ACCT_UNIT]*/
+              ,#ASTF_NUMB#       /*자산대체번호*/
+              ,'CONS'           /*자산대체구분[ASTF_GUBN]*/
+              ,#ASTF_DATE#       /*자산대체일*/
+              ,#ASTF_TAMT#       /*자산대체총액*/
+              ,#SLIP_NUMB#       /*전표번호*/
+              ,SYSDATE       /*등록일시*/
+              ,#UPDT_USID#       /*등록자*/
+              ,SYSDATE       /*수정일시*/
+              ,#UPDT_USID#       /*수정자*/
+              )        
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :건설중 자산대체 소스전표(디테일) 저장 처리
+********************************************************************************/
+ -->	
+	<insert id="FSMF0010P01.SAVE01" parameterClass="hashmap" >
+		<![CDATA[
+		INSERT INTO FS_ASTFLS ( /*[자산대체_소스전표]*/
+		      /* FSMF0010P01.SAVE01.건설중 자산대체 소스전표(디테일) 저장 처리 */
+               ACCT_UNIT        /*회계단위[ACCT_UNIT]*/
+              ,ASTF_NUMB        /*자산대체번호*/
+              ,SLIP_LINE        /*전표라인번호*/
+              ,SSSL_NUMB        /*소스전표번호*/
+              ,SSSL_SEQN        /*소스전표라인번호*/
+              ,ACCT_INTL        /*계정과목코드*/
+              ,CUST_CODE        /*거래처코드*/
+              ,DEPT_CODE        /*부서코드*/
+              ,OCCU_AMOT        /*발생금액*/
+              ,SOKR_AMOT        /*상계금액*/
+              ,INST_DATE        /*등록일시*/
+              ,INST_USID        /*등록자*/
+              ,UPDT_DATE        /*수정일시*/
+              ,UPDT_USID        /*수정자*/
+              )
+       VALUES (
+               #ACCT_UNIT#       /*회계단위[ACCT_UNIT]*/
+              ,#ASTF_NUMB#       /*자산대체번호*/
+              ,'0000'       /*전표라인번호*/
+              ,#SSSL_NUMB#       /*소스전표번호*/
+              ,#SSSL_SEQN#       /*소스전표라인번호*/
+              ,#ACCT_INTL#       /*계정과목코드*/
+              ,#CUST_CODE#       /*거래처코드*/
+              ,#DEPT_CODE#       /*부서코드*/
+              ,#OCCU_AMOT#       /*발생금액*/
+              ,#SOKR_AMOT#       /*상계금액*/
+              ,SYSDATE       /*등록일시*/
+              ,#UPDT_USID#       /*등록자*/
+              ,SYSDATE       /*수정일시*/
+              ,#UPDT_USID#       /*수정자*/
+              )         
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :건설중 자산대체 대체계정(디테일) 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMF0010P01.SAVE02" parameterClass="hashmap" >
+		<![CDATA[
+		INSERT INTO FS_ASTFLA ( /*[자산대체_대체계정]*/
+		      /* FSMF0010P01.SAVE02.건설중 자산대체 대체계정(디테일) 저장 처리 */
+               ACCT_UNIT        /*회계단위[ACCT_UNIT]*/
+              ,ASTF_NUMB        /*자산대체번호*/
+              ,SLIP_LINE        /*전표라인번호*/
+              ,ACCT_INTL        /*계정과목코드*/
+              ,DEPT_CODE        /*부서코드*/
+              ,ASST_NAME        /*자산명*/
+              ,CLSF_CODE        /*품목분류코드*/
+              ,PRID_DPCT        /*내용년수*/
+              ,ACQU_COST        /*취득단가*/
+              ,ACQU_NUMB        /*취득수량*/
+              ,ACQU_PRIC        /*취득금액*/
+              ,ASST_NUMB        /*자산번호*/
+              ,INST_DATE        /*등록일시*/
+              ,INST_USID        /*등록자*/
+              ,UPDT_DATE        /*수정일시*/
+              ,UPDT_USID        /*수정자*/
+              )
+       VALUES (
+               #ACCT_UNIT#       /*회계단위[ACCT_UNIT]*/
+              ,#ASTF_NUMB#       /*자산대체번호*/
+              ,#SLIP_LINE#       /*전표라인번호*/
+              ,#ACCT_INTL#       /*계정과목코드*/
+              ,#DEPT_CODE#       /*부서코드*/
+              ,#ASST_NAME#       /*자산명*/
+              ,#CLSF_CODE#       /*품목분류코드*/
+              ,#PRID_DPCT#       /*내용년수*/
+              ,#ACQU_COST#       /*취득단가*/
+              ,#ACQU_NUMB#       /*취득수량*/
+              ,#ACQU_PRIC#       /*취득금액*/
+              ,#ASST_NUMB#       /*자산번호*/
+              ,SYSDATE       /*등록일시*/
+              ,#UPDT_USID#       /*등록자*/
+              ,SYSDATE       /*수정일시*/
+              ,#UPDT_USID#       /*수정자*/
+              )         
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :건설중 자산대체 전표생성
+********************************************************************************/
+ -->
+	<insert id="FSMF0010P01.SLIP00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+
+			#CNT#            DECIMAL(15,0);                 /*상각여부*/
+			sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;       /*입력자*/
+			sDEPT_CODE      TA_SLIPXM.DEPT_CODE%TYPE;       /*입력부서*/
+			sACCT_GUBN      TA_SLIPXM.ACCT_GUBN%TYPE;       /*사업장*/
+			/*nSLIP_LINE    TA_SLIPNT.SLIP_LINE%TYPE := 0;*//*전표라인번호*/
+	
+	    BEGIN
+	       /* FSMF0010P01.SLIP00.건설중 자산대체 전표생성  */
+	        /**********************************+
+	        |  1.대체년월의 상각처리 완료여부  |
+	        +**********************************/
+	        SELECT FSMACOMM_Oracle.FSMACOMM.GET_DPCTCHECK(SUBSTR(#ASTF_DATE#, 1, 6)) INTO #CNT# FROM DUAL;
+	
+	        IF (#CNT# > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#ASTF_DATE#, 1, 4) || '년 ' || SUBSTR(#ASTF_DATE#, 5, 2) || '월은 이미 상각이 완료되었습니다!\n\n건설중 자산대체가 불가합니다!');
+	        END IF;
+	
+	        /****************************************+
+	        |  2.자산대체총액과 취득금액의 합계 비교 |
+	        +****************************************/
+	        SELECT SUM(ACQU_PRIC) INTO #CNT# FROM FS_ASTFLA WHERE ACCT_UNIT = #ACCT_UNIT# AND ASTF_NUMB = sASTF_NUMB;
+	
+	        IF (#CNT# != #ASTF_TAMT#) THEN
+	           RAISE_APPLICATION_ERROR(-20000, '대체총액과 대체자산의 자산금액 합계는 같아야 합니다!\n\n건설중 자산대체가 불가합니다!');
+	        END IF;
+	
+	
+	        /**********************************************+
+	        |  3.전표번호 채번 및 HEADER 추가 처리   |
+	        +**********************************************/
+	
+	        /* 사용자 정보 조회*/
+	        BEGIN
+	            SELECT U.EMPL_NUMB, U.DEPT_CODE, D.ACCT_GUBN
+	              INTO sEMPL_NUMB, sDEPT_CODE, sACCT_GUBN     /*사업장*/
+	              FROM VI_USERINFO U
+	              LEFT JOIN VI_DEPTXM D
+	                   ON  D.DEPT_CODE = U.DEPT_CODE
+	            WHERE  USER_IDXX = #UPDT_USID#;
+	
+	            EXCEPTION
+	                WHEN NO_DATA_FOUND THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '입력자에 대한 정보를 찾을 수 없습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	
+	
+	        SP_SLIP_INSERT_M(
+	             SYSDATE  /*등록일시*/
+	            ,#UPDT_USID#  /*등록자*/
+	            ,#SLIP_NUMB#  /*전표번호*/
+	            ,#ASTF_DATE#  /*전표일자*/
+	            ,sACCT_GUBN   /*사업장*/
+	            ,''           /*품의번호*/
+	            ,'FA160030'   /* 전표구분 : 일반전표(FA160010), 연동전표(FA160030)*/
+	            ,''           /* 전표처리구분 : 농심에선 사용하지 않음*/
+	            ,#ACCT_UNIT#  /* 회계단위*/
+	            ,SUBSTR(#ASTF_DATE#, 1, 4) || '년 ' || SUBSTR(#ASTF_DATE#, 5, 2) || '월 ' || SUBSTR(#ASTF_DATE#, 7, 2) || '일 건설중 자산대체 처리'    /*제목*/
+	            ,sEMPL_NUMB   /*발행자*/
+	            ,sDEPT_CODE   /*발행부서*/
+	            ,'U'          /*전표발생테이블타입(삭제시 해당 테이블 적용 이벤트 해당테이블에 전표에 해당하는 데이터를 삭제시:D,전표번호만 있을때:U, 전표라인번호이 있을때 : S)*/
+	            ,'FS_ASTFXM'  /*전표발생테이블명(발생된 테이블 명*/
+	            ,'1'          /*자동전표여부 1: 자동전표*/
+	        );
+	
+	        /*************************************************+
+	        |  4.소스전표(디테일) 루프 돌리기-대변   |
+	        +*************************************************/
+	
+	        FOR CUR_ASTFLS IN (
+	            /*2015.01.06. 기초데이타 TA_SLIPNT_BASE 3건존재. 건설중자산대체 조회시 TA_SLIPNT에서 조회됨*/
+	            /* 그렇기때문에 INNER JOIN 계정코드 가져올 필요 없어서 주석처리함*/
+	            /* 차후 적요에 해당하는 이슈 생기면 기초데이타 작성완료시점(3건)에 기존 주석처리 한것 제거 요망*/
+	            SELECT A.ACCT_UNIT      /*회계단위*/
+	                  ,A.SLIP_LINE      /*전표라인번호*/
+	                  ,A.SSSL_NUMB      /*소스전표번호*/
+	                  ,A.SSSL_SEQN      /*소스전표라인번호*/
+	                  ,A.ACCT_INTL
+	                  /*,B.ACCT_INTL*/  /*계정코드*/
+	                  ,A.CUST_CODE      /*거래처코드*/
+	                  ,A.DEPT_CODE      /*부서코드*/
+	                  ,A.SOKR_AMOT      /*상계금액*/
+	                  /*,B.REMK_NAME*/  /*세부적요*/
+	                  ,'건설중자산대체 처리'  AS REMK_NAME
+	                  ,D.ACCT_GUBN      /*사업장*/
+	              FROM FS_ASTFLS A
+	                    /*INNER JOIN TA_SLIPNT B*/
+	                    /*       ON A.SSSL_NUMB = B.SLIP_NUMB*/
+	                    /*      AND A.SSSL_SEQN = B.SLIP_LINE*/
+	                    LEFT JOIN VI_DEPTXM D
+	                        ON  D.DEPT_CODE = A.DEPT_CODE
+	             WHERE A.ACCT_UNIT = #ACCT_UNIT#     /*회계단위[ACCT_UNIT]*/
+	               AND A.ASTF_NUMB = sASTF_NUMB      /*자산대체번호*/
+	
+	        )
+	
+	        LOOP
+	
+	            IF CUR_ASTFLS.SLIP_LINE IS NOT NULL THEN
+	
+	                BEGIN
+	                    /* ===================  대변 계정 작성[대체자산등록 전표의 금회대체액은 대변에 입력되어야됨] =================== */
+	                    /* 전표라인번호은 JAVA단에서 생성한 저장된 순번을 사용함. 물론 여기서 반복처리해도 됨*/
+	                    /*nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	
+	                  SP_SLIP_INSERT_D(
+	                         SYSDATE   /*등록일시*/
+	                        ,#UPDT_USID#   /*등록자*/
+	                        ,#SLIP_NUMB#              /* 전표번호*/
+	                        ,CUR_ASTFLS.SLIP_LINE     /*,LPad(nSLIP_LINE,4,'0') */  /* 전표라인번호*/
+	                        ,CUR_ASTFLS.ACCT_GUBN     /* 사업장*/
+	                        ,''   /* 브랜드 : 농심 사용안함*/
+	                        ,''   /*예산구분*/
+	                        ,''   /*프로젝트코드*/
+	                        ,''   /*예산품의번호*/
+	                        ,SUBSTR(CUR_ASTFLS.SSSL_NUMB,3,8)   /*상대전표일자*/
+	                        ,CUR_ASTFLS.SSSL_NUMB   /*상대전표번호*/
+	                        ,CUR_ASTFLS.SSSL_SEQN   /*상대전표라인번호*/
+	                        ,CUR_ASTFLS.ACCT_INTL   /*건설중인자산-건설가계정 계정코드*/
+	                        ,'C'                    /*차대구분       >> 상각누계:대변*/
+	                        ,'KRW'     /*통화구분*/
+	                        ,0              /*환율*/
+	                        ,CUR_ASTFLS.SOKR_AMOT   /*금액*/
+	                        ,0          /*외화금액*/
+	                        ,CUR_ASTFLS.DEPT_CODE   /*사용부서*/
+	                        ,''         /*예산부서 : 농심 사용안함*/
+	                        ,CUR_ASTFLS.REMK_NAME   /*적요1*/
+	                        ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+	                        ,''   /*매입매출구분*/
+	                        ,''   /*부가세종류*/
+	                        ,''   /*매입구분*/
+	                        ,''   /*불공제구분*/
+	                        ,''   /*전자발행여부*/
+	                        ,''   /*발행일자*/
+	                        ,''   /*공급가액*/
+	                        ,''   /*세액*/
+	                        ,''   /*품목*/
+	                        ,''   /*적요*/
+	                        ,''   /*거래처*/
+	                        ,''   /*출납처리여부*/
+	                        ,''   /*지출일자*/
+	                        ,''   /*출납방법*/
+	                        ,''   /*입출구분*/
+	                        ,''   /*카드번호*/
+	                        ,''   /*카드승인번호*/
+	                        ,''   /*사업자번호*/
+	                    );
+	
+	
+	                    /*관리항목 저장
+	                    FOR CUR IN (
+	                        SELECT B.COND_CODE
+	                              /* 관리항목 확정후 다시 정리 필요*/
+	                              ,CASE WHEN B.COND_CODE = '0002' THEN CUR_ASTFLS.CUST_CODE /*거래처*/
+	                                    WHEN B.COND_CODE = '0019' THEN '99999999'
+	                                    ELSE '' END AS COND_VACD
+	                              ,CASE WHEN B.COND_CODE = '0002' THEN SF_GET_CUSTNAME(CUR_ASTFLS.CUST_CODE) /*거래처*/
+	                                    WHEN B.COND_CODE = '0019' THEN '공통프로젝트'
+	                                    ELSE '' END AS COND_VANM
+	                        FROM   TA_ACCTXM A
+	                            JOIN TA_ACCTXD B
+	                                ON  A.ACCT_YEAR = B.ACCT_YEAR
+	                                AND A.ACCT_INTL = B.ACCT_INTL
+	                        WHERE B.ACCT_INTL = CUR_ASTFLS.ACCT_INTL
+	                        AND   A.ACCT_YEAR = SubStr(#SLIP_NUMB#,3,4)
+	
+	                    ) LOOP
+	
+	                        SP_SLIP_INSERT_S(
+	                           SYSDATE   /*수정일시*/
+	                          ,#UPDT_USID#   /*수정자*/
+	                          ,#SLIP_NUMB#   /*전표번호*/
+	                          ,CUR_ASTFLS.SLIP_LINE   /*,LPad(nSLIP_LINE,4,'0')   /*전표라인번호*/
+	                          ,CUR.COND_CODE   /*관리항목코드 : 재무>기본정보>관리항목 참조*/
+	                          ,CUR.COND_VACD   /*항목값*/
+	                          ,CUR.COND_VANM   /*항목명*/
+	                        );
+	
+	                    END LOOP;
+	
+	                    /* 전표 라인별 정합성 체크*/
+	                    SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,CUR_ASTFLS.SLIP_LINE);
+	
+	                END;
+	
+	            END IF;
+	
+	        END LOOP;
+	
+	
+	
+	        /*************************************************+
+	        |  5.대체계정(디테일) 루프 돌리기-차변   |
+	        +*************************************************/
+	
+	        FOR CUR_ASTFLA IN (
+	
+	            SELECT A.ACCT_UNIT      /*회계단위*/
+	                  ,A.SLIP_LINE      /*전표라인번호*/
+	                  ,C.DPCT_ACT1      /*자산계정과목코드*/
+	                  ,B.CUST_CODE      /*거래처코드*/
+	                  ,B.DEPT_CODE      /*부서코드*/
+	                  ,A.ACQU_PRIC      /*취득금액*/
+	                  ,'건설중자산대체 처리(' || A.ASST_NUMB || ':' || A.ASST_NAME || ')' AS DESC_REMK
+	                  ,D.ACCT_GUBN      /*사업장*/
+	              FROM FS_ASTFLA A
+	                    INNER JOIN FS_ASSTXM B
+	                        ON A.ASST_NUMB = B.ASST_NUMB
+	                    INNER JOIN VI_ASSETCLASS C
+	                        ON B.CLSF_CODE = C.SMAL_CODE
+	                    LEFT JOIN VI_DEPTXM D
+	                        ON D.DEPT_CODE = A.DEPT_CODE
+	             WHERE A.ACCT_UNIT = #ACCT_UNIT#     /*회계단위[ACCT_UNIT]*/
+	               AND A.ASTF_NUMB = sASTF_NUMB     /*자산대체번호*/
+	
+	        )
+	
+	        LOOP
+	
+	            IF CUR_ASTFLA.SLIP_LINE IS NOT NULL THEN
+	
+	                BEGIN
+	                    /* =================== 차변 계정 작성 =================== */
+	                    /* 전표라인번호은 JAVA단에서 생성한 저장된 순번을 사용함. 물론 여기서 반복처리해도 됨*/
+	
+	                    SP_SLIP_INSERT_D(
+	                         SYSDATE   /*등록일시*/
+	                        ,#UPDT_USID#   /*등록자*/
+	                        ,#SLIP_NUMB#               /* 전표번호*/
+	                        ,CUR_ASTFLA.SLIP_LINE     /*,LPad(nSLIP_LINE,4,'0')    전표라인번호*/
+	                        ,CUR_ASTFLA.ACCT_GUBN     /* 사업장*/
+	                        ,''   /* 브랜드 : 농심 사용안함*/
+	                        ,''   /*예산구분*/
+	                        ,''   /*프로젝트코드*/
+	                        ,''   /*예산품의번호*/
+	                        ,''   /*상대전표일자*/
+	                        ,''   /*상대전표번호*/
+	                        ,''   /*상대전표라인번호*/
+	                        ,CUR_ASTFLA.DPCT_ACT1   /*계정코드*/
+	                        ,'D'                    /*차대구분      >> 상각비:차변*/
+	                        ,'KRW'     /*통화구분*/
+	                        ,0              /*환율*/
+	                        ,CUR_ASTFLA.ACQU_PRIC   /*취득금액*/
+	                        ,0      /*외화금액*/
+	                        ,CUR_ASTFLA.DEPT_CODE   /*사용부서*/
+	                        ,''     /*예산부서 : 농심 사용안함*/
+	                        ,CUR_ASTFLA.DESC_REMK   /*적요1*/
+	                        ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+	                        ,''   /*매입매출구분*/
+	                        ,''   /*부가세종류*/
+	                        ,''   /*매입구분*/
+	                        ,''   /*불공제구분*/
+	                        ,''   /*전자발행여부*/
+	                        ,''   /*발행일자*/
+	                        ,''   /*공급가액*/
+	                        ,''   /*세액*/
+	                        ,''   /*품목*/
+	                        ,''   /*적요*/
+	                        ,''   /*거래처*/
+	                        ,''   /*출납처리여부*/
+	                        ,''   /*지출일자*/
+	                        ,''   /*출납방법*/
+	                        ,''   /*입출구분*/
+	                        ,''   /*카드번호*/
+	                        ,''   /*카드승인번호*/
+	                        ,''   /*사업자번호*/
+	                    );
+	
+	                    /*관리항목 저장*/
+	                    FOR CUR IN (
+	                        SELECT B.COND_CODE
+	                              /* 관리항목 확정후 다시 정리 필요*/
+	                              ,CASE WHEN B.COND_CODE = '0002' THEN CUR_ASTFLA.CUST_CODE /*거래처*/
+	                                    WHEN B.COND_CODE = '0019' THEN '99999999'
+	                                    ELSE '' END AS COND_VACD
+	                              ,CASE WHEN B.COND_CODE = '0002' THEN SF_GET_CUSTNAME(CUR_ASTFLA.CUST_CODE) /*거래처*/
+	                              WHEN B.COND_CODE = '0019' THEN '공통프로젝트'
+	                                    ELSE '' END AS COND_VANM
+	                        FROM   TA_ACCTXM A
+	                            JOIN TA_ACCTXD B
+	                                ON  A.ACCT_YEAR = B.ACCT_YEAR
+	                                AND A.ACCT_INTL = B.ACCT_INTL
+	                        WHERE B.ACCT_INTL = CUR_ASTFLA.DPCT_ACT1
+	                        AND   A.ACCT_YEAR = SubStr(#SLIP_NUMB#,3,4)
+	
+	                    ) LOOP
+	
+	                        SP_SLIP_INSERT_S(
+	                           SYSDATE   /*수정일시*/
+	                          ,#UPDT_USID#   /*수정자*/
+	                          ,#SLIP_NUMB#   /*전표번호*/
+	                          ,CUR_ASTFLA.SLIP_LINE   /*,LPad(nSLIP_LINE,4,'0')   전표라인번호*/
+	                          ,CUR.COND_CODE   /*관리항목코드 : 재무>기본정보>관리항목 참조*/
+	                          ,CUR.COND_VACD   /*항목값*/
+	                          ,CUR.COND_VANM   /*항목명*/
+	                        );
+	
+	                    END LOOP;
+	
+	                    /* 전표 라인별 정합성 체크*/
+	                    SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,CUR_ASTFLA.SLIP_LINE);
+	
+	
+	                END;
+	
+	            END IF;
+	
+	        END LOOP;
+	
+	        /***********************************************+
+	        |  6.자산대체 테이블에 전표번호 업데이트    |
+	        +***********************************************/
+	        UPDATE FS_ASTFXM                 /*[자산대체]*/
+	           SET  SLIP_NUMB = #SLIP_NUMB#  /*전표번호*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE ACCT_UNIT  = #ACCT_UNIT#  /*회계단위[ACCT_UNIT]*/
+	           AND ASTF_NUMB  = sASTF_NUMB   /*자산대체번호*/
+	           ;
+	
+	        /***********************************************+
+	        |  7.자산마스터테이블에 전표번호 업데이트    |
+	        +***********************************************/
+	        UPDATE FS_ASSTXM                    /*자산마스터*/
+	        SET  SLIP_NUMB = #SLIP_NUMB#        /*전표번호*/
+	            ,SLIP_LINE = '0001'             /*전표라인번호*/
+	            ,UPDT_DATE = SYSDATE        /*수정일시*/
+	            ,UPDT_USID = #UPDT_USID#        /*수정자*/
+	        WHERE ACCT_UNIT = #ACCT_UNIT#
+	        AND ASST_NUMB IN (
+	                        SELECT ASST_NUMB
+	                        FROM FS_ASTFLA
+	                        WHERE ACCT_UNIT = #ACCT_UNIT#       /*회계단위*/
+	                          AND ASTF_NUMB = sASTF_NUMB        /*자산대체번호*/
+	                        )
+	         ;
+	    END;
+		]]>
+	</insert>
+
+</sqlMap>

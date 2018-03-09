@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="EVMB0050">
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.18
+     내      용 : 평가현황 조회
+********************************************************************************/
+-->
+	<select id="EVMB0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMB0050.SEARCH00.평가현황 조회 */
+		           A.SYNT_EACD                                                                        /* 인사평가코드 */
+                 , A.EMPL_NUMB                                                                        /* 사원번호 */
+                 , B.EMPL_NAME                                                                        /* 성명*/
+                 , E.SECT_NAME                                                                        /* 소속명 */
+                 , E.DEPT_NAME                                                                        /* 부서명 */
+                 , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE)                          AS CPOS_NAME    /* 직급명 */
+                 , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE)                          AS OPOS_NAME    /* 직위명 */                 
+                 , A.WES1_EMNR                                                                        /* 업적평가상사1차사원번호 */
+                 , C.EMPL_NAME                                                        AS WES1_EMNM    /* 업적평가상사1차사원성명*/
+                 , SF_GET_COMMNAME('OPOS_CODE', C.OPOS_CODE)                          AS WES1_OPOS    /* 직위명 */
+                 , A.SBM1_YSNO                                                        AS SBM1_YSNO    /* 업적평가1차제출여부 */
+                 , A.WES1_SCOR                                                                        /* 업적평가1차평가점수 */
+                 , ROUND(A.WES1_SCOR * (DECODE(A.WES2_EMNR,NULL,X.WES1_RATE + X.WES2_RATE,X.WES1_RATE) / 100)) AS WES1_RSCOR
+                 , SF_GET_COMMNAME('WGEG_CODE', A.WGE1_CODE)                          AS WGE1_CODE    /* 업적평가1차평가등급코드 */
+                 , A.WES2_EMNR                                                                        /* 업적평가상사2차사원번호 */
+                 , D.EMPL_NAME                                                        AS WES2_EMNM    /* 업적평가상사2차사원성명*/
+                 , SF_GET_COMMNAME('OPOS_CODE', D.OPOS_CODE)                          AS WES2_OPOS    /* 직위명 */
+                 , DECODE(A.WES2_EMNR, NULL, '', A.SBM2_YSNO)                         AS SBM2_YSNO    /* 업적평가1차제출여부 */
+                 , A.WES2_SCOR                                                                        /* 업적평가2차평가점수 */
+                 , ROUND(A.WES2_SCOR * (X.WES2_RATE / 100))                           AS WES2_RSCOR                 
+                 , SF_GET_COMMNAME('WGEG_CODE', A.WGE2_CODE)                          AS WGE2_CODE    /* 업적평가2차평가등급코드 */                 
+                 , A.PSCM_SCOR	                                                                      /* 인사위원회평가점수 */
+                 , ROUND(A.PSCM_SCOR * (X.PSCM_RATE / 100))                           AS PSCM_RSCOR
+                 , A.PSCM_CODE                                                                        /* 인사위원회평가등급코드 */
+                 , A.FACH_EVSC                                                                        /* 최종평가점수 */
+                 , A.FACH_CODE                                                                        /* 최종평가등급코드 */
+                 , A.FACF_EVSC                                                                        /* 최종평가실점수 */
+                 , X.WES1_RATE                                                                        /* 업적1차고과비율 */ 
+                 , X.WES2_RATE                                                                        /* 업적2차고과비율 */ 
+                 , X.PSCM_RATE                                                                        /* 업적인사위원비율 */ 
+                 , CASE WHEN A.WES2_EMNR IS NULL THEN DECODE(A.SBM1_YSNO, '1', 'Y', 'N')
+                        ELSE DECODE(A.SBM1_YSNO, '1', DECODE(A.SBM2_YSNO, '1', 'Y', 'N'), 'N')
+                    END                                                               AS GLRG_CODE
+	             , A.GLRS_YSNO
+	             , A.GLR1_CODE
+	             , A.GLR2_CODE
+             FROM EV_WGETXM A             /* [인사평가대상자] */                          
+       INNER JOIN EV_TEVPXM X             
+               ON A.SYNT_EACD = X.SYNT_EACD        
+       INNER JOIN HR_MASTXM B             /* [인사기본정보] */
+               ON A.EMPL_NUMB = B.EMPL_NUMB           
+  LEFT OUTER JOIN HR_MASTXM C             /* [인사기본정보] */
+               ON A.WES1_EMNR = C.EMPL_NUMB
+  LEFT OUTER JOIN HR_MASTXM D             /* [인사기본정보] */
+               ON A.WES2_EMNR = D.EMPL_NUMB               
+  LEFT OUTER JOIN VI_DEPTXM E             /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = E.DEPT_CODE                
+            WHERE 1=1
+    ]]>
+		<isNotEmpty property="SYNT_EACD" prepend="AND">
+		    A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+		</isNotEmpty>
+		<isNotEmpty property="DEPT_CODE" prepend="AND">
+		    A.DEPT_CODE = #DEPT_CODE#     /* 부서코드 */
+		</isNotEmpty>
+		<isNotEmpty property="EMPL_NUMB" prepend="AND">
+			A.EMPL_NUMB = #EMPL_NUMB#     /* 사원번호 */
+		</isNotEmpty>
+	         ORDER BY E.SORT_ORDR, E.SECT_NAME, E.DEPT_NAME, A.CPOS_CODE, A.EMPL_NUMB DESC
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.18
+     내      용 : 평가점수등급환산표 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMB0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMB0050.SEARCH01.평가점수등급환산표 테이블 조회 */
+                   A.SYNT_EACD              /* 인사평가코드 */
+                 , A.WGEG_CODE              /* 업적평가평가등급코드 */
+                 , A.BGIN_SCOR              /* 시작점수 */
+                 , A.ENDX_SCOR              /* 종료점수 */
+                 , A.ABLT_EVSC              /* 역량평정점수 */
+                 , A.EVAL_RATE              /* 평가비율 */
+              FROM EV_WGEGXM A              /* [평가점수등급환산표] */
+              LEFT OUTER JOIN TM_CODEXD B   /* [공통코드상세] */
+                ON A.WGEG_CODE = B.COMD_CODE
+               AND B.COMM_CODE = 'WGEG_CODE'
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+	         ORDER BY B.SORT_ORDR
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.18
+     내      용 : 종합평가 결과표 조회
+********************************************************************************/
+-->
+	<select id="EVMB0050.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMB0050.SEARCH02.종합평가 결과표 조회 */
+		           SYNT_EACD
+		         , TO_CHAR(SYSDATE, 'YYYY')              AS STDS_YEAR
+                 , SECT_NAME
+                 , DECODE(FACH_CODE, 'S', EMPL_NAME, '') AS SEMPL_NAME
+                 , DECODE(FACH_CODE, 'A', EMPL_NAME, '') AS AEMPL_NAME
+                 , DECODE(FACH_CODE, 'B', EMPL_NAME, '') AS BEMPL_NAME
+                 , DECODE(FACH_CODE, 'C', EMPL_NAME, '') AS CEMPL_NAME
+                 , DECODE(FACH_CODE, 'D', EMPL_NAME, '') AS DEMPL_NAME
+                 , 0                                     AS PRSN_CONT
+             FROM (
+                   SELECT  A.SYNT_EACD                                   /* 인사평가코드 */
+                         , A.EMPL_NUMB                                   /* 사원번호 */
+                         , B.EMPL_NAME                                   /* 성명*/
+                         , SF_GET_SECTNAME(A.DEPT_CODE)  AS SECT_NAME    /* 소속명 */
+                         , SF_GET_DEPTNAME(A.DEPT_CODE)  AS DEPT_NAME    /* 부서명 */
+                         , A.FACH_CODE                                   /* 최종평가등급코드 */
+                     FROM EV_WGETXM A                   /* [인사평가대상자] */             
+               INNER JOIN HR_MASTXM B                   /* [인사기본정보] */
+                       ON A.EMPL_NUMB = B.EMPL_NUMB                
+                    WHERE 1=1
+                      AND A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+                      AND A.FACH_CODE IS NOT NULL
+                  )
+            ORDER By SECT_NAME
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.18
+     내      용 : 종합평가 결과표(인원수 대비 배분율) 조회
+********************************************************************************/
+-->
+	<select id="EVMB0050.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMB0050.SEARCH03.종합평가 결과표(인원수 대비 배분율) 조회 */
+		            A.SYNT_EACD
+                  , A.SGDL_NOPS
+                  , A.AGDL_NOPS
+                  , A.BGDL_NOPS
+                  , A.CGDL_NOPS
+                  , A.DGDL_NOPS
+                  , A.PRSN_CONT
+                  , ROUND((A.SGDL_NOPS / A.PRSN_CONT) * 100, 0)  AS SGDL_PERS
+                  , ROUND((A.AGDL_NOPS / A.PRSN_CONT) * 100, 0)  AS AGDL_PERS
+                  , ROUND((A.BGDL_NOPS / A.PRSN_CONT) * 100, 0)  AS BGDL_PERS
+                  , ROUND((A.CGDL_NOPS / A.PRSN_CONT) * 100, 0)  AS CGDL_PERS
+                  , ROUND((A.DGDL_NOPS / A.PRSN_CONT) * 100, 0)  AS DGDL_PERS
+                  , ROUND((A.PRSN_CONT / A.PRSN_CONT) * 100, 0)  AS PGDL_PERS
+              FROM EV_EVRTXM A                   /* [근무평가비율관리] */
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+               AND A.PRSN_CONT = (SELECT COUNT(*)
+                                    FROM EV_WGETXM 
+                                   WHERE 1=1
+                                     AND EVTT_YSNO = '1'
+                                     AND SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+                                 )  
+    ]]>
+	</select>	
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.18
+     내      용 : 인사평가대상자 테이블 수정
+********************************************************************************/
+-->
+	<update id="EVMB0050.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE /* EVMB0050.UPDATE00.인사평가대상자 테이블 수정 */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+			
+		    UPDATE EV_WGETXM                /* [인사평가대상자] */
+	           SET PSCM_SCOR = #PSCM_SCOR#  /* 인사위원회평가점수 */
+	             , PSCM_CODE = #PSCM_CODE#  /* 인사위원회평가등급코드 */
+	             , FACH_EVSC = #FACH_EVSC#  /* 최종평가점수 */
+	             , FACF_EVSC = #FACF_EVSC#
+	             , FACH_CODE = #FACH_CODE#  /* 최종평가등급코드 */             
+                 , SBM1_YSNO = #SBM1_YSNO#
+	             , SBM2_YSNO = #SBM2_YSNO#
+	             , GLRS_YSNO = #GLRS_YSNO#
+	             , GLR1_CODE = #GLR1_CODE#
+	             , GLR2_CODE = #GLR2_CODE#
+	             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+	             , UPDT_DATE = SYSDATE      /* 수정일시 */
+	         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+	           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+             ;	            
+		END;	
+
+	]]>
+	</update>
+
+</sqlMap>

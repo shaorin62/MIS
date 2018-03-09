@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="RC_COM" onload="fn_FormLoadSetting" position="absolute" left="0" width="305" top="0" height="784" scrollbars="none" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[공통]우측 나의정보popupdiv">
+    <Layouts>
+      <Layout>
+        <Static id="Static00" taborder="20" left="0" top="0" width="305" cssclass="sty_WF_Myinfo" bottom="0"/>
+        <ImageViewer id="ImageViewer00" taborder="1" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="25" top="17" width="38" height="38"/>
+        <Static id="Static04" taborder="2" text="홍길동과장 / 경영지원팀" cssclass="sta_MF_text2" left="73" top="24" width="207" height="24"/>
+        <Static id="Static34" taborder="3" text="w34" visible="false" left="5" top="112" width="34" height="185" style="background:#fb7b7b7a;"/>
+        <Grid id="Grid01" cssclass="grd_MF_date" taborder="4" binddataset="Dataset01" useinputpanel="false" selecttype="area" autofittype="col" left="29" top="106" width="248" height="199">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+                <Column size="35"/>
+              </Columns>
+              <Rows>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+                <Row size="33"/>
+              </Rows>
+              <Band id="body">
+                <Cell style="color:#f84f4fff;" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="1" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="2" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="3" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="4" style="selectbackground: ;" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="5" cssclass="Cellgrd_MF_noimg"/>
+                <Cell col="6" style="color:#5e95eeff;" text="1"/>
+                <Cell row="1" style="color:#f84f4fff;" text="2"/>
+                <Cell row="1" col="1" text="3"/>
+                <Cell row="1" col="2" cssclass="Cellgrd_MF_link" text="4"/>
+                <Cell row="1" col="3" text="5"/>
+                <Cell row="1" col="4" text="6"/>
+                <Cell row="1" col="5" text="7"/>
+                <Cell row="1" col="6" style="color:#5e95eeff;" text="8"/>
+                <Cell row="2" style="color:#f84f4fff;" text="9"/>
+                <Cell row="2" col="1" text="10"/>
+                <Cell row="2" col="2" text="11"/>
+                <Cell row="2" col="3" text="12"/>
+                <Cell row="2" col="4" text="13"/>
+                <Cell row="2" col="5" text="14"/>
+                <Cell row="2" col="6" style="color:#5e95eeff;" text="15"/>
+                <Cell row="3" style="color:#f84f4fff;" text="16"/>
+                <Cell row="3" col="1" text="17"/>
+                <Cell row="3" col="2" text="18"/>
+                <Cell row="3" col="3" text="19"/>
+                <Cell row="3" col="4" cssclass="Cellgrd_MF_link" text="20"/>
+                <Cell row="3" col="5" text="21"/>
+                <Cell row="3" col="6" style="color:#5e95eeff;" text="22"/>
+                <Cell row="4" style="color:#f84f4fff;" text="23"/>
+                <Cell row="4" col="1" text="24"/>
+                <Cell row="4" col="2" text="25"/>
+                <Cell row="4" col="3" text="26"/>
+                <Cell row="4" col="4" text="27"/>
+                <Cell row="4" col="5" text="28"/>
+                <Cell row="4" col="6" style="color:#5e95eeff;" text="29"/>
+                <Cell row="5" style="color:#f84f4fff;" text="30"/>
+                <Cell row="5" col="1" text="31"/>
+                <Cell row="5" col="2" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="3" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="4" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="5" cssclass="Cellgrd_MF_noimg"/>
+                <Cell row="5" col="6" style="color:#5e95eeff;" cssclass="Cellgrd_MF_noimg"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static15" taborder="5" text="2016 . 10" cssclass="sta_MF_text6" left="94" top="68" width="121" height="32"/>
+        <Button id="Button00" taborder="6" text="&lt;" cssclass="btn_MF_button1" left="84" top="64" width="21" height="36" style="font:antialias 16 Malgun Gothic;"/>
+        <Button id="Button01" taborder="7" text="&gt;" cssclass="btn_MF_button1" left="209" top="63" width="21" height="36" style="font:antialias 16 Malgun Gothic;"/>
+        <Static id="Static26" taborder="8" text="h 20" visible="false" left="75" top="60" width="151" height="20" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="9" cssclass="sta_WF_mybox1" left="30" top="309" width="250" height="54"/>
+        <Static id="Static06" taborder="10" text="연차휴가" cssclass="sta_MF_text2" left="55" top="310" width="80" height="24"/>
+        <Static id="Static28" taborder="11" text="7&lt;fs v='11'&gt;일&lt;/fs&gt;&lt;ff v='Dotum'&gt;&lt;fc v='#d0d0d0ff'&gt;/&lt;/fc&gt;&lt;/ff&gt;15&lt;fs v='11'&gt;일&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="55" top="328" width="97" height="32" style="font:antialias 18 Malgun Gothic;"/>
+        <Static id="Static02" taborder="12" text="3&lt;fs v='11'&gt;일&lt;/fs&gt;&lt;ff v='Dotum'&gt;&lt;fc v='#d0d0d0ff'&gt;/&lt;/fc&gt;&lt;/ff&gt;5&lt;fs v='11'&gt;일&lt;/fs&gt;" usedecorate="true" cssclass="sta_MF_text4" left="174" top="328" width="97" height="32" style="font:antialias 18 Malgun Gothic;"/>
+        <Static id="Static03" taborder="13" text="정기휴가" cssclass="sta_MF_text2" left="174" top="310" width="80" height="24"/>
+        <Div id="Div04" taborder="14" text="Div04" left="25" top="570" width="275" height="190" cssclass="divBottomArea">
+          <Layouts>
+            <Layout width="265" height="240">
+              <Static id="Static29" taborder="17" onclick="Div04_Static29_onclick" cssclass="sta_MF_line1" left="18" top="0" width="2" height="233"/>
+              <Div id="Div00" taborder="18" text="Div00" left="0" top="0" width="264" height="40">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="ImageViewer00" taborder="14" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="0" top="0" width="38" height="38"/>
+                    <Static id="Static00" taborder="15" text="경조금 신청되었습니다." usedecorate="true" left="47" top="17" width="216" height="22" style="color:#5578daff;"/>
+                    <Static id="Static04" taborder="16" text="홍길동  &lt;fc v='#9e9e9eff'&gt;[2016-00-00]&lt;/fc&gt;" usedecorate="true" left="47" top="0" width="138" height="22"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+              <Div id="Div01" taborder="19" text="Div00" left="0" top="50" width="264" height="40">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="ImageViewer00" taborder="17" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="0" top="0" width="38" height="38"/>
+                    <Static id="Static00" taborder="18" text="경조금 신청되었습니다." usedecorate="true" left="47" top="17" width="216" height="22" style="color:#5578daff;"/>
+                    <Static id="Static04" taborder="19" text="홍길동  &lt;fc v='#9e9e9eff'&gt;[2016-00-00]&lt;/fc&gt;" usedecorate="true" left="47" top="0" width="138" height="22"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+              <Div id="Div02" taborder="20" text="Div00" left="0" top="100" width="264" height="40">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="ImageViewer00" taborder="20" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="0" top="0" width="38" height="38"/>
+                    <Static id="Static00" taborder="21" text="경조금 신청되었습니다." usedecorate="true" left="47" top="17" width="216" height="22" style="color:#5578daff;"/>
+                    <Static id="Static04" taborder="22" text="홍길동  &lt;fc v='#9e9e9eff'&gt;[2016-00-00]&lt;/fc&gt;" usedecorate="true" left="47" top="0" width="138" height="22"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+              <Div id="Div03" taborder="21" text="Div00" left="0" top="150" width="264" height="40">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="ImageViewer00" taborder="23" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="0" top="0" width="38" height="38"/>
+                    <Static id="Static00" taborder="24" text="경조금 신청되었습니다." usedecorate="true" left="47" top="17" width="216" height="22" style="color:#5578daff;"/>
+                    <Static id="Static04" taborder="25" text="홍길동  &lt;fc v='#9e9e9eff'&gt;[2016-00-00]&lt;/fc&gt;" usedecorate="true" left="47" top="0" width="138" height="22"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+              <Div id="Div04" taborder="22" text="Div00" left="0" top="200" width="264" height="40">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="ImageViewer00" taborder="26" image="URL('theme://images/img_WF_user1.png')" stretch="fixaspectratio" onclick="ImageViewer00_onclick" cssclass="img_MF_photo" left="0" top="0" width="38" height="38"/>
+                    <Static id="Static00" taborder="27" text="경조금 신청되었습니다." usedecorate="true" left="47" top="17" width="216" height="22" style="color:#5578daff;"/>
+                    <Static id="Static04" taborder="28" text="홍길동  &lt;fc v='#9e9e9eff'&gt;[2016-00-00]&lt;/fc&gt;" usedecorate="true" left="47" top="0" width="138" height="22"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="Static05" taborder="15" text="WORK알림" usedecorate="true" cssclass="sta_MF_text4" left="28" top="538" width="129" height="24" style="align:left middle;font:bold antialias 11 Malgun Gothic;"/>
+        <Static id="Static07" taborder="16" cssclass="sta_WF_mybox2" left="6" top="378" width="299" height="151"/>
+        <Grid id="Grid00" cssclass="grd_MF_notice" taborder="17" binddataset="Dataset01" useinputpanel="false" selecttype="area" autofittype="col" fillareatype="linerow" left="21" top="411" width="273" height="116">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="15"/>
+                <Column size="310"/>
+              </Columns>
+              <Rows>
+                <Row size="27"/>
+                <Row size="27"/>
+                <Row size="27"/>
+                <Row size="27"/>
+              </Rows>
+              <Band id="body">
+                <Cell style="background:transparent URL('theme://images/bg_MF_bullet.png') center middle;selectbackground:transparent URL('theme://images/bg_MF_bullet.png') center middle;"/>
+                <Cell col="1" text="농심기획 공지사항 제목영역입니다."/>
+                <Cell row="1" style="background:transparent URL('theme://images/bg_MF_bullet.png') center middle;selectbackground:transparent URL('theme://images/bg_MF_bullet.png') center middle;"/>
+                <Cell row="1" col="1" text="농심기획 공지사항 제목영역입니다."/>
+                <Cell row="2" style="background:transparent URL('theme://images/bg_MF_bullet.png') center middle;selectbackground:transparent URL('theme://images/bg_MF_bullet.png') center middle;"/>
+                <Cell row="2" col="1" text="농심기획 공지사항 제목영역입니다."/>
+                <Cell row="3" style="background:transparent URL('theme://images/bg_MF_bullet.png') center middle;selectbackground:transparent URL('theme://images/bg_MF_bullet.png') center middle;"/>
+                <Cell row="3" col="1" text="농심기획 공지사항 제목영역입니다."/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="Button12" taborder="18" text="더보기+" cssclass="btn_MF_button2" left="233" top="386" width="54" height="24"/>
+        <Static id="Static36" taborder="19" text="공지사항" usedecorate="true" cssclass="sta_MF_text8" left="28" top="385" width="97" height="24" style="align:left middle;font:bold antialias 11 Malgun Gothic;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

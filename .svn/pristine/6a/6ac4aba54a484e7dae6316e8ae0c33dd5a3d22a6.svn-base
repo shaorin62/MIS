@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+                                                                                                                      
+<sqlMap namespace="FAMD0080">
+<!-- 
+/*******************************************************************************
+   작 성 자 : 권미영
+   작 성 일 : 2016.12.26
+   내    용 : 계정별미결잔액현황
+******************************************************************************* */
+ -->
+	<select id="FAMD0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		WITH WT_SLIP AS ( /* FAMD0080.SEARCH00 계정별미결잔액현황 조회 */
+	        	SELECT TO_CHAR(TO_DATE(A.ACCT_DATE), 'YY/MM') AS ACCT_MNTH	/* 회계월 */
+	                 , B.UPPR_ACCT AS ACCT_INTL /* 상위계정코드 */
+	                 , SF_GET_ACCTNAME(B.UPPR_ACCT) AS ACCT_NAME  /* 상위계정명 */
+	                 , C.COND_VACD AS CUST_CODE	/* 거래처코드 */
+	                 , SF_GET_CONDVANM(SF_GET_CONDCOLM(C.COND_CODE), C.COND_VACD) AS CUST_NAME /* 거래처명 */
+		             , CASE WHEN C.COND_CODE = '0002' THEN NVL(D2.BIZR_NUMB, D2.RERN_NUMB)
+		             		WHEN C.COND_CODE = '0001' THEN D1.BIZR_NUMB END AS BIZR_NUMB	/* 사업자번호 */
+	                 , DECODE(A.DRCR_GUBN, B.DRCR_GUBN, A.SLIP_AMNT, 0) AS SLIP_AMNT	/* 발생금액 */ 
+	                 , NVL(E.BANJ_AMNT, 0) AS BANJ_AMNT /* 정산금액 */
+	                 , A.REMK_NAME	/* 적요 */
+	              FROM TA_SLIPNT A
+		               INNER JOIN TA_ACCTXM B        /* [계정코드] */
+		                   	   ON A.ACCT_INTL = B.ACCT_INTL
+		                  	  AND B.GUNB_YSNO = 1    /* 건별반제관리항목 */
+		               LEFT  JOIN TA_ACCTXD F
+		               		   ON B.ACCT_INTL = F.ACCT_INTL
+		               		  AND F.UNUS_YSNO = 1	/* 미결사용 */
+		               LEFT  JOIN TA_SLIPRF C
+		                   	   ON A.SLIP_NUMB = C.SLIP_NUMB
+		                  	  AND A.SLIP_LINE = C.SLIP_LINE
+		                      AND C.COND_CODE = F.COND_CODE
+		               LEFT  JOIN TA_CUSTXM D2
+		               		   ON C.COND_CODE = '0002'	/* 거래처 */
+		               		  AND C.COND_VACD = D2.CUST_CODE
+					   LEFT  JOIN TA_BANKBR D1
+		               		   ON C.COND_CODE = '0001'	/* 금융기관 */
+		               		  AND C.COND_VACD = D1.BABR_CODE
+		               LEFT  JOIN ( /* 정산금액 */
+			                        SELECT A.OSLI_NUMB
+			                             , A.OSLI_LINE
+			                             , SUM(DECODE(A.DRCR_GUBN, B.DRCR_GUBN, A.SLIP_AMNT * -1, A.SLIP_AMNT)) AS BANJ_AMNT	/* 정산금액 */	                             
+			                          FROM TA_SLIPNT A
+			                         	   INNER JOIN TA_ACCTXM B
+						                           ON A.ACCT_INTL = B.ACCT_INTL
+						                          AND B.GUNB_YSNO = 1	/* 건별반제관리항목 */
+			                         WHERE A.ACCT_DATE IS NOT NULL
+			                           AND A.OSLI_NUMB IS NOT NULL		/* 미결 정산만을 대상으로 */
+			                           AND A.ACCT_DATE <= #ACCT_DATE#
+			                         GROUP BY A.OSLI_NUMB
+			                         	 , A.OSLI_LINE
+		                        ) E
+		                   	   ON A.SLIP_NUMB = E.OSLI_NUMB
+		                   	  AND A.SLIP_LINE = E.OSLI_LINE
+	             WHERE A.ACCT_UNIT  = #ACCT_UNIT#
+	               AND A.ACCT_DATE <= #ACCT_DATE#
+	               AND A.OSLI_NUMB IS NULL           /* 미결 발생만을 대상으로 */
+	               AND A.SLIP_AMNT <> NVL(E.BANJ_AMNT, 0)    /* 잔액有 */
+	]]>
+ 		<isNotEmpty property = "ACCT_INTL" prepend = "AND">
+ 		<![CDATA[
+	               B.UPPR_ACCT = #ACCT_INTL# /* 상위계정과목 */
+ 		]]>       
+ 		</isNotEmpty>
+ 		<isNotEmpty property = "CUST_CODE" prepend = "AND">
+ 		<![CDATA[
+	               C.COND_VACD = #CUST_CODE# /* 거래처 */
+ 		]]>       
+ 		</isNotEmpty>
+	<![CDATA[
+		) 
+		SELECT A.ACCT_INTL	/* 상위계정코드 */
+	         , A.ACCT_NAME	/* 상위계정명 */
+	         , A.CUST_CODE	/* 거래처코드 */
+	         , A.CUST_NAME	/* 거래처명 */
+	         , A.BIZR_NUMB	/* 사업자번호 */
+	         , SUM(A.SLIP_AMNT) - SUM(A.BANJ_AMNT) AS BALA_AMNT	/* 잔액 */
+	         , MAX(CASE WHEN A.SLIP_AMNT = B.MAXX_AMNT THEN A.REMK_NAME END) REMK_NAME	/* 잔액 존재하는 발생 전표의 금액 중 대표금액의 적요 */
+	         , C.MNTH_LIST AS REMK_NAM2	/* 잔액 존재하는 발생 전표의 회계월 목록 */
+	         , NVL(A.BIZR_NUMB, 'ZZZZZZZZZZ') AS SORT_BIZR
+	         , NVL(A.CUST_CODE, 'ZZZZZZZZZZ') AS SORT_CUST	/* 거래처코드 */
+		  FROM WT_SLIP A
+	           LEFT JOIN (	/* 잔액 존재하는 발생 전표의 금액 중 대표금액 */
+		                    SELECT ACCT_INTL
+		                         , CUST_CODE
+		                         , MAX(SLIP_AMNT) AS MAXX_AMNT
+		                      FROM WT_SLIP 
+		                    GROUP BY ACCT_INTL
+		                         , CUST_CODE
+	                   ) B
+	                  ON A.ACCT_INTL = B.ACCT_INTL
+	                 AND A.CUST_CODE = B.CUST_CODE
+	                 AND A.SLIP_AMNT = B.MAXX_AMNT
+	           LEFT JOIN (	/* 잔액 존재하는 발생 전표의 회계월 목록 */
+		                    SELECT ACCT_INTL
+		                         , CUST_CODE
+		                         , LISTAGG(ACCT_MNTH, ',') WITHIN GROUP (ORDER BY ACCT_MNTH) AS MNTH_LIST
+		                      FROM (
+		                      		SELECT DISTINCT ACCT_INTL
+				                         , CUST_CODE
+				                         , ACCT_MNTH
+				                      FROM WT_SLIP
+				                 )
+		                     GROUP BY ACCT_INTL
+		                         , CUST_CODE
+	                   ) C
+	                  ON A.ACCT_INTL = C.ACCT_INTL
+	                 AND A.CUST_CODE = C.CUST_CODE
+	     GROUP BY A.ACCT_INTL
+	         , A.ACCT_NAME
+	         , A.CUST_CODE
+	         , A.CUST_NAME
+	         , A.BIZR_NUMB
+	         , C.MNTH_LIST
+	    HAVING SUM(A.SLIP_AMNT) - SUM(A.BANJ_AMNT) <> 0
+		 ORDER BY A.ACCT_INTL
+		     , A.BIZR_NUMB
+	]]>
+	</select>
+
+</sqlMap>

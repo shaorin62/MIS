@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="YEAA0020">
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.27
+     내    용 : 간이세액산출근거 조회
+********************************************************************************/
+-->
+	<select id="YEAA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+           SELECT /* YEAA0020.SEARCH00.간이세액산출근거 조회 */
+                   A.YEA_STD_YYMM             /* YEA_기준년월 */
+                 , A.YEA_TAX_CAL_SEQ          /* YEA_간이세액산출일련번호 */
+                 , A.YEA_CAL_TYPE_CD          /* YEA_산출구분코드 */
+                 , A.YEA_CAL_ITEM_CD          /* YEA_산출항목코드 */
+                 , A.YEA_CAL_ITEM_NM          /* YEA_산출항목명 */
+                 , A.YEA_CAL_CONTENT          /* YEA_산출내용 */
+                 , A.YEA_A_VALUE              /* YEA_A값 */
+                 , A.YEA_B_VALUE              /* YEA_B값 */
+                 , A.YEA_C_VALUE              /* YEA_C값 */
+                 , A.YEA_D_VALUE              /* YEA_D값 */
+                 , A.YEA_E_VALUE              /* YEA_E값 */
+                 , A.YEA_F_VALUE              /* YEA_F값 */
+                 , A.YEA_G_VALUE              /* YEA_G값 */
+                 , A.YEA_NOTE                 /* YEA_비고 */
+                 , A.YEA_SORT_ORD             /* YEA_정렬순서 */
+                 , A.YEA_INS_USER_ID          /* YEA_입력작업자 */
+                 , A.YEA_INS_DATE             /* YEA_입력일시 */
+                 , A.YEA_UPD_USER_ID          /* YEA_수정작업자 */
+                 , A.YEA_UPD_DATE             /* YEA_수정일시 */
+              FROM YEA_TAXBAS A               /* [YEA_간이세액산출근거] */
+             WHERE A.YEA_STD_YYMM = #YEA_STD_YYMM#     /* YEA_기준년월 */
+          ORDER BY A.YEA_CAL_TYPE_CD, A.YEA_CAL_ITEM_CD, A.YEA_SORT_ORD
+	]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.27
+     내    용 : 간이세액산출근거 저장
+********************************************************************************/
+-->
+	<insert id="YEAA0020.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO YEA_TAXBAS ( /* YEAA0020.SAVE00.간이세액산출근거 저장 [YEA_간이세액산출근거] */
+                YEA_STD_YYMM       /* YEA_기준년월 */
+               ,YEA_TAX_CAL_SEQ    /* YEA_간이세액산출일련번호 */
+               ,YEA_CAL_TYPE_CD    /* YEA_산출구분코드 */
+               ,YEA_CAL_ITEM_CD    /* YEA_산출항목코드 */
+               ,YEA_CAL_ITEM_NM    /* YEA_산출항목명 */
+               ,YEA_CAL_CONTENT    /* YEA_산출내용 */
+               ,YEA_A_VALUE        /* YEA_A값 */
+               ,YEA_B_VALUE        /* YEA_B값 */
+               ,YEA_C_VALUE        /* YEA_C값 */
+               ,YEA_D_VALUE        /* YEA_D값 */
+               ,YEA_E_VALUE        /* YEA_E값 */
+               ,YEA_F_VALUE        /* YEA_F값 */
+               ,YEA_G_VALUE        /* YEA_G값 */
+               ,YEA_NOTE           /* YEA_비고 */
+               ,YEA_SORT_ORD       /* YEA_정렬순서 */
+               ,YEA_INS_USER_ID    /* YEA_입력작업자 */
+               ,YEA_INS_DATE       /* YEA_입력일시 */
+               ,YEA_UPD_USER_ID    /* YEA_수정작업자 */
+               ,YEA_UPD_DATE       /* YEA_수정일시 */
+              )
+       VALUES (
+               #YEA_STD_YYMM#      /* YEA_기준년월 */
+              ,#YEA_CAL_TYPE_CD# || #YEA_CAL_ITEM_CD#      /*YEA_간이세액산출일련번호*/
+              ,#YEA_CAL_TYPE_CD#   /* YEA_산출구분코드 */
+              ,#YEA_CAL_ITEM_CD#   /* YEA_산출항목코드 */
+              ,#YEA_CAL_ITEM_NM#   /* YEA_산출항목명 */
+              ,#YEA_CAL_CONTENT#   /* YEA_산출내용 */
+              ,#YEA_A_VALUE#       /* YEA_A값 */
+              ,#YEA_B_VALUE#       /* YEA_B값 */
+              ,#YEA_C_VALUE#       /* YEA_C값 */
+              ,#YEA_D_VALUE#       /* YEA_D값 */
+              ,#YEA_E_VALUE#       /* YEA_E값 */
+              ,#YEA_F_VALUE#       /* YEA_F값 */
+              ,#YEA_G_VALUE#       /* YEA_G값 */
+              ,#YEA_NOTE#          /* YEA_비고 */
+              ,#YEA_SORT_ORD#      /* YEA_정렬순서 */
+              ,#UPDT_USID#         /* YEA_입력작업자 */
+              ,SYSDATE             /* YEA_입력일시 */
+              ,#UPDT_USID#         /* YEA_수정작업자 */
+              ,SYSDATE             /* YEA_수정일시 */
+               )
+	]]>
+	</insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.27
+     내    용 : 간이세액산출근거 수정
+********************************************************************************/
+-->
+	<update id="YEAA0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	    UPDATE YEA_TAXBAS    /* EVMA0020.UPDATE00.간이세액산출근거  수정 *//* [YEA_간이세액산출근거] */
+           SET YEA_CAL_TYPE_CD = #YEA_CAL_TYPE_CD#  /* YEA_산출구분코드 */
+             , YEA_CAL_ITEM_CD = #YEA_CAL_ITEM_CD#  /* YEA_산출항목코드 */
+             , YEA_CAL_ITEM_NM = #YEA_CAL_ITEM_NM#  /* YEA_산출항목명 */
+             , YEA_CAL_CONTENT = #YEA_CAL_CONTENT#  /* YEA_산출내용 */
+             , YEA_A_VALUE     = #YEA_A_VALUE#      /* YEA_A값 */
+             , YEA_B_VALUE     = #YEA_B_VALUE#      /* YEA_B값 */
+             , YEA_C_VALUE     = #YEA_C_VALUE#      /* YEA_C값 */
+             , YEA_D_VALUE     = #YEA_D_VALUE#      /* YEA_D값 */
+             , YEA_E_VALUE     = #YEA_E_VALUE#      /* YEA_E값 */
+             , YEA_F_VALUE     = #YEA_F_VALUE#      /* YEA_F값 */
+             , YEA_G_VALUE     = #YEA_G_VALUE#      /* YEA_G값 */
+             , YEA_NOTE        = #YEA_NOTE#         /* YEA_비고 */
+             , YEA_SORT_ORD    = #YEA_SORT_ORD#     /* YEA_정렬순서 */
+             , YEA_UPD_USER_ID = #UPDT_USID#        /* YEA_수정작업자 */
+             , YEA_UPD_DATE    = SYSDATE            /* YEA_수정일시 */
+         WHERE YEA_STD_YYMM    = #YEA_STD_YYMM#     /* YEA_기준년월 */
+           AND YEA_TAX_CAL_SEQ = #YEA_TAX_CAL_SEQ#  /* YEA_간이세액산출일련번호 */
+
+	]]>
+	</update>	
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.27
+     내    용 : 간이세액산출근거 삭제
+********************************************************************************/
+-->
+	<delete id="YEAA0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE FROM YEA_TAXBAS /* YEAA0020.DELETE00.간이세액산출근거 삭제 [YEA_간이세액산출근거] */
+         WHERE YEA_STD_YYMM    = #YEA_STD_YYMM#      /* YEA_기준년월 */
+           AND YEA_TAX_CAL_SEQ = #YEA_TAX_CAL_SEQ#   /* YEA_간이세액산출일련번호 */
+	]]>
+	</delete>
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.27
+     내    용 : 간이세액산출근거 복사
+********************************************************************************/
+-->	
+    <update id="YEAA0020.PROC00" parameterClass="hashmap">
+    DECLARE     /* YEAA0020.PROC00.간이세액산출근거 복사 */
+
+    BEGIN 
+	    /*산출근거삭제*/
+        DELETE FROM YEA_TAXBAS                                                            
+         WHERE YEA_STD_YYMM = #TAR_YEA_STD_YYMM#     /*YEA_기준년월*/            
+	    ;      
+	        
+        INSERT INTO YEA_TAXBAS ( /* YEAA0020.SAVE00.간이세액산출근거 저장 [YEA_간이세액산출근거] */
+                YEA_STD_YYMM       /* YEA_기준년월 */
+               ,YEA_TAX_CAL_SEQ    /* YEA_간이세액산출일련번호 */
+               ,YEA_CAL_TYPE_CD    /* YEA_산출구분코드 */
+               ,YEA_CAL_ITEM_CD    /* YEA_산출항목코드 */
+               ,YEA_CAL_ITEM_NM    /* YEA_산출항목명 */
+               ,YEA_CAL_CONTENT    /* YEA_산출내용 */
+               ,YEA_A_VALUE        /* YEA_A값 */
+               ,YEA_B_VALUE        /* YEA_B값 */
+               ,YEA_C_VALUE        /* YEA_C값 */
+               ,YEA_D_VALUE        /* YEA_D값 */
+               ,YEA_E_VALUE        /* YEA_E값 */
+               ,YEA_F_VALUE        /* YEA_F값 */
+               ,YEA_G_VALUE        /* YEA_G값 */
+               ,YEA_NOTE           /* YEA_비고 */
+               ,YEA_SORT_ORD       /* YEA_정렬순서 */
+               ,YEA_INS_USER_ID    /* YEA_입력작업자 */
+               ,YEA_INS_DATE       /* YEA_입력일시 */
+               ,YEA_UPD_USER_ID    /* YEA_수정작업자 */
+               ,YEA_UPD_DATE       /* YEA_수정일시 */
+              )    
+         SELECT #TAR_YEA_STD_YYMM#       /*YEA_기준년월*/            
+               ,A.YEA_TAX_CAL_SEQ        /*YEA_간이세액산출일련번호*/
+               ,A.YEA_CAL_TYPE_CD        /*YEA_산출구분코드*/        
+               ,A.YEA_CAL_ITEM_CD        /*YEA_산출항목코드*/        
+               ,A.YEA_CAL_ITEM_NM        /*YEA_산출항목명*/          
+               ,A.YEA_CAL_CONTENT        /*YEA_산출내용*/            
+               ,A.YEA_A_VALUE            /*YEA_A값*/                 
+               ,A.YEA_B_VALUE            /*YEA_B값*/                 
+               ,A.YEA_C_VALUE            /*YEA_C값*/                 
+               ,A.YEA_D_VALUE            /*YEA_D값*/                 
+               ,A.YEA_E_VALUE            /*YEA_E값*/                 
+               ,A.YEA_F_VALUE            /*YEA_F값*/                 
+               ,A.YEA_G_VALUE            /*YEA_G값*/                 
+               ,A.YEA_NOTE               /*YEA_비고*/                
+               ,A.YEA_SORT_ORD           /*YEA_정렬순서*/  
+               ,#YEA_UPD_USER_ID#        /*YEA_입력작업자*/          
+               ,SYSDATE                  /*YEA_입력일시*/            
+               ,#YEA_UPD_USER_ID#        /*YEA_수정작업자*/          
+               ,SYSDATE                  /*YEA_수정일시*/            
+           FROM YEA_TAXBAS A                                         
+          WHERE A.YEA_STD_YYMM = #SRC_YEA_STD_YYMM#;
+          
+        /*산출근거삭제*/
+        DELETE FROM YEA_SIPLTX                                                            
+         WHERE YEA_STD_YYMM = #TAR_YEA_STD_YYMM#     /*YEA_기준년월*/            
+	    ;   
+        
+        INSERT INTO YEA_SIPLTX ( /* YEAA0030.SAVE00.간이세액조견표 저장 [YEA_간이세액조견표] */
+                YEA_STD_YYMM              /* YEA_기준년월 */
+               ,YEA_MORE_AMT              /* YEA_이상금액 */
+               ,YEA_LESS_AMT              /* YEA_미만금액 */
+               ,YEA_INCM_SETN             /* YEA_소득구간 */
+               ,YEA_NORMAL01_AMT          /* YEA_일반01금액 */
+               ,YEA_NORMAL02_AMT          /* YEA_일반02금액 */
+               ,YEA_NORMAL03_AMT          /* YEA_일반03금액 */
+               ,YEA_NORMAL04_AMT          /* YEA_일반04금액 */
+               ,YEA_NORMAL05_AMT          /* YEA_일반05금액 */
+               ,YEA_NORMAL06_AMT          /* YEA_일반06금액 */
+               ,YEA_NORMAL07_AMT          /* YEA_일반07금액 */
+               ,YEA_NORMAL08_AMT          /* YEA_일반08금액 */
+               ,YEA_NORMAL09_AMT          /* YEA_일반09금액 */
+               ,YEA_NORMAL10_AMT          /* YEA_일반10금액 */
+               ,YEA_NORMAL11_AMT          /* YEA_일반11금액 */
+               ,YEA_MULTI_CHILD03_AMT     /* YEA_다자녀03금액 */
+               ,YEA_MULTI_CHILD04_AMT     /* YEA_다자녀04금액 */
+               ,YEA_MULTI_CHILD05_AMT     /* YEA_다자녀05금액 */
+               ,YEA_MULTI_CHILD06_AMT     /* YEA_다자녀06금액 */
+               ,YEA_MULTI_CHILD07_AMT     /* YEA_다자녀07금액 */
+               ,YEA_MULTI_CHILD08_AMT     /* YEA_다자녀08금액 */
+               ,YEA_MULTI_CHILD09_AMT     /* YEA_다자녀09금액 */
+               ,YEA_MULTI_CHILD10_AMT     /* YEA_다자녀10금액 */
+               ,YEA_MULTI_CHILD11_AMT     /* YEA_다자녀11금액 */
+               ,YEA_INS_USER_ID           /* YEA_입력작업자 */
+               ,YEA_INS_DATE              /* YEA_입력일시 */
+               ,YEA_UPD_USER_ID           /* YEA_수정작업자 */
+               ,YEA_UPD_DATE              /* YEA_수정일시 */
+              )        
+          SELECT #TAR_YEA_STD_YYMM#       /*YEA_기준년월*/            
+                ,A.YEA_MORE_AMT           /*YEA_이상금액*/    
+                ,A.YEA_LESS_AMT           /*YEA_미만금액*/     
+                ,A.YEA_INCM_SETN          /*YEA_소득구간*/    
+                ,A.YEA_NORMAL01_AMT       /*YEA_일반01금액*/  
+                ,A.YEA_NORMAL02_AMT       /*YEA_일반02금액*/  
+                ,A.YEA_NORMAL03_AMT       /*YEA_일반03금액*/  
+                ,A.YEA_NORMAL04_AMT       /*YEA_일반04금액*/  
+                ,A.YEA_NORMAL05_AMT       /*YEA_일반05금액*/  
+                ,A.YEA_NORMAL06_AMT       /*YEA_일반06금액*/  
+                ,A.YEA_NORMAL07_AMT       /*YEA_일반07금액*/  
+                ,A.YEA_NORMAL08_AMT       /*YEA_일반08금액*/  
+                ,A.YEA_NORMAL09_AMT       /*YEA_일반09금액*/  
+                ,A.YEA_NORMAL10_AMT       /*YEA_일반10금액*/  
+                ,A.YEA_NORMAL11_AMT       /*YEA_일반11금액*/  
+                ,A.YEA_MULTI_CHILD03_AMT  /*YEA_다자녀03금액*/
+                ,A.YEA_MULTI_CHILD04_AMT  /*YEA_다자녀04금액*/
+                ,A.YEA_MULTI_CHILD05_AMT  /*YEA_다자녀05금액*/
+                ,A.YEA_MULTI_CHILD06_AMT  /*YEA_다자녀06금액*/
+                ,A.YEA_MULTI_CHILD07_AMT  /*YEA_다자녀07금액*/
+                ,A.YEA_MULTI_CHILD08_AMT  /*YEA_다자녀08금액*/
+                ,A.YEA_MULTI_CHILD09_AMT  /*YEA_다자녀09금액*/
+                ,A.YEA_MULTI_CHILD10_AMT  /*YEA_다자녀10금액*/
+                ,A.YEA_MULTI_CHILD11_AMT  /*YEA_다자녀11금액*/
+                ,#YEA_UPD_USER_ID#        /*YEA_입력작업자*/          
+                ,SYSDATE                  /*YEA_입력일시*/            
+                ,#YEA_UPD_USER_ID#        /*YEA_수정작업자*/          
+                ,SYSDATE                  /*YEA_수정일시*/            
+            FROM YEA_SIPLTX A           
+           WHERE A.YEA_STD_YYMM = #SRC_YEA_STD_YYMM#;
+           
+    END;	
+	</update>		
+</sqlMap>

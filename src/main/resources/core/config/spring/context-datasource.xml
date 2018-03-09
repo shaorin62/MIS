@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean id="propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/core/config/CoreConfig.properties</value>
+            </list>
+        </property>
+    </bean>
+	
+	<!--
+		일반 데이터베이스 연결에 사용하기 위한 데이터베이스 접속정보 설정
+	-->
+	
+	<alias name="dataSource-${CoreERP.dbType}" alias="dataSource"/>
+
+	<!-- Database DataSource Configuration -->
+	<!-- Oracle -->
+	<!--
+	<bean id="dataSource-Oracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${CoreERP.driverClassName}"/>
+		<property name="url" value="${CoreERP.url}" />
+		<property name="username" value="${CoreERP.username}"/>
+		<property name="password" value="${CoreERP.password}"/>
+	</bean>
+	-->
+	
+	
+	<!--
+		스프링 프로파일 적용
+		* JVM 옵션에 spring.profiles.active=profile_name 적용
+		* web.xml의 서블릿 파라미터, JVM 옵션, 시스템 환경변수 순으로 우선 적용됨
+		* 사용할 프로파일이 설정되어 있지 않다면 기본 "default" 프로파일이 적용됨
+	-->
+	
+	<!-- 기본 개발환경을 위한 스프링 프로파일 설정 -->
+	<beans profile="default">
+		
+		<!-- Tibero -->	
+		<bean id="dataSource-Tibero" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="${CoreERP.driverClassName}"/>
+			<property name="url" value="${CoreERP.url}"/>
+			<property name="username" value="${CoreERP.username}"/>
+			<property name="password" value="${CoreERP.password}"/>
+			<property name="initialSize" value="${CoreERP.db.initialSize}"/>
+			<property name="maxActive" value="${CoreERP.db.maxActive}"/>
+			<property name="maxIdle" value="${CoreERP.db.maxIdle}"/>
+			<property name="testWhileIdle" value="${CoreERP.db.testWhileIdle}"/>
+			<property name="validationQuery" value="${CoreERP.db.validationQuery}"/>
+			<property name="maxWait" value="${CoreERP.db.maxWait}"/>
+		</bean>
+	
+	</beans>
+	
+	<!-- 운영환경을 위한 스프링 프로파일 설정 -->
+	<beans profile="real">
+		
+		<!--  쿼리 로그 출력 log4jdbc datasource spied -->
+		<bean id="dataSource-Tibero" class="net.sf.log4jdbc.InbusDataSourceSpy">
+    		<property name="dataSource" ref="jndiDatabaseSource"></property>
+    	</bean>
+		
+		<!-- JNDI 데이터소스 커넥션 설정 -->
+		<bean id="jndiDatabaseSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:comp/env/${CoreERP.db.jndiName}"/>
+		</bean>
+   
+	</beans>
+ 	<!--
+		일반 데이터베이스 연결에 사용하기 위한 데이터베이스 접속정보 설정 끝!
+	-->
+	
+	
+	
+	<!--
+		다중 데이터베이스 연결 및 동적 DB접속 라우팅 처리 설정
+	-->
+	<!--
+	<bean id="dataSource-Oracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${CoreERP.oracle.driverClassName}"/>
+		<property name="url" value="${CoreERP.oracle.url}" />
+		<property name="username" value="${CoreERP.oracle.username}"/>
+		<property name="password" value="${CoreERP.oracle.password}"/>
+	</bean>
+	
+	<bean id="dataSource-Tibero" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${CoreERP.tibero1.driverClassName}"/>
+		<property name="url" value="${CoreERP.tibero1.url}" />
+		<property name="username" value="${CoreERP.tibero1.username}"/>
+		<property name="password" value="${CoreERP.tibero1.password}"/>
+	</bean>
+	
+	<bean id="dataSource-Tibero-real" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${CoreERP.tibero2.driverClassName}"/>
+		<property name="url" value="${CoreERP.tibero2.url}" />
+		<property name="username" value="${CoreERP.tibero2.username}"/>
+		<property name="password" value="${CoreERP.tibero2.password}"/>
+	</bean>
+	<bean id="dataSource" class="core.ifw.cmm.database.DatabaseRoutingDataSource">
+		<property name="targetDataSources">
+			<map key-type="core.ifw.cmm.database.DatabaseTypes">
+				<entry key="ORACLE" value-ref="dataSource-Oracle"/>
+				<entry key="TIBERO" value-ref="dataSource-Tibero"/>
+				<entry key="TIBERO1" value-ref="dataSource-Tibero-real"/>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource-Oracle"/>
+	</bean>
+	-->
+	
+	<!--
+		다중 데이터베이스 연결 및 동적 DB접속 라우팅 처리 설정 끝
+	-->
+	
+ 	
+ 	
+ 	<!-- JEUS 6/7 버전에서 log4jdbc를 이용하고자 하는 경우 아래와 같이 datasource spied 클래스를 wrap 하여 사용  -->
+ 	<!--
+ 	<bean id="dataSource" class="net.sf.log4jdbc.InbusDataSourceSpy">
+    	<property name="dataSource" ref="jndiDataSource"></property>
+    </bean>
+    -->
+    
+    <!-- JNDI를 통한 데이터베이스를 연결 -->
+    <!--
+    <bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+      <property name="jndiName">
+        <value>java:comp/env/jdbc/mis</value>
+      </property>
+    </bean>
+    -->
+	
+</beans>

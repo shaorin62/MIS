@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+                            
+<sqlMap namespace="BDMA0020">
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 안윤준
+	 작  성  일 : 2016.07.26
+	 내      용 : 예산과목회계계정매핑 조회
+********************************************************************************/
+-->
+	<select id="BDMA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+            SELECT 	/* BDMA0020.SEARCH00.예산과목회계계정매핑 조회 */
+            		A.BDSB_CODE     /* 예산과목코드 */
+                   ,(SELECT X.BDSB_NAME FROM TB_BDSBXM X WHERE X.BDSB_CODE = A.BDSB_CODE ) AS BDSB_NAME /* 예산과목명 */
+                   ,A.ACCT_INTL     /* 계정과목코드 */
+                   ,(SELECT X.ACCT_NAME FROM TA_ACCTXM X WHERE X.ACCT_INTL = A.ACCT_INTL ) AS ACCT_NAME /* 계정과목명 */
+                   ,A.USEX_YSNO     /* 사용여부 */
+                   ,A.REMK_NOTE     /* 비고메모 */
+              FROM TB_BDACMP A      /* [예산과목회계계정매핑] */   
+		]]>
+			<dynamic prepend="WHERE">
+				<isNotEmpty property="BDSB_CODE" prepend="AND">
+					A.BDSB_CODE = #BDSB_CODE#     /* 예산과목코드 */
+				</isNotEmpty>
+				<isNotEmpty property="ACCT_INTL" prepend="AND">
+					A.ACCT_INTL = #ACCT_INTL#     /* 계정과목코드 */
+				</isNotEmpty>
+			</dynamic>
+		ORDER BY A.BDSB_CODE, A.ACCT_INTL 
+	</select>
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 안윤준
+	 작  성  일 : 2016.07.26
+	 내      용 : 예산과목계정매핑관리 저장
+********************************************************************************/
+-->
+	<insert id="BDMA0020.SAVE00"  parameterClass="hashmap">
+		<![CDATA[
+        INSERT INTO TB_BDACMP ( /* BDMA0020.SAVE00.예산과목계정매핑관리 저장 */ /* [예산과목회계계정매핑] */
+               BDSB_CODE        /* 예산과목코드 */
+              ,ACCT_INTL        /* 계정과목코드 */
+              ,USEX_YSNO        /* 사용여부 */
+              ,REMK_NOTE        /* 비고메모 */
+              ,INST_USID        /* 입력작업자 */
+              ,INST_DATE        /* 입력일시 */
+              ,UPDT_USID        /* 수정작업자 */
+              ,UPDT_DATE        /* 수정일시 */
+              )
+       VALUES (
+               #BDSB_CODE#       /* 예산과목코드 */
+              ,#ACCT_INTL#       /* 계정과목코드 */
+              ,#USEX_YSNO#       /* 사용여부 */
+              ,#REMK_NOTE#       /* 비고메모 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE       	 /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE       	 /* 수정일시 */
+              )
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 안윤준
+	 작  성  일 : 2016.07.26
+	 내      용 : 예산과목계정매핑관리 수정
+********************************************************************************/
+-->
+	<update id="BDMA0020.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+        UPDATE TB_BDACMP /* BDMA0020.UPDATE00.예산과목계정매핑관리 수정*/ /* [예산과목회계계정매핑] */
+           SET  USEX_YSNO = #USEX_YSNO#  /* 사용여부 */
+               ,REMK_NOTE = #REMK_NOTE#  /* 비고메모 */
+               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE = SYSDATE 	 /* 수정일시 */
+         WHERE BDSB_CODE  = #BDSB_CODE#  /* 예산과목코드 */
+           AND ACCT_INTL  = #ACCT_INTL#  /* 계정과목코드 */
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+		 작  성  자 : 안윤준
+		 작  성  일 : 2016.07.26
+		 내      용 : 예산과목계정매핑관리 삭제
+********************************************************************************/
+-->                                                          
+	<delete id="BDMA0020.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+        DELETE FROM TB_BDACMP /* BDMA0020.DELETE00.예산과목계정매핑관리 삭제 */ /* [예산과목회계계정매핑] */
+         WHERE BDSB_CODE = #BDSB_CODE#   /* 예산과목코드 */
+           AND ACCT_INTL = #ACCT_INTL#   /* 계정과목코드 */
+		]]>
+	</delete>
+	
+</sqlMap>

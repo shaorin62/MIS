@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMB0010P02">
+
+<!--  
+ *   프로그램명 : 브랜드조회팝업
+ *   작 성 일 : 2016.10.12(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용  : 브랜드 조회
+		파라미터  : BRND_NAME : 브랜드명, CUST_NAME : 광고주명	
+	-->
+	<select id="MDMB0010P02.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	/* MDMB0010P02.SEARCH00 브랜드조회 */ 
+					A.CUST_CODE		/* 광고주코드 */
+					,B.CUST_NAME		/* 광고주명 */
+					,A.BRND_CODE		/* 브랜드코드 */
+					,A.BRND_NAME		/* 브랜드명 */
+					,C.CATE_CODE
+					,C.CATE_NAME
+					,C.DEPT_CODE
+					,D.DEPT_NAME
+					,DECODE(A.USEX_YSNO,null,0,A.USEX_YSNO) AS USEX_YSNO    /* 사용여부 */
+					,CASE WHEN B.BIZR_NUMB = '1188103914' THEN ' ' ELSE TO_CHAR(B.CUST_NAME) END AS SEQX_NAME    /* 정렬조건 */
+				FROM MD_BRNDXM A
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				LEFT JOIN MD_CATEXM C ON A.CUST_CODE = C.CUST_CODE  AND A.CATE_CODE = C.CATE_CODE
+				LEFT JOIN TM_DEPTXM D ON TRIM(C.DEPT_CODE) = TRIM(D.DEPT_CODE)
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+				B.CUST_NAME LIKE '%' || #CUST_NAME# || '%'		/* 광고주명 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="BRND_NAME">
+				A.BRND_NAME LIKE '%' || #BRND_NAME# || '%'		/* 브랜드명 */
+		</isNotEmpty>		
+	</dynamic>
+	<![CDATA[ 
+		ORDER BY USEX_YSNO DESC,SEQX_NAME,A.BRND_NAME
+	]]>
+	</select>
+
+</sqlMap>

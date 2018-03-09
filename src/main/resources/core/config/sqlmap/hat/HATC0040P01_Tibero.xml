@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATC0040P01">
+
+<!--
+ *   프로그램명 : 휴가신청내역  SQLMAP
+ *   작 성 일 : 2016.09.27
+ *   작 성 자 : 이창운
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.27
+	 내    용 : 휴가신청내역 POPUP
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0040P01.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	   SELECT   A.DOCU_IDXX						/*	결재 DOC_ID  */ 
+	           ,A.APPR_SEQN     				/*	결재 SEQ     */
+	           ,A.DOCU_IDXX||'-'||A.APPR_SEQN DOCU_IDXX_SEQN /*결재 ID_SEQ */
+	           ,A.APPR_DATE						/*  신청일자		*/
+	           ,A.STRT_DATE						/*  휴가시작일       */
+	           ,A.ENDX_DATE						/*  휴가종료일	*/
+               ,A.HOLY_DAYS						/* 	휴가일수		*/
+               ,A.HOLY_RESN						/*	휴가사유		*/
+               ,SF_GET_ENDDXM_YSNO(SUBSTR(A.STRT_DATE,1,6)) MGAM_GUBN1 /*근태마감 여부1*/
+               ,SF_GET_ENDDXM_YSNO(SUBSTR(A.ENDX_DATE,1,6)) MGAM_GUBN2 /*근태마감 여부2*/
+               ,REPLACE(MAX(DECODE(B.WORK_GUBN,'6','정기휴가','2',''))||MAX(DECODE(B.WORK_GUBN,'4','연차','2','')),'정기휴가연차','정기휴가/연차') WORK_GUBN /*휴가구분*/
+	      FROM AT_HDAPXH A						/* 휴가신청 헤더 테이블*/
+	     	LEFT OUTER JOIN AT_HDAPXD B			/* 휴가신청 상세 테이블*/
+             ON A.DOCU_IDXX = B.DOCU_IDXX
+            AND A.APPR_SEQN = B.APPR_SEQN
+            LEFT JOIN TM_APPRXH C				/* 결재헤더 테이블 */
+             ON A.DOCU_IDXX = C.DOCU_IDXX
+            AND A.APPR_SEQN = C.APPR_SEQN
+         WHERE A.ENDX_DATE >= #HOLY_DATE1# 
+           AND A.STRT_DATE <= #HOLY_DATE2#
+           AND A.TRGT_EMPL	= #EMPL_NUMB#
+           AND C.APPR_STAT	= 'Y'
+           AND NVL(A.CNCL_GUBN,'N')	  = 'N'
+         GROUP BY   A.DOCU_IDXX						
+	           ,A.APPR_SEQN     				
+	           ,A.APPR_DATE
+	           ,A.STRT_DATE						
+	           ,A.ENDX_DATE
+               ,A.HOLY_DAYS
+               ,A.HOLY_RESN
+	]]>
+	</select>	
+	
+</sqlMap>

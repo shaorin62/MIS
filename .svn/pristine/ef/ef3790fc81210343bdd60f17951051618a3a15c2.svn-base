@@ -1,0 +1,824 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TRME0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="법인카드 정보등록" position="absolute" scrollbars="none" onclose="fn_FormUnloadProcess" left="0" width="1187" top="0" height="717" onclick="FCMA0410_onclick">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="200" top="133" height="21" cssclass="styFormSearchInfo" taborder="38" usedecorate="true"/>
+        <Grid selecttype="row" autoenter="none" autofittype="none" binddataset="dsTA_CARDXM" cellsizingtype="both" enable="true" id="grdTA_CARDXM" useinputpanel="false" autofitminwidth="100" sCommonGubnonheadclick="fn_GridSort" taborder="7" tabstop="true" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" right="25" top="154" cssclass="styGrid01" bottom="184">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="145" band="left"/>
+                <Column size="120"/>
+                <Column size="60"/>
+                <Column size="60"/>
+                <Column size="75"/>
+                <Column size="75"/>
+                <Column size="75"/>
+                <Column size="75"/>
+                <Column size="80"/>
+                <Column size="50"/>
+                <Column size="130"/>
+                <Column size="95"/>
+                <Column size="65"/>
+                <Column size="85"/>
+                <Column size="50"/>
+                <Column size="145"/>
+                <Column size="220"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="카드번호"/>
+                <Cell col="1" text="카드명"/>
+                <Cell col="2" displaytype="text" text="구분"/>
+                <Cell col="3" displaytype="text" text="카드종류"/>
+                <Cell col="4" displaytype="text" text="사용자"/>
+                <Cell col="5" displaytype="text" text="회계처리자1"/>
+                <Cell col="6" displaytype="text" text="회계처리자2"/>
+                <Cell col="7" displaytype="text" text="회계처리자3"/>
+                <Cell col="8" displaytype="text" text="관리부서"/>
+                <Cell col="9" displaytype="text" text="결제일"/>
+                <Cell col="10" displaytype="text" text="결제계좌"/>
+                <Cell col="11" displaytype="text" text="금융기관"/>
+                <Cell col="12" displaytype="text" text="만기월"/>
+                <Cell col="13" displaytype="text" text="사용정지일"/>
+                <Cell col="14" displaytype="text" text="상태"/>
+                <Cell col="15" text="이전카드번호"/>
+                <Cell col="16" displaytype="text" text="비고"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="none" style="align:center;" text="bind:CARD_NUMB" editlimit="30"/>
+                <Cell col="1" style="align:left;" text="bind:CARD_NAME"/>
+                <Cell col="2" displaytype="combo" edittype="none" style="align:center;" text="bind:CARD_GUBN" editlimit="50" editimemode="native"/>
+                <Cell col="3" displaytype="combo" edittype="none" style="align:center;" text="bind:CARD_KIND"/>
+                <Cell col="4" displaytype="text" edittype="none" style="align:center;" text="bind:USER_NAME"/>
+                <Cell col="5" displaytype="text" edittype="none" style="align:center;" text="bind:SLIP_NAM1"/>
+                <Cell col="6" displaytype="text" edittype="none" style="align:center;" text="bind:SLIP_NAM2"/>
+                <Cell col="7" displaytype="text" edittype="none" style="align:center;" text="bind:SLIP_NAM3"/>
+                <Cell col="8" displaytype="text" edittype="none" style="align: left;" text="bind:DEPT_NAME"/>
+                <Cell col="9" displaytype="number" edittype="none" editfilter="number" style="align:center;" text="bind:SETT_DATE" editlimit="2"/>
+                <Cell col="10" displaytype="text" edittype="none" style="align: left;" text="bind:ACNT_NUMB" editlimit="30"/>
+                <Cell col="11" displaytype="combo" edittype="none" style="align:center;" text="bind:BANK_CODE"/>
+                <Cell col="12" displaytype="text" edittype="none" style="align: center;" text="bind:ENDX_MONT" mask="expr:comp.parent.fnc_Length(ENDX_MONT) &lt; 1 ? &quot;&quot; : &quot;####-##&quot;" editlimit="6"/>
+                <Cell col="13" displaytype="date" edittype="none" style="align: center;" text="bind:STOP_DATE" editlimit="8" calendardisplaynulltype="none"/>
+                <Cell col="14" displaytype="combo" edittype="none" style="align: center;" text="bind:CARD_STAT"/>
+                <Cell col="15" style="align:center;" text="bind:BEFO_CARD"/>
+                <Cell col="16" displaytype="text" edittype="none" style="align: left;" text="bind:REMK_NOTE" editlimit="200"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox" taborder="39" cssclass="styFormSearchBox" left="8" top="60" right="25" height="69" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Edit id="edtSHRCARD_NAME" taborder="2" maxlength="50" autoselect="true" cssclass="styFormSearchItem" top="71" width="160" height="21" onkillfocus="fn_HelpDialoge" left="784" onsetfocus="fn_EditFocus"/>
+        <MaskEdit id="mskSHRCARD_NUMB" taborder="35" type="string" mask="####-####-####-####" cssclass="msk_WF_Readonly" enable="true" top="71" width="160" height="21" left="599" tabstop="false" readonly="true" style="align:center middle;" onsetfocus="fn_EditFocus"/>
+        <Combo id="cmbSHRCARD_STAT" taborder="5" cssclass="styFormItemCombo" top="97" height="21" width="143" left="360" onsetfocus="fn_EditFocus"/>
+        <Static id="Static4" taborder="37" text="카드상태" cssclass="styFormSearchCap" top="97" width="68" height="21" left="292"/>
+        <Static id="Static7" taborder="36" text="~" left="168" top="97" width="14" height="21"/>
+        <Static id="Static3" taborder="40" text="만기월" cssclass="styFormSearchCap" top="97" width="55" height="21" left="28"/>
+        <Static id="Static2" taborder="34" text="카드번호" cssclass="styFormSearchCap" top="71" height="21" left="532" width="68"/>
+        <Combo id="cmbSHRCARD_KIND" taborder="1" displayrowcount="20" cssclass="styFormItemCombo" left="360" top="71" width="143" height="21" onsetfocus="fn_EditFocus"/>
+        <Static id="Static1" taborder="33" text="카드종류" cssclass="styFormSearchCap" left="292" top="71" width="68" height="21"/>
+        <Combo id="cmbSHRCARD_GUBN" taborder="0" cssclass="styFormItemCombo" left="83" top="71" width="180" height="21" onitemchanged="cmbSHRCARD_GUBN_onitemchanged" onsetfocus="fn_EditFocus"/>
+        <Static id="Static0" taborder="41" text="구분" cssclass="styFormSearchCap" left="28" top="71" width="55" height="21"/>
+        <Static id="Shape0" taborder="42" cssclass="styFormItemBoxOut" left="8" height="144" right="25" bottom="15"/>
+        <Edit id="edtSLIP_EMP2" taborder="43" tabstop="false" autoselect="true" cssclass="edt_WF_Readonly" enable="true" left="913" bottom="51" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM" readonly="true" onsetfocus="fn_EditFocus"/>
+        <Static id="Static5" taborder="44" text="카드번호 " cssclass="styFormItemCapBE" left="29" bottom="129" width="69" height="21"/>
+        <Static id="Static17" taborder="45" text="구분 " cssclass="styFormItemCap" left="549" bottom="129" width="77" height="21"/>
+        <Edit id="edtUSER_EMPL" taborder="46" tabstop="false" autoselect="true" cssclass="edt_WF_Readonly" enable="true" left="913" bottom="129" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM" readonly="true" onsetfocus="fn_EditFocus"/>
+        <Edit id="edtUSER_NAME" taborder="11" maxlength="50" autoselect="true" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="1018" bottom="129" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus" width="123"/>
+        <Static id="Static8" taborder="47" text="결제일 " cssclass="styFormItemCap" left="297" bottom="77" width="69" height="21"/>
+        <Static id="Static10" taborder="48" text="카드상태" cssclass="styFormItemCap" left="29" bottom="77" width="69" height="21"/>
+        <MaskEdit id="mskSETT_DATE" taborder="16" limitbymask="integer" cssclass="styFormItemText" left="367" bottom="77" width="139" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus" mask="##"/>
+        <Combo id="cmbCARD_GUBN" taborder="10" cssclass="styFormItemCombo" left="630" bottom="129" width="152" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Static id="Static14" taborder="49" text="카드종류 " cssclass="styFormItemCap" left="29" bottom="103" width="69" height="21"/>
+        <Combo id="cmbCARD_KIND" taborder="12" displayrowcount="20" cssclass="styFormItemCombo" left="98" bottom="103" width="156" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Static id="Static15" taborder="50" text="실사용자 " cssclass="styFormItemCap" left="823" bottom="129" width="91" height="21"/>
+        <Static id="Static16" taborder="51" text="결제계좌 " cssclass="styFormItemCap" left="297" bottom="103" width="77" height="21"/>
+        <Edit id="edtACNT_NUMB" taborder="26" maxlength="30" autoselect="true" cssclass="edt_WF_Readonly" left="482" bottom="103" width="116" height="21" binddataset="dsTA_CARDXM" readonly="true" tabstop="false" style="align:center middle;" onsetfocus="fn_EditFocus"/>
+        <Static id="Static18" taborder="52" text="만기월 " cssclass="styFormItemCap" left="549" bottom="77" width="77" height="21"/>
+        <Static id="Static19" taborder="53" text="사용정지일 " cssclass="styFormItemCap" left="549" bottom="51" width="77" height="21"/>
+        <Calendar id="calSTOP_DATE" taborder="20" dateformat="yyyy-MM-dd" cssclass="styFormItemCalendar" left="630" bottom="51" width="152" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Combo id="cmbCARD_STAT" taborder="15" cssclass="styFormItemCombo" left="98" bottom="77" width="156" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Static id="Static20" taborder="54" text="비고 " cssclass="styFormItemCap" left="29" bottom="25" width="69" height="21"/>
+        <Edit id="edtREMK_NOTE" taborder="22" maxlength="200" autoselect="true" cssclass="styFormItemText" left="98" bottom="25" width="684" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Combo id="cmbBANK_CODE" taborder="27" cssclass="cmb_WF_Readonly" left="367" bottom="103" width="113" height="21" binddataset="dsTA_CARDXM" displayrowcount="-1" tabstop="false" readonly="true" onsetfocus="fn_EditFocus"/>
+        <Static id="Static6" taborder="55" text="회계처리자1" cssclass="styFormItemCap" left="823" bottom="77" width="91" height="21"/>
+        <Edit id="edtSLIP_EMP1" taborder="56" tabstop="false" autoselect="true" cssclass="edt_WF_Readonly" enable="true" left="913" bottom="77" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM" readonly="true" onsetfocus="fn_EditFocus"/>
+        <Edit id="edtSLIP_NAM1" taborder="18" maxlength="50" autoselect="true" cssclass="styFormItemText" left="1018" bottom="77" height="21" binddataset="dsTA_CARDXM" onkillfocus="fn_HelpDialoge" onsetfocus="fn_EditFocus" width="123"/>
+        <Static id="Static9" taborder="57" text="회계처리자2" cssclass="styFormItemCap" left="823" bottom="51" width="91" height="21"/>
+        <Edit id="edtSLIP_NAM2" taborder="21" maxlength="50" autoselect="true" cssclass="styFormItemText" left="1018" bottom="51" height="21" binddataset="dsTA_CARDXM" onkillfocus="fn_HelpDialoge" onsetfocus="fn_EditFocus" width="123"/>
+        <Static id="Static11" taborder="58" text="관리부서" cssclass="styFormItemCap" left="823" bottom="103" width="91" height="21"/>
+        <Edit id="edtUSEX_DEPT" taborder="59" tabstop="false" autoselect="true" cssclass="edt_WF_Readonly" enable="true" left="913" bottom="103" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM" readonly="true" onsetfocus="fn_EditFocus"/>
+        <Edit id="edtDEPT_NAME" taborder="14" maxlength="50" autoselect="true" cssclass="styFormItemText" left="1018" bottom="103" height="21" binddataset="dsTA_CARDXM" onkillfocus="fn_HelpDialoge" onsetfocus="fn_EditFocus" width="123"/>
+        <Static id="Static13" taborder="60" text="이전&#13;&#10;카드번호" cssclass="styFormItemCap" left="29" bottom="43" width="69" height="37" visible="true" usedecorate="true"/>
+        <MaskEdit id="mskBEFO_CARD" taborder="30" type="string" mask="####-####-####-####" cssclass="msk_WF_Readonly" left="98" bottom="51" width="156" height="21" readonly="true" style="align:center middle;" visible="true"/>
+        <Edit id="edtBEFO_NAME" taborder="19" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="279" bottom="51" width="227" height="21" onkillfocus="fn_HelpDialoge" visible="true"/>
+        <Static id="imgBEFO_CARD" taborder="31" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="256" width="21" height="21" bottom="51" visible="true"/>
+        <Static id="imgHelpUSER_NAME" taborder="25" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="995" width="21" height="21" bottom="129"/>
+        <Static id="imgHelpUSEX_DEPT" taborder="28" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="995" width="21" height="21" bottom="103"/>
+        <Static id="imgHelpSLIP_NAM1" taborder="29" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="995" width="21" height="21" bottom="77"/>
+        <Static id="imgHelpSLIP_NAM2" taborder="32" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="995" width="21" bottom="51" height="21"/>
+        <Static id="imgSHRCARD_NUMB" taborder="24" cssclass="sytHelpPopup" width="21" top="71" height="21" onclick="fn_HelpDialoge" left="761"/>
+        <Edit id="edtACNT_NAME" taborder="13" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="623" height="21" binddataset="dsTA_CARDXM" width="159" bottom="103"/>
+        <Static id="imgHelpACNT_NUMB" taborder="61" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="600" bottom="103" width="21" height="21"/>
+        <Static id="st_FormTitle" taborder="62" text="법인카드 정보등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="63" text="홈 &gt; 재무관리 &gt; 자금관리 &gt; 법인카드관리 &gt; 법인카드 정보등록" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="64" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="65" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="66" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="67" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="68" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="69" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="70" text="h 25" visible="false" left="573" top="129" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="71" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="72" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="73" text="w30" visible="false" left="9" top="61" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="74" text="w 40" visible="false" left="263" top="61" width="40" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static22" taborder="75" text="h10" visible="false" left="428" top="118" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static28" taborder="76" text="h5" visible="false" left="428" top="92" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static23" taborder="77" text="h10" visible="false" left="416" top="61" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static24" taborder="78" text="w 40" visible="false" left="503" top="61" width="40" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static25" taborder="79" text="h 25" visible="false" left="573" top="533" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static26" taborder="80" text="w30" visible="false" left="9" top="578" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static27" taborder="81" text="w20" visible="false" left="1141" top="578" width="20" height="67" style="background:#fb7b7b7a;"/>
+        <MaskEdit id="mskCARD_NUMB" taborder="8" readonly="false" type="string" mask="####-####-####-####" visible="true" left="98" bottom="129" width="156" height="21" style="align:center middle;" onsetfocus="fn_EditFocus"/>
+        <Div id="divENDX_MONT" taborder="17" url="common::comMonthCalendar.xfdl" left="630" width="152" height="21" bottom="77" onsetfocus="fn_EditFocus"/>
+        <Static id="Static29" taborder="82" text="카드명" cssclass="styFormItemCapBE" left="297" bottom="129" width="77" height="21"/>
+        <Edit id="edtCARD_NAME" taborder="9" maxlength="50" autoselect="true" cssclass="styFormItemText" left="367" bottom="129" width="139" height="21" binddataset="dsTA_CARDXM" onsetfocus="fn_EditFocus"/>
+        <Div id="divSHRENDX_MON1" taborder="3" url="common::comMonthCalendar.xfdl" left="83" width="80" height="21" top="97" onsetfocus="fn_EditFocus"/>
+        <Div id="divSHRENDX_MON2" taborder="4" url="common::comMonthCalendar.xfdl" left="183" top="97" width="80" height="21" onsetfocus="fn_EditFocus"/>
+        <Button id="btnFileDown" taborder="83" text="양식다운로드" onclick="fn_ExcelFileDown" cssclass="btn_WF_Module" left="8" top="35" width="98" height="21"/>
+        <Button id="btnExcelUpload" taborder="84" text="엑셀업로드" onclick="fn_ExcelUpLoad" cssclass="btn_WF_Module" left="109" top="35" width="86" height="21"/>
+        <Static id="Static03" taborder="85" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="86" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static30" taborder="87" text="관리부서" cssclass="styFormItemCap" left="532" width="68" height="21" top="99"/>
+        <Static id="imgSHRUSEX_DEPT" taborder="88" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="681" width="21" height="21" top="99"/>
+        <Edit id="edtSHRDEPT_NAME" taborder="6" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="704" width="123" height="21" binddataset="dsTA_CARDXM" top="99"/>
+        <Edit id="edtSHRUSEX_DEPT" taborder="89" tabstop="false" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" left="599" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM" top="99"/>
+        <Static id="Static31" taborder="90" text="회계처리자3" cssclass="styFormItemCap" left="823" bottom="25" width="91" height="21"/>
+        <Edit id="edtSLIP_EMP3" taborder="91" tabstop="false" readonly="true" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" left="913" bottom="25" width="80" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTA_CARDXM"/>
+        <Static id="imgHelpSLIP_NAM3" taborder="92" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="995" bottom="25" width="21" height="21"/>
+        <Edit id="edtSLIP_NAM3" taborder="23" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="1018" bottom="25" width="123" height="21" binddataset="dsTA_CARDXM"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo" reversesubsum="True" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">CARD_KIND</Col>
+            <Col id="DSNAME">dsSHRCARD_KIND</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">CARD_KIND</Col>
+            <Col id="DSNAME">dsCARD_KIND</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">BANK_CODE</Col>
+            <Col id="DSNAME">dsBANK_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRCARD_GUBN</Col>
+            <Col id="CODEID">CARD_GUBN</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCARD_GUBN</Col>
+            <Col id="CODEID">CARD_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRCARD_STAT</Col>
+            <Col id="CODEID">CARD_STAT</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCARD_STAT</Col>
+            <Col id="CODEID">CARD_STAT</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTA_CARDXM" useclientlayout="true" onrowposchanged="fn_KeyFieldDisible" oncolumnchanged="dsTA_CARDXM_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="CARD_NUMB" size="30" prop="default" type="STRING"/>
+          <Column id="CARD_NAME" type="STRING" size="256"/>
+          <Column id="CARD_GUBN" size="1" prop="default" type="STRING"/>
+          <Column id="CARD_KIND" size="10" prop="default" type="STRING"/>
+          <Column id="USER_EMPL" size="8" prop="default" type="STRING"/>
+          <Column id="SETT_DATE" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ACNT_NUMB" size="30" prop="default" type="STRING"/>
+          <Column id="ACNT_NAME" type="STRING" size="256"/>
+          <Column id="ENDX_MONT" size="6" prop="default" type="STRING"/>
+          <Column id="STOP_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="CARD_STAT" size="1" prop="default" type="STRING"/>
+          <Column id="REMK_NOTE" size="200" prop="default" type="STRING"/>
+          <Column id="USER_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="ACNT_BANK" size="256" prop="default" type="STRING"/>
+          <Column id="BANK_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_EMP1" size="8" prop="default" type="STRING"/>
+          <Column id="SLIP_EMP2" size="8" prop="default" type="STRING"/>
+          <Column id="SLIP_EMP3" type="STRING" size="256"/>
+          <Column id="SLIP_NAM1" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_NAM2" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_NAM3" type="STRING" size="256"/>
+          <Column id="USEX_DEPT" type="STRING" size="256"/>
+          <Column id="DEPT_NAME" type="STRING" size="256"/>
+          <Column id="BEFO_CARD" type="STRING" size="256"/>
+          <Column id="BEFO_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item3" compid="edtBEFO_NAME" propid="value" datasetid="dsTA_CARDXM" columnid="BEFO_NAME"/>
+      <BindItem id="item2" compid="mskBEFO_CARD" propid="value" datasetid="dsTA_CARDXM" columnid="BEFO_CARD"/>
+      <BindItem id="item1" compid="edtDEPT_NAME" propid="value" datasetid="dsTA_CARDXM" columnid="DEPT_NAME"/>
+      <BindItem id="item0" compid="edtUSEX_DEPT" propid="value" datasetid="dsTA_CARDXM" columnid="USEX_DEPT"/>
+      <BindItem id="edtSLIP_NAM2_value" compid="edtSLIP_NAM2" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_NAM2"/>
+      <BindItem id="edtSLIP_NAM1_value" compid="edtSLIP_NAM1" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_NAM1"/>
+      <BindItem id="edtSLIP_EMP1_value" compid="edtSLIP_EMP1" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_EMP1"/>
+      <BindItem id="cmbBANK_CODE_value" compid="cmbBANK_CODE" propid="value" datasetid="dsTA_CARDXM" columnid="BANK_CODE"/>
+      <BindItem id="edtREMK_NOTE_value" compid="edtREMK_NOTE" propid="value" datasetid="dsTA_CARDXM" columnid="REMK_NOTE"/>
+      <BindItem id="cmbCARD_STAT_value" compid="cmbCARD_STAT" propid="value" datasetid="dsTA_CARDXM" columnid="CARD_STAT"/>
+      <BindItem id="calSTOP_DATE_value" compid="calSTOP_DATE" propid="value" datasetid="dsTA_CARDXM" columnid="STOP_DATE"/>
+      <BindItem id="edtACNT_NUMB_value" compid="edtACNT_NUMB" propid="value" datasetid="dsTA_CARDXM" columnid="ACNT_NUMB"/>
+      <BindItem id="cmbCARD_KIND_value" compid="cmbCARD_KIND" propid="value" datasetid="dsTA_CARDXM" columnid="CARD_KIND"/>
+      <BindItem id="cmbCARD_GUBN_value" compid="cmbCARD_GUBN" propid="value" datasetid="dsTA_CARDXM" columnid="CARD_GUBN"/>
+      <BindItem id="medSETT_DATE_value" compid="mskSETT_DATE" propid="value" datasetid="dsTA_CARDXM" columnid="SETT_DATE"/>
+      <BindItem id="edtUSER_NAME_value" compid="edtUSER_NAME" propid="value" datasetid="dsTA_CARDXM" columnid="USER_NAME"/>
+      <BindItem id="edtUSER_EMPL_value" compid="edtUSER_EMPL" propid="value" datasetid="dsTA_CARDXM" columnid="USER_EMPL"/>
+      <BindItem id="edtSLIP_EMP2_value" compid="edtSLIP_EMP2" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_EMP2"/>
+      <BindItem id="item4" compid="edtACNT_NAME" propid="value" datasetid="dsTA_CARDXM" columnid="ACNT_NAME"/>
+      <BindItem id="item5" compid="mskCARD_NUMB" propid="value" datasetid="dsTA_CARDXM" columnid="CARD_NUMB"/>
+      <BindItem id="item6" compid="edtCARD_NAME" propid="value" datasetid="dsTA_CARDXM" columnid="CARD_NAME"/>
+      <BindItem id="item7" compid="edtSLIP_EMP3" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_EMP3"/>
+      <BindItem id="item8" compid="edtSLIP_NAM3" propid="value" datasetid="dsTA_CARDXM" columnid="SLIP_NAM3"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TRME0010 법인카드 정보등록
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.08		김준수		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부*
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF"; //버튼순서[종료,조회,입력,삭제,취소,저장,엑셀,인쇄]
+this.sPACKAGENAME = "TRME0010";
+this.aKeyValue    = new Array(1);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+	 
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+    this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+    this.fnc_GridSetting(this);
+    this.fnc_GetComboDs(this.dsCombo);
+    
+    //만기월 데이터셋 바인딩
+	var bindInfo = new Object;
+	bindInfo.binddataset = this.dsTA_CARDXM;
+	bindInfo.bindcolumn = "ENDX_MONT";
+	this.divENDX_MONT.fn_SetBindInfo(bindInfo);
+	
+	this.divSHRENDX_MON1.fn_SetMonth("");
+	this.divSHRENDX_MON2.fn_SetMonth("");
+	
+    this.cmbSHRCARD_GUBN.setFocus();
+    
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+    this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+    if (!this.fn_SearchItemCheck()) return;
+    
+    this.fnc_DatasetClear("dsTA_CARDXM");
+    var sMethodName = "SEARCH00";
+    var sInDataSet  = "";
+    var sOutDataSet = "dsTA_CARDXM=dsTA_CARDXM";
+    var sArgument   = this.fn_CreateArgument(sMethodName);
+    this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+    this.grdTA_CARDXM.setFocus();
+    
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+
+    var iRow = this.dsTA_CARDXM.addRow();
+    this.dsTA_CARDXM.setColumn(iRow, "CARD_GUBN", "0");    //구분
+    this.dsTA_CARDXM.setColumn(iRow, "CARD_KIND", "300");  //카드종류
+    this.dsTA_CARDXM.setColumn(iRow, "SETT_DATE", 27);     //결제일
+    this.dsTA_CARDXM.setColumn(iRow, "CARD_STAT", "0");    //상태
+    
+    this.edtACNT_NUMB.set_value("");    //결제계좌
+    this.fn_HelpDialoge(this.edtACNT_NUMB);
+    this.edtACNT_NUMB.set_value("426-004207-13-001");    //결제계좌
+    this.fn_HelpDialoge(this.edtACNT_NUMB);
+	
+    this.fnc_GridSetCellFocus(this.grdTA_CARDXM, "CARD_NUMB");    
+    this.mskCARD_NUMB.setFocus();
+    
+}
+
+/*------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+    if (this.fn_DeleteCheck()) this.dsTA_CARDXM.deleteRow(this.dsTA_CARDXM.rowposition);
+    this.grdTA_CARDXM.setFocus();
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+    this.fnc_DataSetCancel("dsTA_CARDXM");
+    this.grdTA_CARDXM.setFocus();
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+    if (!this.fn_SaveItemCheck()) return;
+    this.aKeyValue[0] = this.dsTA_CARDXM.getColumn(this.dsTA_CARDXM.rowposition, "CARD_NUMB");
+
+    var sMethodName = "SAVE00";
+    var sInDataSet  = "dsTA_CARDXM=dsTA_CARDXM:U";
+    var sOutDataSet = "dsTA_CARDXM=dsTA_CARDXM";
+    var sArgument   = this.fn_CreateArgument(sMethodName);
+    this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+    this.grdTA_CARDXM.setFocus();
+    
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+    this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+    // 기능 없음
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+    if(e.fromobject instanceof Div) return;
+    var sMessage = this.fnc_FormUnloadCheck("dsTA_CARDXM", this);
+    if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+    this.fnc_FormUnload(obj,e);
+}
+
+/*------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+    this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+    this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                  *
+ ***************************************************************************************************/
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTA_CARDXM")) return this.fnc_Message("TMM023");
+	
+	return true;
+	
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function (){
+
+	if (!this.fnc_DatasetChangeCheck("dsTA_CARDXM")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	for (var i = 0; i < this.dsTA_CARDXM.getRowCount(); i++) {
+	
+		if (this.dsTA_CARDXM.getRowType(i) == Dataset.ROWTYPE_NORMAL) continue;
+		
+		if (this.fnc_Length(this.fnc_Replace(this.fnc_Trim(this.dsTA_CARDXM.getColumn(i, "CARD_NUMB")), "-", "")) < 16) {
+			return this.fnc_CheckPostAction("TMM072", "카드번호(16자리)", this.dsTA_CARDXM, i, this.mskCARD_NUMB, "");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_CARDXM.getColumn(i, "CARD_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "카드명", this.dsTA_CARDXM, i, this.edtCARD_NAME, "");
+		}
+		
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (sStatus) {
+	var sQuestionText = "카드번호 (" + this.fnc_Trim(this.dsTA_CARDXM.getColumn(this.dsTA_CARDXM.rowposition, "CARD_NUMB")) + ")";
+	return this.fnc_Message("TMM002", sQuestionText);
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+
+		sReturnString  = " pgm="        + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="     + this.fnc_Quote(sKind);
+		sReturnString += " CARD_GUBN="  + this.fnc_Quote(this.fnc_Trim(this.cmbSHRCARD_GUBN.value)); //구분
+		sReturnString += " CARD_KIND="  + this.fnc_Quote(this.fnc_Trim(this.cmbSHRCARD_KIND.value)); //카드종류
+		sReturnString += " CARD_NUMB="  + this.fnc_Quote(this.fnc_Trim(this.mskSHRCARD_NUMB.value)); //카드번호
+		sReturnString += " ENDX_MON1=" 	+ this.fnc_Quote(this.fnc_Trim(this.divSHRENDX_MON1.fn_GetMonth())); //만기월FROM
+		sReturnString += " ENDX_MON2=" 	+ this.fnc_Quote(this.fnc_Trim(this.divSHRENDX_MON2.fn_GetMonth())); //만기월TO
+		sReturnString += " CARD_STAT="  + this.fnc_Quote(this.fnc_Trim(this.cmbSHRCARD_STAT.value)); //카드상태
+		sReturnString += " USEX_DEPT="  + this.fnc_Quote(this.fnc_Trim(this.edtSHRUSEX_DEPT.value)); //관리부서
+		
+	} else if (sKind == "SAVE00")	{
+
+		sReturnString  = " pgm="        + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="     + this.fnc_Quote(sKind);
+		sReturnString += " CARD_NUMB="  + this.fnc_Quote(this.fnc_Trim(this.mskCARD_NUMB.text));	//'-' 하이펀 있는 상태의 카드번호
+		
+	}
+
+	return sReturnString;
+	
+}
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {	
+		
+		this.fnc_Information(this.stInformation, this.dsTA_CARDXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_CARDXM.rowcount);
+		
+		var iRow = this.dsTA_CARDXM.findRowExpr("CARD_NUMB=='" + this.aKeyValue[0] + "'");
+		if (iRow < 0) iRow = 0;
+		
+ 		this.grdTA_CARDXM.selectRow(iRow);
+ 		this.dsTA_CARDXM.set_rowposition(iRow);
+		
+		this.aKeyValue[0] = "";
+		
+	} else if (sMethodName == "SAVE00") {
+	
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		
+		this.fn_Search();		
+		
+	} else if (sMethodName == "GetCommCode") {
+		
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRCARD_GUBN,dsSHRCARD_GUBN,0";
+			arrParam[1] = "COMBO,cmbSHRCARD_KIND,dsSHRCARD_KIND,0";
+			arrParam[2] = "COMBO,cmbSHRCARD_STAT,dsSHRCARD_STAT,1";
+			arrParam[3] = "COMBO,cmbCARD_GUBN,dsCARD_GUBN,0";
+			arrParam[4] = "COMBO,cmbCARD_KIND,dsCARD_KIND,0";
+			arrParam[5] = "COMBO,cmbBANK_CODE,dsBANK_CODE,0";
+			arrParam[6] = "COMBO,cmbCARD_STAT,dsCARD_STAT,0";
+			arrParam[7] = "GRID,grdTA_CARDXM,dsCARD_GUBN,CARD_GUBN";
+			arrParam[8] = "GRID,grdTA_CARDXM,dsCARD_KIND,CARD_KIND";
+			arrParam[9] = "GRID,grdTA_CARDXM,dsBANK_CODE,BANK_CODE";
+			arrParam[10] = "GRID,grdTA_CARDXM,dsCARD_STAT,CARD_STAT";
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+	}
+}
+
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+
+	if ((obj.name == "imgHelpUSER_NAME") || (obj.name == "edtUSER_NAME")) {
+
+		arrParam[0] = "FAM0012";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtUSER_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtUSER_NAME";
+		arrParam[5] = "edtUSER_EMPL,edtUSER_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpACNT_NUMB") || (obj.name == "edtACNT_NAME") || (obj.name == "edtACNT_NUMB")) {
+		
+		var sVal;		
+		if (obj.name == "edtACNT_NUMB") {
+			sVal = this.fnc_Trim(this.edtACNT_NUMB.value);
+		} else {
+			sVal = this.fnc_Trim(this.edtACNT_NAME.value);
+		}
+		
+		arrParam[0] = "TRM0013";
+		arrParam[1] = "";
+		arrParam[2] = sVal;
+		arrParam[3] = "Y";
+		arrParam[4] = "edtACNT_NAME";
+		arrParam[5] = "edtACNT_NUMB,edtACNT_NAME,cmbBANK_CODE";
+		arrParam[6] = "2,3,0";	
+		
+	} else if ((obj.name == "imgHelpUSEX_DEPT") || (obj.name == "edtDEPT_NAME")) {
+
+		arrParam[0] = "FAM0001";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtDEPT_NAME.value);
+		arrParam[3] = "Y";
+		arrParam[4] = "edtDEPT_NAME";
+		arrParam[5] = "edtUSEX_DEPT,edtDEPT_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSLIP_NAM1") || (obj.name == "edtSLIP_NAM1")) {
+
+		arrParam[0] = "FAM0012";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSLIP_NAM1.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSLIP_NAM1";
+		arrParam[5] = "edtSLIP_EMP1,edtSLIP_NAM1";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSLIP_NAM2") || (obj.name == "edtSLIP_NAM2")) {
+
+		arrParam[0] = "FAM0012";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSLIP_NAM2.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSLIP_NAM2";
+		arrParam[5] = "edtSLIP_EMP2,edtSLIP_NAM2";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSLIP_NAM3") || (obj.name == "edtSLIP_NAM3")) {
+
+		arrParam[0] = "FAM0012";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSLIP_NAM3.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSLIP_NAM3";
+		arrParam[5] = "edtSLIP_EMP3,edtSLIP_NAM3";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgBEFO_CARD") || (obj.name == "edtBEFO_NAME")) {
+
+		arrParam[0] = "TRM0031";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtBEFO_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtBEFO_NAME";
+		arrParam[5] = "mskBEFO_CARD,edtBEFO_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgSHRCARD_NUMB") || (obj.name == "edtSHRCARD_NAME")) {
+
+		arrParam[0] = "TRM0031";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHRCARD_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRCARD_NAME";
+		arrParam[5] = "mskSHRCARD_NUMB,edtSHRCARD_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgSHRUSEX_DEPT") || (obj.name == "edtSHRDEPT_NAME")) {
+
+		arrParam[0] = "FAM0001";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRDEPT_NAME";
+		arrParam[5] = "edtSHRUSEX_DEPT,edtSHRDEPT_NAME";
+		arrParam[6] = "0,1";
+		
+	}
+	
+	if (this.fnc_Length(arrParam) > 0) this.fnc_HelpDialogeAction(this, obj, arrParam);
+	
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                              *
+ **************************************************************************************************/
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                *
+ **************************************************************************************************/
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo){
+
+	if (e.newrow < 0)	return;
+	if (this.dsTA_CARDXM.getRowCount() < 1) return;
+	
+	if (this.fnc_ToUpper(obj.getRowType(obj.rowposition)) == Dataset.ROWTYPE_INSERT){
+		
+		this.fnc_SetReadonly(this.mskCARD_NUMB, false);
+			
+	} else {
+		
+		this.fnc_SetReadonly(this.mskCARD_NUMB, true);
+
+	}
+	
+}
+
+/*---------------------+
+ |  데이터 변경 시     |
+ +---------------------*/
+this.dsTA_CARDXM_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+
+	if (e.columnid == "CARD_NUMB") {
+		if (this.fnc_Length(e.newvalue) == 16) {
+			obj.setColumn(e.row, "CARD_NUMB", this.fnc_GetMaskFormat(e.newvalue, "####-####-####-####"));
+		}
+	}
+	
+}
+
+/*--------------------------------+
+ |  양식다운로드 버튼 클릭 시     |
+ +--------------------------------*/
+this.fn_ExcelFileDown = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	
+	this.fnc_FileDownLoad("", "", "", this.sPACKAGENAME);
+	
+}
+
+/*--------------------------------+
+ |  엑셀업로드 버튼 클릭 시     |
+ +--------------------------------*/
+this.fn_ExcelUpLoad = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	
+	if (this.fnc_DatasetChangeCheck("dsTA_CARDXM")) {
+		if (!this.fnc_Message("TMM023")) return;
+	}
+	
+	this.fnc_DatasetClear("dsTA_CARDXM");
+	this.fnc_ExcelUpload("dsTA_CARDXM", "Sheet1", "A2", "fn_ExcelSuccess");
+	
+}
+
+/*---------------------------------------+
+ |  양식파일 업로드 클릭 時 후처리함수   |
+ +---------------------------------------*/
+this.fn_ExcelSuccess = function(obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+
+	this.setWaitCursor(false);
+	
+	this.dsTA_CARDXM.set_enableevent(false);
+	this.dsTA_CARDXM.set_updatecontrol(false);
+	
+	for (var i = 0; i < this.objDsImportTemp.rowcount; i++) {
+		
+		var iRow = this.dsTA_CARDXM.addRow();
+		this.dsTA_CARDXM.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+		
+		var sCard_Numb = this.fnc_Trim(this.objDsImportTemp.getColumn(i, 0)); //카드번호
+		if (this.fnc_Length(sCard_Numb) == 16) sCard_Numb = this.fnc_GetMaskFormat(sCard_Numb, "####-####-####-####");
+		
+		var sBefo_Card = this.fnc_Trim(this.objDsImportTemp.getColumn(i, 14)); //이전카드번호
+		if (this.fnc_Length(sBefo_Card) == 16) sBefo_Card = this.fnc_GetMaskFormat(sBefo_Card, "####-####-####-####");
+		
+		this.dsTA_CARDXM.setColumn(iRow, "CARD_NUMB", sCard_Numb); //카드번호		
+		this.dsTA_CARDXM.setColumn(iRow, "PURE_CDNB", this.fnc_Replace(sCard_Numb, "-", "")); //순수카드번호
+		this.dsTA_CARDXM.setColumn(iRow, "CARD_NAME", this.objDsImportTemp.getColumn(i, 1)); //카드명
+		this.dsTA_CARDXM.setColumn(iRow, "CARD_GUBN", this.objDsImportTemp.getColumn(i, 2)); //카드구분
+		this.dsTA_CARDXM.setColumn(iRow, "CARD_KIND", this.objDsImportTemp.getColumn(i, 3)); //카드종류
+		this.dsTA_CARDXM.setColumn(iRow, "USEX_DEPT", this.objDsImportTemp.getColumn(i, 4)); //사용부서
+		this.dsTA_CARDXM.setColumn(iRow, "USER_EMPL", this.objDsImportTemp.getColumn(i, 5)); //사용자
+		this.dsTA_CARDXM.setColumn(iRow, "SLIP_EMP1", this.objDsImportTemp.getColumn(i, 6)); //회계처리자1
+		this.dsTA_CARDXM.setColumn(iRow, "SLIP_EMP2", this.objDsImportTemp.getColumn(i, 7)); //회계처리자2
+		this.dsTA_CARDXM.setColumn(iRow, "SETT_DATE", this.objDsImportTemp.getColumn(i, 8)); //결제일
+		this.dsTA_CARDXM.setColumn(iRow, "BANK_CODE", this.objDsImportTemp.getColumn(i, 9)); //은행코드
+		this.dsTA_CARDXM.setColumn(iRow, "ACNT_NUMB", this.objDsImportTemp.getColumn(i, 10)); //계좌번호
+		this.dsTA_CARDXM.setColumn(iRow, "ENDX_MONT", this.fnc_Replace(this.objDsImportTemp.getColumn(i, 11), "-", "")); //만기월
+		this.dsTA_CARDXM.setColumn(iRow, "STOP_DATE", this.fnc_Replace(this.objDsImportTemp.getColumn(i, 12), "-", "")); //사용정지일
+		this.dsTA_CARDXM.setColumn(iRow, "CARD_STAT", this.objDsImportTemp.getColumn(i, 13)); //카드상태
+		this.dsTA_CARDXM.setColumn(iRow, "BEFO_CARD", sBefo_Card); //이전카드번호
+		this.dsTA_CARDXM.setColumn(iRow, "REMK_NOTE", this.objDsImportTemp.getColumn(i, 15)); //비고
+		
+	}
+	this.objDsImportTemp.clear();
+	
+	this.dsTA_CARDXM.set_updatecontrol(true);
+	this.dsTA_CARDXM.set_enableevent(true);
+	
+	this.dsTA_CARDXM.set_rowposition(0);
+	this.grdTA_CARDXM.setFocus();
+
+	this.stInformation.set_text("[" + (this.dsTA_CARDXM.rowcount + "]건의 데이터를 로드 했습니다."));
+	
+}
+]]></Script>
+  </Form>
+</FDL>

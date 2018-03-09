@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+<sqlMap namespace="BDMB0030">
+
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.22
+	 내      용 : 조회[년예산편성]
+********************************************************************************/
+-->
+	<select id="BDMB0030.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT	/*BDMB0030.SEARCH00.년예산편성*/
+			         A.ACCT_GUB1	/* 회계단위 */
+					,A.BUDG_YEAR	/* 예산년도 */
+					,A.ACCT_INTL	/* 계정코드 */
+	                ,SF_GET_ACCTNAME(A.ACCT_INTL)  AS ACCT_BFNM	/* 계정코드명 */
+					,A.BUDG_ATAL	/* 예산금액_총계 */
+					,A.BUDG_AT01	/* 예산금액_1월 */
+					,A.BUDG_AT02	/* 예산금액_2월 */
+					,A.BUDG_AT03	/* 예산금액_3월 */
+					,A.BUDG_AT04	/* 예산금액_4월 */
+					,A.BUDG_AT05	/* 예산금액_5월 */
+					,A.BUDG_AT06	/* 예산금액_6월 */
+					,A.BUDG_AT07	/* 예산금액_7월 */
+					,A.BUDG_AT08	/* 예산금액_8월 */
+					,A.BUDG_AT09	/* 예산금액_9월 */
+					,A.BUDG_AT10	/* 예산금액_10월 */
+					,A.BUDG_AT11	/* 예산금액_11월 */
+					,A.BUDG_AT12	/* 예산금액_12월 */
+					,A.REMK_NOTE	/* 비고 */
+			FROM	TB_CPLTYR A 	/* 년예산편성 */
+			WHERE	1 = 1
+			AND		A.ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+			AND		A.BUDG_YEAR	= #BUDG_YEAR#	/* 예산년도 */
+	   		AND		A.ACCT_INTL	= NVL(#ACCT_INTL#, A.ACCT_INTL)	/* 계정코드 */
+			ORDER	BY
+					A.ACCT_GUB1
+					,A.BUDG_YEAR
+					,A.ACCT_INTL
+					
+		]]>
+	</select>
+	
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.22
+	 내      용 : 입력[년예산편성]
+********************************************************************************/
+-->
+	<insert id="BDMB0030.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+			INSERT	INTO TB_CPLTYR	/*BDMB0030.SAVE00.년예산편성 */
+				(
+					 ACCT_GUB1	/* 회계단위 */
+					,BUDG_YEAR	/* 예산년도 */
+					,ACCT_INTL	/* 계정코드 */
+					,BUDG_ATAL	/* 예산금액_총계 */
+					,BUDG_AT01	/* 예산금액_1월 */
+					,BUDG_AT02	/* 예산금액_2월 */
+					,BUDG_AT03	/* 예산금액_3월 */
+					,BUDG_AT04	/* 예산금액_4월 */
+					,BUDG_AT05	/* 예산금액_5월 */
+					,BUDG_AT06	/* 예산금액_6월 */
+					,BUDG_AT07	/* 예산금액_7월 */
+					,BUDG_AT08	/* 예산금액_8월 */
+					,BUDG_AT09	/* 예산금액_9월 */
+					,BUDG_AT10	/* 예산금액_10월 */
+					,BUDG_AT11	/* 예산금액_11월 */
+					,BUDG_AT12	/* 예산금액_12월 */
+					,REMK_NOTE	/* 비고 */
+					,INST_DATE	/* 등록일시 */
+					,INST_USID	/* 등록자 */
+					,WORK_DATE	/* 수정일시 */
+					,WORK_USID	/* 수정자 */
+				)
+			VALUES
+				(
+					 #ACCT_GUB1# /* 회계단위 */
+					,#BUDG_YEAR# /* 예산년도 */
+					,#ACCT_INTL# /* 계정코드 */
+					,#BUDG_ATAL# /* 예산금액_총계 */
+					,#BUDG_AT01# /* 예산금액_1월 */
+					,#BUDG_AT02# /* 예산금액_2월 */
+					,#BUDG_AT03# /* 예산금액_3월 */
+					,#BUDG_AT04# /* 예산금액_4월 */
+					,#BUDG_AT05# /* 예산금액_5월 */
+					,#BUDG_AT06# /* 예산금액_6월 */
+					,#BUDG_AT07# /* 예산금액_7월 */
+					,#BUDG_AT08# /* 예산금액_8월 */
+					,#BUDG_AT09# /* 예산금액_9월 */
+					,#BUDG_AT10# /* 예산금액_10월 */
+					,#BUDG_AT11# /* 예산금액_11월 */
+					,#BUDG_AT12# /* 예산금액_12월 */
+					,#REMK_NOTE# /* 비고 */
+					,#WORK_DATE# /* 등록일시 */
+					,#WORK_USID# /* 등록자 */
+					,#WORK_DATE# /* 수정일시 */
+					,#WORK_USID# /* 수정자 */
+				)
+		]]>
+	</insert>
+
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.22
+	 내      용 : 수정[년예산편성]
+********************************************************************************/
+-->
+	<update	id="BDMB0030.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE	TB_CPLTYR	/* BDMB0030.UPDATE00.년예산편성 */
+			SET		 BUDG_ATAL	= #BUDG_ATAL#	/* 예산금액_총계 */
+					,BUDG_AT01	= #BUDG_AT01#	/* 예산금액_1월 */
+					,BUDG_AT02	= #BUDG_AT02#	/* 예산금액_2월 */
+					,BUDG_AT03	= #BUDG_AT03#	/* 예산금액_3월 */
+					,BUDG_AT04	= #BUDG_AT04#	/* 예산금액_4월 */
+					,BUDG_AT05	= #BUDG_AT05#	/* 예산금액_5월 */
+					,BUDG_AT06	= #BUDG_AT06#	/* 예산금액_6월 */
+					,BUDG_AT07	= #BUDG_AT07#	/* 예산금액_7월 */
+					,BUDG_AT08	= #BUDG_AT08#	/* 예산금액_8월 */
+					,BUDG_AT09	= #BUDG_AT09#	/* 예산금액_9월 */
+					,BUDG_AT10	= #BUDG_AT10#	/* 예산금액_10월 */
+					,BUDG_AT11	= #BUDG_AT11#	/* 예산금액_11월 */
+					,BUDG_AT12	= #BUDG_AT12#	/* 예산금액_12월 */
+					,REMK_NOTE	= #REMK_NOTE#	/* 비고 */
+					,WORK_DATE	= #WORK_DATE#	/* 수정일자 */
+					,WORK_USID	= #WORK_USID#	/* 수정자 */
+			WHERE	1 = 1
+			AND		ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+			AND		BUDG_YEAR	= #BUDG_YEAR#	/* 예산년도 */
+			AND		ACCT_INTL	= #ACCT_INTL#	/* 계정코드 */
+		]]>
+	</update>
+	
+	
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 인버스
+	 작  성  일 : 2014.09.22
+	 내      용 : 삭제[년예산편성]
+********************************************************************************/
+-->
+	<delete id="BDMB0030.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+			DELETE	FROM TB_CPLTYR	/* BDMB0030.DELETE00.년예산편성 */
+			WHERE	1 = 1
+			AND		ACCT_GUB1	= #ACCT_GUB1#	/* 회계단위 */
+			AND		BUDG_YEAR	= #BUDG_YEAR#	/* 예산년도 */
+			AND		ACCT_INTL	= #ACCT_INTL#	/* 계정코드 */
+		]]>
+	
+	</delete>
+
+</sqlMap>

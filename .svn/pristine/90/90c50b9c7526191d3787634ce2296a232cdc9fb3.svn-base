@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="TXMA0030">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용 : 부가세자료집계처리 조회
+********************************************************************************/
+-->
+	<select id="TXMA0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+            SELECT /* TXMA0030.SEARCH00.부가세자료집계처리 조회 */
+                   #ACCT_GUBN# AS BRANCH_CD
+                 , #VAT_YYYY# AS VAT_YYYY
+                 , #VAT_QUARTER# AS VAT_QUARTER
+                 , A.CODD_DESC
+                 , A.CODD_REF1
+                 , A.CODD_REF2
+                 , DECODE(A.CODD_REF2, '0', '집계후조정', '1', '집계') AS CODD_REF2_NM
+                 , '0' AS VAT_PROCYN
+                 , DECODE(B.VAT_PROCYN, 'Y', '0', NVL(B.VAT_PROCYN, '1')) AS VAT_PROCYN_GB
+                 , DECODE(#VAT_QUARTER#, '1', '0101', '2', '0401', '3', '0701', '4', '1001') AS VAT_SMMDD
+                 , DECODE(#VAT_QUARTER#, '1', '0331', '2', '0630', '3', '1031', '4', '1231') AS VAT_EMMDD
+                 , DECODE(#VAT_QUARTER#, '1', '0101', '2', '0101', '3', '0701', '4', '0701') AS PRE_VAT_SMMDD
+                 , SF_GET_USERNAME(B.INST_USID) AS INST_USID
+                 , TO_CHAR(B.INST_DATE, 'YYYYMMDDHH24MISS') AS INST_DATE
+                 , SF_GET_USERNAME(B.UPDT_USID) AS UPDT_USID
+                 , TO_CHAR(B.UPDT_DATE, 'YYYYMMDDHH24MISS') AS UPDT_DATE
+              FROM VI_TM_CODEXD A
+         LEFT JOIN TA_VATPRC B
+                ON A.CODD_REF1 = B.VAT_APPL
+               AND B.BRANCH_CD = #ACCT_GUBN#
+               AND B.VAT_YYYY = #VAT_YYYY#
+               AND B.VAT_QUARTER = #VAT_QUARTER#
+             WHERE A.CODH_FLNM = 'VATX_DOCU'
+               AND A.CODD_REF2 = '1' /* 집계대상 조회한다..*/
+          ORDER BY A.SORT_ORDE
+    ]]> 
+    </select>
+
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용 : 부가세자료집계처리 저장
+********************************************************************************/
+-->
+
+    <insert id="TXMA0030.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+	BEGIN
+		/* TXMA0030.SAVE00 부가세자료집계처리 */
+	
+		PKG_TXMA0030.SP_VAT_SUM (
+	         #UPDT_USID#    /* 작업자 */
+	        ,#BRANCH_CD#    /* VAT_지점코드 */
+	        ,#VAT_YYYY#     /* VAT_VAT년도 */
+	        ,#VAT_QUARTER#  /* VAT_VAT분기 */
+	        ,#CODD_REF1#    /* 양식구분 */
+	        )
+        ;
+	
+	END;
+    ]]>
+    </insert>
+
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 03
+    내      용 : 증빙자료를 부가세자료로 이관.
+********************************************************************************/
+-->
+    <insert id="TXMA0030.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+	BEGIN
+		/* TXMA0030.SAVE01 증빙자료를 부가세자료로 이관.*/
+		
+		PKG_TXMA0030.SP_VATRAW_INSERT (
+	         #UPDT_USID#    /* 작업자 */
+	        ,#BRANCH_CD#    /* VAT_지점코드 */
+	        ,#VAT_YYYY#     /* VAT_VAT년도 */
+	        ,#VAT_QUARTER#  /* VAT_VAT분기 */
+	        )
+        ;
+	
+	END;
+    ]]>
+    </insert>
+
+</sqlMap>

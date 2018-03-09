@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TXMC0110">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 09. 01
+    내      용  : 공제받지못할매입세액명세서
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TXMC0110.SEARCH00.공제받지못할매입세액명세서 */
+               #ACCT_GUBN# AS BRANCH_CD       /*VAT_지점코드*/
+             , #VAT_YYYY# AS VAT_YYYY         /*VAT_VAT년도*/ 
+             , #VAT_QUARTER# AS VAT_QUARTER   /*VAT_VAT분기*/ 
+             , A.BIZ_NO                       /*VAT_사업자번호*/ 
+             , A.BRANCH_NM                    /*VAT_지점명*/
+             , A.CORP_NO                      /*VAT_법인번호*/
+             , A.CORP_NM                      /*VAT_법인명*/
+             , A.CORP_TYPENM                  /*VAT_업태명*/
+             , A.CORP_LINE                    /*VAT_종목명*/
+             , A.CORP_MASTER                  /*VAT_대표자명*/
+             , A.CORP_ADDR                    /*VAT_사업자주소*/
+             , A.CORP_TEL                     /*VAT_사업장전화번호*/
+             , A.CORP_CELL                    /*VAT_사업자휴대전화*/
+          FROM VA_VATBRANCH A                 /* [부가세용 사업장 정보 VIEW] */
+         WHERE A.BRANCH_CD = #ACCT_GUBN#
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TXMC0110.SEARCH01.공제받지못할매입세액명세서 */
+               BRANCH_CD
+             , VAT_YYYY
+             , VAT_QUARTER
+          FROM TA_VAT153_H
+         WHERE BRANCH_CD = #ACCT_GUBN#
+           AND VAT_YYYY = #VAT_YYYY#
+           AND VAT_QUARTER = #VAT_QUARTER#
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공제받지 못할 매입세액 내역) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+             SELECT /* TXMC0110.SEARCH02.공제받지못할매입세액명세서(공제받지 못할 매입세액 내역) 조회 */
+                    A.BRANCH_CD
+                  , A.VAT_YYYY
+                  , A.VAT_QUARTER
+                  , A.UNABLE_SEQ     /* 불공제세부일련번호 */
+                  , B.UNABLE_TYPENM  /* 불공제사유명 */
+                  , A.UNABLE_TYPECD  /* 불공제사유구분 */
+                  , A.UNABLE_PCNT    /* 세금계산서매수  */
+                  , A.UNABLE_SAMT    /* 공급가액 */
+                  , A.UNABLE_VAMT    /* 매입세액 */
+               FROM TA_VAT153_D A
+    LEFT OUTER JOIN (
+                     SELECT '01. 필 요 적 기 재 사 항 누 락' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '02. 사업과 직접 관련 없는 지출' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '03. 비영업용 소형승용차 구입·유지 및 임차' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '04. 접대비 및 이와 유사한 비용 관련' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '05. 면세사업 관련' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '06. 토지의 자본적 지출 관련' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '07. 사업자등록 전 매입세액' AS UNABLE_TYPENM FROM DUAL
+                      UNION ALL
+                     SELECT '08. 금·구리 스크랩계좌 미사용 관련 매입세액' AS UNABLE_TYPENM FROM DUAL
+                  ) B
+                 ON A.UNABLE_TYPECD = SubStr(B.UNABLE_TYPENM, 1, 2)
+              WHERE A.BRANCH_CD = #ACCT_GUBN#
+                AND A.VAT_YYYY = #VAT_YYYY#
+                AND A.VAT_QUARTER = #VAT_QUARTER#
+           ORDER BY A.UNABLE_SEQ
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+         SELECT /* TXMC0110.SEARCH03.공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 조회 */
+                BRANCH_CD
+              , VAT_YYYY
+              , VAT_QUARTER
+              , UNABLE_SEQ1    /* 불공제안분일련번호 */
+              , COMPUR_SAMT    /* 공통매입공급가액 */
+              , COMPUR_VAMT    /* 공통매입세액 */
+              , UNABLE_ETC_SAMT    /* 총공급가액등 */
+              , EXCEPT_SAMT    /* 면세공급가액등 */
+              , UNABLE_VAMT    /* 불공제매입세액 */
+           FROM TA_VAT153_D1
+          WHERE BRANCH_CD = #ACCT_GUBN#
+            AND VAT_YYYY = #VAT_YYYY#
+            AND VAT_QUARTER = #VAT_QUARTER#
+       ORDER BY UNABLE_SEQ1
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액 정산 내역) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+          SELECT /* TXMC0110.SEARCH04.공제받지못할매입세액명세서(공통매입세액 정산 내역) 조회 */
+                 BRANCH_CD
+               , VAT_YYYY
+               , VAT_QUARTER
+               , UNABLE_SEQ2    /* 불공제정산일련번호 */ 
+               , TOTPUR_VAMT    /* 총공통매입세액 */
+               , EXCEPT_RATE    /* 면세사업확정비율 */
+               , UNATOT_VAMT    /* 불공제매입세액총액 */
+               , PRE_UNATOT_VAMT    /* 기불공제매입세액 */
+               , ADDUNA_VAMT    /* 가산공제매입세액 */
+            FROM TA_VAT153_D2
+           WHERE BRANCH_CD = #ACCT_GUBN#
+             AND VAT_YYYY = #VAT_YYYY#
+             AND VAT_QUARTER = #VAT_QUARTER#
+        ORDER BY UNABLE_SEQ2
+               
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0110.SEARCH05" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        
+          SELECT /* TXMC0110.SEARCH05.공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 조회 */
+                 BRANCH_CD
+               , VAT_YYYY
+               , VAT_QUARTER
+               , UNABLE_SEQ3    /* 불공제재계산일련번호 */
+               , PURGOO_VAMT    /* 재화매입세액 */
+               , ADDMIN_RATE    /* 경감률납부재계산 */
+               , ADDEXC_RATE    /* 증가감소면세비율 */
+               , ADDUNA_VAMT    /* 가산공제매입세액 */
+            FROM TA_VAT153_D3
+           WHERE BRANCH_CD = #ACCT_GUBN#
+             AND VAT_YYYY = #VAT_YYYY#
+             AND VAT_QUARTER = #VAT_QUARTER#
+        ORDER BY UNABLE_SEQ3
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(헤더) 처리
+********************************************************************************/
+-->
+    <select id="TXMC0110.PROCHEADER" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+                SELECT /* TXMC0110.PROCHEADER.공제받지못할매입세액명세서(헤더) 처리 */
+                       #ACCT_GUBN# AS BRANCH_CD
+                     , #VAT_YYYY# AS VAT_YYYY
+                     , #VAT_QUARTER# AS VAT_QUARTER
+                  FROM DUAL
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공제받지 못할 매입세액 내역) 처리
+********************************************************************************/
+-->
+    <insert id="TXMC0110.PROC00" parameterClass="hashmap">
+    <![CDATA[
+	BEGIN
+		/* TXMC0110.PROC00 공제받지못할매입세액명세서 처리 */
+	
+		PKG_TXMA0030.SP_VAT_SUM (
+	         #UPDT_USID#    /* 작업자 */
+	        ,#ACCT_GUBN#    /* VAT_지점코드 */
+	        ,#VAT_YYYY#     /* VAT_VAT년도 */
+	        ,#VAT_QUARTER#  /* VAT_VAT분기 */
+	        ,'V153'   /* 양식구분 */
+	        )
+        ;
+	
+	END;
+    ]]>
+    </insert>
+
+    
+    <select id="TXMC0110.PROC00.OLD" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+           SELECT /* TXMC0110.PROC00.공제받지못할매입세액명세서(공제받지 못할 매입세액 내역) 처리 */
+                  #ACCT_GUBN# AS BRANCH_CD
+                , #VAT_YYYY# AS VAT_YYYY
+                , #VAT_QUARTER# AS VAT_QUARTER
+                , MAIN.UNABLE_TYPENM                                   /* 불공제사유명 */
+                , SubStr(MAIN.UNABLE_TYPENM, 2, 1) AS UNABLE_SEQ       /* 불공제세부일련번호 */
+                , SubStr(MAIN.UNABLE_TYPENM, 1, 2) AS UNABLE_TYPECD    /* 불공제사유구분 */
+                , SUB.UNABLE_PCNT                                      /* 세금계산서매수 */
+                , SUB.UNABLE_SAMT                                      /* 공급가액 */
+                , SUB.UNABLE_VAMT                                      /* 매입세액 */
+             FROM (
+                   SELECT '01. 필 요 적 기 재 사 항 누 락' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '02. 사업과 직접 관련 없는 지출' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '03. 비영업용 소형승용차 구입·유지 및 임차' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '04. 접대비 및 이와 유사한 비용 관련' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '05. 면세사업 관련' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '06. 토지의 자본적 지출 관련' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '07. 사업자등록 전 매입세액' AS UNABLE_TYPENM FROM DUAL
+                    UNION ALL
+                   SELECT '08. 금·구리 스크랩계좌 미사용 관련 매입세액' AS UNABLE_TYPENM FROM DUAL
+                ) MAIN
+  LEFT OUTER JOIN (
+                   SELECT C.APPL_V153 AS UNABLE_TYPECD
+                        , Count(0) AS UNABLE_PCNT
+                        , Sum(A.VAT_SAMT) AS UNABLE_SAMT
+                        , Sum(A.VAT_VAMT) AS UNABLE_VAMT
+                     FROM TA_VATRAW A
+          LEFT OUTER JOIN TA_VATCDH B
+                       ON A.VATH_TYPECD = B.VATH_TYPECD
+          LEFT OUTER JOIN TA_VATCDD C
+                       ON A.VATH_TYPECD = C.VATH_TYPECD
+                      AND A.VATD_TYPECD = C.VATD_TYPECD
+                    WHERE A.BRANCH_CD = #ACCT_GUBN#
+                      AND A.VAT_YYYY = #VAT_YYYY#
+                      AND A.VAT_QUARTER = #VAT_QUARTER#
+                      AND Nvl(C.APPL_V153, '0') <> '0'
+                      AND SubStr(C.APPL_V153, 1, 1) = 'A'
+                 GROUP BY A.BRANCH_CD, A.VAT_YYYY, A.VAT_QUARTER, C.APPL_V153
+                ) SUB
+               ON SubStr(MAIN.UNABLE_TYPENM, 1, 2) = SubStr(SUB.UNABLE_TYPECD, 2, 2)
+         ORDER BY UNABLE_TYPECD, UNABLE_SEQ
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 처리
+********************************************************************************/
+-->
+    <select id="TXMC0110.PROC01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+                SELECT /* TXMC0110.PROC01.공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 처리 */
+                       BRANCH_CD
+                     , A.VAT_YYYY
+                     , A.VAT_QUARTER
+                     , A.VAT_QUARTER
+                     , ROWNUM AS UNABLE_SEQ1      /* 불공제안분일련번호 */
+                     , A.VAT_SAMT AS COMPUR_SAMT  /* 공통매입공급가액 */
+                     , A.VAT_VAMT AS COMPUR_VAMT  /* 공통매입세액 */
+                     , 0 AS UNABLE_SAMT           /* 총공급가액등 */
+                     , 0 AS EXCEPT_SAMT           /* 면세공급가액등 */
+                     , 0 AS UNABLE_VAMT           /* 불공제매입세액 */
+                  FROM TA_VATRAW A
+       LEFT OUTER JOIN TA_VATCDH B
+                    ON A.VATH_TYPECD = B.VATH_TYPECD
+       LEFT OUTER JOIN TA_VATCDD C
+                    ON A.VATH_TYPECD = C.VATH_TYPECD
+                   AND A.VATD_TYPECD = C.VATD_TYPECD
+                 WHERE A.BRANCH_CD = #ACCT_GUBN#
+                   AND A.VAT_YYYY = #VAT_YYYY#
+                   AND A.VAT_QUARTER = #VAT_QUARTER#
+                   AND Nvl(C.APPL_V153, '0') <> '0'
+                   AND SubStr(C.APPL_V153, 1, 1) = 'B'
+              ORDER BY UNABLE_SEQ1
+
+    ]]>     
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(헤더) 저장
+********************************************************************************/
+-->
+    <insert id="TXMC0110.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE
+        /* TXMC0110.SAVE00.공제받지못할매입세액명세서(헤더) 저장 */
+        v_ROWCNT INT;
+    BEGIN
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT101_H1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT101_H1 (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          );
+        
+    END IF;
+
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT153_H
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT153_H (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                          , INST_USID
+                          , INST_DATE
+                          , UPDT_USID
+                          , UPDT_DATE
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          , #UPDT_USID#
+                          , SYSDATE
+                          , #UPDT_USID#
+                          , SYSDATE
+                          );
+    ELSE
+                UPDATE TA_VAT153_H
+                   SET UPDT_USID = #UPDT_USID#
+                     , UPDT_DATE = SYSDATE
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+    END IF;
+        
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+        END;
+    ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서
+********************************************************************************/
+-->
+    <insert id="TXMC0110.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE
+        /* TXMC0110.SAVE01.공제받지못할매입세액명세서(공제받지 못할 매입세액 내역) 저장  */
+        v_ROWCNT INT;
+    BEGIN
+        
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT101_H1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT101_H1 (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          );
+    END IF;
+
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT153_D
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#
+                   AND UNABLE_SEQ = #UNABLE_SEQ#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT153_D (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                          , UNABLE_SEQ      /* 불공제세부일련번호 */
+                          , UNABLE_TYPECD   /* 불공제사유구분 */
+                          , UNABLE_PCNT     /* 세금계산서매수 */
+                          , UNABLE_SAMT     /* 공급가액 */
+                          , UNABLE_VAMT     /* 매입세액 */
+                          , INST_USID
+                          , INST_DATE
+                          , UPDT_USID
+                          , UPDT_DATE
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          , #UNABLE_SEQ#
+                          , #UNABLE_TYPECD#
+                          , #UNABLE_PCNT#
+                          , #UNABLE_SAMT#
+                          , #UNABLE_VAMT#
+                          , #UPDT_USID#
+                          , SYSDATE
+                          , #UPDT_USID#
+                          , SYSDATE
+                          );
+    ELSE
+                UPDATE TA_VAT153_D
+                   SET UNABLE_PCNT = #UNABLE_PCNT#
+                     , UNABLE_SAMT = #UNABLE_SAMT#
+                     , UNABLE_VAMT = #UNABLE_VAMT#
+                     , UPDT_USID = #UPDT_USID#
+                     , UPDT_DATE = SYSDATE
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#
+                   AND UNABLE_SEQ = #UNABLE_SEQ#;
+    END IF;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+        END;
+    ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 삭제
+********************************************************************************/
+-->
+     <delete id="TXMC0110.DELETE02" parameterClass="hashmap">
+    <![CDATA[
+         DELETE FROM TA_VAT153_D1 /* TXMC0110.DELETE02.공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 삭제 */
+          WHERE BRANCH_CD = #BRANCH_CD#
+            AND VAT_YYYY = #VAT_YYYY#
+            AND VAT_QUARTER = #VAT_QUARTER#                  
+    ]]>     
+    </delete>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 저장
+********************************************************************************/
+-->
+    <insert id="TXMC0110.SAVE02" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE
+        /* TXMC0110.SAVE02.공제받지못할매입세액명세서(공통매입세액 안분계산 내역) 저장 */
+        v_ROWCNT INT;
+    BEGIN
+        
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT101_H1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT101_H1 (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          );
+    END IF;
+
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT153_D1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#
+                   AND UNABLE_SEQ1 = #UNABLE_SEQ1#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT153_D1(
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                          , UNABLE_SEQ1   /* 불공제안분일련번호 */ 
+                          , COMPUR_SAMT   /* 공통매입공급가액 */  
+                          , COMPUR_VAMT   /* 공통매입세액 */    
+                          , UNABLE_SAMT   /* 총공급가액등 */    
+                          , EXCEPT_SAMT   /* 면세공급가액등 */   
+                          , UNABLE_VAMT   /* 불공제매입세액 */   
+                          , INST_USID
+                          , INST_DATE
+                          , UPDT_USID
+                          , UPDT_DATE
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          , #UNABLE_SEQ1#
+                          , #COMPUR_SAMT#
+                          , #COMPUR_VAMT#
+                          , #UNABLE_SAMT#
+                          , #EXCEPT_SAMT#
+                          , #UNABLE_VAMT#
+                          , #UPDT_USID#
+                          , SYSDATE
+                          , #UPDT_USID#
+                          , SYSDATE
+                          );
+    ELSE
+                UPDATE TA_VAT153_D1
+                   SET COMPUR_SAMT = #COMPUR_SAMT#
+                     , COMPUR_VAMT = #COMPUR_VAMT#
+                     , UNABLE_SAMT = #UNABLE_SAMT#
+                     , EXCEPT_SAMT = #EXCEPT_SAMT#
+                     , UNABLE_VAMT = #UNABLE_VAMT#
+                     , UPDT_USID = #UPDT_USID#
+                     , UPDT_DATE = SYSDATE
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#
+                   AND UNABLE_SEQ1 = #UNABLE_SEQ1#;
+                END IF;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+        END;
+    ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(공통매입세액의 정산 내역) 삭제
+********************************************************************************/
+-->
+     <delete id="TXMC0110.DELETE03" parameterClass="hashmap">
+    <![CDATA[
+         DELETE FROM TA_VAT153_D2 /* TXMC0110.DELETE03.공제받지못할매입세액명세서(공통매입세액의 정산 내역) 삭제 */
+          WHERE BRANCH_CD = #BRANCH_CD#
+            AND VAT_YYYY = #VAT_YYYY#
+            AND VAT_QUARTER = #VAT_QUARTER#                  
+    ]]>     
+    </delete>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서
+********************************************************************************/
+-->
+    <insert id="TXMC0110.SAVE03" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE
+        /*  TXMC0110.SAVE03.공제받지못할매입세액명세서(공통매입세액의 정산 내역) 저장 */
+        v_ROWCNT INT;
+    BEGIN
+        
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT101_H1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT101_H1 (
+                       BRANCH_CD
+                     , VAT_YYYY
+                     , VAT_QUARTER
+              ) VALUES (
+                       #BRANCH_CD#
+                     , #VAT_YYYY#
+                     , #VAT_QUARTER#
+                     );
+    END IF;
+
+                INSERT INTO TA_VAT153_D2(
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                          , UNABLE_SEQ2   /* 불공제정산일련번호 */
+                          , TOTPUR_VAMT   /* 총공통매입세액 */
+                          , EXCEPT_RATE   /* 면세사업확정비율 */
+                          , UNATOT_VAMT   /* 불공제매입세액총액 */
+                          , PRE_UNATOT_VAMT   /* 기불공제매입세액 */
+                          , ADDUNA_VAMT   /* 가산공제매입세액 */
+                          , INST_USID
+                          , INST_DATE
+                          , UPDT_USID
+                          , UPDT_DATE
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          , #UNABLE_SEQ2#
+                          , #TOTPUR_VAMT#
+                          , #EXCEPT_RATE#
+                          , #UNATOT_VAMT#
+                          , #PRE_UNATOT_VAMT#
+                          , #ADDUNA_VAMT#
+                          , #UPDT_USID#
+                          , SYSDATE
+                          , #UPDT_USID#
+                          , SYSDATE
+                          );
+            
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+        END;
+    ]]>
+    </insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 삭제
+********************************************************************************/
+-->
+     <delete id="TXMC0110.DELETE04" parameterClass="hashmap">
+    <![CDATA[
+         DELETE FROM TA_VAT153_D3 /* TXMC0110.DELETE04.공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 삭제 */
+          WHERE BRANCH_CD = #BRANCH_CD#
+            AND VAT_YYYY = #VAT_YYYY#
+            AND VAT_QUARTER = #VAT_QUARTER#                  
+    ]]>     
+    </delete>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 08. 04
+    내      용  : 공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 저장
+********************************************************************************/
+-->
+    <insert id="TXMC0110.SAVE04" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE
+        /* TXMC0110.SAVE04.공제받지못할매입세액명세서(납부세액 또는 환급세액 재계산 내역) 저장 */
+        v_ROWCNT INT;
+    BEGIN
+        
+                SELECT COUNT(0) INTO v_ROWCNT
+                  FROM TA_VAT101_H1
+                 WHERE BRANCH_CD = #BRANCH_CD#
+                   AND VAT_YYYY = #VAT_YYYY#
+                   AND VAT_QUARTER = #VAT_QUARTER#;
+
+    IF v_ROWCNT = 0 THEN
+                INSERT INTO TA_VAT101_H1 (
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          );
+    END IF;
+
+                INSERT INTO TA_VAT153_D3(
+                            BRANCH_CD
+                          , VAT_YYYY
+                          , VAT_QUARTER
+                          , UNABLE_SEQ3   /* 불공제재계산일련번호 */
+                          , PURGOO_VAMT   /* 재화매입세액 */
+                          , ADDMIN_RATE   /* 경감률납부재계산 */
+                          , ADDEXC_RATE   /* 증가감소면세비율 */
+                          , ADDUNA_VAMT   /* 가산공제매입세액 */
+                          , INST_USID
+                          , INST_DATE
+                          , UPDT_USID
+                          , UPDT_DATE
+                   ) VALUES (
+                            #BRANCH_CD#
+                          , #VAT_YYYY#
+                          , #VAT_QUARTER#
+                          , #UNABLE_SEQ3#
+                          , #PURGOO_VAMT#
+                          , #ADDMIN_RATE#
+                          , #ADDEXC_RATE#
+                          , #ADDUNA_VAMT#
+                          , #UPDT_USID#
+                          , SYSDATE
+                          , #UPDT_USID#
+                          , SYSDATE
+                          );
+
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+        END;
+    ]]>
+    </insert>
+</sqlMap>

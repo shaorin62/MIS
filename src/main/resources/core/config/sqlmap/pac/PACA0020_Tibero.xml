@@ -1,0 +1,667 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PACA0020">
+
+<!--  
+ *   프로그램명 : 제작 세금계산서  
+ *   작 성 일 : 2016.10.19
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 미완료  검색 조건 -->
+	<sql id="search">
+		<isNotEmpty prepend="AND" property="TAXY_MONT" >
+			  A.TAXY_MONT = #TAXY_MONT#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  A.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  A.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 미완료  검색 조건 -->
+	<sql id="search2">
+		<isNotEmpty prepend="AND" property="TAXY_MONT" >
+			  A.TAXY_MONT = #TAXY_MONT#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  A.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.02
+     내      용 : 제작 전자세금계산서 미발송 데이터 (임시로 기획부분 담당자 삽입)
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+						SELECT																	/* PACA0020.SEARCH00.제작 전자세금계산서 미생성 [제작세금계산서] */
+						'0' AS CHK																/* 선택 */
+						,E.CONVERSATION_ID AS CONVERSATION_ID					/* CONVERSATION_ID */
+						,'AR'  AS SUPBUY_TYPE												/* 매입 매출구분 */
+						,2 AS DIRECTION 														/* 정발행 역발행구분 */
+						,NULL AS INTERFACE_BATCH_ID									/* 선택항목묶음값 */
+						,A.PRNT_DATE AS DTI_WDATE     								/* 세금계산서일자 */
+						,A.DTIX_TYPE AS DTI_TYPE										/* 세금계산서종류 */
+						,A.TAXX_GUBN AS DTI_TYPE2										/* 세금계산서분류 */
+						,A.TAXX_DMND AS TAX_DEMAND  								/* 영수구분 */
+						,A.TAXX_SANB AS SEQ_ID    										/* 관리번호 */
+						,NULL AS SUP_COM_ID 												/* 공급자 스마트빌 ID */
+						,B.BSNS_NUMB AS SUP_COM_REGNO       						/* 공급자 사업자번호 */
+						,B.OWNR_NAME AS SUP_REP_NAME								/* 대표자성명 */
+						,B.OFFI_NAME AS SUP_COM_NAME     							/* 공급자 상호 */
+						,B.BSNS_STAT AS SUP_COM_TYPE   							/* 공급자 업태 */
+						,B.BSNS_TYPE AS SUP_COM_CLASSIFY    					/* 공급자 업종 */
+						,B.ADDR_DESC AS SUP_COM_ADDR								/* 공급자 주소 */
+						,SF_GET_DEPTTHNM(F.PLAN_DEPT) AS SUP_DEPT_NAME /* 공급자 담당부서명 */
+						,SF_GET_EMPLNAME(F.PLAN_EMPL) AS SUP_EMP_NAME  /* 공급자 담당자명 */
+						,G.OHOM_TENR AS SUP_TEL_NUM                               /* 공급자 담당자 전화번호 */
+						,G.ELTR_MLAD AS SUP_EMAIL                                     /* 공급자 담당자 이메일 */
+						,NULL AS BYR_COM_ID          									/* 공급받는자 스마트빌 ID */
+						,A.BIZR_NUMB AS BYR_COM_REGNO       						/* 공급받는자 사업자등록번호 */
+						,A.OWNR_NAME AS BYR_REP_NAME        						/* 공급받는자 대표자성명 */
+						,A.CUST_NAME AS BYR_COM_NAME								/* 공급받는자 상호 */
+						,C.BSNS_STAT AS BYR_COM_TYPE								/* 공급받는자 업태 */
+						,C.BSNS_TYPE AS BYR_COM_CLASSIFY						/* 공급받는자 업종 */
+						,C.ADDR_DESC || C.DTL1_ADDR || C.DTL2_ADDR AS BYR_COM_ADDR    /* 공급받는자 주소 */
+						,NULL AS BYR_DEPT_NAME          								/* 공급받는자 담당부서명 */
+						,NULL AS BYR_EMP_NAME        						/* 공급받는자 담당자명 */
+						,NULL AS BYR_TEL_NUM         						/* 공급받는자 전화번호 */
+					    ,SF_GET_CUSTEMAIL(A.CUST_CODE)  AS BYR_EMAIL   /* 공급받는자  담당자 이메일 */
+						,NVL(A.TAXX_AMTX,0) AS SUP_AMOUNT						/* 공급가액합계 */
+						,NVL(A.TAXX_VATX,0) AS TAX_AMOUNT						/* 세액합계 */
+						,NVL(A.SUMM_AMTX,0) AS TOTAL_AMOUNT					/* 총금액 */
+						,'N' AS DTT_YN                   										/* 거래명세서 구분 */
+						,A.MEMO_FILD AS REMARK                            				/* 비고 */
+						,A.AMEND_CODE														/* 수정코드 */
+						,A.ORI_ISSUE_ID														/* 원세금계산서 승인번호 */
+						,A.TAXY_MONT														/* 세금계산서 년월 */
+						,A.TAXX_NUMB															/* 세금계산서 번호 */
+						,A.CUST_CODE															/* 광고주코드 */
+						FROM PD_SATXXH A
+						INNER JOIN TM_OFFICE B ON B.ACCT_GUBN = '100' AND B.OFFI_GUBN ='1'
+						LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE 
+						LEFT JOIN XXSB_DTI_MAIN E ON A.CONVERSATION_ID = E.CONVERSATION_ID
+						LEFT JOIN PD_JOBNXM F ON SF_GET_TAXJOBNO(A.TAXY_MONT,A.TAXX_NUMB) = F.JOBN_NUMB
+						LEFT JOIN HR_MASTXD G ON F.PLAN_EMPL = G.EMPL_NUMB
+						WHERE 1=1
+						AND A.CONVERSATION_ID IS NULL
+			]]>
+			     <include refid="search" />	
+			<![CDATA[
+				 ORDER BY  A.TAXY_MONT, A.TAXX_NUMB
+			]]>
+	</select>
+	
+
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.19
+     내      용 : 제작 전자세금계산서 발송완료 데이터
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+					SELECT						 /* PACA0020.SEARCH01.제작 전자세금계산서 발송완료 [제작세금계산서] */ 
+					B.CONVERSATION_ID AS CONVERSATION_ID 			 /* CONVERSATION_ID */
+					,CASE C.DTI_STATUS WHEN 'I' THEN '수신미승인' 
+					WHEN 'C' THEN '수신승인' 
+					WHEN 'R' THEN '수신거부' 
+					WHEN 'O' THEN '취소완료' 
+					WHEN 'E' THEN '에러'  END AS DTI_STATUS				/* 최종상태 */
+					,CASE C.TRAN_STATUS WHEN 'I' THEN '수신미승인' 
+					WHEN 'C' THEN '수신승인' 
+					WHEN 'R' THEN '수신거부' 
+					WHEN 'O' THEN '취소완료' 
+					WHEN 'E' THEN '에러'  END AS TRAN_STATUS			/* 전송상태 */
+					, B.SUPBUY_TYPE												/* 매출 매입구분 */
+					, B.DIRECTION													/* 정발행 역발행구분 */
+					, B.DTI_WDATE												/* 세금계산서일자 */
+					, SUBSTR(B.DTI_TYPE,1,2) AS DTI_TYPE				/* 세금계산서 종류 */
+					, SUBSTR(B.DTI_TYPE,3,2) AS DTI_TYPE2				/* 세금계산서 분류 */
+					, B.TAX_DEMAND												/* 영수구분 */
+					, B.SUP_COM_REGNO              							/* 공급자 사업자등록번호 */
+					, B.SUP_REP_NAME              								/* 공급자 대표자성명 */
+					, B.SUP_COM_NAME              							/* 공급자 상호 */
+					, B.SUP_COM_TYPE              								/* 공급자 업태 */
+					, B.SUP_COM_CLASSIFY              						/* 공급자 업종 */
+					, B.SUP_COM_ADDR              							/* 공급자 주소 */
+					, B.SUP_DEPT_NAME              							/* 공급자 담당부서명 */
+					, B.SUP_EMP_NAME              								/* 공급자 담당자명 */
+					, B.SUP_TEL_NUM              								/* 공급자 담당자전화번호 */
+					, B.SUP_EMAIL              									/* 공급자 담당자 이메일 */
+					, B.BYR_COM_ID              									/* 공급받는자 스마트빌 ID */
+					, B.BYR_COM_REGNO              							/* 받는자 사업자등록번호 */
+					, B.BYR_REP_NAME              								/* 공급받는자 대표자성명 */
+					, B.BYR_COM_NAME              							/* 공급받는자 상호 */
+					, B.BYR_COM_TYPE              								/* 공급받는자 업태 */
+					, B.BYR_COM_CLASSIFY              						/* 공급받는자 업종 */
+					, B.BYR_COM_ADDR              								/* 공급받는자 주소 */
+					, B.BYR_DEPT_NAME              							/* 공급받는자 담당부서명 */
+					, B.BYR_EMP_NAME              								/* 공급받는자 담당자명 */
+					, B.BYR_TEL_NUM              								/* 받는자 담당자전화번호 */
+					, B.BYR_EMAIL              									/* 받는자 담당자 이메일 */  
+					, B.SUP_AMOUNT              								/* 공급가액합계 */
+					, B.TAX_AMOUNT              								/* 세액합계 */
+					, B.TOTAL_AMOUNT              							/* 총금액 */
+					, B.REMARK              										/* 비고 */
+					, B.CREATED_BY              									/* 작성자 */
+					, B.CREATION_DATE              							/* 작성일시 */
+					, B.LAST_UPDATED_BY              						/* 최종수정자 */
+					, B.LAST_UPDATE_DATE              						/* 최종수정일시 */      
+					, A.TAXY_MONT                      							/* 세금계산서년월 */
+					, A.CUST_CODE                       							/* 광고주코드 */
+					, A.CUST_NAME                       						/* 광고주명 */      
+					, B.AMEND_CODE       										/* 수정코드 */
+					, C.RETURN_CODE									        /* 오류코드 */
+					, C.RETURN_DESCRIPTION									/* 전송 상태리턴 */
+					FROM  XXSB_DTI_MAIN B
+					LEFT JOIN XXSB_DTI_STATUS C ON B.CONVERSATION_ID = C.CONVERSATION_ID
+					LEFT JOIN PD_SATXXH  A ON A.CONVERSATION_ID = B.CONVERSATION_ID
+					WHERE 1=1
+					AND A.CONVERSATION_ID IS NOT NULL
+			]]>
+			     <include refid="search" />	
+			<![CDATA[
+				 ORDER BY  A.TAXY_MONT, A.TAXX_NUMB
+			]]>
+	</select>
+	
+
+<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 제작 전자세금계산서 미완료 상세 ITEM 조회
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0020.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+					SELECT											/* PACA0020.SEARCH01.제작 전자세금계산서 발송완료 [제작세금계산서] */
+					NULL AS CONVERSATION_ID				/* conversation_id */
+					,'AR' AS SUPBUY_TYPE						/* 매입/매출 구분 */
+					,'2' AS DIRECTION								/* 정/역 구분 */
+					,A.TAXX_IDXX  AS DTI_LINE_NUM		/* dti_line_num */
+					,NULL AS ITEM_CODE						/* 품목코드 */
+					,NULL AS ITEM_NAME						/* 품목명 */
+					,B.JOBN_SIZE AS ITEM_SIZE				/* 규격 */
+					,NULL AS ITEM_MD							/* 구입일자 */
+					,0 AS UNIT_PRICE								/* 단가 */
+					,0 AS ITEM_QTY         						/* 수량 */
+					,NVL(A.TAXX_AMTX,0) AS SUP_AMOUNT		/* 공급가액 */
+					,NVL(A.TAXX_VATX,0) AS TAX_AMOUNT       /* 세액 */
+					,0 AS  FOREIGN_AMOUNT   				/* 외화금액 */
+					,NULL AS CURRENCY_CODE					/* 통화코드 */
+					,'DTI' AS ITEM_GUBUN						/* ITEM 구분값 */
+					,B.MEMO_FILD AS REMARK  				/* 비고 */
+					,NULL AS CREATED_BY						/* 작성자 */
+					,NULL AS CREATION_DATE    				/* 작성일시 */
+					,NULL AS LAST_UPDATED_BY  			/* 최종수정자 */
+					,NULL AS LAST_UPDATE_DATE            /* 최종수정일시 */
+					FROM PD_SATXXD A 
+					LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+					WHERE 1=1 
+			]]>
+			     <include refid="search2" />	
+			<![CDATA[
+				 ORDER BY  A.TAXY_MONT, A.TAXX_NUMB
+			]]>
+	</select>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2017.02.02
+     내      용 : 거래처코드로 담당자 메일 가져오기
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0020.SEARCH03" parameterClass="String" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        SELECT 
+			CUST_CODE AS CUST_CODE
+			,ELTR_MLAD AS COMB_CODE
+			,ELTR_MLAD AS COMB_NAME 
+	        FROM TA_CUSTMN	
+			WHERE 1=1
+			AND CUST_CODE IN ($CUST_CODE$)
+					
+			
+			]]>
+	</select>
+	
+
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 전자세금계산서 발송 테이블 저장
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0020.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+
+					INSERT INTO XXSB_DTI_MAIN (  			/* PACA0020.SAVE00.제작 전자세금계산서 발송저장 [제작전자세금계산서] */
+			                CONVERSATION_ID        				/* conversation_id */
+			               ,SUPBUY_TYPE        						/* 매입/매출구분 */
+			               ,DIRECTION        							/* 정/역 구분 */
+			               ,INTERFACE_BATCH_ID        			/* interface_batch_id */
+			               ,DTI_WDATE        							/* 세금계산서 일자 */
+			               ,DTI_TYPE        							/* 세금계산서 종류 */
+			               ,TAX_DEMAND        						/* 영수구분 */
+			               ,SEQ_ID        								/* 관리번호 */
+			               ,SUP_COM_ID        						/* 공급자 스마트빌 ID */
+			               ,SUP_COM_REGNO        					/* 공급자 사업자등록번호 */
+			               ,SUP_REP_NAME        					/* 공급자 대표자성명 */
+			               ,SUP_COM_NAME       					/* 공급자 상호 */
+			               ,SUP_COM_TYPE        					/* 공급자 업태 */
+			               ,SUP_COM_CLASSIFY        				/* 공급자 업종 */
+			               ,SUP_COM_ADDR        					/* 공급자 주소 */
+			               ,SUP_DEPT_NAME        					/* 공급자 담당부서명 */
+			               ,SUP_EMP_NAME        					/* 공급자 담당자명 */
+			               ,SUP_TEL_NUM        						/* 공급자 담당자전화번호 */
+			               ,SUP_EMAIL        							/* 공급자 담당자 이메일 */
+			               ,BYR_COM_ID        						/* 공급받는자 스마트빌 ID */
+			               ,BYR_COM_REGNO        					/* 받는자 사업자등록번호 */
+			               ,BYR_REP_NAME        					/* 공급받는자 대표자성명 */
+			               ,BYR_COM_NAME        					/* 공급받는자 상호 */
+			               ,BYR_COM_TYPE        					/* 공급받는자 업태 */
+			               ,BYR_COM_CLASSIFY        				/* 공급받는자 업종 */
+			               ,BYR_COM_ADDR        					/* 공급받는자 주소 */
+			               ,BYR_DEPT_NAME        					/* 공급받는자 담당부서명 */
+			               ,BYR_EMP_NAME        					/* 공급받는자 담당자명 */
+			               ,BYR_TEL_NUM        						/* 받는자 담당자전화번호 */
+			               ,BYR_EMAIL        							/* 받는자 담당자 이메일 */
+			               ,BROKER_COM_ID        					/* 수탁자 스마트빌 ID */
+			               ,BROKER_COM_REGNO        			/* 수탁자 사업자등록번호 */
+			               ,BROKER_REP_NAME        				/* 수탁자 대표자성명 */
+			               ,BROKER_COM_NAME        				/* 수탁자 상호 */
+			               ,BROKER_COM_TYPE        				/* 수탁자 업태 */
+			               ,BROKER_COM_CLASSIFY        		/* 수탁자 업종 */
+			               ,BROKER_COM_ADDR        				/* 수탁자 주소 */
+			               ,BROKER_DEPT_NAME        				/* 수탁자 담당부서명 */
+			               ,BROKER_EMP_NAME        				/* 수탁자 담당자명 */
+			               ,BROKER_TEL_NUM        					/* 수탁자 담당자전화번호 */
+			               ,BROKER_EMAIL        						/* 수탁자 담당자 이메일 */
+			               ,CASH_CODE        						/* 현금코드 */
+			               ,CASH_AMOUNT        					/* 현금금액 */
+			               ,CHECK_CODE        						/* 수표코드 */
+			               ,CHECK_AMOUNT        					/* 수표금액 */
+			               ,NOTE_CODE        						/* 어음코드 */
+			               ,NOTE_AMOUNT        					/* 어음금액 */
+			               ,RECEIVABLE_CODE        				/* 외상미수금코드 */
+			               ,RECEIVABLE_AMOUNT        			/* 외상미수금금액 */
+			               ,SUP_AMOUNT        						/* 공급가액합계 */
+			               ,TAX_AMOUNT        						/* 세액합계 */
+			               ,TOT_FOREIGN_AMOUNT        			/* 외화공급가액합계 */
+			               ,TOTAL_AMOUNT        					/* 총금액 */
+			               ,TOTAL_QUANTITY        				/* 총수량 */
+			               ,DTT_YN        								/* 거래명세서 구분 */
+			               ,REMARK        								/* 비고 */
+			               ,CREATED_BY        						/* 작성자 */
+			               ,CREATION_DATE        					/* 작성일시 */
+			               ,LAST_UPDATED_BY        				/* 최종수정자 */
+			               ,LAST_UPDATE_DATE        				/* 최종수정일시 */
+			               ,ETCNUM1        							/* 기타번호1 */
+			               ,ETCNUM2        							/* 기타번호2 */
+			               ,ETCNUM3        							/* 기타번호3 */
+			               ,ETCNUM4       								/* 기타번호4 */
+			               ,DTI_MSG        							/* 세금계산서 원본 */
+			               ,AMEND_CODE        						/* 수정코드 */
+			               ,REMARK2        							/* 비고2 */
+			               ,REMARK3        							/* 비고3 */
+			               ,EXCHANGED_DOC_ID        				/* 서비스관리번호 */
+			               ,APPROVE_ID        						/* 승인번호 */
+			               ,SUP_BIZPLACE_CODE        			/* 사업장코드 */
+			               ,BYR_BIZPLACE_CODE        			/* 사업장코드 */
+			               ,BRK_BIZPLACE_CODE        				/* 사업장코드 */
+			               ,BYR_DEPT_NAME2        				/* 담당부서명2 */
+			               ,BYR_EMP_NAME2        					/* 담당자명2 */
+			               ,BYR_TEL_NUM2        					/* 담당자전화번호2 */
+			               ,BYR_EMAIL2        						/* 담당자이메일2 */
+			               ,ATTACHFILE_YN        					/* 첨부파일 여부 */
+			               ,ASP_SMTP_MAIL        					/* SMTP 유통을 위한 메일 주소 */
+			               ,ORI_ISSUE_ID        						/* 당초승인번호 */
+			               ,DTI_IDATE        
+			               ,DTI_SDATE       
+			              )
+			       VALUES (
+			               #CONVERSATION_ID#       				/* conversation_id */
+			              ,#SUPBUY_TYPE#       					/* 매입/매출구분 */
+			              ,#DIRECTION#       						/* 정/역 구분 */
+			              ,#INTERFACE_BATCH_ID#       			/* interface_batch_id */
+			              ,#DTI_WDATE#       						/* 세금계산서 일자 */
+			              ,#DTI_TYPE# || #DTI_TYPE2#     	/* 세금계산서 종류 및 분류*/
+			              ,#TAX_DEMAND#       						/* 영수구분 */
+			              ,#SEQ_ID#       								/* 관리번호 */
+			              ,#SUP_COM_ID#       						/* 공급자 스마트빌 ID */
+			              ,#SUP_COM_REGNO#       				/* 공급자 사업자등록번호 */
+			              ,#SUP_REP_NAME#       					/* 공급자 대표자성명 */
+			              ,#SUP_COM_NAME#       					/* 공급자 상호 */
+			              ,#SUP_COM_TYPE#       					/* 공급자 업태 */
+			              ,#SUP_COM_CLASSIFY#       			/* 공급자 업종 */
+			              ,#SUP_COM_ADDR#       					/* 공급자 주소 */
+			              ,#SUP_DEPT_NAME#       				/* 공급자 담당부서명 */
+			              ,#SUP_EMP_NAME#       					/* 공급자 담당자명 */
+			              ,#SUP_TEL_NUM#       					/* 공급자 담당자전화번호 */
+			              ,#SUP_EMAIL#       						/* 공급자 담당자 이메일 */
+			              ,#BYR_COM_ID#       						/* 공급받는자 스마트빌 ID */
+			              ,#BYR_COM_REGNO#       				/* 받는자 사업자등록번호 */
+			              ,#BYR_REP_NAME#       					/* 공급받는자 대표자성명 */
+			              ,#BYR_COM_NAME#       					/* 공급받는자 상호 */
+			              ,#BYR_COM_TYPE#       					/* 공급받는자 업태 */
+			              ,#BYR_COM_CLASSIFY#       			/* 공급받는자 업종 */
+			              ,#BYR_COM_ADDR#       					/* 공급받는자 주소 */
+			              ,#BYR_DEPT_NAME#       				/* 공급받는자 담당부서명 */
+			              ,#BYR_EMP_NAME#       					/* 공급받는자 담당자명 */
+			              ,#BYR_TEL_NUM#       					/* 받는자 담당자전화번호 */
+			              ,#BYR_EMAIL#       						/* 받는자 담당자 이메일 */
+			              ,#BROKER_COM_ID#       				/* 수탁자 스마트빌 ID */
+			              ,#BROKER_COM_REGNO#       			/* 수탁자 사업자등록번호 */
+			              ,#BROKER_REP_NAME#       				/* 수탁자 대표자성명 */
+			              ,#BROKER_COM_NAME#       			/* 수탁자 상호 */
+			              ,#BROKER_COM_TYPE#       			/* 수탁자 업태 */
+			              ,#BROKER_COM_CLASSIFY#       		/* 수탁자 업종 */
+			              ,#BROKER_COM_ADDR#       			/* 수탁자 주소 */
+			              ,#BROKER_DEPT_NAME#       			/* 수탁자 담당부서명 */
+			              ,#BROKER_EMP_NAME#       			/* 수탁자 담당자명 */
+			              ,#BROKER_TEL_NUM#       				/* 수탁자 담당자전화번호 */
+			              ,#BROKER_EMAIL#       					/* 수탁자 담당자 이메일 */
+			              ,#CASH_CODE#       						/* 현금코드 */
+			              ,#CASH_AMOUNT#       					/* 현금금액 */
+			              ,#CHECK_CODE#       						/* 수표코드 */
+			              ,#CHECK_AMOUNT#       					/* 수표금액 */
+			              ,#NOTE_CODE#       						/* 어음코드 */
+			              ,#NOTE_AMOUNT#       					/* 어음금액 */
+			              ,#RECEIVABLE_CODE#       				/* 외상미수금코드 */
+			              ,#RECEIVABLE_AMOUNT#       			/* 외상미수금금액 */
+			              ,#SUP_AMOUNT#      						/* 공급가액합계 */
+			              ,#TAX_AMOUNT#       					/* 세액합계 */
+			              ,#TOT_FOREIGN_AMOUNT#       		/* 외화공급가액합계 */
+			              ,#TOTAL_AMOUNT#       					/* 총금액 */
+			              ,#TOTAL_QUANTITY#       				/* 총수량 */
+			              ,#DTT_YN#       							/* 거래명세서 구분 */
+			              ,#REMARK#       							/* 비고 */
+			              ,#UPDT_USID#       						/* 작성자 */
+			              ,SYSDATE       								/* 작성일시 */
+			              ,#UPDT_USID#       						/* 최종수정자 */
+			              ,SYSDATE       								/* 최종수정일시 */
+			              ,#ETCNUM1#       							/* 기타번호1 */
+			              ,#ETCNUM2#       							/* 기타번호2 */
+			              ,#ETCNUM3#       							/* 기타번호3 */
+			              ,#ETCNUM4#       							/* 기타번호4 */
+			              ,#DTI_MSG#       							/* 세금계산서 원본 */
+			              ,#AMEND_CODE#       					/* 수정코드 */
+			              ,#REMARK2#       							/* 비고2 */
+			              ,#REMARK3#       							/* 비고3 */
+			              ,#EXCHANGED_DOC_ID#       			/* 서비스관리번호 */
+			              ,#APPROVE_ID#       						/* 승인번호 */
+			              ,#SUP_BIZPLACE_CODE#       			/* 사업장코드 */
+			              ,#BYR_BIZPLACE_CODE#       			/* 사업장코드 */
+			              ,#BRK_BIZPLACE_CODE#       			/* 사업장코드 */
+			              ,#BYR_DEPT_NAME2#       				/* 담당부서명2 */
+			              ,#BYR_EMP_NAME2#       				/* 담당자명2 */
+			              ,#BYR_TEL_NUM2#       					/* 담당자전화번호2 */
+			              ,#BYR_EMAIL2#       						/* 담당자이메일2 */
+			              ,#ATTACHFILE_YN#       					/* 첨부파일 여부 */
+			              ,#ASP_SMTP_MAIL#       				/* SMTP 유통을 위한 메일 주소 */
+			              ,#ORI_ISSUE_ID#       					/* 당초승인번호 */
+			              ,#DTI_IDATE#       
+			              ,#DTI_SDATE#      
+			              )
+
+	]]>
+	</insert>
+
+
+<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 제작의뢰 수정
+     파라미터   : 				
+     -->
+	<update id="PACA0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+                        UPDATE PD_SATXXH
+						SET CONVERSATION_ID = #CONVERSATION_ID# 
+						WHERE 1=1
+						AND TAXY_MONT = #TAXY_MONT#
+						AND TAXX_NUMB = #TAXX_NUMB# 
+
+	]]>
+	</update>			
+	
+	<!-- 
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.19
+     내      용 :  전자세금계산서 데이터 취소
+     파라미터   : 				
+     -->
+	<update id="PACA0020.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+                        UPDATE PD_SATXXH
+						SET CONVERSATION_ID = NULL
+						WHERE 1=1
+						AND CONVERSATION_ID = #CONVERSATION_ID# 
+          
+	]]>
+	</update>			
+	
+
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 전자세금계산서 발송 ITEM 저장
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0020.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO XXSB_DTI_ITEM (  /* PACA0020.SAVE01.제작 전자세금계산서 발송ITEM [제작전자세금계산서ITEM] */
+                CONVERSATION_ID        	/* CONVERSATION_ID  */
+               ,SUPBUY_TYPE        			/* 매입/매출 구분 */
+               ,DIRECTION        				/* 정/역 구분 */
+               ,DTI_LINE_NUM        			/* dti_line_num */
+               ,ITEM_CODE        				/* 품목코드 */
+               ,ITEM_NAME        				/* 품목명 */
+               ,ITEM_SIZE        				/* 규격 */
+               ,ITEM_MD        				/* 구입일자 */
+               ,UNIT_PRICE        				/* 단가 */
+               ,ITEM_QTY        				/* 수량 */
+               ,SUP_AMOUNT        			/* 공급가액 */
+               ,TAX_AMOUNT        			/* 세액 */
+               ,FOREIGN_AMOUNT        	/* 외화금액 */
+               ,CURRENCY_CODE        		/* 통화코드 */
+               ,ITEM_GUBUN        			/* ITEM 구분값 */
+               ,REMARK        					/* 비고 */
+               ,CREATED_BY        			/* 작성자 */
+               ,CREATION_DATE        		/* 작성일시 */
+               ,LAST_UPDATED_BY        	/* 최종수정자 */
+               ,LAST_UPDATE_DATE        	/* 최종수정일시 */
+              )
+      SELECT
+                #CONVERSATION_ID#
+                ,#SUPBUY_TYPE# 
+                ,#DIRECTION# 
+                ,A.TAXX_IDXX  
+                ,#ITEM_CODE# 
+                , CASE WHEN NVL(A.ITEM_MEMO,' ') = ' ' THEN B.JOBN_NAME ELSE A.ITEM_MEMO END
+                ,B.JOBN_SIZE 
+                ,A.DEND_DATE 
+                ,#UNIT_PRICE# 
+                ,#ITEM_QTY#          
+                ,NVL(A.TAXX_AMTX,0) 
+                ,NVL(A.TAXX_VATX,0)        
+                ,#FOREIGN_AMOUNT#    
+                ,#CURRENCY_CODE# 
+                ,'DTI' 
+                ,B.MEMO_FILD   
+                ,#UPDT_USID# 
+                ,SYSDATE     
+                ,#UPDT_USID#   
+                ,SYSDATE             
+                FROM PD_SATXXD A 
+                LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+                WHERE 1=1 
+                AND A.TAXY_MONT = #TAXY_MONT#
+                AND A.TAXX_NUMB = #TAXX_NUMB#
+
+	]]>
+	</insert>	
+	
+	
+
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 전자세금계산서 발송 STATUS
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0020.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+            INSERT INTO XXSB_DTI_STATUS (  /* PACA0020.SAVE02.제작 전자세금계산서 STATUS [제작전자세금계산서 STATUS] */
+                CONVERSATION_ID        					/* CONVERSATION_ID */
+               ,SUPBUY_TYPE        							/* 매입/매출 구분 */
+               ,DIRECTION        								/* 정/역 구분 */
+               ,DTI_STATUS        							/* 최종상태 */
+               ,TRAN_STATUS        							/* 전송상태 */
+               ,SUP_PRINT_CNT        						/* 공급자출력횟수 */
+               ,BYR_PRINT_CNT        						/* 받는자출력횟수 */
+               ,RETURN_CODE        							/* RETURN_CODE */
+               ,RETURN_DESCRIPTION        				/* RETURN_DESCRIPTION */
+               ,SBDESCRIPTION        						/* 거부/취소사유 */
+               ,DEPT_NAME        								/* 부서명 */
+               ,CREATED_BY        							/* 작성자 */
+               ,CREATION_DATE        						/* 작성 일시 */
+               ,LAST_UPDATED_BY        					/* 최종수정 자 */
+               ,LAST_UPDATE_DATE        					/* 최종수정 일시 */
+               ,ATT01        /*  */
+               ,ATT02        /*  */
+               ,ATT03        /*  */
+               ,ATT04        /*  */
+               ,ATT05        /*  */
+               ,ATT06        /*  */
+               ,ATT07        /*  */
+               ,ATT08        /*  */
+               ,ATT09        /*  */
+               ,ATT10        /*  */
+               ,ATT11        /*  */
+              )
+       VALUES (
+               #CONVERSATION_ID#       					/* CONVERSATION_ID */
+              ,#SUPBUY_TYPE#       						/* 매입/매출 구분 */
+              ,#DIRECTION#       							/* 정/역 구분 */
+              ,'I'       											/* 최종상태 */
+              ,'I'       											/* 전송상태 */
+              ,#SUP_PRINT_CNT#       						/* 공급자출력횟수 */
+              ,#BYR_PRINT_CNT#       						/* 받는자출력횟수 */
+              ,#RETURN_CODE#       						/* RETURN_CODE */
+              ,#RETURN_DESCRIPTION#       				/* RETURN_DESCRIPTION */
+              ,#SBDESCRIPTION#       						/* 거부/취소사유 */
+              ,#DEPT_NAME#       							/* 부서명 */
+              ,#UPDT_USID#        							/* 작성자 */
+              ,SYSDATE      									/* 작성 일시 */
+              ,#UPDT_USID#        							/* 최종수정 자 */
+              ,SYSDATE      									/* 최종수정 일시 */
+              ,#ATT01#       /*  */
+              ,#ATT02#       /*  */
+              ,#ATT03#       /*  */
+              ,#ATT04#       /*  */
+              ,#ATT05#       /*  */
+              ,#ATT06#       /*  */
+              ,#ATT07#       /*  */
+              ,#ATT08#       /*  */
+              ,#ATT09#       /*  */
+              ,#ATT10#       /*  */
+              ,#ATT11#       /*  */
+              )
+
+
+
+	]]>
+	</insert>	
+	
+	
+
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.03
+     내      용 : 전자세금계산서 발송 INTERFACE
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<insert id="PACA0020.SAVE03" parameterClass="hashmap">
+	<![CDATA[
+			       INSERT INTO XXSB_DTI_INTERFACE (  /* PACA0020.SAVE03.제작 전자세금계산서 INTERFACE [제작전자세금계산서 INTERFACE] */
+			                MESSAGE_ID       					/* 인터페이스식별자 */
+			               ,CONVERSATION_ID        			/* CONVERSATION_ID */
+			               ,SUPBUY_TYPE        					/* 매입/매출 구분 */
+			               ,DIRECTION        						/* 정/역 구분 */
+			               ,SIGNAL        							/* 요청시그널 */
+			               ,MESSAGE_STATUS_FLAG        	/* 인터페이스 상태 플래그 */
+			               ,TARGET_SYSTEM_ID        			/* 매입자 시스템 식별자 */
+			               ,AUTH_TICKET        					/* 인증토큰 */
+			               ,META_STRING        					/* 메타 문서 */
+			               ,LAST_UPDATE_DATE        			/* 수정시간 */
+			              )
+			       VALUES (
+			               #CONVERSATION_ID#  || ROUND(DBMS_RANDOM.VALUE(10000,99999),0)	/* 인터페이스식별자 */
+			              ,#CONVERSATION_ID#       			/* CONVERSATION_ID */
+			              ,#SUPBUY_TYPE#       				/* 매입/매출 구분 */
+			              ,#DIRECTION#       					/* 정/역 구분 */
+			              ,'ARISSUE'       							/* 요청시그널 */
+			              ,'N'       									/* 인터페이스 상태 플래그 */
+			              ,#TARGET_SYSTEM_ID#       		/* 매입자 시스템 식별자 */
+			              ,#AUTH_TICKET#       				/* 인증토큰 */
+			              ,#META_STRING#	/* 메타 문서 */
+			              ,SYSDATE						       		/* 수정시간 */
+			              )
+
+	]]>
+	</insert>	
+	
+
+<!--
+	 작 성 자 : 오세훈
+	 작 성 일 : 2016.11.03
+	 내    용 : CONVERSATION_ID    일련번호 4자리 생성
+	 파라미터 : 
+	-->
+	<select id="PACA0020.getCONVERSATION_ID" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	
+				
+				SELECT  /*  PACA0020.getCONVERSATION_ID 신규 세금계산서 일련번호 채번  */
+				CASE WHEN MAX(SEQ_ID)>9999 
+				THEN LPAD(SUBSTR(MAX(CAST(SEQ_ID AS NUMERIC)),-4),4,'0') 
+				ELSE LPAD(NVL(MAX(CAST(SEQ_ID AS NUMERIC)),0)+1,4,'0') END AS SEQN
+				FROM XXSB_DTI_MAIN
+				  
+	]]>
+	</select>	
+	
+	
+</sqlMap>
+
+

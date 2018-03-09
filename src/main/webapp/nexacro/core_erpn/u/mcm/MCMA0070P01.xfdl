@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="MDMB0010P02" onkeydown="comcodenm_OnKeyDown" onload="fn_FormLoadSetting" titletext="카테고리조회팝업" position="absolute" scrollbars="none" left="0" width="510" top="0" height="495">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" position="absolute" left="15" width="262" top="87" height="21" cssclass="styFormSearchInfo" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" taborder="5"/>
+        <Static id="Static0" text="해당 항목에서 더블클릭 또는 Enter Key를 누르시면 선택 됩니다." position="absolute" left="15" height="21" cssclass="sta_WF_Desc01" bottom="13" right="74" taborder="6"/>
+        <Static id="imgFormTitle" position="absolute" left="15" top="6" height="21" cssclass="sta_WF_Info" text="조회조건 후 입력하세요 " right="15" taborder="7"/>
+        <Static id="spSearchBox0" position="absolute" left="15" top="30" height="43" cssclass="styFormSearchBox" right="15" taborder="3"/>
+        <Edit autoselect="true" id="edtSHRCATE_NAME" imemode="native" onkeydown="edtSearchText_OnKeyDown" taborder="1" position="absolute" left="103" width="103" top="41" height="21" cssclass="styFormSearchItem"/>
+        <Button id="btnToExcel" taborder="8" text="엑셀" onclick="fn_ToExcel" cssclass="btn_WF_Module" top="83" width="50" height="21" right="15"/>
+        <Button id="btnCancel" taborder="9" text="취소" onclick="fn_Cancel" cssclass="btn_POP_CRUD" width="62" height="24" bottom="12" right="15"/>
+        <Button id="Button69" taborder="2" text="조회" cssclass="btn_WF_CRUD" top="41" right="26" width="52" height="21" onclick="fn_Search"/>
+        <Static id="Static09" taborder="10" text="h 6" visible="false" left="23" top="102" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="11" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="461"/>
+        <Static id="Static06" taborder="12" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" top="0" right="0" width="15" height="461"/>
+        <Static id="Static03" taborder="13" text="h 10" visible="false" left="48" top="0" width="120" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="14" text="h 30" visible="false" left="320" top="0" width="56" height="30" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="15" text="h 35" visible="false" left="296" top="73" width="56" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="16" text="h 12" visible="false" left="415" top="483" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="17" text="h 8" visible="false" left="415" top="451" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="18" text="카테고리 명" left="31" top="41" width="63" height="21"/>
+        <Grid id="grdMD_CATEXM" taborder="19" binddataset="dsMD_CATEXM" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" onexpanddown="fn_HelpDialoge" left="15" top="108" right="15" bottom="44" oncelldblclick="grdMD_CATEXM_oncelldblclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="94"/>
+                <Column size="144"/>
+                <Column size="85"/>
+                <Column size="169"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="normal" edittype="none" text="광고주코드"/>
+                <Cell col="1" text="광고주명"/>
+                <Cell col="2" text="카테고리코드"/>
+                <Cell col="3" text="카테고리명"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="normal" edittype="none" text="bind:CUST_CODE"/>
+                <Cell col="1" displaytype="normal" edittype="none" editfilter="number" style="align: ;" text="bind:CUST_NAME" editlimit="6" editdisplay="edit"/>
+                <Cell col="2" style="align: ;" text="bind:CATE_CODE" editlimit="0"/>
+                <Cell col="3" edittype="none" style="align: ;" text="bind:CATE_NAME" editlimit="0" expandshow="hide" expandsize="23"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static10" taborder="20" text="광고주 명" left="229" top="41" width="63" height="21"/>
+        <Edit id="edtSHRCUST_NAME" taborder="21" autoselect="true" onkeydown="edtSearchText_OnKeyDown" cssclass="styFormSearchItem" left="301" top="41" width="103" height="21"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsMD_CATEXM">
+        <ColumnInfo>
+          <Column id="CUST_CODE" size="255" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" size="255" prop="default" type="STRING"/>
+          <Column id="BRND_CODE" type="STRING" size="256"/>
+          <Column id="BRND_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:	MCMA0070P01 카테고리조회팝업
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.27		최제현		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망    *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST 	= ""; 
+this.sPACKAGENAME = 'MCMA0070P01';
+this.edtSHRCUST_NAME.set_value(this.parent.cust_name);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH = "";
+	this.sFORMCAPTION = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+
+/*------------------------------------+
+ |  최초 화면 Load時 처리 할 사항     |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	//this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fn_Search();
+}
+
+/*-----------------------+
+ |  조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+
+	this.fnc_DatasetClear('dsMD_CATEXM'); // 조회 자료 초기화
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsMD_CATEXM=dsMD_CATEXM";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+		
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdMD_CATEXM.setFocus(); //재 클릭 방지를 위해 Focus 이동
+}
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsMD_CATEXM")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	return true;
+}
+
+
+/*------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == 'SEARCH00') {
+
+		sReturnString = " pgm=" + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+ 		sReturnString += " CUST_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRCUST_NAME.value)); //광고주
+		sReturnString += " CATE_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRCATE_NAME.value)); //브랜드
+
+	} 
+
+	return sReturnString;
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsMD_CATEXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsMD_CATEXM.rowcount);
+
+	}
+
+}
+
+/*----------------------------------+
+ |  Enter Key Press 시 조회 실행 !  |
+ +----------------------------------*/
+this.edtSearchText_OnKeyDown = function (obj:Edit, e:KeyEventInfo) {
+
+	if (e.keycode == 13) this.fn_Search();
+
+}
+
+/*------------------------------------------------+
+ |  그리드에서 Enter Key 시 선택과 동일한 작업 !  |
+ +------------------------------------------------*/
+this.grdTM_POPUPX_OnKeyDown = function (obj:Grid, e:KeyEventInfo) {
+
+	if (e.keycode == 13) this.fn_Confirm();
+
+}
+
+/*---------------------------------------+
+ |  Form에서 ESC Key 누르면 화면 종료 !  |
+ +---------------------------------------*/
+this.comcodenm_OnKeyDown = function (obj:Form, e:KeyEventInfo) {
+
+	if (e.keycode == 27) this.fn_Cancel();
+
+}
+
+/*---------------------+
+ |  엑셀 버튼 클릭 時  |
+ ----------------------*/
+this.fn_ToExcel = function (obj:Button, e:ClickEventInfo) {
+
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*---------------+
+ |  확인 처리 !  |
+ +---------------*/
+this.fn_Confirm = function (obj:Grid, e:GridClickEventInfo) {
+
+	var cust_code = this.dsMD_CATEXM.getColumn(this.dsMD_CATEXM.rowposition,"CUST_CODE");
+	var cust_name = this.dsMD_CATEXM.getColumn(this.dsMD_CATEXM.rowposition,"CUST_NAME");
+	var cate_code = this.dsMD_CATEXM.getColumn(this.dsMD_CATEXM.rowposition,"CATE_CODE");
+	var cate_name = this.dsMD_CATEXM.getColumn(this.dsMD_CATEXM.rowposition,"CATE_NAME");
+	var key = this.parent.key;
+
+	this.opener.fn_CallBackP01(cust_code, cust_name, cate_code, cate_name, key);
+	
+	this.fnc_PopupClose("");
+
+}
+
+/*---------------+
+ |  취소 처리 !  |
+ +---------------*/
+this.fn_Cancel = function (obj:Button, e:ClickEventInfo) {
+
+	this.fnc_PopupClose("");
+
+}
+/*----------------+
+ |  셀 더블클릭  |
+ +----------------*/
+this.grdMD_CATEXM_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo)
+{
+	this.fn_Confirm();
+}
+]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="TXMA0060">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 업종구분등록(과세 표준) 조회
+********************************************************************************/
+-->
+	<select id="TXMA0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[                 
+            SELECT  /* TXMA0060.SEARCH00.업종구분등록(과세 표준) 조회 */
+                    A.BIZ_TYPE_CD 	/* VAT_업종구분코드 */
+                   ,A.CORP_TYPENM   /* VAT_업태명 */
+                   ,A.CORP_LINE     /* VAT_종목명 */
+                   ,A.CORP_TYPECD   /* VAT_업종코드 */
+              FROM TA_VATUPJ A      /* [부가업종] */
+             WHERE A.BIZ_TYPE_CD BETWEEN '1' AND '3' /* VAT_업종구분코드 */ 
+	]]>	
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 업종구분등록(면세사업 수입금액) 조회
+********************************************************************************/
+-->
+	<select id="TXMA0060.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+                SELECT  /* TXMA0060.SEARCH01.업종구분등록(면세사업 수입금액) 조회 */
+                       A.BIZ_TYPE_CD 	/*VAT_업종구분코드*/
+                     , A.CORP_TYPENM   	/*VAT_업태명*/      
+                     , A.CORP_LINE   	/*VAT_종목명*/        
+                     , A.CORP_TYPECD   	/*VAT_업종코드*/    
+                  FROM TA_VATUPJ A 
+                 WHERE A.BIZ_TYPE_CD = '4'
+	]]>	
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 업종구분등록 저장
+********************************************************************************/
+-->
+	<insert id="TXMA0060.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT INTO TA_VATUPJ ( /* TXMA0060.SAVE00.업종구분등록 저장 *//* [부가업종] */
+               BIZ_TYPE_CD 		/* VAT_업종구분코드 */
+              ,CORP_TYPENM      /* VAT_업태명 */
+              ,CORP_LINE        /* VAT_종목명 */
+              ,CORP_TYPECD      /* VAT_업종코드 */
+              ,INST_USID        /* 입력작업자 */
+              ,INST_DATE        /* 입력일시 */
+              ,UPDT_USID        /* 수정작업자 */
+              ,UPDT_DATE        /* 수정일시 */
+              )
+       VALUES (
+               #BIZ_TYPE_CD#    /* VAT_업종구분코드 */
+              ,#CORP_TYPENM#    /* VAT_업태명 */
+              ,#CORP_LINE#      /* VAT_종목명 */
+              ,#CORP_TYPECD#    /* VAT_업종코드 */
+              ,#UPDT_USID#      /* 입력작업자 */
+              ,SYSDATE          /* 입력일시 */
+              ,#UPDT_USID#      /* 수정작업자 */
+              ,SYSDATE          /* 수정일시 */
+              )
+	]]>
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : 업종구분등록 수정
+********************************************************************************/
+-->
+	<update id="TXMA0060.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE TA_VATUPJ                 /* TXMA0060.UPDATE00.업종구분등록 수정 *//* [부가업종] */
+           SET  CORP_TYPENM = #CORP_TYPENM#  /* VAT_업태명 */
+               ,CORP_LINE 	= #CORP_LINE#  /* VAT_종목명 */
+               ,CORP_TYPECD = #CORP_TYPECD#  /* VAT_업종코드 */
+               ,UPDT_USID 	= #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE 	= SYSDATE  /* 수정일시 */
+         WHERE BIZ_TYPE_CD  = #BIZ_TYPE_CD#  /* VAT_업종구분코드 */
+	]]>
+	</update>
+</sqlMap>

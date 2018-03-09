@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATE0040">
+
+<!--
+ *   프로그램명 : 월근태현황결재
+ *   작 성 일 : 2016.09.12
+ *   작 성 자 : 이창운
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.12
+	 내    용 : 월근태현황 조회
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATE0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.EMPL_NUMB							/*사원번호*/
+		       ,B.EMPL_NAME							/*성명*/
+		       ,B.DEPT_CODE							/*부서코드*/
+		       ,SF_GET_DEPTNAME(B.DEPT_CODE) DEPT_NAME /*부서명*/
+		       ,SF_GET_WORKINFO(SUBSTR(A.ATTE_DATE,1,6),A.EMPL_NUMB,'1') ATTE_DATE	/*휴일근무-근무일*/
+		       ,SF_GET_WORKINFO(SUBSTR(A.ATTE_DATE,1,6),A.EMPL_NUMB,'2') RESN_DESN	/*휴일근무-사유*/
+		       ,SF_GET_ANDC(SUBSTR(#ATTE_YMTH#,1,4), A.EMPL_NUMB,'1') USEB_ANDC		/*연차사용-발생일수*/
+		       ,SUM(DECODE(A.WORK_GUBN,'4',A.WORK_TIME,0)) USED_ANDC				/*연차사용-금월사용*/
+		       ,NVL((
+		            SELECT SUM(WORK_TIME) 
+		              FROM AT_ATTEDY 
+		             WHERE ATTE_DATE LIKE SUBSTR(#ATTE_YMTH#,1,4)||'%' AND EMPL_NUMB = A.EMPL_NUMB
+		               AND WORK_GUBN = '4'
+		             GROUP BY EMPL_NUMB             
+		         ),0) TOTL_USED_ANDC												/*연차사용-누적사용*/
+		       ,NVL((
+		            SELECT SUM(WORK_TIME) 
+		              FROM AT_ATTEDY 
+		             WHERE ATTE_DATE LIKE TO_CHAR(SUBSTR(#ATTE_YMTH#,1,4)-1)||'%' AND EMPL_NUMB = A.EMPL_NUMB
+		               AND WORK_GUBN = '4'
+		             GROUP BY EMPL_NUMB             
+		         ),0)BEFO_USED_ANDC													/*연차사용-전년사용*/
+		        ,SF_GET_ANDC(SUBSTR(#ATTE_YMTH#,1,4), A.EMPL_NUMB,'1') -
+		         NVL((
+		            SELECT SUM(WORK_TIME) 
+		              FROM AT_ATTEDY 
+		             WHERE ATTE_DATE LIKE SUBSTR(#ATTE_YMTH#,1,4)||'%' AND EMPL_NUMB = A.EMPL_NUMB
+		               AND WORK_GUBN = '4'
+		             GROUP BY EMPL_NUMB             
+		         ),0) REMA_USED_ANDC												/*연차사용-잔여일수*/
+		   FROM AT_ATTEDY A					/* 일근태 테이블 */
+		     LEFT OUTER JOIN HR_MASTXM B	/* 인사마스터 테이블 */
+		       ON A.EMPL_NUMB = B.EMPL_NUMB
+		 WHERE A.ATTE_DATE LIKE #ATTE_YMTH#||'%'
+	]]>
+		 <isNotEmpty prepend="AND" property="DEPT_CODE">
+			   B.DEPT_CODE = #DEPT_CODE#
+		 </isNotEmpty>
+		 <isNotEmpty prepend="AND" property="EMPL_NUMB">
+			   A.EMPL_NUMB = #EMPL_NUMB#
+		 </isNotEmpty>
+	<![CDATA[ 
+		GROUP BY A.EMPL_NUMB, B.EMPL_NAME, B.DEPT_CODE, SUBSTR(A.ATTE_DATE,1,6)
+		ORDER BY NVL(B.DEPT_CODE,'999999'), A.EMPL_NUMB
+	]]>
+	</select>	
+
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.12
+     내         용 : 월근태현황 결재해더 등록
+********************************************************************************/
+-->
+	<insert id="HATE0040.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO TM_APPRXH ( /* HATC0020.SAVE00.월근태현황 결재해더 등록 */
+             DOCU_IDXX 			/*결재 DOC_ID*/
+			,APPR_SEQN          /*결재 SEQ   */
+			,EMPL_NUMB     		/*사번       */
+			,APPR_DATE			/*신청일자*/
+			,SUBJ_NAME			/*제목*/
+			,APPR_STAT			/*결재상태*/
+			,DEPT_CODE     		/*신청자 부서 */
+			,INST_USID          /*입력작업자 */
+			,INST_DATE          /*입력일시   */
+			,UPDT_USID          /*수정작업자 */
+			,UPDT_DATE          /*수정일시   */
+		)
+       	VALUES (
+             #DOCU_IDXX#		/*결재 DOC_ID*/
+			,#APPR_SEQN#       	/*결재 SEQ  */
+			,#EMPL_NUMB#    	/*사번              */
+			,TO_CHAR(SYSDATE,'YYYYMMDD')   /*신청일자*/
+			,#SUBJ_NAME#	   	/*제목              */
+			,'N'		       	/*결재상태    */
+			,#DEPT_CODE#   		/*신청자부서코드    */
+            ,#UPDT_USID#       	/* 입력작업자 */
+            ,SYSDATE            /* 입력일시  */
+            ,#UPDT_USID#        /* 수정작업자 */
+            ,SYSDATE            /* 수정일시  */
+		)		
+    ]]>
+	</insert>		
+</sqlMap>

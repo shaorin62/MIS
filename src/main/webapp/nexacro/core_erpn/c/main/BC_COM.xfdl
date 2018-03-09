@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="BC_COM" onload="fn_FormLoadSetting" position="absolute" left="0" width="1183" top="0" height="383" scrollbars="none" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[기획]하단컨텐츠" style="padding:0 0 10 0;">
+    <Layouts>
+      <Layout>
+        <Static id="Static34" taborder="0" text="w26" visible="false" left="0" top="37" width="26" height="210" style="background:#fb7b7b7a;"/>
+        <Button id="Button00" taborder="1" text="경영실적현황" cssclass="btn_MF_content" left="26" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont01.png') center middle;"/>
+        <Button id="Button01" taborder="2" text="WORK알림" cssclass="btn_MF_content" left="224" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont02.png') center middle;"/>
+        <Button id="Button02" taborder="3" text="임시전표" cssclass="btn_MF_content" left="422" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont03.png') center middle;"/>
+        <Button id="Button03" taborder="4" text="법인카드&#13;&#10;미처리신청" cssclass="btn_MF_content" left="620" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont04.png') center middle;"/>
+        <Button id="Button04" taborder="5" text="재직증명서" cssclass="btn_MF_content" left="818" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont05.png') center middle;"/>
+        <Button id="Button05" taborder="6" text="급여/상여" cssclass="btn_MF_content" left="1016" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont06.png') center middle;"/>
+        <Button id="Button06" taborder="7" text="원천징수영수증" cssclass="btn_MF_content" left="26" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont07.png') center middle;"/>
+        <Button id="Button07" taborder="8" text="출장신청" cssclass="btn_MF_content" left="224" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont08.png') center middle;" enable="true"/>
+        <Button id="Button08" taborder="9" text="경조금신청" cssclass="btn_MF_content" left="422" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont09.png') center middle;"/>
+        <Button id="Button09" taborder="10" text="학자금신청" cssclass="btn_MF_content" left="620" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont10.png') center middle;" enable="true"/>
+        <Button id="Button10" taborder="11" text="품의서작성" cssclass="btn_MF_content" left="818" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont11.png') center middle;"/>
+        <Button id="Button11" taborder="12" text="제작의뢰서" cssclass="btn_MF_content" left="1016" top="199" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont12.png') center middle;"/>
+        <Static id="Static24" taborder="13" text="h 49" visible="false" left="150" top="150" width="90" height="49" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="14" text="w27" visible="false" left="1156" top="37" width="27" height="210" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="15" left="219" top="0" width="31" height="36" cssclass="sta_MF_number" text="1"/>
+        <Static id="Static02" taborder="16" cssclass="sta_MF_number" left="417" top="0" width="31" height="36" text="3"/>
+        <Static id="Static03" taborder="17" cssclass="sta_MF_number" left="615" top="0" width="31" height="36" onclick="Static03_onclick" text="2"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

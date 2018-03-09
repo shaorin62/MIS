@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PAYA0020">
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.12
+     내    용 : 개인별기본급 테이블 조회
+********************************************************************************/
+-->
+	<select id="PAYA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+       SELECT /* PAYA0020.SEARCH00.개인별기본급 테이블 조회 */
+              '0' AS CHK
+            , A.EMPL_NUMB                   /* 사원번호 */
+            , B.EMPL_NAME                   /* 성명 */
+            , B.OPOS_CODE                   /* 직위코드 */
+            , SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+            , A.STDS_DATE                   /* 기준일 */
+            , A.SRAL_NUMB                   /* 일련번호 */
+            , A.BASC_ANSL                   /* 기본연봉 */
+            , A.ASL1_AMOT                   /* 연봉1금액 */
+            , A.ASL2_AMOT                   /* 연봉2금액 */
+            , A.ASL3_AMOT                   /* 연봉3금액 */
+            , A.ASL4_AMOT                   /* 연봉4금액 */
+            , A.BSLY_AMOT                   /* 기본급 */
+            , A.BSL1_AMOT                   /* 시간외근무수당 */
+            , A.BSL2_AMOT                   /* 임원상여 */
+            , A.BSL3_AMOT                   /* 수습1개월월봉 */
+            , A.BSL4_AMOT                   /* 수습2개월월봉 */
+            , A.BSL5_AMOT                   /* 수습3개월월봉*/
+            , A.REMK_100X                   /* 비고100 */
+         FROM PY_REGSAL A                   /* [개인별기본급] */
+        INNER JOIN TABLE(SF_HR_MASTXM(A.EMPL_NUMB ,TO_CHAR(ADD_MONTHS(#STDS_YMTH# || '01', 1) - 1, 'YYYYMMDD'))) B
+                ON A.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN VI_DEPTXM C
+                  ON B.DEPT_CODE = C.DEPT_CODE
+              LEFT OUTER JOIN TM_CODEXD D
+                ON D.COMM_CODE = 'CPOS_CODE'
+               AND B.CPOS_CODE = D.COMD_CODE
+             WHERE A.STDS_DATE = (SELECT MAX(STDS_DATE)
+                                    FROM PY_REGSAL
+                                   WHERE EMPL_NUMB = A.EMPL_NUMB
+                                     AND STDS_DATE <= TO_CHAR(ADD_MONTHS(#STDS_YMTH# || '01', 1) - 1, 'YYYYMMDD'))
+               AND B.WODN_CODE = '1'
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+		 	       C.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+	</isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+		 	       A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+			 ORDER BY D.SORT_ORDR, A.STDS_DATE, A.EMPL_NUMB, TO_NUMBER(A.SRAL_NUMB) DESC
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.12
+     내    용 : 개인별기본급 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYA0020.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO PY_REGSAL (        /* [개인별기본급] */
+                    EMPL_NUMB          /* 사원번호 */
+                  , STDS_DATE          /* 기준일 */
+                  , SRAL_NUMB          /* 일련번호 */
+                  , BASC_ANSL          /* 기본연봉 */
+                  , ASL1_AMOT          /* 연봉1금액 */
+                  , ASL2_AMOT          /* 연봉2금액 */
+                  , ASL3_AMOT          /* 연봉3금액 */
+                  , ASL4_AMOT          /* 연봉4금액 */
+                  , BSLY_AMOT          /* 기본급  */
+                  , BSL1_AMOT          /* 시간외근무수당 */
+                  , BSL2_AMOT          /* 임원상여 */
+                  , BSL3_AMOT          /* 수습1개월월봉*/
+                  , BSL4_AMOT          /* 수습2개월월봉*/
+                  , BSL5_AMOT          /* 수습3개월월봉 */
+                  , REMK_100X          /* 비고100 */
+                  , INST_USID          /* 입력작업자 */
+                  , INST_DATE          /* 입력일시 */
+                  , UPDT_USID          /* 수정작업자 */
+                  , UPDT_DATE          /* 수정일시 */
+         ) VALUES (
+                    #EMPL_NUMB#        /* 사원번호 */
+                  , #STDS_DATE#        /* 기준일 */
+                  , (SELECT NVL(MAX(SRAL_NUMB),0)+1 FROM PY_REGSAL WHERE EMPL_NUMB = #EMPL_NUMB# AND STDS_DATE = #STDS_DATE#)        /* 일련번호 */
+                  , #BASC_ANSL#        /* 기본연봉 */
+                  , #ASL1_AMOT#        /* 연봉1금액 */
+                  , #ASL2_AMOT#        /* 연봉2금액 */
+                  , #ASL3_AMOT#        /* 연봉3금액 */
+                  , #ASL4_AMOT#        /* 연봉4금액 */
+                  , #BSLY_AMOT#        /* 기본급금액 */
+                  , #BSL1_AMOT#        /* 시간외근무수당 */
+                  , #BSL2_AMOT#        /* 임원상여 */
+                  , #BSL3_AMOT#        /* 수습1개월월봉 */
+                  , #BSL4_AMOT#        /* 수습2개월월봉 */
+                  , #BSL5_AMOT#        /* 수습3개월월봉 */
+                  , #REMK_100X#        /* 비고100 */
+                  , #UPDT_USID#        /* 입력작업자 */
+                  , SYSDATE            /* 입력일시 */
+                  , #UPDT_USID#        /* 수정작업자 */
+                  , SYSDATE            /* 수정일시 */
+                )
+	]]>
+	</insert>
+	
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.12
+     내    용 : 개인별기본급 테이블 수정
+********************************************************************************/
+-->
+	<update id="PAYA0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE PY_REGSAL /* [개인별기본급] */
+           SET BASC_ANSL = #BASC_ANSL#            /* 기본연봉 */
+             , ASL1_AMOT = #ASL1_AMOT#            /* 연봉1금액 */
+             , ASL2_AMOT = #ASL2_AMOT#            /* 연봉2금액 */
+             , ASL3_AMOT = #ASL3_AMOT#            /* 연봉3금액 */
+             , ASL4_AMOT = #ASL4_AMOT#            /* 연봉4금액 */
+             , BSLY_AMOT = #BSLY_AMOT#            /* 기본급금액 */
+             , BSL1_AMOT = #BSL1_AMOT#            /* 시간외근무수당 */
+             , BSL2_AMOT = #BSL2_AMOT#            /* 임원상여 */
+             , BSL3_AMOT = #BSL3_AMOT#            /* 수습1개월월봉 */
+             , BSL4_AMOT = #BSL4_AMOT#            /* 수습2개월월봉 */
+             , BSL5_AMOT = #BSL5_AMOT#            /* 수습3개월월봉 */
+             , REMK_100X = #REMK_100X#            /* 비고100 */
+             , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+           AND STDS_DATE = #STDS_DATE#            /* 기준일 */
+           AND SRAL_NUMB = #SRAL_NUMB#            /* 일련번호 */
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.12
+     내    용 : 개인별기본급 테이블 삭제
+********************************************************************************/
+-->
+	<delete id="PAYA0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE /* PAYA0020.DELETE00.개인별기본급 테이블 삭제 */
+			v_WADE_YSNO INT;
+	    BEGIN
+			/*고정 급여마감 체크-지급일 || 사원*/
+        	SELECT COUNT(*)
+        	  INTO v_WADE_YSNO
+	          FROM PY_PMDIRY A
+			 INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+	           AND A.WAGE_YMTH = SUBSTR(#STDS_DATE#,1,6)
+	           AND A.CLSD_CNTT LIKE '%' || (SELECT CLSD_CODE FROM HR_MASTXM WHERE EMPL_NUMB = #EMPL_NUMB#) || '%'
+	           AND B.WAGP_CODE = '1000'
+			;
+
+	        /*마감되었다면 수정불가*/
+	        IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','기본급관리,삭제'));
+	        END IF;
+
+        DELETE FROM PY_REGSAL /* [개인별기본급] */
+         WHERE EMPL_NUMB = #EMPL_NUMB#      /* 사원번호 */
+           AND STDS_DATE = #STDS_DATE#      /* 기준일 */
+           AND SRAL_NUMB = #SRAL_NUMB#      /* 일련번호 */
+			;
+		END;
+	]]>
+	</delete>
+
+</sqlMap>

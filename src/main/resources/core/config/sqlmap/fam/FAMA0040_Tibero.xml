@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">   
+
+<sqlMap namespace="FAME0014">
+
+<!--
+ *   프로그램명 : 거래처정보조회 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.07.25
+ *   작 성 자 : 권미영
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<select id="FAMA0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+	            SELECT  /*  FAMA0040.SEARCH00 거래처 조회  */
+	            		A.CUST_CODE   	/* 거래처코드 */
+	                  , A.CUST_NAME     /* 거래처명 */
+	                  , A.CUST_BFNM  	/* 거래처명(약) */
+	                  , A.CUTY_CODE     /* 거래처구분 */
+	                  , SF_GET_COMMNAME('CUTY_CODE', A.CUTY_CODE) AS CUTY_CDNM	/* 거래처구분 */
+	                  , A.RETY_CODE		/* 관계사구분코드 */
+	                  , SF_GET_COMMNAME('RETY_CODE', A.RETY_CODE) AS RETY_CDNM	/* 관계사구분 */
+	                  , A.NANY_CODE     /*  국가 */
+	                  , A.ADDR_DESC || ' '|| A.DTL1_ADDR AS ADDR_DETL /* 거래처주소 */
+	                  , A.CURR_GUBN   	/* 화폐단위 */
+	                  , A.LFTY_CODE 	/* 국내외구분 */
+	                  , SF_GET_COMMNAME('LFTY_CODE', A.LFTY_CODE) AS LFTY_CDNM	/* 국내외구분 */
+	                  , A.CITY_CODE 	/*  법인/개인구분 */
+	                  , A.SACH_EMNR 	/* 담당자 */
+	                  , SF_GET_EMPLNAME(A.SACH_EMNR) AS SACH_EMNM /*  영업담당자명 */
+	                  , A.ACCH_EMNR 	/* 회계담당자 */
+	                  , SF_GET_EMPLNAME(A.ACCH_EMNR) AS ACCH_EMNM /*  회계담당자명 */
+	                  , A.MGMT_DTCD		/* 관리부서 */
+	                  , SF_GET_DEPTNAME(A.MGMT_DTCD) AS MGMT_DTNM
+	                  , A.BIZR_NUMB 	/* 사업자번호 */
+	                  , A.RERN_NUMB		/* 주민번호 */
+	                  , A.CORP_NUMB 	/* 법인등록번호 */
+	                  , A.MAJR_CUST 	/* 대표거래처 */
+	                  , C.CUST_NAME AS MAJR_CDNM 	/* 대표거래처명 */
+	                  , A.OWNR_NAME 	/* 대표자명 */
+	                  , A.BSNS_STAT 	/* 업태 */
+	                  , A.BSNS_TYPE 	/* 업종 */
+	                  , A.POST_NUMB 	/* 우편번호 */
+	                  , A.POST_GUBN 	/* 우편번호구분 */
+	                  , A.ADDR_DESC		/* 주소1 */
+	                  , A.DTL1_ADDR 	/* 주소2 */
+	                  , A.DTL2_ADDR 	/* 상세주소 */
+	                  , A.TELE_NUMB 	/* 전화번호 */
+	                  , A.FAXX_NUMB 	/* 팩스번호 */
+	                  , A.ELTR_MLAD 	/* 대표이메일 */
+	                  , A.OPEN_DATE		/* 거래시작일 */
+	                  , A.CLOS_DATE		/* 거래종료일 */
+	                  , A.USEX_YSNO 	/* 사용여부 */
+	                  , A.TXAP_CUNM    	/* 부가세신고용명칭 */
+	                  , A.MPBZ_NUMB 	/* 종사업장승인번호 */
+	                  , A.PUCD_NUMB 	/* 구매카드가맹점번호 */
+	                  , A.EMPL_NUMB 	/* 사원번호 */
+	                  , SF_GET_EMPLNAME(A.EMPL_NUMB) AS EMPL_NBNM   /* 사원명 */
+	                  , A.RELT_STDT     /* 관계사시작일 */
+	                  , A.RELT_EDDT     /* 관계사종료일 */
+	                  , D.CHSN_NAME     /* 담당자성명 */
+                      , D.TELE_NUMB AS CHSN_TELE     /* 전화번호 */
+                      , E.BANK_CODE     /* 은행코드 */
+                      , SF_GET_COMMNAME('BANK_CODE', E.BANK_CODE) AS BANK_CDNM	/* 은행명 */
+                      , E.ACNT_NUMB     /* 계좌번호 */
+                      , E.ACNT_MANM     /* 예금주 */
+	              FROM TA_CUSTXM A
+	                   LEFT JOIN TA_CUSTXM C   /*  대표(집계) 거래처 정보  */
+	                    	  ON C.CUST_CODE = A.MAJR_CUST
+	                   LEFT JOIN TA_CUSTMN D   /* 거래처 담당자 */
+                        	  ON A.CUST_CODE = D.CUST_CODE AND D.MJCH_YSNO = 1
+	                   LEFT JOIN TA_CUSTAC E   /* 거래처 계좌 */
+                        	  ON A.CUST_CODE = E.CUST_CODE AND E.MJAN_YSNO = 1
+		]]>
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="CUST_NAME">
+				UPPER(A.CUST_NAME) LIKE '%' || UPPER(#CUST_NAME#) || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BIZR_RGNB">
+				A.BIZR_RGNB || A.RERN_NUMB LIKE '%' || #BIZR_RGNB# || '%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="LFTY_CODE">
+				A.LFTY_CODE = #LFTY_CODE#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="MGMT_DTCD">
+				A.MGMT_DTCD = #MGMT_DTCD#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="SACH_EMNR">
+				A.SACH_EMNR = #SACH_EMNR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="USEX_YSNO">
+				A.USEX_YSNO = #USEX_YSNO#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="CUTY_CODE">
+				A.CUTY_CODE = #CUTY_CODE#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="RETY_CODE">
+				A.RETY_CODE = #RETY_CODE#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BIZR_NUMB">
+				A.BIZR_NUMB LIKE '%' || #BIZR_NUMB# || '%'
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND"> 
+			<![CDATA[
+			 	/*  2014-09-22 : JYH : 속도문제로 쿼리 변경..  */
+	             EXISTS ( SELECT SUB1.CUST_CODE
+	                            FROM TA_CUSTXM SUB1
+	                            LEFT JOIN TA_CUSTXD SUB2
+	                                  ON SUB1.CUST_CODE = SUB2.CUST_CODE
+	                           WHERE SUB1.CUST_CODE = A.CUST_CODE
+			]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="CUCL_CODE">
+									SUB2.CUCL_CODE = #CUCL_CODE#
+			</isNotEmpty>
+			
+			<![CDATA[
+	                        )
+	        ]]>
+		</dynamic>
+		<![CDATA[
+	           ORDER BY A.CUST_NAME
+		]]>
+	</select>
+
+</sqlMap>

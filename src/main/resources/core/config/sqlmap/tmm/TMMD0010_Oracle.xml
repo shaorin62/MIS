@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMD0010">
+                                                            
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 김삼영
+     작  성  일 : 2016.09.21
+     내       용 : 테스트및오류사항관리 조회 처리
+******************************************************************************* */
+-->
+    <select id="TMMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TMMD0010.SEARCH00.테스트및오류사항관리 */
+                   A.TEST_DATE   /* 테스트일 */
+                 , A.EMPL_NUMB   /* 사원번호 */
+                 , NVL(C.EMPL_NAME, F.USER_NAME)  AS EMPL_NAME  /* 성명 */
+                 , A.SRAL_NUMB   /* 일련번호 */
+                 , A.MENU_IDXX   /* 메뉴ID */
+                 , B.MENU_NAME   /* 메뉴명 */
+                 , A.REQG_CODE   /* 요청구분(REQG_CODE) */
+                 , A.TEST_SBJT   /* 테스트제목 */
+                 , A.TEST_CODC   /* 테스트세부내용 */
+                 , A.PRSE_CODE   /* 처리상태(PRSE_CODE) */
+                 , A.PROC_DATE   /* 처리일 */
+                 , A.PROC_CHSN   /* 처리담당자 */
+                 , A.PROC_CNTT   /* 처리내용 */
+                 , A.REMK_100X   /* 비고(100) */
+                 , B.SYST_CODE   /* 시스템코드 */
+                 , A.FILE_IDXX   /* 파일IDX */
+              FROM TM_TESTXM A
+             INNER JOIN TM_MENUXM B
+                    ON A.MENU_IDXX = B.MENU_IDXX
+              LEFT JOIN HR_MASTXM C
+                     ON A.EMPL_NUMB = C.EMPL_NUMB
+              LEFT JOIN TM_USERXM F   /* 개발자용 임시 계정을 위해 USER로 변경(2016.03.22 BY302) */
+                     ON A.EMPL_NUMB = F.USER_IDXX
+              LEFT JOIN TM_CODEXD D
+                     ON D.COMM_CODE = 'PRSE_CODE'
+                    AND A.PRSE_CODE = D.COMD_CODE
+             WHERE A.TEST_DATE BETWEEN #TEST_STDT# AND #TEST_ENDT#
+        ]]>
+        <isNotEmpty prepend="AND" property="SYST_CODE">
+                        B.SYST_CODE IN (SELECT COMD_CODE 
+                                          FROM TM_CODEXD 
+                                         WHERE COMM_CODE = 'SYST_CODE'
+                                           AND (COMD_CODE = #SYST_CODE# OR REF1_FILD = #SYST_CODE#))  /* 시스템코드 */
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                        A.EMPL_NUMB = #EMPL_NUMB#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="REQG_CODE">
+                        A.REQG_CODE = #REQG_CODE#
+        </isNotEmpty>
+        <isEqual prepend="AND" property="AUTH_LEVEL" compareValue="2">
+                       F.USER_IDXX IS NULL /* 2레벨 사용자는 개발자용 계정에서 작성한 자료 조회 제외(2016.03.31 BY302) */
+        </isEqual>
+        <isEqual prepend="AND" property="PRSE_CODE" compareValue="INCOMPLETE">
+        <![CDATA[    
+                       A.PRSE_CODE NOT IN ('04', '05') /* 미완료 처리 건 일괄 조회 */
+        ]]>
+        </isEqual>
+        <isNotEqual property="PRSE_CODE" compareValue="INCOMPLETE">
+            <isNotEmpty prepend="AND" property="PRSE_CODE">      
+                       A.PRSE_CODE = #PRSE_CODE#
+            </isNotEmpty>
+        </isNotEqual>
+        <isNotEmpty prepend="AND" property="PROC_DAT1"> 
+        <![CDATA[    
+                       A.PROC_DATE >= #PROC_DAT1#
+        ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PROC_DAT2"> 
+        <![CDATA[    
+                       A.PROC_DATE <= #PROC_DAT2#
+        ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="MENU_IDXX">      
+                       B.PROG_IDXX = (SELECT PROG_IDXX FROM TM_MENUXM WHERE MENU_IDXX = #MENU_IDXX#)  /* 메뉴ID */
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="TEST_SBJT">      
+                       A.TEST_SBJT LIKE '%'||#TEST_SBJT#||'%'  /* 테스트제목ID */
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PROC_CHSN">      
+                       A.PROC_CHSN LIKE '%'||#PROC_CHSN#||'%'  /* 처리담당자 */
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="TEST_CODC">      
+                       (   A.TEST_CODC LIKE '%'||#TEST_CODC#||'%'    /* 테스트세부내용 */
+                        OR A.PROC_CNTT LIKE '%'||#TEST_CODC#||'%'    /* 처리내용 */
+                        OR A.REMK_100X LIKE '%'||#TEST_CODC#||'%')   /* 비고 */
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PROC_CHSN">      
+                       A.PROC_CHSN LIKE '%'||#PROC_CHSN#||'%'  /* 처리담당자 */
+        </isNotEmpty>
+        <![CDATA[
+                 ORDER BY A.PRSE_CODE, A.PROC_DATE DESC, A.TEST_DATE DESC, A.INST_DATE DESC
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 신일용
+     작  성  일 : 2014.10.15
+     내       용 : 테스트및오류사항관리 정보 저장
+******************************************************************************* */
+-->
+    <insert id="TMMD0010.SAVE00" parameterClass="hashmap">
+        <selectKey resultClass="string" keyProperty="SRAL_NUMB" >
+            SELECT  NVL(MAX(SRAL_NUMB), 0) + 1 AS SRAL_NUMB
+              FROM TM_TESTXM
+             WHERE TEST_DATE = #TEST_DATE#
+               AND EMPL_NUMB = #EMPL_NUMB#
+        </selectKey>
+        <![CDATA[
+                INSERT INTO TM_TESTXM (        /* [단위테스트] */
+                            TEST_DATE          /* 테스트일 */
+                          , EMPL_NUMB          /* 사원번호 */
+                          , SRAL_NUMB          /* 일련번호 */
+                          , MENU_IDXX          /* 메뉴ID */
+                          , REQG_CODE          /* 요청구분코드 */
+                          , TEST_SBJT          /* 테스트제목 */
+                          , TEST_CODC          /* 테스트세부내용 */
+                          , PRSE_CODE          /* 처리상태코드 */
+                          , PROC_DATE          /* 처리일 */
+                          , PROC_CHSN          /* 처리담당자 */
+                          , PROC_CNTT          /* 처리내용 */
+                          , FILE_IDXX          /* 파일ID */
+                          , REMK_100X          /* 비고100 */
+                          , INST_USID          /* 입력작업자 */
+                          , INST_DATE          /* 입력일시 */
+                          , UPDT_USID          /* 수정작업자 */
+                          , UPDT_DATE          /* 수정일시 */
+                 ) VALUES (
+                            #TEST_DATE#        /* 테스트일 */
+                          , #EMPL_NUMB#        /* 사원번호 */
+                          , #SRAL_NUMB#        /* 일련번호 */
+                          , #MENU_IDXX#        /* 메뉴ID */
+                          , #REQG_CODE#        /* 요청구분코드 */
+                          , #TEST_SBJT#        /* 테스트제목 */
+                          , #TEST_CODC#        /* 테스트세부내용 */
+                          , #PRSE_CODE#        /* 처리상태코드 */
+                          , #PROC_DATE#        /* 처리일 */
+                          , #PROC_CHSN#        /* 처리담당자 */
+                          , #PROC_CNTT#        /* 처리내용 */
+                          , #FILE_IDXX#        /* 파일ID */
+                          , #REMK_100X#        /* 비고100 */
+                          , #UPDT_USID#        /* 입력작업자 */
+                          , SYSDATE            /* 입력일시 */
+                          , #UPDT_USID#        /* 수정작업자 */
+                          , SYSDATE            /* 수정일시 */
+                        )
+        ]]>
+    </insert>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 신일용
+     작  성  일 : 2014.10.15
+     내       용 : 테스트및오류사항관리 정보 수정
+******************************************************************************* */
+-->
+    <update id="TMMD0010.UPDATE00" parameterClass="hashmap">
+        <![CDATA[
+                UPDATE TM_TESTXM /* TMMD0010.UPDATE00.테스트및오류사항관리 정보 수정 */
+                   SET MENU_IDXX = #MENU_IDXX#            /* 메뉴ID */
+                     , REQG_CODE = #REQG_CODE#            /* 요청구분코드 */
+                     , TEST_SBJT = #TEST_SBJT#            /* 테스트제목 */
+                     , TEST_CODC = #TEST_CODC#            /* 테스트세부내용 */
+                     , PRSE_CODE = #PRSE_CODE#            /* 처리상태코드 */
+                     , PROC_DATE = #PROC_DATE#            /* 처리일 */
+                     , PROC_CHSN = #PROC_CHSN#            /* 처리담당자 */
+                     , PROC_CNTT = #PROC_CNTT#            /* 처리내용 */
+                     , FILE_IDXX = #FILE_IDXX#            /* 파일ID */
+                     , REMK_100X = #REMK_100X#            /* 비고100 */
+                     , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE                /* 수정일시 */
+                 WHERE TEST_DATE = #TEST_DATE#            /* 테스트일 */
+                   AND EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+                   AND SRAL_NUMB = #SRAL_NUMB#            /* 일련번호 */
+        ]]>
+    </update>
+<!-- 
+/* ******************************************************************************
+     작  성  자 : 김삼영
+     작  성  일 : 2016.09.21
+     내       용 : 테스트및오류사항관리 자료 삭제 처리
+******************************************************************************* */
+-->
+    <delete id="TMMD0010.DELETE00" parameterClass="hashmap">
+        <![CDATA[
+        DECLARE
+            /* TMMD0010.DELETE00.테스트및오류사항관리 자료 삭제 처리 */
+            v_DELE_YSNO VARCHAR2(1);
+            v_TEST_DATE VARCHAR2(10);
+            v_TEST_SBJT TM_TESTXM.TEST_SBJT%TYPE;
+        BEGIN
+        
+            SELECT  TO_CHAR(TO_DATE(A.TEST_DATE, 'YYYYMMDD'), 'YYYY.MM.DD')    /* 테스트일 */
+                   ,A.TEST_SBJT   /* 테스트제목 */
+                   ,CASE WHEN NVL(A.PRSE_CODE, '01') IN ('03', '04') THEN '0' ELSE '1' END  /* 03.처리중, 04.처리완료 */
+              INTO v_TEST_DATE, v_TEST_SBJT, v_DELE_YSNO 
+              FROM TM_TESTXM A    /* 단위테스트 */
+             WHERE A.TEST_DATE  = #TEST_DATE#   /* 테스트일 */
+               AND A.EMPL_NUMB  = #EMPL_NUMB#   /* 사원번호 */
+               AND A.SRAL_NUMB  = #SRAL_NUMB#   /* 일련번호 */
+               ;
+               
+            IF v_DELE_YSNO != '1' THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('TMM074',v_TEST_DATE ||','|| v_TEST_SBJT));     
+            END IF;
+            
+            DELETE FROM TM_TESTXM
+             WHERE TEST_DATE = #TEST_DATE#  /* 테스트일 */
+               AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+               AND SRAL_NUMB = #SRAL_NUMB#  /* 일련번호 */
+            ;
+        END;
+        ]]>
+    </delete>
+
+</sqlMap>

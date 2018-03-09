@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="EVMA0100">
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.21
+     내      용 : 조직평가대상부서관리 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMA0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMA0100.SEARCH00.조직평가대상부서관리 테이블 조회 */
+                   A.SYNT_EACD                                               /* 인사평가코드 */
+                 , A.DEPT_CODE                                               /* 부서코드 */
+                 , B.DEPT_NAME                                               /* 부서명 */
+                 , B.SECT_NAME                                               /* 소속명 */
+                 , A.EVTT_YSNO                                               /* 피평가자대상여부 */
+                 , DECODE(G.DEPT_CODE, NULL, '0', '1')       AS EVTE_YSNO    /* 피평가자대상선정후 */
+                 , A.DTMN_EMNR                                               /* 부서장사원번호 */
+                 , C.EMPL_NAME                               AS DTMN_NAME    /* 부서장성명*/
+                 , D.SECT_NAME                               AS EVAL_STNM    /* 평가소속명 */
+                 , A.EVAL_DTCD                                               /* 평가부서코드 */
+                 , D.DEPT_NAME                               AS EVAL_DTNM    /* 평가부서명 */
+                 , A.WES1_EMNR                                               /* 업적평가상사1차사원번호 */
+                 , E.EMPL_NAME                               AS WES1_EMNM    /* 업적평가상사1차사원성명*/
+                 , A.WES2_EMNR                                               /* 업적평가상사2차사원번호 */
+                 , F.EMPL_NAME                               AS WES2_EMNM    /* 업적평가상사2차사원성명*/                 
+                 , A.EVCM_YSNO                                               /* 평가완료여부 */              
+                 , CASE WHEN A.WES2_EMNR IS NULL THEN NVL(A.GLR1_CODE, '0')
+                        ELSE DECODE(A.GLR1_CODE, '1', NVL(A.GLR2_CODE, '0'), '0')
+                    END                                      AS GLRG_YSNO    /* 목표설정서 등록 완료 여부 */
+                 ,DECODE(A.FACH_CODE, NULL, '0', '1')        AS FACH_YSNO    /* 평가완료여부 */                 
+             FROM EV_DTETXM A                                                /* [조직평가대상부서] */     
+       INNER JOIN VI_DEPTXM B                                                /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = B.DEPT_CODE                
+  LEFT OUTER JOIN HR_MASTXM C                                                /* [인사기본정보] */               
+               ON A.DTMN_EMNR = C.EMPL_NUMB  
+  LEFT OUTER JOIN VI_DEPTXM D                                                /* [VIEW_부서정보(현재시점)] */
+               ON A.EVAL_DTCD = D.DEPT_CODE
+  LEFT OUTER JOIN HR_MASTXM E                                                /* [인사기본정보] */
+               ON A.WES1_EMNR = E.EMPL_NUMB
+  LEFT OUTER JOIN HR_MASTXM F                                                /* [인사기본정보] */
+               ON A.WES2_EMNR = F.EMPL_NUMB     
+  LEFT OUTER JOIN (SELECT DISTINCT DEPT_CODE
+                     FROM EV_DTTOXM
+                    WHERE SYNT_EACD = #SYNT_EACD#
+                  ) G                                                        /* [업적평가대상자선정] */
+               ON A.DEPT_CODE = G.DEPT_CODE   
+            WHERE 1=1
+    ]]>
+		<isNotEmpty property="SYNT_EACD" prepend="AND">
+		    A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+		</isNotEmpty>
+		<isNotEmpty property="DEPT_CODE" prepend="AND">
+		    A.DEPT_CODE = #DEPT_CODE#     /* 부서코드 */
+		</isNotEmpty>
+		<isNotEmpty property="EVAL_DTCD" prepend="AND">
+		    A.EVAL_DTCD = #EVAL_DTCD#     /* 평가부서코드 */
+		</isNotEmpty>
+		<isNotEmpty property="EVCM_YSNO" prepend="AND">
+		    A.EVCM_YSNO = #EVCM_YSNO#     /* 평가완료여부 */
+		</isNotEmpty>
+		<isNotEmpty property="EVTT_YSNO" prepend="AND">
+		    A.EVTT_YSNO = #EVTT_YSNO#     /* 평가자대상여부 */
+		</isNotEmpty>
+	         ORDER BY B.SORT_ORDR
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.21
+     내      용 : 조직평가대상부서관리 테이블 대상자 생성
+********************************************************************************/
+-->
+	<update id="EVMA0100.PROC00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE   /* EVMA0100.PROC00.조직평가대상부서관리 테이블 대상자 생성  */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+	     	
+	        /*조직업적평가점수 삭제*/
+		    DELETE FROM EV_DTTCXM
+		     WHERE SYNT_EACD = #SYNT_EACD#;   			   
+			
+		    /*조직평가대상자선정 삭제*/
+	 	    DELETE FROM EV_DTTOXM
+		     WHERE SYNT_EACD = #SYNT_EACD#;  
+			
+		    /*조직 목표합의서 삭제*/
+		    DELETE FROM EV_DTEGXM
+		     WHERE SYNT_EACD = #SYNT_EACD#;
+			
+		    /*조직평가대상부서 삭제*/   	
+		    DELETE FROM EV_DTETXM
+		     WHERE SYNT_EACD = #SYNT_EACD#;	           
+	     	     	     	
+			MERGE INTO EV_DTETXM T   /* [조직평가대상부서] */
+	        USING (
+			         SELECT #SYNT_EACD#                                   AS SYNT_EACD   /* 인사평가코드 */
+			               ,DEPT_CODE                                                    /* 부서코드 */
+					       ,SECT_NAME                                                    /* 소속명 */
+					       ,DEPT_NAME                                                    /* 부서명 */
+                           ,DTMN_EMNR                                                    /* 부서장사원번호 */
+					       ,DECODE(WES1_EMNR, NULl, WES2_EMNR, WES1_EMNR) AS WES1_EMNR   /* 업적평가상사1차사원번호 */   
+					       ,DECODE(WES1_EMNR, NULL, ''       , WES2_EMNR) AS WES2_EMNR   /* 업적평가상사2차사원번호 */
+					       ,'0'                                           AS EVCM_YSNO   /* 평가완료여부 */
+					   FROM (SELECT A.DEPT_CODE
+					               ,A.SECT_NAME
+					               ,A.DEPT_NAME
+					               ,A.SORT_ORDR
+                                   ,(SELECT Z.EMPL_NUMB 
+					                   FROM (SELECT X.EMPL_NUMB, X.DEPT_CODE, ROW_NUMBER() OVER (PARTITION BY X.DEPT_CODE ORDER BY X.DEPT_CODE, X.DEAT_DATE) AS ROW_NUM
+							                   FROM HR_MASTXM X
+							                  WHERE X.WODN_CODE = '1'
+							                    AND X.DURS_CODE = (SELECT MIN(DURS_CODE)
+							                                         FROM HR_MASTXM
+							                                        WHERE WODN_CODE = '1'
+							                                          AND DEPT_CODE = X.DEPT_CODE
+							                                          AND DURS_CODE BETWEEN '210' AND '229'
+							                                      )
+					                         ) Z
+					                  WHERE Z.ROW_NUM   = 1
+					                    AND Z.DEPT_CODE = A.DEPT_CODE) AS DTMN_EMNR					                    
+					               ,(SELECT Z.EMPL_NUMB
+					                   FROM (SELECT X.EMPL_NUMB, Y.SECT_CODE, ROW_NUMBER() OVER (PARTITION BY X.DEPT_CODE ORDER BY X.DEPT_CODE, X.DEAT_DATE) AS ROW_NUM
+							                   FROM HR_MASTXM X
+				                    LEFT OUTER JOIN VI_DEPTXM Y 
+				                                 ON X.DEPT_CODE = Y.DEPT_CODE
+							                  WHERE X.WODN_CODE = '1'
+							                    AND X.DURS_CODE = (SELECT MIN(DURS_CODE)
+							                                         FROM HR_MASTXM
+							                                        WHERE WODN_CODE = '1'
+							                                          AND DEPT_CODE = X.DEPT_CODE
+							                                          AND DURS_CODE in ('110', '120')
+							                                      )
+							                ) Z
+							          WHERE Z.ROW_NUM   = 1
+					                    AND Z.SECT_CODE = A.SECT_CODE) AS WES1_EMNR       
+					               ,(SELECT X.EMPL_NUMB
+					                   FROM HR_MASTXM X
+					                  WHERE X.WODN_CODE = '1'
+					                    AND X.DURS_CODE = '020')       AS WES2_EMNR
+					           FROM VI_DEPTXM A
+					          WHERE 1=1
+					            AND USEX_YSNO  = '1'
+					            AND DEPT_CODE != '000000'   
+					        )
+					  ORDER BY SECT_NAME, DEPT_NAME, SORT_ORDR
+			        ) A
+	                ON	(
+	                        A.SYNT_EACD	= T.SYNT_EACD	/* 인사평가코드 */
+	                AND		A.DEPT_CODE	= T.DEPT_CODE	/* 부서코드 */
+	                )
+        WHEN MATCHED THEN UPDATE SET
+                    T.DTMN_EMNR = A.DTMN_EMNR       /* 부서장사원번호 */
+	               ,T.WES1_EMNR = A.WES1_EMNR       /* 업적평가상사1차사원번호 */
+	               ,T.WES2_EMNR = A.WES2_EMNR       /* 업적평가상사2차사원번호 */
+	               ,T.EVCM_YSNO = A.EVCM_YSNO       /* 평가완료여부 */    
+	               ,T.UPDT_USID = #UPDT_USID#     	/* 수정자 */
+	               ,T.UPDT_DATE = SYSDATE         	/* 수정일시 */    
+        WHEN NOT MATCHED THEN INSERT
+				( 
+	                SYNT_EACD        /* 인사평가코드 */
+	               ,DEPT_CODE        /* 부서코드 */
+	               ,EVTT_YSNO        /* 피평가자대상여부 */
+	               ,EVAL_DTCD        /* 평가부서코드 */
+	               ,DTMN_EMNR        /* 부서장사원번호 */
+	               ,WES1_EMNR        /* 업적평가상사1차사원번호 */
+	               ,WES2_EMNR        /* 업적평가상사2차사원번호 */
+	               ,EVCM_YSNO        /* 평가완료여부 */
+	               ,REMK_100X        /* 비고100 */
+	               ,INST_USID        /* 입력작업자 */
+	               ,INST_DATE        /* 입력일시 */
+	               ,UPDT_USID        /* 수정작업자 */
+	               ,UPDT_DATE        /* 수정일시 */
+              )
+		 VALUES (   A.SYNT_EACD        /* 인사평가코드 */
+	               ,A.DEPT_CODE        /* 부서코드 */
+	               ,'1'                /* 피평가자대상여부 */
+	               ,''                 /* 평가부서코드 */
+	               ,A.DTMN_EMNR        /* 부서장사원번호 */
+	               ,A.WES1_EMNR        /* 업적평가상사1차사원번호 */
+	               ,A.WES2_EMNR        /* 업적평가상사2차사원번호 */
+	               ,A.EVCM_YSNO        /* 평가완료여부 */
+	               ,NULL               /* 비고100 */
+	               ,#UPDT_USID#        /* 입력작업자 */
+	               ,SYSDATE            /* 입력일시 */
+	               ,#UPDT_USID#        /* 수정작업자 */
+	               ,SYSDATE            /* 수정일시 */
+	            );
+	            
+	        UPDATE EV_DTETXM
+	           SET EVAL_DTCD = (SELECT X.DEPT_CODE
+			                      FROM HR_MASTXM X
+			                     WHERE X.WODN_CODE = '1'
+			                       AND X.EMPL_NUMB = DTMN_EMNR)
+	         WHERE SYNT_EACD = #SYNT_EACD#
+	           AND DTMN_EMNR IS NOT NULL;
+	           
+
+	  	   MERGE INTO EV_DTTOXM T                           /* [조직평가대상자선정] */
+	       USING (
+				     SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES1_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES1_EMNR IS NOT NULL
+			          UNION
+			         SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES2_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES2_EMNR IS NOT NULL
+			        ) A
+	                ON	(
+	                        A.SYNT_EACD	= T.SYNT_EACD	/* 인사평가코드 */
+	                AND		A.DEPT_CODE	= T.DEPT_CODE	/* 부서코드 */
+	                )  
+        WHEN NOT MATCHED THEN INSERT
+				( 	                
+	                SYNT_EACD        /* 인사평가코드 */
+	               ,DEPT_CODE        /* 부서코드 */
+	               ,ASSR_EMNR        /* 평가자사원번호 */
+	               ,WROP_CNTT        /* 실적의견내용 */
+	               ,PROP_CNTT        /* 능력의견내용 */
+	               ,WRGD_EVSC        /* 근무성적평정점수 */
+	               ,WGEG_CODE        /* 업적평가평가등급코드 */
+	               ,EVCM_YSNO        /* 평가완료여부 */
+	               ,INST_USID        /* 입력작업자 */
+	               ,INST_DATE        /* 입력일시 */
+	               ,UPDT_USID        /* 수정작업자 */
+	               ,UPDT_DATE        /* 수정일시 */
+	            )
+	     VALUES (
+	               A.SYNT_EACD       /* 인사평가코드 */
+	              ,A.DEPT_CODE       /* 부서코드 */
+	              ,A.ASSR_EMNR       /* 평가자사원번호 */
+	              ,NULL              /* 실적의견내용 */
+	              ,NULL              /* 능력의견내용 */
+	              ,NULL              /* 근무성적평정점수 */
+	              ,NULL              /* 업적평가평가등급코드 */
+	              ,NULL              /* 평가완료여부 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	            );      
+		END;		            
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.21
+     내      용 : 조직평가대상부서관리  테이블 저장
+********************************************************************************/
+-->
+	<insert id="EVMA0100.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE       /* EVMA0100.UPDATE00.조직평가대상부서관리 테이블 수정 *//* [조직평가대상부서] */
+			v_ROWCNT  INT;
+		BEGIN
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;
+			   
+            /*조직업적평가점수 삭제*/
+		    DELETE FROM EV_DTTCXM
+		     WHERE SYNT_EACD = #SYNT_EACD#
+		       AND DEPT_CODE = #DEPT_CODE#;   			   
+			
+		    /*조직평가대상자선정 삭제*/
+	 	    DELETE FROM EV_DTTOXM
+		     WHERE SYNT_EACD = #SYNT_EACD#
+		       AND DEPT_CODE = #DEPT_CODE#;  
+			
+		    /*조직 목표합의서 삭제*/
+		    DELETE FROM EV_DTEGXM
+		     WHERE SYNT_EACD = #SYNT_EACD#
+		       AND DEPT_CODE = #DEPT_CODE#;
+		 	
+	        INSERT INTO EV_DTETXM (  /* EVMA0100.SAVE00.조직평가대상부서관리 테이블 저장 *//* [조직평가대상부서] */
+	                SYNT_EACD        /* 인사평가코드 */               
+	               ,DEPT_CODE        /* 부서코드 */
+	               ,EVTT_YSNO        /* 피평가자대상여부 */
+	               ,EVAL_DTCD        /* 평가부서코드 */
+	               ,DTMN_EMNR        /* 부서장사원번호 */
+	               ,WES1_EMNR        /* 업적평가상사1차사원번호 */
+	               ,WES2_EMNR        /* 업적평가상사2차사원번호 */
+	               ,EVCM_YSNO        /* 평가완료여부 */
+	               ,REMK_100X        /* 비고100 */
+	               ,INST_USID        /* 입력작업자 */
+	               ,INST_DATE        /* 입력일시 */
+	               ,UPDT_USID        /* 수정작업자 */
+	               ,UPDT_DATE        /* 수정일시 */
+	              )
+	       VALUES (
+	               #SYNT_EACD#       /* 인사평가코드 */
+	              ,#DEPT_CODE#       /* 부서코드 */
+	              ,#EVTT_YSNO#       /* 피평가자대상여부 */
+	              ,#EVAL_DTCD#       /* 평가부서코드 */
+	              ,#DTMN_EMNR#       /* 부서장사원번호 */
+	              ,#WES1_EMNR#       /* 업적평가상사1차사원번호 */
+	              ,#WES2_EMNR#       /* 업적평가상사2차사원번호 */
+	              ,#EVCM_YSNO#       /* 평가완료여부 */
+	              ,#REMK_100X#       /* 비고100 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	              );
+	        
+	  	   MERGE INTO EV_DTTOXM T                           /* [조직평가대상자선정] */
+	       USING (
+				     SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES1_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+	                    AND A.DEPT_CODE = #DEPT_CODE#
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES1_EMNR IS NOT NULL
+			          UNION
+			         SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES2_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+	                    AND A.DEPT_CODE = #DEPT_CODE#
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES2_EMNR IS NOT NULL
+			        ) A
+	                ON	(
+	                        A.SYNT_EACD	= T.SYNT_EACD	/* 인사평가코드 */
+	                AND		A.DEPT_CODE	= T.DEPT_CODE	/* 부서코드 */
+	                )  
+        WHEN NOT MATCHED THEN INSERT
+				( 	                
+	                SYNT_EACD        /* 인사평가코드 */
+	               ,DEPT_CODE        /* 부서코드 */
+	               ,ASSR_EMNR        /* 평가자사원번호 */
+	               ,WROP_CNTT        /* 실적의견내용 */
+	               ,PROP_CNTT        /* 능력의견내용 */
+	               ,WRGD_EVSC        /* 근무성적평정점수 */
+	               ,WGEG_CODE        /* 업적평가평가등급코드 */
+	               ,EVCM_YSNO        /* 평가완료여부 */
+	               ,INST_USID        /* 입력작업자 */
+	               ,INST_DATE        /* 입력일시 */
+	               ,UPDT_USID        /* 수정작업자 */
+	               ,UPDT_DATE        /* 수정일시 */
+	            )
+	     VALUES (
+	               A.SYNT_EACD       /* 인사평가코드 */
+	              ,A.DEPT_CODE       /* 부서코드 */
+	              ,A.ASSR_EMNR       /* 평가자사원번호 */
+	              ,NULL              /* 실적의견내용 */
+	              ,NULL              /* 능력의견내용 */
+	              ,NULL              /* 근무성적평정점수 */
+	              ,NULL              /* 업적평가평가등급코드 */
+	              ,NULL              /* 평가완료여부 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	            );      
+        END;	 
+	]]>
+	</insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.21
+     내      용 : 조직평가대상부서관리 테이블 수정
+********************************************************************************/
+-->
+	<update id="EVMA0100.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE       /* EVMA0100.UPDATE00.조직평가대상부서관리 테이블 수정 *//* [조직평가대상부서] */
+			v_ROWCNT  INT;
+		BEGIN
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;
+			
+            /*조직업적평가점수 삭제*/
+		    DELETE FROM EV_DTTCXM
+		     WHERE SYNT_EACD = #SYNT_EACD#
+		       AND DEPT_CODE = #DEPT_CODE#;   			   
+			
+		    /*조직평가대상자선정 삭제*/
+		    DELETE FROM EV_DTTOXM
+		     WHERE SYNT_EACD = #SYNT_EACD#
+		       AND DEPT_CODE = #DEPT_CODE#;  
+						
+		    UPDATE EV_DTETXM    
+	           SET EVTT_YSNO = #EVTT_YSNO#  /* 피평가자대상여부 */
+	             , EVAL_DTCD = #EVAL_DTCD#  /* 평가부서코드 */
+	             , DTMN_EMNR = #DTMN_EMNR#  /* 부서장사원번호 */
+	             , WES1_EMNR = #WES1_EMNR#  /* 업적평가상사1차사원번호 */
+	             , WES2_EMNR = #WES2_EMNR#  /* 업적평가상사2차사원번호 */
+	             , EVCM_YSNO = #EVCM_YSNO#  /* 평가완료여부 */
+	             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+	             , UPDT_DATE = SYSDATE      /* 수정일시 */
+	         WHERE SYNT_EACD = #SYNT_EACD#
+	           AND DEPT_CODE = #DEPT_CODE#;
+	           
+	  	   MERGE INTO EV_DTTOXM T                           /* [조직평가대상자선정] */
+	       USING (
+				     SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES1_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+	                    AND A.DEPT_CODE = #DEPT_CODE#
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES1_EMNR IS NOT NULL
+			          UNION
+			         SELECT  A.SYNT_EACD                     /* 인사평가코드 */
+		                   , A.DEPT_CODE                     /* 부서코드 */
+		                   , A.EVTT_YSNO                     /* 피평가자대상여부 */
+		                   , A.WES2_EMNR     AS ASSR_EMNR    /* 평가자사원번호 */
+		               FROM EV_DTETXM A                      /* [조직평가대상부서] */   
+			          WHERE A.SYNT_EACD = #SYNT_EACD#  
+	                    AND A.DEPT_CODE = #DEPT_CODE#
+			            AND A.EVTT_YSNO = '1'
+			            AND A.WES2_EMNR IS NOT NULL
+			        ) A
+	                ON	(
+	                        A.SYNT_EACD	= T.SYNT_EACD	/* 인사평가코드 */
+	                AND		A.DEPT_CODE	= T.DEPT_CODE	/* 부서코드 */
+	                )  
+        WHEN NOT MATCHED THEN INSERT
+				( 	                
+	                SYNT_EACD        /* 인사평가코드 */
+	               ,DEPT_CODE        /* 부서코드 */
+	               ,ASSR_EMNR        /* 평가자사원번호 */
+	               ,WROP_CNTT        /* 실적의견내용 */
+	               ,PROP_CNTT        /* 능력의견내용 */
+	               ,WRGD_EVSC        /* 근무성적평정점수 */
+	               ,WGEG_CODE        /* 업적평가평가등급코드 */
+	               ,EVCM_YSNO        /* 평가완료여부 */
+	               ,INST_USID        /* 입력작업자 */
+	               ,INST_DATE        /* 입력일시 */
+	               ,UPDT_USID        /* 수정작업자 */
+	               ,UPDT_DATE        /* 수정일시 */
+	            )
+	     VALUES (
+	               A.SYNT_EACD       /* 인사평가코드 */
+	              ,A.DEPT_CODE       /* 부서코드 */
+	              ,A.ASSR_EMNR       /* 평가자사원번호 */
+	              ,NULL              /* 실적의견내용 */
+	              ,NULL              /* 능력의견내용 */
+	              ,NULL              /* 근무성적평정점수 */
+	              ,NULL              /* 업적평가평가등급코드 */
+	              ,NULL              /* 평가완료여부 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	            );      
+        END;		
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.21
+     내      용 : 조직평가대상부서관리 테이블 삭제
+********************************************************************************/
+-->
+	<delete id="EVMA0100.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE /* EVMA0100.DELETE00.조직평가대상부서관리 테이블 삭제  */
+			v_ROWCNT INT;
+		BEGIN		
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;			
+			
+			/*조직업적평가점수 삭제*/
+			DELETE FROM EV_DTTCXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND DEPT_CODE = #DEPT_CODE#;   			   
+			
+			/*조직평가대상자선정 삭제*/
+			DELETE FROM EV_DTTOXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND DEPT_CODE = #DEPT_CODE#;  
+			
+			/*조직 목표합의서 삭제*/
+			DELETE FROM EV_DTEGXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND DEPT_CODE = #DEPT_CODE#;
+			
+			/*조직평가대상부서 삭제*/   	
+			DELETE FROM EV_DTETXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND DEPT_CODE = #DEPT_CODE#;
+		END;		
+	]]>
+	</delete>
+	
+</sqlMap>

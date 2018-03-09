@@ -1,0 +1,1721 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TXMD0020" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="소득내역등록" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Grid id="grdTA_INCMXM" cssclass="styGrid01" taborder="129" binddataset="dsTA_INCMXM" wheelscrollrow="1" useinputpanel="false" cellsizingtype="both" oncelldblclick="grdTA_INCMXM_oncelldblclick" left="8" top="128" right="25" bottom="323">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="80" band="left"/>
+                <Column size="80" band="left"/>
+                <Column size="65" band="left"/>
+                <Column size="58"/>
+                <Column size="56"/>
+                <Column size="74"/>
+                <Column size="79"/>
+                <Column size="74"/>
+                <Column size="90"/>
+                <Column size="80"/>
+                <Column size="76"/>
+                <Column size="71"/>
+                <Column size="65"/>
+                <Column size="58"/>
+                <Column size="79"/>
+                <Column size="90"/>
+                <Column size="0"/>
+                <Column size="200"/>
+                <Column size="200"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell colspan="2" displaytype="text">
+                  <Cell colspan="2" displaytype="text" text="소득자"/>
+                </Cell>
+                <Cell col="2" rowspan="2" displaytype="text" text="소득구분"/>
+                <Cell col="3" colspan="2" displaytype="text" text="귀속"/>
+                <Cell col="5" rowspan="2" displaytype="text" text="지급일자"/>
+                <Cell col="6" colspan="2" displaytype="text" text="총지급액"/>
+                <Cell col="8" rowspan="2" displaytype="text" text="기타소득의&#10;필요경비"/>
+                <Cell col="9" rowspan="2" displaytype="text" text="적용세율"/>
+                <Cell col="10" colspan="5" displaytype="text" text="원천징수"/>
+                <Cell col="15" rowspan="2" displaytype="text" text="세후지급액"/>
+                <Cell col="16" rowspan="2" text="전표번호"/>
+                <Cell col="17" rowspan="2" displaytype="text" text="적요"/>
+                <Cell col="18" rowspan="2" displaytype="text" text="세액감면 및 제한세율근거"/>
+                <Cell row="1" displaytype="text" text="코드"/>
+                <Cell row="1" col="1" displaytype="text" text="성명"/>
+                <Cell row="1" col="3" displaytype="text" text="귀속년월"/>
+                <Cell row="1" col="4" displaytype="text" text="근무일수"/>
+                <Cell row="1" col="6" displaytype="text" text="과세소득"/>
+                <Cell row="1" col="7" displaytype="text" text="비과세소득"/>
+                <Cell row="1" col="10" displaytype="text" text="소득세"/>
+                <Cell row="1" col="11" displaytype="text" text="주민세"/>
+                <Cell row="1" col="12" displaytype="text" text="법인세"/>
+                <Cell row="1" col="13" displaytype="text" text="농특세"/>
+                <Cell row="1" col="14" displaytype="text" text="합계"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;background: ;" text="bind:CUST_CODE"/>
+                <Cell col="1" displaytype="text" style="align:center;background: ;" text="bind:CUST_NAME"/>
+                <Cell col="2" displaytype="combo" style="align:center;background: ;" text="bind:INCM_TYCD"/>
+                <Cell col="3" displaytype="text" style="align:center middle;background: ;" text="bind:PERS_YYMM" mask="expr:comp.parent.fnc_Length(PERS_YYMM) &lt; 1 ? &quot;&quot; : &quot;####-##&quot;"/>
+                <Cell col="4" displaytype="number" style="align:right middle;background: ;" text="bind:WORK_DCNT"/>
+                <Cell col="5" displaytype="date" style="align:center middle;background: ;" text="bind:SUPP_DATE" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="number" style="align:right middle;background: ;" text="bind:SUPP_KMAK"/>
+                <Cell col="7" displaytype="number" style="align:right;background: ;" text="bind:NTAX_INCM"/>
+                <Cell col="8" displaytype="number" style="align:right;background: ;" text="bind:OUTL_KMAK"/>
+                <Cell col="9" displaytype="combo" style="align:center;background: ;" text="bind:APPL_RATE"/>
+                <Cell col="10" displaytype="number" style="align:right;background: ;" text="bind:INCM_TAXX"/>
+                <Cell col="11" displaytype="number" style="align:right;background: ;" text="bind:INHA_TAXX"/>
+                <Cell col="12" displaytype="number" style="align:right;background: ;" text="bind:COMP_SEKM"/>
+                <Cell col="13" displaytype="number" style="align:right;background: ;" text="bind:NONS_SEKM"/>
+                <Cell col="14" displaytype="number" style="align:right;background: ;" text="bind:SEKM_TOKM"/>
+                <Cell col="15" displaytype="number" style="align:right;background: ;" text="bind:SEHU_TOKM"/>
+                <Cell col="16" style="background: ;" text="bind:SLIP_NUMB"/>
+                <Cell col="17" displaytype="text" style="align:left;background: ;" text="bind:REMK_NOTE"/>
+                <Cell col="18" displaytype="text" style="align:left;background: ;" text="bind:GITA_RMR2"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Tab id="Tab0" taborder="128" preload="true" left="8" right="25" bottom="15" height="192" canchange="Tab0_canchange" tabindex="0" style="cursor:auto;" onchanged="Tab0_onchanged">
+          <Tabpages>
+            <Tabpage id="FA010010" text="사업소득" scrollbars="none" cssclass="styTabControl">
+              <Layouts>
+                <Layout>
+                  <Static id="Shape03" taborder="5" cssclass="styFormItemBoxOut" left="10" top="10" right="10" height="143"/>
+                  <Static id="Static25" taborder="6" text="적요" cssclass="styFormItemCap" left="30" bottom="71" width="68" height="21"/>
+                  <Static id="Static3" taborder="7" text="소득세" cssclass="styFormItemCap" left="30" bottom="97" width="68" height="21"/>
+                  <Static id="Static9" taborder="8" text="지급일자" cssclass="styFormItemCapBE" left="30" bottom="123" width="68" height="21"/>
+                  <Calendar id="calSUPP_DATE" taborder="0" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" left="125" bottom="123" width="104" height="21"/>
+                  <MaskEdit id="mskINCM_TAXX" taborder="9" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="125" bottom="97" width="160" height="21"/>
+                  <Static id="Static0" taborder="10" text="귀속월" cssclass="styFormItemCapBE" left="320" bottom="123" width="52" height="21"/>
+                  <Static id="Static4" taborder="11" text="주민세" cssclass="styFormItemCap" left="320" bottom="97" width="52" height="21"/>
+                  <MaskEdit id="mskINHA_TAXX" taborder="12" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="375" bottom="97" width="160" height="21"/>
+                  <Static id="Static5" taborder="13" text="원천징수계" cssclass="styFormItemCap" left="571" bottom="97" width="82" height="21"/>
+                  <Static id="Static1" taborder="14" text="총지급액" cssclass="styFormItemCapBE" left="571" bottom="123" width="76" height="21"/>
+                  <MaskEdit id="mskSUPP_KMAK" taborder="2" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="styFormItemText" left="652" bottom="123" width="160" height="21" style="align:right;"/>
+                  <MaskEdit id="mskSEKM_TOKM" taborder="15" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="652" bottom="97" width="160" height="21"/>
+                  <Edit id="edtREMK_NOTE" taborder="4" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="125" bottom="71" width="687" height="21" style="align:left;"/>
+                  <Static id="Static29" taborder="16" text="전표번호" cssclass="styFormItemCap" left="851" bottom="71" width="76" height="21" visible="false"/>
+                  <Static id="Static6" taborder="17" text="세후지급액" cssclass="styFormItemCap" left="851" bottom="97" width="78" height="21"/>
+                  <Static id="Static2" taborder="18" text="적용세율" cssclass="styFormItemCapBE" left="851" bottom="123" width="68" height="21"/>
+                  <Combo id="cmbAPPL_RATE" taborder="3" onitemchanged="cmbAPPL_RATE_onchanged" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="932" bottom="123" width="160" height="21"/>
+                  <MaskEdit id="mskSEHU_TOKM" taborder="19" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="932" bottom="97" width="160" height="21"/>
+                  <MaskEdit id="mskSLIP_NUMB" taborder="20" tabstop="false" readonly="true" type="string" onsetfocus="fn_EditFocus" oneditclick="fn_SlipPopUp" ontextchanged="TAXX_OnChanged" oneditdblclick="fn_SlipNumbDblClick" cssclass="msk_WF_Readonly" left="932" bottom="71" width="160" height="21" style="cursor:hand; :readonly {align:center middle;}" visible="false"/>
+                  <Div id="divPERS_YYMM" taborder="1" url="common::comMonthCalendar.xfdl" left="375" top="19" width="100" height="21"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="FA010020" text="기타소득" scrollbars="none" cssclass="styTabControl">
+              <Layouts>
+                <Layout width="970" height="114">
+                  <Static id="Shape03" taborder="9" cssclass="styFormItemBoxOut" left="10" top="10" right="10" height="143"/>
+                  <Static id="Static1" taborder="10" text="지급일자" cssclass="styFormItemCapBE" left="30" top="19" width="100" height="21"/>
+                  <Static id="Static0" taborder="11" text="기타소득구분" cssclass="styFormItemCapBE" left="30" top="45" width="100" height="21"/>
+                  <Static id="Static11" taborder="12" text="세후지급액" cssclass="styFormItemCap" left="885" top="71" width="100" height="21"/>
+                  <Static id="Static14" taborder="13" text="적요" cssclass="styFormItemCap" left="592" top="97" width="84" height="21"/>
+                  <Combo id="cmbAPPL_RATE" taborder="3" onitemchanged="cmbAPPL_RATE_onchanged" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="966" top="19" width="150" height="21"/>
+                  <MaskEdit id="mskINCM_TAXX" taborder="14" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" left="125" top="71" width="144" height="21" style="align:right;"/>
+                  <Static id="Static10" taborder="15" text="적용세율" cssclass="styFormItemCapBE" left="885" top="19" width="68" height="21"/>
+                  <Static id="Static3" taborder="16" text="소득세" cssclass="styFormItemCap" left="30" top="71" width="84" height="21"/>
+                  <Static id="Static15" taborder="17" text="원천징수계" cssclass="styFormItemCap" left="592" top="71" width="84" height="21"/>
+                  <MaskEdit id="mskSEKM_TOKM" taborder="18" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" left="674" top="71" width="144" height="21"/>
+                  <Edit id="edtGITA_RMR2" taborder="7" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="199" top="97" width="344" height="21"/>
+                  <Static id="Static8" taborder="19" text="전표번호" cssclass="styFormItemCap" left="885" top="121" width="68" height="21" visible="false"/>
+                  <MaskEdit id="mskSLIP_NUMB" taborder="20" tabstop="false" readonly="true" type="string" onsetfocus="fn_EditFocus" oneditclick="fn_SlipPopUp" oneditdblclick="fn_SlipNumbDblClick" cssclass="msk_WF_Readonly" left="966" top="121" width="150" height="21" style="align:center middle;cursor:hand; :readonly {align:center middle;}" visible="false"/>
+                  <MaskEdit id="mskINHA_TAXX" taborder="21" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" left="399" top="71" width="144" height="21" style="align:right;"/>
+                  <MaskEdit id="mskGASE_TOKM" taborder="6" mask="#,###" onsetfocus="fn_EditFocus" onkillfocus="Tab0_FA010020_mskGASE_TOKM_onkillfocus" cssclass="styFormItemText" left="674" top="45" width="144" height="21" style="align:right;"/>
+                  <MaskEdit id="mskSUPP_KMAK" taborder="2" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="styFormItemText" left="674" top="19" width="144" height="21" style="align:right;"/>
+                  <Static id="Static6" taborder="22" text="소득금액" cssclass="styFormItemCap" left="592" top="45" width="68" height="21"/>
+                  <Static id="Static7" taborder="23" text="총지급액" cssclass="styFormItemCapBE" left="592" top="19" width="68" height="21"/>
+                  <Static id="Static5" taborder="24" text="주민세" cssclass="styFormItemCap" left="330" top="71" width="68" height="21"/>
+                  <MaskEdit id="mskNONS_SEKM" taborder="25" mask="#,###" onsetfocus="fn_EditFocus" cssclass="styFormItemText" visible="false" left="443" top="135" width="160" height="21" style="align:right;"/>
+                  <MaskEdit id="mskOUTL_KAMK" taborder="5" mask="#,###" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="399" top="45" width="144" height="21" style="align:right;"/>
+                  <Static id="Static2" taborder="26" text="소득귀속" cssclass="styFormItemCapBE" left="330" top="19" width="68" height="21"/>
+                  <Static id="Static4" taborder="27" text="필요경비" cssclass="styFormItemCapBE" left="330" top="45" width="68" height="21"/>
+                  <Static id="Static13" taborder="28" text="세액감면 및 제한세율근거" usedecorate="true" cssclass="styFormItemCap" left="30" top="97" width="163" height="21"/>
+                  <Edit id="edtREMK_NOTE" taborder="8" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="674" top="97" width="442" height="21" style="align:left;"/>
+                  <MaskEdit id="mskSEHU_TOKM" taborder="29" tabstop="false" readonly="true" mask="#,###" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" left="966" top="71" width="150" height="21" style="align:right;"/>
+                  <MaskEdit id="mskCOMP_SEKM" taborder="30" mask="#,###" onsetfocus="fn_EditFocus" cssclass="styFormItemText" visible="false" left="125" top="135" width="120" height="21" style="align:right;"/>
+                  <Combo id="cmbGITA_GUBN" taborder="4" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="125" top="45" width="144" height="21"/>
+                  <Calendar id="calSUPP_DATE" taborder="0" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="125" top="19" width="104" height="21"/>
+                  <Static id="Static9" taborder="31" text="법인세" cssclass="styFormItemCap" visible="false" left="30" top="135" width="100" height="21"/>
+                  <Static id="Static12" taborder="32" text="농어촌특별세" cssclass="styFormItemCap" visible="false" left="274" top="135" width="108" height="21"/>
+                  <Div id="divPERS_YYMM" taborder="1" url="common::comMonthCalendar.xfdl" left="399" top="19" width="100" height="21"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="FA010030" text="일용근로소득" scrollbars="none" cssclass="styTabControl">
+              <Layouts>
+                <Layout>
+                  <Static id="Shape03" taborder="6" cssclass="styFormItemBoxOut" left="10" top="10" right="10" height="143"/>
+                  <MaskEdit id="mskNTAX_INCM" taborder="7" tabstop="false" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="125" top="71" width="144" height="21" style="align:right;"/>
+                  <Static id="Static7" taborder="8" text="비과세소득" cssclass="styFormItemCapBE" left="30" top="71" width="80" height="21"/>
+                  <Combo id="cmbAPPL_RATE" taborder="4" onitemchanged="cmbAPPL_RATE_onchanged" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="968" top="19" width="144" height="21"/>
+                  <MaskEdit id="mskSEHU_TOKM" taborder="9" tabstop="false" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="968" top="45" width="144" height="21"/>
+                  <Static id="Static6" taborder="10" text="세후지급액" cssclass="styFormItemCap" left="886" top="45" width="80" height="21"/>
+                  <Static id="Static2" taborder="11" text="적용세율" cssclass="styFormItemCapBE" left="886" top="19" width="72" height="21"/>
+                  <MaskEdit id="mskSUPP_KMAK" taborder="3" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="styFormItemText" left="703" top="19" width="144" height="21" style="align:right;"/>
+                  <MaskEdit id="mskSEKM_TOKM" taborder="12" tabstop="false" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="703" top="45" width="144" height="21"/>
+                  <Static id="Static5" taborder="13" text="원천징수계" cssclass="styFormItemCap" left="583" top="45" width="94" height="21"/>
+                  <Static id="Static1" taborder="14" text="총지급액(과세분)" cssclass="styFormItemCapBE" left="583" top="19" width="115" height="21"/>
+                  <Static id="Static23" taborder="15" text="일" left="527" top="19" width="16" height="21" style="align: center middle;"/>
+                  <MaskEdit id="mskINHA_TAXX" taborder="16" tabstop="false" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="388" top="45" width="144" height="21"/>
+                  <Static id="Static0" taborder="17" text="소득귀속" cssclass="styFormItemCapBE" left="319" top="19" width="64" height="21"/>
+                  <Static id="Static4" taborder="18" text="주민세" cssclass="styFormItemCap" left="319" top="45" width="72" height="21"/>
+                  <MaskEdit id="mskINCM_TAXX" taborder="19" tabstop="false" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="msk_WF_Readonly" left="125" top="45" width="144" height="21"/>
+                  <Calendar id="calSUPP_DATE" taborder="0" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="125" top="19" width="104" height="21"/>
+                  <Static id="Static9" taborder="20" text="지급일자" cssclass="styFormItemCapBE" left="30" top="19" width="72" height="21"/>
+                  <Static id="Static3" taborder="21" text="소득세" cssclass="styFormItemCap" left="30" top="45" width="64" height="21"/>
+                  <Static id="Static14" taborder="22" text="비고" cssclass="styFormItemCap" left="319" top="71" width="64" height="21"/>
+                  <Edit id="edtREMK_NOTE" taborder="5" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="388" top="71" width="459" height="21" style="align:left;"/>
+                  <MaskEdit id="mskWORK_DCNT" taborder="2" mask="#,###" onsetfocus="fn_EditFocus" ontextchanged="TAXX_OnChanged" cssclass="styFormItemText" left="490" top="19" width="29" height="21" style="align:right;"/>
+                  <Static id="Static8" taborder="23" text="전표번호" cssclass="styFormItemCap" left="886" top="71" width="68" height="21" visible="false"/>
+                  <MaskEdit id="mskSLIP_NUMB" taborder="24" tabstop="false" readonly="true" type="string" onsetfocus="fn_EditFocus" oneditclick="fn_SlipPopUp" oneditdblclick="fn_SlipNumbDblClick" cssclass="msk_WF_Readonly" left="968" top="71" width="144" height="21" style="align:center middle;cursor:hand; :readonly {align:center middle;}" visible="false"/>
+                  <Div id="divPERS_YYMM" taborder="1" url="common::comMonthCalendar.xfdl" left="388" top="19" width="100" height="21"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+          </Tabpages>
+        </Tab>
+        <Static id="Shape3" position="absolute" left="8" height="91" cssclass="styFormItemBoxOut" right="25" bottom="217" taborder="48"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="262" top="107" height="21" cssclass="styFormSearchInfo" taborder="25" usedecorate="true"/>
+        <Static id="Static9" text="담당부서" visible="false" left="1071" width="75" bottom="281" height="21" cssclass="styFormItemCapBE" taborder="28"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtTAKE_DEPT" onsetfocus="fn_EditFocus" taborder="56" style="align: center;" visible="false" position="absolute" left="1292" width="70" bottom="260" height="21" cssclass="styFormItemText"/>
+        <Edit autoselect="true" lengthunit="asciii" enable="false" id="edtDEPT_NAME" imemode="native" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="57" visible="false" position="absolute" left="1363" width="110" bottom="260" height="21" cssclass="styFormItemText"/>
+        <Static id="Static1" text="지급일자" position="absolute" style="align: right middle;" left="10" width="85" top="-493" height="23" cssclass="styFormItemCapBE" taborder="32"/>
+        <Static id="Static3" text="소득세" position="absolute" style="align: right middle;" left="10" width="85" top="-469" height="23" cssclass="styFormItemCap" taborder="33"/>
+        <MaskEdit enable="false" id="mskINCM_TAXX" taborder="64" position="absolute" left="96" width="106" top="-469" height="23" cssclass="styFormSearchItem"/>
+        <Calendar id="calSUPP_DATE" onsetfocus="fn_EditFocus" taborder="59" position="absolute" dateformat="yyyy-MM-dd" left="96" width="106" top="-493" height="23" cssclass="styFormSearchItemCalendar"/>
+        <Static id="Static2" text="소득귀속" position="absolute" style="align: right middle;" left="203" width="85" top="-493" height="23" cssclass="styFormItemCapBE" taborder="36"/>
+        <Static id="Static5" text="주민세" position="absolute" style="align: right middle;" left="203" width="85" top="-469" height="23" cssclass="styFormItemCap" taborder="37"/>
+        <MaskEdit enable="false" id="mskINHA_TAXX" taborder="62" position="absolute" left="289" width="106" top="-469" height="23" cssclass="styFormSearchItem"/>
+        <MaskEdit id="divPERS_YYMM" mask="####-##" taborder="60" type="string" position="absolute" left="289" width="106" top="-493" height="23" cssclass="styFormSearchItem"/>
+        <Static id="Static7" text="총지급액" position="absolute" style="align: right middle;" left="396" width="85" top="-493" height="23" cssclass="styFormItemCapBE" taborder="40"/>
+        <Static id="Static8" text="원천징수계" position="absolute" style="align: right middle;" left="396" width="85" top="-469" height="23" cssclass="styFormItemCap" taborder="41"/>
+        <MaskEdit enable="false" id="mskSEKM_TOKM" taborder="63" position="absolute" left="482" width="106" top="-469" height="23" cssclass="styFormSearchItem"/>
+        <MaskEdit id="mskSUPP_KMAK" taborder="61" position="absolute" left="482" width="106" top="-493" height="23" cssclass="styFormSearchItem"/>
+        <Static id="Static10" text="적용세율" position="absolute" style="align: right middle;" left="589" width="85" top="-493" height="23" cssclass="styFormItemCapBE" taborder="44"/>
+        <Static id="Static11" text="세후지급액" position="absolute" style="align: right middle;" left="589" width="85" top="-469" height="23" cssclass="styFormItemCap" taborder="26"/>
+        <Combo codecolumn="SUBCODE" datacolumn="SUBNAME" id="cmbPAYX_GUBN" innerdataset="dsPAYX_GUBN" onsetfocus="fn_EditFocus" type="dropdown" taborder="65" visible="false" position="absolute" left="1292" width="181" bottom="210" height="21" cssclass="styFormItemText">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">1</Col>
+                <Col id="datacolumn">신입</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">2</Col>
+                <Col id="datacolumn">경력</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <MPFileDialog id="fdEXCEL" taborder="21" position="absolute" left="504" width="24" top="56" height="24"/>
+        <MPFile id="flEXCEL" taborder="22" position="absolute" left="531" width="24" top="56" height="24"/>
+        <Static id="spSearchBox0" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="47"/>
+        <Static id="Static0" text="지급일자" left="348" width="68" top="71" height="21" cssclass="styFormSearchCap" taborder="35"/>
+        <Calendar id="calSHRSUPP_STDT" onsetfocus="fn_EditFocus" taborder="2" dateformat="yyyy-MM-dd" left="418" width="100" top="71" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Calendar id="calSHRSUPP_EDDT" onsetfocus="fn_EditFocus" taborder="3" position="absolute" dateformat="yyyy-MM-dd" left="538" width="100" top="71" height="21" cssclass="styFormSearchItemCalendar"/>
+        <Static id="Static4" text="~" position="absolute" style="color:#505050ff;font:9 굴림;" left="523" width="14" top="71" height="21" taborder="42"/>
+        <Static id="Static15" text="소득구분" position="absolute" left="958" width="68" top="71" height="21" cssclass="styFormSearchCap" taborder="43"/>
+        <Combo id="cmbSHRINCM_TYCD" onsetfocus="fn_EditFocus" taborder="5" position="absolute" left="1027" width="100" top="71" height="21" cssclass="styFormItemCombo" onitemchanged="cmbSHRINCM_TYCD_onitemchanged"/>
+        <Static id="Static16" text="성명(상호)" position="absolute" left="668" width="82" top="71" height="21" cssclass="styFormSearchCap" taborder="31"/>
+        <Edit autoselect="true" lengthunit="asciii" id="edtSHROWNR_NAME" imemode="hangul" maxlength="20" onsetfocus="fn_EditFocus" taborder="4" position="absolute" left="749" width="180" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="Static12" text="상태" position="absolute" style="align:left;" visible="false" left="1212" width="60" top="66" height="21" cssclass="styFormSearchCap" taborder="38"/>
+        <Combo id="cmbSHRSTAT_GUBN" onsetfocus="fn_EditFocus" taborder="45" position="absolute" visible="false" left="1274" width="100" top="68" height="21" cssclass="styFormItemCombo"/>
+        <Button id="btnDown" onclick="btnDown_onclick" taborder="52" position="absolute" style="imagealign:left;" left="8" width="98" top="35" height="21" cssclass="styTextButtonBizProc" text="사업소득양식"/>
+        <Button id="btnUp" onclick="btnUp_onclick" taborder="53" text="사업소득엑셀업로드" position="absolute" style="imagealign:left;" left="109" width="120" top="35" height="21" cssclass="styTextButtonBizProc"/>
+        <Button id="btnDown2" onclick="btnDown2_onclick" taborder="54" text="기타소득양식" position="absolute" style="imagealign:left;" left="232" width="98" top="35" height="21" cssclass="styTextButtonBizProc"/>
+        <Button id="btnUp2" onclick="btnUp2_onclick" taborder="55" text="기타소득엑셀업로드" position="absolute" style="imagealign:left;" left="333" width="120" top="35" height="21" cssclass="styTextButtonBizProc"/>
+        <FileDownload id="FileDownload00" taborder="66" retry="0" text="FileDownload00" visible="false" position="absolute" left="621" width="17" top="12" height="12"/>
+        <Static id="Static27" text="귀속연월" position="absolute" left="28" width="68" top="71" height="21" cssclass="styFormSearchCapBe" taborder="39"/>
+        <Static id="Static28" text="~" position="absolute" style="color:#505050ff;align:center;font:굴림,9;" left="201" width="14" top="71" height="21" taborder="34"/>
+        <Button id="btnCREATE_SLIP" taborder="51" text="전표처리" onclick="btnCREATE_SLIP_onclick" position="absolute" right="101" width="74" bottom="184" height="21" cssclass="styTextButtonBizProc" visible="false"/>
+        <Button id="btnDISPLAY_SLIP" taborder="50" text="전표조회" right="177" width="74" bottom="184" height="21" cssclass="styTextButtonBizProc" onclick="fn_SlipPopUp" visible="false"/>
+        <Edit id="edtOWNR_NAME" taborder="10" imemode="hangul" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="800" bottom="278" width="110" height="21" position="absolute"/>
+        <Static id="Static22" taborder="71" text="지출일자" cssclass="styFormItemCap" left="919" bottom="276" width="100" height="21" position="absolute"/>
+        <Calendar id="calPAYX_DATE" taborder="11" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="cal_WF_Readonly" enable="true" left="1027" bottom="278" height="21" tabstop="false" readonly="true" width="114"/>
+        <MaskEdit id="mskBIZR_NUMB" taborder="17" type="string" mask="###-##-#####" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="1027" bottom="252" height="21" tabstop="false" readonly="true" style="align:center middle; :disabled {align:center middle;}" position="absolute" width="114"/>
+        <Static id="Static19" taborder="72" text="사업자등록번호" cssclass="styFormItemCap" left="919" bottom="252" width="108" height="21" position="absolute"/>
+        <Edit id="edtDTL2_ADDR" taborder="20" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="402" bottom="226" height="21" readonly="true" tabstop="false" width="406"/>
+        <Static id="Static18" taborder="73" text="주민등록번호" cssclass="styFormItemCap" left="593" bottom="252" width="90" height="21" position="absolute"/>
+        <Static id="Static17" taborder="74" text="성명(상호)" cssclass="styFormItemCapBE" left="594" bottom="276" width="75" height="21" position="absolute"/>
+        <Edit id="edtCUST_CODE" taborder="9" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="688" bottom="278" width="87" height="21" style="align:center middle; :disabled {align:center middle;}" tabstop="false" readonly="true" position="absolute"/>
+        <Combo id="cmbJOBS_GUBN" taborder="15" onsetfocus="fn_EditFocus" cssclass="cmb_WF_Readonly" enable="true" left="484" bottom="252" width="80" height="21" tabstop="false" readonly="true" position="absolute"/>
+        <Edit id="edtEMPL_NAME" taborder="8" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="484" bottom="278" width="80" height="21" tabstop="false" readonly="true" position="absolute"/>
+        <Combo id="cmbINCM_TYCD" taborder="14" onsetfocus="fn_EditFocus" cssclass="cmb_WF_Readonly" enable="true" left="402" bottom="252" width="80" height="21" tabstop="false" readonly="true" position="absolute"/>
+        <Edit id="edtTAKE_USER" taborder="7" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="402" bottom="278" width="80" height="21" tabstop="false" readonly="true" position="absolute" style="align:center middle;"/>
+        <Static id="Static13" taborder="75" text="담당자" cssclass="styFormItemCapBE" left="301" bottom="276" width="75" height="21" position="absolute"/>
+        <Static id="Static21" taborder="76" text="소득/직업구분" cssclass="styFormItemCap" left="301" bottom="252" width="100" height="21" position="absolute"/>
+        <Edit id="edtDTL1_ADDR" taborder="19" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="192" bottom="226" width="208" height="21" readonly="true" tabstop="false" position="absolute"/>
+        <Combo id="cmbRESI_GUBN" taborder="13" onsetfocus="fn_EditFocus" cssclass="cmb_WF_Readonly" enable="true" left="192" bottom="252" width="80" height="21" tabstop="false" readonly="true" position="absolute"/>
+        <Combo id="cmbACCT_GUBN" taborder="6" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" enable="true" left="110" bottom="278" width="162" height="21" position="absolute"/>
+        <Combo id="cmbFORI_GUBN" taborder="12" onsetfocus="fn_EditFocus" cssclass="cmb_WF_Readonly" enable="true" left="110" bottom="252" width="80" height="21" tabstop="false" readonly="true" position="absolute"/>
+        <MaskEdit id="mskPOST_NUMB" taborder="18" type="string" cssclass="msk_WF_Readonly" enable="true" left="110" bottom="226" width="80" height="21" style="align:center middle; :disabled {align:center;}" tabstop="false" readonly="true" limitbymask="decimal"/>
+        <Static id="Static6" taborder="81" text="주소" cssclass="styFormItemCap" left="28" bottom="226" width="83" height="21" position="absolute"/>
+        <Static id="Static20" taborder="82" text="내/외국인" cssclass="styFormItemCap" left="28" bottom="252" width="83" height="21" position="absolute"/>
+        <Static id="Static23" taborder="83" text="사업장" cssclass="styFormItemCapBE" left="28" bottom="276" width="83" height="21" position="absolute"/>
+        <Edit id="edtCUST_NAME" taborder="88" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" bottom="401" height="21" style="align: center;" width="71" left="840" visible="false"/>
+        <Static id="imgHelpOWNR_NAME" taborder="89" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" bottom="278" height="21" width="21" left="777" position="absolute"/>
+        <MaskEdit id="mskRERN_NUMB" taborder="91" type="string" mask="######-#######" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" bottom="252" height="21" width="120" left="688" tabstop="false" readonly="true" style="align:center middle; :disabled {align:center middle;}"/>
+        <Static id="st_FormTitle" taborder="92" text="소득내역등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="93" text="홈 &gt; 재무관리 &gt; 세무회계 &gt; 원천세 &gt; 소득내역등록" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="94" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="95" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="96" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="97" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="98" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="102" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="103" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="104" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="105" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="106" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="107" text="w 40" visible="false" left="319" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="109" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static14" taborder="110" text="H25" visible="false" left="749" top="103" width="48" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static32" taborder="115" text="w&#13;&#10;10" visible="false" left="9" top="575" width="10" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static35" taborder="117" text="h 4" visible="false" left="938" top="533" width="216" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static39" taborder="119" text="h 10" visible="false" left="613" top="-128" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static40" taborder="120" text="w8" visible="false" left="436" top="549" width="62" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static41" taborder="121" text="w10" visible="false" left="444" top="538" width="62" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static42" taborder="122" text="w10" visible="false" left="621" top="691" width="62" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="123" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="124" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static24" taborder="125" text="H15" visible="false" left="749" top="394" width="48" height="15" style="background:#fb7b7b7a;"/>
+        <Edit id="edtAPPL_RATE" taborder="126" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="866" bottom="370" width="110" height="21" visible="false"/>
+        <Button id="btnDELETE_SLIP" taborder="127" text="전표삭제" onclick="btnDELETE_SLIP_onclick" cssclass="btn_WF_Module" enable="false" width="74" height="21" bottom="184" right="25" visible="false"/>
+        <Div id="divSHRPERS_STYM" taborder="0" url="common::comMonthCalendar.xfdl" left="96" top="71" width="100" height="21" onsetfocus="fn_EditFocus"/>
+        <Div id="divSHRPERS_EDYM" taborder="1" url="common::comMonthCalendar.xfdl" left="219" top="71" width="100" height="21" onsetfocus="fn_EditFocus"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">INCM_TYCD</Col>
+            <Col id="DSNAME">dsSHRINCM_TYCD</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">INCM_TYCD</Col>
+            <Col id="DSNAME">dsINCM_TYCD</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">FORI_GUBN</Col>
+            <Col id="DSNAME">dsFORI_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">RESI_GUBN</Col>
+            <Col id="DSNAME">dsRESI_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">JOBS_GUBN</Col>
+            <Col id="DSNAME">dsJOBS_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">APPL_RATE</Col>
+            <Col id="DSNAME">dsAPPL_RATE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">GITA_GUBN</Col>
+            <Col id="DSNAME">dsGITA_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="CODEID">PAYX_GUBN</Col>
+            <Col id="DSNAME">dsPAYX_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSHRSTAT_GUBN</Col>
+            <Col id="CODEID">STAT_GUBN</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTA_INCMXM" onrowposchanged="dsTA_INCMXM_onrowposchanged" useclientlayout="true" oncolumnchanged="dsTA_INCMXM_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="INCM_IDXX" type="BIGDECIMAL" size="256"/>
+          <Column id="SLIP_INPU" type="STRING" size="256"/>
+          <Column id="ACCT_GUBN" type="STRING" size="256"/>
+          <Column id="FETCH_NM" size="2" prop="default" type="STRING"/>
+          <Column id="CUST_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="INCM_TYCD" size="10" prop="default" type="STRING"/>
+          <Column id="PERS_YYMM" size="6" prop="default" type="STRING"/>
+          <Column id="SUPP_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="GITA_SEQX" size="1" prop="default" type="STRING"/>
+          <Column id="WORK_DCNT" size="3" prop="default" type="STRING"/>
+          <Column id="SUPP_KMAK" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="NTAX_INCM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="APPL_RATE" size="10" prop="default" type="STRING"/>
+          <Column id="GITA_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="POSS_DAYS" size="7" prop="default" type="BIGDECIMAL"/>
+          <Column id="OUTL_KMAK" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="GASE_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="TAXX_RATE" size="7" prop="default" type="BIGDECIMAL"/>
+          <Column id="INCM_TAXX" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="COMP_SEKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="NONS_SEKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="INHA_TAXX" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="SEKM_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="SEHU_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="TAKE_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="TAKE_USER" size="10" prop="default" type="STRING"/>
+          <Column id="REMK_NOTE" size="100" prop="default" type="STRING"/>
+          <Column id="GITA_RMR2" size="60" prop="default" type="STRING"/>
+          <Column id="PAYX_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="OWNR_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="RERN_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="BIZR_NUMB" size="13" prop="default" type="STRING"/>
+          <Column id="FORI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="RESI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="JOBS_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="POST_NUMB" size="6" prop="default" type="STRING"/>
+          <Column id="DTL1_ADDR" size="200" prop="default" type="STRING"/>
+          <Column id="DTL2_ADDR" size="200" prop="default" type="STRING"/>
+          <Column id="PAYX_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="REMK_NAME" type="STRING" size="100"/>
+          <Column id="SLIP_NUMB" type="STRING" size="30"/>
+          <Column id="SLIP_DISP" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_CUSTXM" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CUST_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="OWNR_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="BIZR_NUMB" size="13" prop="default" type="STRING"/>
+          <Column id="INCM_TYCD" size="10" prop="default" type="STRING"/>
+          <Column id="INCM_CDNM" type="STRING" size="256"/>
+          <Column id="RERN_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="FORI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="RESI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="JOBS_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="POST_NUMB" size="6" prop="default" type="STRING"/>
+          <Column id="ADDR_DESC" size="200" prop="default" type="STRING"/>
+          <Column id="DTL1_ADDR" type="STRING" size="256" prop="default"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTA_INCMXM_SLIP" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="INCM_IDXX" type="BIGDECIMAL" size="256"/>
+          <Column id="SLIP_INPU" type="STRING" size="256"/>
+          <Column id="ACCT_GUBN" type="STRING" size="256"/>
+          <Column id="FETCH_NM" size="2" prop="default" type="STRING"/>
+          <Column id="CUST_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="INCM_TYCD" size="10" prop="default" type="STRING"/>
+          <Column id="PERS_YYMM" size="6" prop="default" type="STRING"/>
+          <Column id="SUPP_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="GITA_SEQX" size="1" prop="default" type="STRING"/>
+          <Column id="WORK_DCNT" size="3" prop="default" type="STRING"/>
+          <Column id="SUPP_KMAK" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="NTAX_INCM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="APPL_RATE" size="10" prop="default" type="STRING"/>
+          <Column id="GITA_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="POSS_DAYS" size="7" prop="default" type="BIGDECIMAL"/>
+          <Column id="OUTL_KMAK" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="GASE_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="TAXX_RATE" size="7" prop="default" type="BIGDECIMAL"/>
+          <Column id="INCM_TAXX" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="COMP_SEKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="NONS_SEKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="INHA_TAXX" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="SEKM_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="SEHU_TOKM" size="17" prop="default" type="BIGDECIMAL"/>
+          <Column id="TAKE_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="TAKE_USER" size="10" prop="default" type="STRING"/>
+          <Column id="REMK_NOTE" size="100" prop="default" type="STRING"/>
+          <Column id="GITA_RMR2" size="60" prop="default" type="STRING"/>
+          <Column id="PAYX_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="OWNR_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="RERN_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="BIZR_NUMB" size="13" prop="default" type="STRING"/>
+          <Column id="FORI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="RESI_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="JOBS_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="POST_NUMB" size="6" prop="default" type="STRING"/>
+          <Column id="DTL1_ADDR" size="200" prop="default" type="STRING"/>
+          <Column id="DTL2_ADDR" size="200" prop="default" type="STRING"/>
+          <Column id="PAYX_GUBN" size="10" prop="default" type="STRING"/>
+          <Column id="REMK_NAME" type="STRING" size="100"/>
+          <Column id="SLIP_NUMB" type="STRING" size="30"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsUserCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" type="STRING" size="256"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" type="STRING" size="256"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="DSNAME">dsACCT_GUBN</Col>
+            <Col id="COMBOID">FAM0001</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">0</Col>
+            <Col id="PARAM">사업장</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item4" compid="Tab0.FA010030.edtREMK_NOTE" propid="value" datasetid="dsTA_INCMXM" columnid="REMK_NOTE"/>
+      <BindItem id="Tab0_FA010030_calSUPP_DATE_value" compid="Tab0.FA010030.calSUPP_DATE" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_DATE"/>
+      <BindItem id="Tab0_FA010030_mskINCM_TAXX_value" compid="Tab0.FA010030.mskINCM_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INCM_TAXX"/>
+      <BindItem id="Tab0_FA010030_mskINHA_TAXX_value" compid="Tab0.FA010030.mskINHA_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INHA_TAXX"/>
+      <BindItem id="Tab0_FA010030_mskSEKM_TOKM_value" compid="Tab0.FA010030.mskSEKM_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEKM_TOKM"/>
+      <BindItem id="Tab0_FA010030_mskSUPP_KMAK_value" compid="Tab0.FA010030.mskSUPP_KMAK" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_KMAK"/>
+      <BindItem id="Tab0_FA010030_mskSEHU_TOKM_value" compid="Tab0.FA010030.mskSEHU_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEHU_TOKM"/>
+      <BindItem id="Tab0_FA010030_cmbAPPL_RATE_value" compid="Tab0.FA010030.cmbAPPL_RATE" propid="value" datasetid="dsTA_INCMXM" columnid="APPL_RATE"/>
+      <BindItem id="Tab0_FA010030_mskNTAX_INCM_value" compid="Tab0.FA010030.mskNTAX_INCM" propid="value" datasetid="dsTA_INCMXM" columnid="NTAX_INCM"/>
+      <BindItem id="Tab0_FA010020_calSUPP_DATE_value" compid="Tab0.FA010020.calSUPP_DATE" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_DATE"/>
+      <BindItem id="Tab0_FA010020_cmbGITA_GUBN_value" compid="Tab0.FA010020.cmbGITA_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="GITA_GUBN"/>
+      <BindItem id="Tab0_FA010020_mskCOMP_SEKM_value" compid="Tab0.FA010020.mskCOMP_SEKM" propid="value" datasetid="dsTA_INCMXM" columnid="COMP_SEKM"/>
+      <BindItem id="Tab0_FA010020_mskSEHU_TOKM_value" compid="Tab0.FA010020.mskSEHU_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEHU_TOKM"/>
+      <BindItem id="item0" compid="Tab0.FA010020.edtREMK_NOTE" propid="value" datasetid="dsTA_INCMXM" columnid="REMK_NOTE"/>
+      <BindItem id="Tab0_FA010020_mskOUTL_KAMK_value" compid="Tab0.FA010020.mskOUTL_KAMK" propid="value" datasetid="dsTA_INCMXM" columnid="OUTL_KMAK"/>
+      <BindItem id="Tab0_FA010020_mskNONS_SEKM_value" compid="Tab0.FA010020.mskNONS_SEKM" propid="value" datasetid="dsTA_INCMXM" columnid="NONS_SEKM"/>
+      <BindItem id="Tab0_FA010020_mskSUPP_KMAK_value" compid="Tab0.FA010020.mskSUPP_KMAK" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_KMAK"/>
+      <BindItem id="Tab0_FA010020_mskGASE_TOKM_value" compid="Tab0.FA010020.mskGASE_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="GASE_TOKM"/>
+      <BindItem id="Tab0_FA010020_mskINHA_TAXX_value" compid="Tab0.FA010020.mskINHA_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INHA_TAXX"/>
+      <BindItem id="item1" compid="Tab0.FA010020.mskSLIP_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="SLIP_DISP"/>
+      <BindItem id="Tab0_FA010020_edtGITA_RMR2_value" compid="Tab0.FA010020.edtGITA_RMR2" propid="value" datasetid="dsTA_INCMXM" columnid="GITA_RMR2"/>
+      <BindItem id="Tab0_FA010020_mskSEKM_TOKM_value" compid="Tab0.FA010020.mskSEKM_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEKM_TOKM"/>
+      <BindItem id="Tab0_FA010020_mskINCM_TAXX_value" compid="Tab0.FA010020.mskINCM_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INCM_TAXX"/>
+      <BindItem id="Tab0_FA010020_cmbAPPL_RATE_value" compid="Tab0.FA010020.cmbAPPL_RATE" propid="value" datasetid="dsTA_INCMXM" columnid="APPL_RATE"/>
+      <BindItem id="item3" compid="Tab0.FA010010.mskSLIP_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="SLIP_DISP"/>
+      <BindItem id="Tab0_FA010010_mskSEHU_TOKM_value" compid="Tab0.FA010010.mskSEHU_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEHU_TOKM"/>
+      <BindItem id="Tab0_FA010010_cmbAPPL_RATE_value" compid="Tab0.FA010010.cmbAPPL_RATE" propid="value" datasetid="dsTA_INCMXM" columnid="APPL_RATE"/>
+      <BindItem id="item2" compid="Tab0.FA010010.edtREMK_NOTE" propid="value" datasetid="dsTA_INCMXM" columnid="REMK_NOTE"/>
+      <BindItem id="Tab0_FA010010_mskSEKM_TOKM_value" compid="Tab0.FA010010.mskSEKM_TOKM" propid="value" datasetid="dsTA_INCMXM" columnid="SEKM_TOKM"/>
+      <BindItem id="Tab0_FA010010_mskSUPP_KMAK_value" compid="Tab0.FA010010.mskSUPP_KMAK" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_KMAK"/>
+      <BindItem id="Tab0_FA010010_mskINHA_TAXX_value" compid="Tab0.FA010010.mskINHA_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INHA_TAXX"/>
+      <BindItem id="Tab0_FA010010_mskINCM_TAXX_value" compid="Tab0.FA010010.mskINCM_TAXX" propid="value" datasetid="dsTA_INCMXM" columnid="INCM_TAXX"/>
+      <BindItem id="Tab0_FA010010_calSUPP_DATE_value" compid="Tab0.FA010010.calSUPP_DATE" propid="value" datasetid="dsTA_INCMXM" columnid="SUPP_DATE"/>
+      <BindItem id="item5" compid="Tab0.FA010030.mskWORK_DCNT" propid="value" datasetid="dsTA_INCMXM" columnid="WORK_DCNT"/>
+      <BindItem id="item9" compid="Tab0.FA010030.mskSLIP_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="SLIP_DISP"/>
+      <BindItem id="mskPOST_NUMB_value" compid="mskPOST_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="POST_NUMB"/>
+      <BindItem id="cmbFORI_GUBN_value" compid="cmbFORI_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="FORI_GUBN"/>
+      <BindItem id="cmbACCT_GUBN_value" compid="cmbACCT_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="ACCT_GUBN"/>
+      <BindItem id="cmbRESI_GUBN_value" compid="cmbRESI_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="RESI_GUBN"/>
+      <BindItem id="edtDTL1_ADDR_value" compid="edtDTL1_ADDR" propid="value" datasetid="dsTA_INCMXM" columnid="DTL1_ADDR"/>
+      <BindItem id="edtTAKE_USER_value" compid="edtTAKE_USER" propid="value" datasetid="dsTA_INCMXM" columnid="TAKE_USER"/>
+      <BindItem id="cmbINCM_TYCD_value" compid="cmbINCM_TYCD" propid="value" datasetid="dsTA_INCMXM" columnid="INCM_TYCD"/>
+      <BindItem id="edtEMPL_NAME_value" compid="edtEMPL_NAME" propid="value" datasetid="dsTA_INCMXM" columnid="EMPL_NAME"/>
+      <BindItem id="cmbJOBS_GUBN_value" compid="cmbJOBS_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="JOBS_GUBN"/>
+      <BindItem id="edtCUST_CODE_value" compid="edtCUST_CODE" propid="value" datasetid="dsTA_INCMXM" columnid="CUST_CODE"/>
+      <BindItem id="edtDTL2_ADDR_value" compid="edtDTL2_ADDR" propid="value" datasetid="dsTA_INCMXM" columnid="DTL2_ADDR"/>
+      <BindItem id="mskBIZR_NUMB_value" compid="mskBIZR_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="BIZR_NUMB"/>
+      <BindItem id="calPAYX_DATE_value" compid="calPAYX_DATE" propid="value" datasetid="dsTA_INCMXM" columnid="PAYX_DATE"/>
+      <BindItem id="edtOWNR_NAME_value" compid="edtOWNR_NAME" propid="value" datasetid="dsTA_INCMXM" columnid="OWNR_NAME"/>
+      <BindItem id="edtTAKE_DEPT_value" compid="edtTAKE_DEPT" propid="value" datasetid="dsTA_INCMXM" columnid="TAKE_DEPT"/>
+      <BindItem id="edtDEPT_NAME_value" compid="edtDEPT_NAME" propid="value" datasetid="dsTA_INCMXM" columnid="DEPT_NAME"/>
+      <BindItem id="cmbPAYX_GUBN_value" compid="cmbPAYX_GUBN" propid="value" datasetid="dsTA_INCMXM" columnid="PAYX_GUBN"/>
+      <BindItem id="item6" compid="mskRERN_NUMB" propid="value" datasetid="dsTA_INCMXM" columnid="RERN_NUMB"/>
+      <BindItem id="item8" compid="edtCUST_NAME" propid="value" datasetid="dsTA_INCMXM" columnid="CUST_NAME"/>
+      <BindItem id="item7" compid="edtAPPL_RATE" propid="value" datasetid="dsTA_INCMXM" columnid="SLIP_NUMB"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TXMD0020 소득내역등록
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.25		신민규		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+// 종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄
+this.sBUTTONLIST 	= "TTTTTTTT"; //공통기능정의(버튼순으로 T or F)
+this.sPACKAGENAME 	= "TXMD0020"; //해당 Form에서 사용 할 Package 명
+this.sSLIP_INPU 	= ""; //전표등록구분
+this.sSLIP_NUMB 	= "";
+this.aKeyValue 		= new Array(9);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+// 조회조건이 다른 프로그램에서 넘어오는 변수
+this.arrReturn = new Array(15); //타 프로그램으로 결과 반환 할 Array
+
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	//전표 MASK
+	this.fnc_FormatSlipNumber(this.Tab0.FA010010.mskSLIP_NUMB, "", "Y");
+	this.fnc_FormatSlipNumber(this.Tab0.FA010020.mskSLIP_NUMB, "", "Y");
+	this.fnc_FormatSlipNumber(this.Tab0.FA010030.mskSLIP_NUMB, "", "Y");
+	this.fnc_FormatSlipNumber(this.grdTA_INCMXM, "SLIP_NUMB");
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fnc_GetUserComboDs(this.dsUserCombo);
+	
+	this.sSLIP_INPU 	= "MANU";	//직접등록
+	this.divSHRPERS_STYM.fn_SetMonth((this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 4) + "01"));
+	this.divSHRPERS_EDYM.fn_SetMonth(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 4) + "12");
+
+	//월달력 바인딩
+	var bindInfo = new Object;
+	bindInfo.binddataset = this.dsTA_INCMXM;
+	bindInfo.bindcolumn = "PERS_YYMM";
+	this.Tab0.FA010010.divPERS_YYMM.fn_SetBindInfo(bindInfo);
+	this.Tab0.FA010020.divPERS_YYMM.fn_SetBindInfo(bindInfo);
+	this.Tab0.FA010030.divPERS_YYMM.fn_SetBindInfo(bindInfo);
+	
+	this.Tab0.set_tabindex(0);
+	
+	this.divSHRPERS_STYM.setFocus();
+	
+	this.fn_Search01(); //사업소득자 명단 가져오기
+
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+
+	this.fnc_DatasetClear("dsTA_INCMXM");
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsTA_INCMXM=dsTA_INCMXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTA_INCMXM.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	
+	var iRow = this.dsTA_INCMXM.addRow();
+	
+	this.cmbACCT_GUBN.set_index(0);
+	//this.cmbINCM_TYCD.set_index(-1);	
+	this.dsTA_INCMXM.setColumn(iRow, "SLIP_INPU", this.sSLIP_INPU);			//전표등록구분
+	this.dsTA_INCMXM.setColumn(iRow, "ACCT_GUBN", this.cmbACCT_GUBN.value); //회계단위
+	//this.dsTA_INCMXM.setColumn(iRow, "INCM_TYCD", this.cmbINCM_TYCD.value); //사업소득
+	
+	this.edtTAKE_DEPT.set_value(application.GBL_DEPTCD); //로그인부서코드
+	this.edtDEPT_NAME.set_value(application.GBL_DEPTNM); //로그인부서명
+	this.edtTAKE_USER.set_value(application.GBL_EMPLNO); //로그인사번
+	this.edtEMPL_NAME.set_value(application.GBL_USERNM); //로그인사원명
+
+	this.edtOWNR_NAME.setFocus();
+	
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+
+   if (this.fn_DeleteCheck()) this.dsTA_INCMXM.deleteRow(this.dsTA_INCMXM.rowposition);
+   this.grdTA_INCMXM.setFocus();	
+   
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsTA_INCMXM"); //취소 할 DataSet의 이름을 입력한다.
+	this.dsTA_INCMXM_onrowposchanged();
+	this.grdTA_INCMXM.setFocus(); //취소 후 Grid로 Focus
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+	
+	if (!this.fn_SaveItemCheck()) return;
+	
+	this.aKeyValue[0] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "INCM_IDXX");
+	this.aKeyValue[1] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "ACCT_GUBN");
+	this.aKeyValue[2] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "CUST_CODE");
+	this.aKeyValue[3] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SUPP_DATE");
+	this.aKeyValue[4] = this.fnc_SubStr(this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "PERS_YYMM"), 0, 6);
+	this.aKeyValue[5] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SUPP_KMAK");
+	this.aKeyValue[6] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "APPL_RATE");
+	this.aKeyValue[7] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "GITA_GUBN");
+	this.aKeyValue[8] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "OUTL_KMAK");
+
+	var sMethodName = "SAVE00";
+	var sInDataSet 	= "dsTA_INCMXM=dsTA_INCMXM:U";
+	var sOutDataSet = "";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+	this.grdTA_INCMXM.setFocus();
+	
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name); //Export 할 화면 Call
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// Dialog Option List
+	var strOpenStyle = "resizable=false openalign='center middle' ";
+
+	this.fnc_OpenPopup("TXMD0020P01", "txm::TXMD0020P01.xfdl", "", strOpenStyle);
+	this.grdTA_INCMXM.setFocus();
+
+}
+
+
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	 if(e.fromobject instanceof Div) return;
+	 var sMessage = this.fnc_FormUnloadCheck("dsTA_CUSTXM,dsTA_INCMXM", this);
+
+	 if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTA_INCMXM")) {
+		if (!this.fnc_Message("TMM023")) return false;
+	}
+
+	if (this.fnc_Length(this.divSHRPERS_STYM.fn_GetMonth()) < 6 || this.fnc_Length(this.divSHRPERS_EDYM.fn_GetMonth()) < 6) {
+		this.fnc_Message("TMM072", "귀속년월");
+		this.divSHRPERS_STYM.setFocus();
+		return this.fnc_SearchCheckPostAction("TMM072", "귀속년월", this.divSHRPERS_STYM);
+	} else {
+		if (this.divSHRPERS_STYM.fn_GetMonth() > this.divSHRPERS_EDYM.fn_GetMonth()) {
+			this.fnc_Message("TMM042", "귀속년월 시작", "귀속년월 종료");
+			this.divSHRPERS_STYM.setFocus();
+			return this.fnc_SearchCheckPostAction("TMM042", "귀속년월 시작,귀속년월 종료", this.divSHRPERS_STYM);
+		}
+	}
+
+	if (this.fnc_Length(this.calSHRSUPP_STDT.value) == 8 && this.fnc_Length(this.calSHRSUPP_EDDT.value) == 8) {
+		if (this.calSHRSUPP_STDT.value > this.calSHRSUPP_EDDT.value) {
+			this.fnc_Message("TMM042", "지급일자 시작", "지급일자 종료");
+			this.calSHRSUPP_STDT.setFocus();
+			return this.fnc_SearchCheckPostAction("TMM042", "지급일자 시작,지급일자 종료", this.calSHRSUPP_STDT);
+		}
+	}
+
+	return true;
+	// 모든 조회 조건이 입력 되면 True를 반환 한다.
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SLIP_NUMB"))) > 0) {
+		this.fnc_Message("TMM125", "전표생성 된 자료입니다.\n\n삭제할 수 없습니다");
+		return false;
+	}
+
+	// 선택된 Row Count
+	this.dsTA_INCMXM.deleteRow(this.dsTA_INCMXM.rowposition);
+/*
+	var iSelectRowCount = this.fnc_SelectRowCount(this.dsTA_INCMXM);
+
+	if (iSelectRowCount > 1) {
+		// Multi로 선택되었다면 선택된 Count로 삭제 여부 확인
+		return this.fnc_Message("TMM004", iSelectRowCount);
+	} else {
+		// 한 건 삭제 처리히 해당 항목에 대한 삭제 여부 확인
+		var sQuestionText = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "OWNR_NAME");
+		return this.fnc_Message("TMM002", sQuestionText);
+	}
+*/
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function (){
+	
+	if (!this.fnc_DatasetChangeCheck("dsTA_INCMXM")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsTA_INCMXM.getRowCount(); i++) {
+	
+		if (this.fnc_ToUpper(this.dsTA_INCMXM.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+		
+		//this.dsTA_CUSTXM.set_rowposition(i);
+		
+		// var sPAGE = GetItem(Tab0,Tab0.tabindex);
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "TAKE_DEPT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "담당부서", this.dsTA_INCMXM, i, this.edtDEPT_NAME, "");
+		}
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "TAKE_USER"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "담당자", this.dsTA_INCMXM, i, this.edtEMPL_NAME, "");
+		}
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "CUST_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "소득자성명(상호)", this.dsTA_INCMXM, i, this.edtOWNR_NAME, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "SUPP_DATE"))) < 1){
+			return this.fnc_CheckPostAction("TMM072", "지급일자", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].calSUPP_DATE, "");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "PERS_YYMM"))) < 6) {
+			return this.fnc_CheckPostAction("TMM072", "소득귀속년월", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].divPERS_YYMM, "");
+		}
+		
+		if (this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "INCM_TYCD")) == "FA010030") {
+		//if (this.Tab0.tabindex == 2) {
+			if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "WORK_DCNT"))) < 1) {
+				return this.fnc_CheckPostAction("TMM072", "근무일수", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].mskWORK_DCNT, "");
+			}
+		}
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "SUPP_KMAK"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "총지급액", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].mskSUPP_KMAK, "");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "APPL_RATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "적용세율", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].cmbAPPL_RATE, "");
+		}
+		
+		if (this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "INCM_TYCD")) == "FA010020") {
+		//if (this.Tab0.tabindex == 1) {
+		
+			if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "GITA_GUBN"))) < 1) {
+				return this.fnc_CheckPostAction("TMM072", "기타소득구분", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].cmbGITA_GUBN, "");
+			}
+			
+			if (this.dsTA_INCMXM.getColumn(i, "GITA_GUBN") == "FA020020") {
+				var iSupp_Kmak = nexacro.toNumber(this.dsTA_INCMXM.getColumn(i, "SUPP_KMAK"));
+				var iOutl_Kmak = nexacro.toNumber(this.dsTA_INCMXM.getColumn(i, "OUTL_KMAK"));
+
+				var iAMNT = iSupp_Kmak * 0.8;
+
+				if (iOutl_Kmak < iAMNT) {
+					return this.fnc_CheckPostAction("TMM125", "필요경비가 최소 총지급액의 80% 이상이어야 합니다", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].mskOUTL_KAMK, "");
+				}
+			}
+
+		} else if (this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "INCM_TYCD")) == "FA010030") { //if (this.Tab0.tabindex == 2) {
+		
+			if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "NTAX_INCM"))) < 1) {
+				return this.fnc_CheckPostAction("TMM072", "비과세소득", this.dsTA_INCMXM, i, this.Tab0.components[this.Tab0.tabindex].mskNTAX_INCM, "");
+			}
+			
+		}
+
+	}
+
+	return true;
+	
+}
+
+/*----------------------------+
+ |  전표생성 필수 조건 체크!  |
+ +----------------------------*/
+this.fn_CreateSlipItemCheck = function () {
+
+    if (this.dsTA_INCMXM.getRowCount() == 0) return false;
+	
+	var i = this.dsTA_INCMXM.rowposition;
+	
+	if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "SLIP_NUMB"))) > 0) {
+		this.fnc_Message("TMM125", "이미 전표처리된 건입니다"); //Message 처리
+		return false;
+	}
+	
+	if (this.fnc_DatasetChangeCheck("dsTA_INCMXM")) {
+		return this.fnc_Message("TMM015", "전표처리");
+	}
+	
+	if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(i, "REMK_NOTE"))) < 1) {
+		return this.fnc_CheckPostAction("TMM072", "적요", this.dsTA_CUSTXM, i, this.Tab0.components[this.Tab0.tabindex].edtREMK_NOTE, "");
+	}
+
+	// 선택한 대상만 복사
+	this.dsTA_INCMXM_SLIP.copyData(this.dsTA_INCMXM, true);
+	this.fnc_DatasetClear("dsTA_INCMXM_SLIP");
+
+	var iRow = this.dsTA_INCMXM_SLIP.addRow();
+	this.dsTA_INCMXM_SLIP.copyRow(iRow, this.dsTA_INCMXM, i);
+
+	//trace(this.dsTA_INCMXM_SLIP.saveXML());
+	return this.fnc_Message("TMM061", "전표");
+		
+}
+
+/*----------------------------+
+ |  전표삭제 필수 조건 체크!  |
+ +----------------------------*/
+this.fn_DeleteSlipItemCheck = function () {
+    
+	var sQuestionText = "회계전표 " + this.fnc_GetMaskFormat(this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SLIP_NUMB"), application.GBL_SLIPMASK);
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " OWNR_NAME=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHROWNR_NAME.value)); 
+		sReturnString += " SUPP_STDT=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRSUPP_STDT.value)); 
+		sReturnString += " SUPP_EDDT=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRSUPP_EDDT.value)); 
+		sReturnString += " PERS_STYM=" 	+ this.fnc_Quote(this.fnc_Trim(this.divSHRPERS_STYM.fn_GetMonth()));
+		sReturnString += " PERS_EDYM=" 	+ this.fnc_Quote(this.fnc_Trim(this.divSHRPERS_EDYM.fn_GetMonth()));
+		sReturnString += " INCM_TYCD=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRINCM_TYCD.value));
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(application.GBL_DEPTCD));
+	
+	} else if (sKind == "SEARCH01") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " CUST_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtCUST_CODE.value)); 
+
+	// 저장 Argument 생성
+	} else if (sKind == "SAVE00") {
+	
+		sReturnString  = " pgm=" + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" + this.fnc_Quote(sKind); 
+
+	// 전표생성
+	} else if (sKind == "PROC00") {
+	
+		var sSous_Lnky = this.dsTA_INCMXM_SLIP.getColumn(0, "INCM_IDXX");
+				 
+		sReturnString  = " pgm="		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " ACCT_UNIT=" 	+ this.fnc_Quote("10");
+		sReturnString += " ACCT_GUBN=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbACCT_GUBN.value));
+		sReturnString += " SLIP_DATE=" 	+ this.fnc_Quote(this.fnc_Trim(this.Tab0.components[this.Tab0.tabindex].calSUPP_DATE.value)); //전표발행일
+		sReturnString += " FORM_IDXX=" 	+ this.fnc_Quote(this.fnc_Trim(this.sPACKAGENAME)); //화면ID
+        sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(application.GBL_EMPLNO);
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(application.GBL_DEPTCD);
+		sReturnString += " SLIP_GUBN=" 	+ this.fnc_Quote("TX001");	//사업기타일용소득전표
+		sReturnString += " TITL_NAME=" 	+ this.fnc_Quote("[" + this.Tab0.components[this.Tab0.tabindex].text + "]");
+		sReturnString += " SOUS_LNKY=" 	+ this.fnc_Quote(sSous_Lnky); //출처연결키
+	
+	// 전표생성
+	} else if (sKind == "PROC01") {
+    
+        sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+        sReturnString += " action="    + this.fnc_Quote(sKind);
+        sReturnString += " SLIP_NUMB=" + this.fnc_Quote(this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SLIP_NUMB")); //전표번호
+	
+	}
+
+	return sReturnString;
+	
+}
+
+/*-------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+		this.fnc_Information(this.stInformation, this.dsTA_INCMXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_INCMXM.rowcount);
+		
+		var iRow = "";	
+		if (this.fnc_Length(this.aKeyValue[0]) > 0) {	
+			//수정저장 시
+			iRow = this.dsTA_INCMXM.findRowExpr("INCM_IDXX=='" + this.aKeyValue[0] + "'");
+		} else {	
+			//신규저장 시
+			iRow = this.dsTA_INCMXM.findRowExpr("ACCT_GUBN=='" + this.aKeyValue[1] + "' && CUST_CODE=='" + this.aKeyValue[2] + "'"
+										  + " && SUPP_DATE=='" + this.aKeyValue[3] + "' && PERS_YYMM=='" + this.aKeyValue[4] + "'"
+										  + " && SUPP_KMAK== " + this.aKeyValue[5] + "  && APPL_RATE=='" + this.aKeyValue[6] + "'"
+										  + " && GITA_GUBN=='" + this.aKeyValue[7] + "' && OUTL_KMAK== " + this.aKeyValue[8]);
+		}				
+		if (iRow < 0) iRow = 0;
+ 		
+ 		this.grdTA_INCMXM.selectRow(iRow);
+ 		this.dsTA_INCMXM.set_rowposition(iRow);
+ 		
+		this.aKeyValue[0] = "";
+		this.aKeyValue[1] = "";
+		this.aKeyValue[2] = "";
+		this.aKeyValue[3] = "";
+		this.aKeyValue[4] = "";
+		this.aKeyValue[5] = "";
+		this.aKeyValue[6] = "";
+		this.aKeyValue[7] = "";
+		this.aKeyValue[8] = "";
+		
+	} else if (sMethodName == "SEARCH01") {
+	
+	} else if (sMethodName == "SAVE00") {
+		
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+		
+	}  else if (sMethodName == "GetBranch") {
+	
+		this.cmbACCT_GUBN.set_index(0);
+		
+	} else if (sMethodName == "PROC00") {
+	
+		this.fn_Search();
+        this.fnc_ViewSlipForm(this.sSLIP_NUMB, "REV", this.sUSERLAVEL, ""); //NEW:직접입력, REV:수정 ,SHR:조회 ,SEM:반자동전표
+		
+	} else if (sMethodName == "PROC01") {
+		
+		this.fnc_Message("TMM041"); 
+		this.fn_Search();
+		
+	} else if (sMethodName == "GetCommCode") {
+
+		var arrParam = new Array();
+		arrParam[0] = "COMBO,cmbSHRSTAT_GUBN,dsSHRSTAT_GUBN,0";
+		arrParam[1] = "COMBO,cmbFORI_GUBN,dsFORI_GUBN,0";
+		arrParam[2] = "COMBO,cmbJOBS_GUBN,dsJOBS_GUBN,0";
+		arrParam[3] = "COMBO,Tab0.components[1].cmbGITA_GUBN,dsGITA_GUBN,0";
+		arrParam[4] = "COMBO,cmbSHRINCM_TYCD,dsSHRINCM_TYCD,0";
+		arrParam[5] = "COMBO,cmbINCM_TYCD,dsINCM_TYCD,0";
+		arrParam[6] = "COMBO,cmbRESI_GUBN,dsRESI_GUBN,0";
+		arrParam[7] = "COMBO,Tab0.components[0].cmbAPPL_RATE,dsAPPL_RATE,0";
+		arrParam[8] = "COMBO,Tab0.components[1].cmbAPPL_RATE,dsAPPL_RATE,0";
+		arrParam[9] = "COMBO,Tab0.components[2].cmbAPPL_RATE,dsAPPL_RATE,0";
+		arrParam[10] = "GRID,grdTA_INCMXM,dsFORI_GUBN,FORI_GUBN";
+		arrParam[11] = "GRID,grdTA_INCMXM,dsJOBS_GUBN,JOBS_GUBN";
+		arrParam[12] = "GRID,grdTA_INCMXM,dsGITA_GUBN,GITA_GUBN";
+		arrParam[13] = "GRID,grdTA_INCMXM,dsINCM_TYCD,INCM_TYCD";
+		arrParam[14] = "GRID,grdTA_INCMXM,dsRESI_GUBN,RESI_GUBN";
+
+		this.fnc_CommonCodeInnerBind(arrParam);		
+
+		// 소득자 구분에서 사용되는 것만 필터
+		this.dsINCM_TYCD.filter("REF1_FILD == '1'");
+		this.dsSHRINCM_TYCD.filter("REF1_FILD == '1' || COMD_CDNM == '전체'");
+		this.cmbSHRINCM_TYCD.set_index(0);
+		this.cmbSHRSTAT_GUBN.set_index(0);
+		
+	} else if (sMethodName == "GetUserComboCode") {
+
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbACCT_GUBN,dsACCT_GUBN,0";
+		this.fnc_UserComboInnerBind(arrParam);
+
+	}
+	
+}
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+	
+	if (obj.name == "imgHelpOWNR_NAME" || obj.name == "edtOWNR_NAME"){
+
+		arrParam[0]  = "TXM0101";
+		arrParam[1]  = "";
+		arrParam[2]  = this.fnc_Trim(this.edtOWNR_NAME.value);
+		arrParam[3]  = "N";
+		arrParam[4]  = "edtOWNR_NAME";
+		arrParam[5]  = "edtCUST_CODE,edtOWNR_NAME,mskBIZR_NUMB,cmbINCM_TYCD,mskRERN_NUMB,cmbFORI_GUBN,"
+					 + "cmbRESI_GUBN,cmbJOBS_GUBN,edtDTL1_ADDR,edtDTL2_ADDR,mskPOST_NUMB,edtCUST_NAME";
+		arrParam[6]  = "0,1,2,4,5,6,"
+					 + "7,8,10,14,9,3";
+		arrParam[9]  = "fn_HelpAfter";
+		
+	}
+	
+	if (this.fnc_Length(this.fnc_Trim(arrParam)) > 0) this.fnc_HelpDialogeAction(this, obj, arrParam);
+	
+}
+
+this.fn_HelpAfter = function (sParam) {
+	
+	var arrParam 	= this.fnc_Split(sParam, ",");
+	var iRow 		= this.dsTA_INCMXM.rowposition;
+	var sOWNR_NAME 	= arrParam[1];
+	
+	if (this.fnc_Length(sOWNR_NAME) == 0) sOWNR_NAME = arrParam[3];
+
+	var sCUST_CODE = this.dsTA_INCMXM.getColumn(iRow, "CUST_CODE");
+	
+	this.dsTA_INCMXM.setColumn(iRow, "CUST_NAME", arrParam[3]);
+
+	// 소득자가 다를경우 탭 입력부분 초기화
+	if (sCUST_CODE != this.edtCUST_CODE.value) {
+	
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_KMAK", ""); //총지급액
+		this.dsTA_INCMXM.setColumn(iRow, "TAXX_RATE", ""); //세율
+		this.dsTA_INCMXM.setColumn(iRow, "POSS_DAYS", ""); //필요경비요율
+		this.dsTA_INCMXM.setColumn(iRow, "APPL_RATE", ""); //적용세율코드
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_GUBN", ""); //기타소득구분
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_DATE", this.fnc_GetServerDateTime("DATE")); //지급일자
+		this.dsTA_INCMXM.setColumn(iRow, "PERS_YYMM", this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 6)); //소득귀속년월
+		this.dsTA_INCMXM.setColumn(iRow, "WORK_DCNT", ""); //근무일수
+		this.dsTA_INCMXM.setColumn(iRow, "NTAX_INCM", ""); //비과세소득
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_RMR2", ""); //감면근거
+		this.dsTA_INCMXM.setColumn(iRow, "CUST_NAME", ""); //사업장명
+		
+	}
+
+// 	this.fnc_SetReadonly(this.Tab0.FA010010, false);
+// 	this.fnc_SetReadonly(this.Tab0.FA010020, false);
+// 	this.fnc_SetReadonly(this.Tab0.FA010030, false);
+
+	this.dsTA_INCMXM.setColumn(iRow, "INCM_TYCD", arrParam[4]);
+	this.dsTA_INCMXM_onrowposchanged();
+	
+	this.Tab0.components[this.Tab0.tabindex].cmbAPPL_RATE.set_index(0);
+	this.cmbAPPL_RATE_onchanged();
+	
+	this.Tab0.components[this.Tab0.tabindex].calSUPP_DATE.setFocus();
+	
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+/*---------------------------------+
+ |  소득자구분에 따른 탭 선택 제한  |
+ +---------------------------------*/
+this.Tab0_canchange = function (obj:Tab, e:nexacro.TabIndexChangeEventInfo) {
+	
+	var sINCM_TYCD = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "INCM_TYCD");
+	var sTEXT = this.Tab0.components[e.postindex].name;
+	if ( (sINCM_TYCD != sTEXT) && (sINCM_TYCD != '') ) return false;
+	
+}
+
+this.Tab0_onchanged = function(obj:Tab, e:nexacro.TabIndexChangeEventInfo) {
+	this.fnc_GridSetting(obj.components[e.postindex]);
+}
+
+/*-------------------+
+ |  행 이동시 이벤트  |
+ +-------------------*/
+this.dsTA_INCMXM_onrowposchanged = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+	
+	if (this.dsTA_INCMXM.rowposition < 0) return;
+	
+	var sINCM_TYCD = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "INCM_TYCD");
+	this.dsAPPL_RATE.filter("REF2_FILD == '" + sINCM_TYCD + "'");
+
+	var iTabIdx = 0;
+	
+	if (sINCM_TYCD == "FA010010") {		
+		iTabIdx = 0;
+	} else if (sINCM_TYCD == "FA010020") {		
+		iTabIdx = 1;
+	} else if (sINCM_TYCD == "FA010030") {		
+		iTabIdx = 2;
+	}	
+	
+	if (this.fnc_Length(this.fnc_Trim(this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SLIP_NUMB"))) > 0) {
+		this.fnc_SetReadonly(this.btnCREATE_SLIP, true);
+		this.fnc_SetReadonly(this.btnDISPLAY_SLIP, false);
+		this.fnc_SetReadonly(this.btnDELETE_SLIP, false);
+		this.fnc_SetReadonly(this.Tab0.tabpages[iTabIdx], true);
+	} else {
+		this.fnc_SetReadonly(this.btnCREATE_SLIP, false);
+		this.fnc_SetReadonly(this.btnDISPLAY_SLIP, true);
+		this.fnc_SetReadonly(this.btnDELETE_SLIP, true);
+		this.fnc_SetReadonly(this.Tab0.tabpages[iTabIdx], false);
+	}
+
+	// 지급일자, 소득귀속년월, 소득자 수정불가
+	if (this.fnc_ToUpper(this.dsTA_INCMXM.getRowType(this.dsTA_INCMXM.rowposition)) != Dataset.ROWTYPE_INSERT) {
+		this.fnc_SetReadonly(this.cmbACCT_GUBN, true);
+		this.fnc_SetReadonly(this.imgHelpOWNR_NAME, true);
+		this.fnc_SetReadonly(this.edtOWNR_NAME, true);
+		
+		this.fnc_SetReadonly(this.Tab0.components[iTabIdx].calSUPP_DATE, true);
+		this.fnc_SetReadonly(this.Tab0.components[iTabIdx].divPERS_YYMM, true);
+	} else {
+		this.fnc_SetReadonly(this.cmbACCT_GUBN, false);
+		this.fnc_SetReadonly(this.imgHelpOWNR_NAME, false);
+		this.fnc_SetReadonly(this.edtOWNR_NAME, false);
+
+		this.fnc_SetReadonly(this.Tab0.components[iTabIdx].calSUPP_DATE, false);
+		this.fnc_SetReadonly(this.Tab0.components[iTabIdx].divPERS_YYMM, false);
+	}
+	
+	this.Tab0.set_tabindex(iTabIdx);
+		
+}
+
+this.dsTA_INCMXM_oncolumnchanged = function (obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+		
+	var iRow 	= this.dsTA_INCMXM.rowposition;
+	var iSupp_Kmak = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "SUPP_KMAK"));
+	var iTaxx_Rate = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "TAXX_RATE"));
+	var iIncm_Taxx = 0;
+	var iComp_Sekm = 0;
+	var iNons_Sekm = 0;
+	var iInha_Taxx = 0;
+	var iGase_Tokm = 0;
+	var iSekm_Tokm = 0;
+	var iSehu_Tokm = 0;
+
+	if (e.columnid == "INCM_TYCD") {
+		this.dsTA_INCMXM_onrowposchanged();
+	}
+
+	var iIndex 	= this.Tab0.tabindex;
+	
+	if (iIndex == 0) {
+	
+		// 소득세, 주민세, 원천징수계 계산(소득세는 1000원 미만은 0원)
+		var sIncm_Taxx = Math.floor(nexacro.toNumber(iSupp_Kmak, 0) * nexacro.toNumber(iTaxx_Rate, 0));
+		iIncm_Taxx = Math.floor(nexacro.toNumber(sIncm_Taxx) * 0.1) * 10;
+
+		if (iIncm_Taxx < 1000) iIncm_Taxx = 0;
+
+		var sInha_Taxx1 = Math.floor(nexacro.toNumber(iIncm_Taxx, 0) * 0.1);
+		var sInha_Taxx2 = Math.floor(nexacro.toNumber(sInha_Taxx1, 0) * 0.1);
+		iInha_Taxx = sInha_Taxx2 * 10;
+		iSekm_Tokm = iIncm_Taxx + iInha_Taxx;
+		iSehu_Tokm = iSupp_Kmak - iSekm_Tokm;
+		
+		this.dsTA_INCMXM.setColumn(iRow, "INCM_TAXX", nexacro.toNumber(iIncm_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "INHA_TAXX", nexacro.toNumber(iInha_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEKM_TOKM", nexacro.toNumber(iSekm_Tokm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "GASE_TOKM", nexacro.toNumber(iSupp_Kmak, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEHU_TOKM", nexacro.toNumber(iSehu_Tokm, 0));
+		
+	} else if (iIndex == 1) {
+
+		var iPoss_Days = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "POSS_DAYS"));
+		var iOutl_Kmak = 0;
+
+		//국세청 기타소득구분 코드
+		var sGita_Gubn = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "GITA_GUBN");	
+		var iGita_Code = this.dsGITA_GUBN.getColumn(this.dsGITA_GUBN.findRow("COMD_CODE", sGita_Gubn), "REF1_FILD");
+		
+		if (iGita_Code == "60" || iGita_Code == "61" || iGita_Code == "63" || iGita_Code == "68") {
+			iOutl_Kmak = 0;
+		} else {
+			iOutl_Kmak = Math.floor(iSupp_Kmak * iPoss_Days);
+		}
+
+		iGase_Tokm = iSupp_Kmak - iOutl_Kmak;
+	
+		// 소득금액이 5만원 미만이거나 기타소득구분이 비과세(AC330050)이면 세금 없음
+		if (this.dsTA_INCMXM.getColumn(iRow, "GITA_GUBN") == "FA020040" || iGase_Tokm < 50000) {
+			iIncm_Taxx = 0;
+			iInha_Taxx = 0;
+			iNons_Sekm = 0;
+			iComp_Sekm = 0;
+			iSekm_Tokm = 0;
+		} else {
+			iIncm_Taxx = iGase_Tokm * iTaxx_Rate;
+			if (iIncm_Taxx < 1000) iIncm_Taxx = 0;
+
+			iComp_Sekm = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "COMP_SEKM"));
+			iNons_Sekm = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "NONS_SEKM"));
+			var sInha_Taxx1 = Math.floor((iIncm_Taxx + iComp_Sekm + iNons_Sekm) * 0.1);
+			var sInha_Taxx2 = Math.floor(sInha_Taxx1 * 0.1);
+			iInha_Taxx = sInha_Taxx2 * 10;
+			iSekm_Tokm = iIncm_Taxx + iInha_Taxx + iComp_Sekm + iNons_Sekm;
+		}
+
+		iSehu_Tokm = iSupp_Kmak - iSekm_Tokm;
+
+		this.dsTA_INCMXM.setColumn(iRow, "OUTL_KMAK", nexacro.toNumber(iOutl_Kmak, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "GASE_TOKM", nexacro.toNumber(iGase_Tokm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "INCM_TAXX", nexacro.toNumber(iIncm_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "COMP_SEKM", nexacro.toNumber(iComp_Sekm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "NONS_SEKM", nexacro.toNumber(iNons_Sekm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "INHA_TAXX", nexacro.toNumber(iInha_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEKM_TOKM", nexacro.toNumber(iSekm_Tokm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEHU_TOKM", nexacro.toNumber(iSehu_Tokm, 0));
+		
+	} else if (iIndex == 2) {
+	
+		var sCode = this.dsTA_INCMXM.getColumn(iRow, "APPL_RATE");
+		var iSubRef4 = this.dsAPPL_RATE.getColumn(this.dsAPPL_RATE.findRow("COMD_CODE", sCode), "REF4_FILD");
+		var iSubRef3 = this.dsAPPL_RATE.getColumn(this.dsAPPL_RATE.findRow("COMD_CODE", sCode), "REF3_FILD");
+		var iWork_Dcnt = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "WORK_DCNT"));
+		// var iNtax_Incm = toNumber(dsTA_INCMXM.getColumn(iRow, "NTAX_INCM"));
+		var iNtax_Incm = Math.floor(nexacro.toNumber(iSubRef4) * nexacro.toNumber(iWork_Dcnt));
+		iGase_Tokm = iSupp_Kmak - Math.floor(nexacro.toNumber(iSubRef4) * nexacro.toNumber(iWork_Dcnt));
+
+		// 소득금액이 0원 미만일 경우 소득세, 주민세, 원천징수계는 0원
+		if (iGase_Tokm <= 0) {
+			iIncm_Taxx = 0;
+			iInha_Taxx = 0;
+			iSekm_Tokm = 0;
+		} else {
+			var iSanc_Sekm = Math.floor(nexacro.toNumber(iGase_Tokm) * nexacro.toNumber(iTaxx_Rate));
+			var iSekm_Gnje = Math.floor(nexacro.toNumber(iSanc_Sekm) * nexacro.toNumber(iSubRef3));
+			iIncm_Taxx = iSanc_Sekm - iSekm_Gnje;
+			if (iIncm_Taxx < 1000) iIncm_Taxx = 0;
+
+			var sInha_Taxx1 = Math.floor(nexacro.toNumber(iIncm_Taxx) * 0.1);
+			var sInha_Taxx2 = Math.floor(sInha_Taxx1 * 0.1);
+			iInha_Taxx = sInha_Taxx2 * 10;
+			iSekm_Tokm = iIncm_Taxx + iInha_Taxx;
+		}
+
+		iSehu_Tokm = iSupp_Kmak - iSekm_Tokm + iNtax_Incm;
+		this.dsTA_INCMXM.setColumn(iRow, "NTAX_INCM", nexacro.toNumber(iNtax_Incm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "GASE_TOKM", nexacro.toNumber(iGase_Tokm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "INCM_TAXX", nexacro.toNumber(iIncm_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "INHA_TAXX", nexacro.toNumber(iInha_Taxx, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEKM_TOKM", nexacro.toNumber(iSekm_Tokm, 0));
+		this.dsTA_INCMXM.setColumn(iRow, "SEHU_TOKM", nexacro.toNumber(iSehu_Tokm, 0));
+	}
+	
+}
+
+/*------------------------+
+ |  적용세율 변경시 이벤트 |
+ +------------------------*/
+this.cmbAPPL_RATE_onchanged = function (obj:Combo, e:nexacro.ItemChangeEventInfo) {
+
+	//trace("cmbAPPL_RATE_onchanged");	
+	var iRow = this.dsTA_INCMXM.rowposition;
+	var sPostValue = this.fnc_Trim(this.dsTA_INCMXM.getColumn(iRow, "APPL_RATE"));
+
+	// 현재 선택한 적용세율 코드의 보조필드1 값을  세율에 적용
+	var iAPPL_RATE = this.dsAPPL_RATE.getColumn(this.dsAPPL_RATE.findRowExpr("COMD_CODE == '" + sPostValue + "'"), "REF1_FILD");
+	this.dsTA_INCMXM.setColumn(iRow, "TAXX_RATE", iAPPL_RATE);
+
+	//if (this.Tab0.tabindex == 1) {
+	if (this.fnc_Trim(this.dsTA_INCMXM.getColumn(iRow, "INCM_TYCD")) == "FA010020") {
+		// 현재 선택한 적용세율 코드의 보조필드3 값을 필요경비요율에 적용
+		var iPoss_Days = this.dsAPPL_RATE.getColumn(this.dsAPPL_RATE.findRowExpr("COMD_CODE == '" + sPostValue + "'"), "REF3_FILD");
+		this.dsTA_INCMXM.setColumn(iRow, "POSS_DAYS", iPoss_Days);
+	}
+	
+}
+
+/*-----------+
+ |  전표조회 |
+ +-----------*/
+this.grdTA_INCMXM_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+
+	this.fn_SlipPopUp();
+	
+}
+
+// 전표팝업
+this.fn_SlipPopUp = function () {
+    
+	// 전표번호
+// 	if (this.fnc_DatasetChangeCheck("dsTA_INCMXM")) {
+// 		return this.fnc_Message("TMM015", "전표조회");
+// 	}
+	
+	var gubun = "REV";
+	var sSlipNumb = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "SLIP_NUMB");
+	
+	if (this.fnc_Length(sSlipNumb) < 14) return;
+
+	this.fnc_ViewSlipForm(sSlipNumb, gubun, this.sUSERLAVEL); //NEW:직접입력, REV:수정 ,SHR:조회 ,SEM:반자동전표
+	
+	//this.fn_Search();
+	
+}
+
+this.Tab0_FA010020_mskGASE_TOKM_onkillfocus = function (obj:MaskEdit, e:nexacro.KillFocusEventInfo) {
+	// 소득세 및 주민세 계산
+	// Tab0.FA010020.mskINCM_TAXX.Value = Truncate(toInteger(Tab0.FA010020.mskGASE_TOKM.Value) * 0.2);
+	// Tab0.FA010020.mskINHA_TAXX.Value = Truncate(Truncate(toInteger(Tab0.FA010020.mskGASE_TOKM.Value) * 0.2) * 0.1);
+
+	var iRow = this.dsTA_INCMXM.rowposition;
+
+	this.dsTA_INCMXM.setColumn(iRow, "INCM_TAXX", Math.floor(parseInt(this.Tab0.FA010020.mskGASE_TOKM.value) * 0.2));
+	this.dsTA_INCMXM.setColumn(iRow, "INHA_TAXX", Math.floor(Math.floor(parseInt(this.Tab0.FA010020.mskGASE_TOKM.value) * 0.2) * 0.1));
+
+	var SEKM_TOKM = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "INCM_TAXX")) + nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "INHA_TAXX"));
+	var SEHU_TOKM = nexacro.toNumber(this.dsTA_INCMXM.getColumn(iRow, "SUPP_KMAK")) - nexacro.toNumber(SEKM_TOKM);
+	this.dsTA_INCMXM.setColumn(iRow, "SEKM_TOKM", SEKM_TOKM);
+	this.dsTA_INCMXM.setColumn(iRow, "SEHU_TOKM", SEHU_TOKM);
+}
+
+// 사업소득양식 다운로드
+this.btnDown_onclick = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	this.fnc_FileDownLoad("", "", "", this.fnc_Trim(this.sPACKAGENAME + "01"));
+
+}
+
+// 사업소득엑셀업로드
+this.btnUp_onclick = function (obj:Button, e:nexacro.ClickEventInfo) {
+	
+	/* 엑셀 업로드 체크처리 */
+	if (!this.fn_ExcelUploadCheck()) return;
+	
+	this.fnc_DatasetClear("dsTA_INCMXM");
+	this.fnc_ExcelUpload("dsTA_INCMXM", "Sheet1", "A2", "fn_ExcelSuccess");
+
+}
+
+this.fn_ExcelSuccess = function (obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+
+	this.setWaitCursor(false);
+	
+	this.dsTA_INCMXM.set_enableevent(false);
+	this.dsTA_INCMXM.set_updatecontrol(false);
+	
+	for (var i = 0; i < this.objDsImportTemp.getRowCount(); i++) {
+		var iRow = this.dsTA_INCMXM.addRow();
+		var nRow = this.dsTA_CUSTXM.findRowExpr("CUST_CODE=='" + this.fnc_Trim(this.objDsImportTemp.getColumn(i, 0)) + "'");
+
+		this.dsTA_INCMXM_onrowposchanged();
+		this.dsTA_INCMXM.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+		
+		this.dsTA_INCMXM.setColumn(iRow, "ACCT_GUBN", "100"); 				//사업장
+		this.dsTA_INCMXM.setColumn(iRow, "SLIP_INPU", this.sSLIP_INPU); 	//전표등록구분
+		this.dsTA_INCMXM.setColumn(iRow, "CUST_CODE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 0))); 			//소득자번호
+		this.dsTA_INCMXM.setColumn(iRow, "INCM_TYCD", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "INCM_TYCD"))); 	//소득자구분
+
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_SEQX", "0"); 				//소득내역작성단계
+		this.dsTA_INCMXM.setColumn(iRow, "PERS_YYMM", this.fnc_SubStr(this.fnc_Replace(this.fnc_Trim(this.objDsImportTemp.getColumn(i, 1)), "-", ""), 0, 6)); //소득귀속년월
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_DATE", this.fnc_Replace(this.fnc_Trim(this.objDsImportTemp.getColumn(i, 2)), "-", "")); //지급일자
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_KMAK", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 3))); //총지급액
+		this.dsTA_INCMXM.setColumn(iRow, "APPL_RATE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 4))); //적용세율코드
+
+		this.dsAPPL_RATE.filter("REF2_FILD == '" + this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "INCM_TYCD")) + "'");
+		this.cmbAPPL_RATE_onchanged(); //적용세율 변경 이벤트 발생
+		
+		/* 계산 */
+		var e = new nexacro.DSColChangeEventInfo();
+		e.newrow = iRow;
+		this.dsTA_INCMXM_oncolumnchanged(this.dsTA_INCMXM, e);
+		
+		
+		this.dsTA_INCMXM.setColumn(iRow, "REMK_NOTE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 5))); //소득내역비고
+		//this.dsTA_INCMXM.setColumn(iRow, "PAYX_GUBN", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 6))); //급여구분
+
+		this.dsTA_INCMXM.setColumn(iRow, "TAKE_DEPT", application.GBL_DEPTCD); //담당부서코드
+		this.dsTA_INCMXM.setColumn(iRow, "DEPT_NAME", application.GBL_DEPTNM); //담당부서명
+		this.dsTA_INCMXM.setColumn(iRow, "TAKE_USER", application.GBL_EMPLNO); //담당자 사원번호
+		this.dsTA_INCMXM.setColumn(iRow, "EMPL_NAME", application.GBL_USERNM); //담당자명
+		this.dsTA_INCMXM.setColumn(iRow, "RERN_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "RERN_NUMB"))); //주민번호
+		
+		this.dsTA_INCMXM.setColumn(iRow, "OWNR_NAME", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "OWNR_NAME"))); //소득자명
+		this.dsTA_INCMXM.setColumn(iRow, "BIZR_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "BIZR_NUMB"))); //사업자번호
+		this.dsTA_INCMXM.setColumn(iRow, "CUST_NAME", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "CUST_NAME"))); //사업장명
+		this.dsTA_INCMXM.setColumn(iRow, "FORI_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "FORI_GUBN"))); //내외국인구분
+		this.dsTA_INCMXM.setColumn(iRow, "RESI_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "RESI_GUBN"))); //거주구분
+		this.dsTA_INCMXM.setColumn(iRow, "JOBS_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "JOBS_GUBN"))); //직업구분
+		this.dsTA_INCMXM.setColumn(iRow, "POST_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "POST_NUMB"))); //우편번호
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_POST", this.fnc_SubStr(this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_POST")), 0, 3)); //사업장우편번호앞3
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_PST2", this.fnc_SubStr(this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_POST")), 3, 3)); //사업장우편번호뒷3
+		this.dsTA_INCMXM.setColumn(iRow, "DTL1_ADDR", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "ADDR_DESC"))); //주소
+		this.dsTA_INCMXM.setColumn(iRow, "DTL2_ADDR", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "DTL1_ADDR"))); //상세주소
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_ADD1", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_ADD2"))); //사업장주소
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_ADD2", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_ADD2"))); //사업장상세주소
+	}
+	this.objDsImportTemp.clear();
+	
+	this.dsTA_INCMXM.set_updatecontrol(true);
+	this.dsTA_INCMXM.set_enableevent(true);
+	
+	this.dsTA_INCMXM.set_rowposition(0);
+	this.grdTA_INCMXM.setFocus();
+
+	this.stInformation.set_text("[" + (this.dsTA_INCMXM.getRowCount() + "]건의 데이터를 로드 했습니다."));
+	
+}
+
+// 기타소득양식 다운로드
+this.btnDown2_onclick = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	this.fnc_FileDownLoad("", "", "", this.fnc_Trim(this.sPACKAGENAME + "02"));
+	
+}
+
+// 기타소득엑셀업로드
+this.btnUp2_onclick = function (obj:Button, e:nexacro.ClickEventInfo) {
+	
+	/* 엑셀 업로드 체크처리 */
+	if (!this.fn_ExcelUploadCheck()) return;
+	
+	this.fnc_DatasetClear("dsTA_INCMXM");
+	this.fnc_ExcelUpload("dsTA_INCMXM", "Sheet1", "A2", "fn_ExcelSuccess2");
+
+}
+
+this.fn_ExcelSuccess2 = function (obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+
+	this.setWaitCursor(false);
+	
+	this.dsTA_INCMXM.set_enableevent(false);
+	this.dsTA_INCMXM.set_updatecontrol(false);
+	//trace(this.objDsImportTemp.getRowCount());
+	for (var i = 0; i < this.objDsImportTemp.getRowCount(); i++) {
+		var iRow = this.dsTA_INCMXM.addRow();
+		var nRow = this.dsTA_CUSTXM.findRowExpr("CUST_CODE=='" + this.fnc_Trim(this.objDsImportTemp.getColumn(i, 0)) + "'");
+		
+		this.dsTA_INCMXM_onrowposchanged();
+		this.dsTA_INCMXM.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+		
+		this.dsTA_INCMXM.setColumn(iRow, "ACCT_GUBN", "100"); 				//사업장
+		this.dsTA_INCMXM.setColumn(iRow, "SLIP_INPU", this.sSLIP_INPU); 	//전표등록구분
+		this.dsTA_INCMXM.setColumn(iRow, "CUST_CODE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 0))); 			//소득자번호
+		this.dsTA_INCMXM.setColumn(iRow, "INCM_TYCD", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "INCM_TYCD"))); 	//소득자구분
+	
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_SEQX", "0"); 				//소득내역작성단계
+		this.dsTA_INCMXM.setColumn(iRow, "PERS_YYMM", this.fnc_SubStr( this.fcn_Replace(this.fnc_Trim(this.objDsImportTemp.getColumn(i, 1)), "-", ""), 0, 6)); //소득귀속년월
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_DATE", this.fcn_Replace(this.fnc_Trim(this.objDsImportTemp.getColumn(i, 2)), "-", "")); //지급일자
+		this.dsTA_INCMXM.setColumn(iRow, "SUPP_KMAK", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 3))); //총지급액
+		this.dsTA_INCMXM.setColumn(iRow, "APPL_RATE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 4))); //적용세율코드
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_GUBN", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 5))); //기타소득구분
+		this.dsTA_INCMXM.setColumn(iRow, "OUTL_KMAK", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 6))); //필요경비
+		this.dsTA_INCMXM.setColumn(iRow, "COMP_SEKM", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 7))); //법인세
+		this.dsTA_INCMXM.setColumn(iRow, "NONS_SEKM", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 8))); //농어촌특별세
+
+		this.dsAPPL_RATE.filter("REF2_FILD == '" + this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "INCM_TYCD")) + "'");
+		this.cmbAPPL_RATE_onchanged(); //적용세율 변경 이벤트 발생
+
+		/* 계산 */
+		var e = new nexacro.DSColChangeEventInfo();
+		e.newrow = iRow;
+		this.dsTA_INCMXM_oncolumnchanged(this.dsTA_INCMXM, e);
+		
+		
+		this.dsTA_INCMXM.setColumn(iRow, "REMK_NOTE", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 9))); //소득내역비고
+		this.dsTA_INCMXM.setColumn(iRow, "GITA_RMR2", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 10))); //감면근거
+		//this.dsTA_INCMXM.setColumn(iRow, "PAYX_GUBN", this.fnc_Trim(this.objDsImportTemp.getColumn(i, 11))); //급여구분
+
+		this.dsTA_INCMXM.setColumn(iRow, "TAKE_DEPT", application.GBL_DEPTCD); //담당부서코드
+		this.dsTA_INCMXM.setColumn(iRow, "DEPT_NAME", application.GBL_DEPTNM); //담당부서명
+		this.dsTA_INCMXM.setColumn(iRow, "TAKE_USER", application.GBL_EMPLNO); //담당자 사원번호
+		this.dsTA_INCMXM.setColumn(iRow, "EMPL_NAME", application.GBL_USERNM); //담당자명
+		this.dsTA_INCMXM.setColumn(iRow, "RERN_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "RERN_NUMB"))); //주민번호
+		
+		this.dsTA_INCMXM.setColumn(iRow, "OWNR_NAME", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "OWNR_NAME"))); //소득자명
+		this.dsTA_INCMXM.setColumn(iRow, "BIZR_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "BIZR_NUMB"))); //사업자번호
+		this.dsTA_INCMXM.setColumn(iRow, "CUST_NAME", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "CUST_NAME"))); //사업장명
+		this.dsTA_INCMXM.setColumn(iRow, "FORI_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "FORI_GUBN"))); //내외국인구분
+		this.dsTA_INCMXM.setColumn(iRow, "RESI_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "RESI_GUBN"))); //거주구분
+		this.dsTA_INCMXM.setColumn(iRow, "JOBS_GUBN", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "JOBS_GUBN"))); //직업구분
+		this.dsTA_INCMXM.setColumn(iRow, "POST_NUMB", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "POST_NUMB"))); //우편번호
+//		this.dsTA_INCMXM.setColumn(iRow, "COMP_POST", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_POST"))); //사업장우편번호
+		this.dsTA_INCMXM.setColumn(iRow, "DTL1_ADDR", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "ADDR_DESC"))); //주소
+		this.dsTA_INCMXM.setColumn(iRow, "DTL2_ADDR", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "DTL1_ADDR"))); //상세주소
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_ADD1", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_ADD2"))); //사업장주소
+// 		this.dsTA_INCMXM.setColumn(iRow, "COMP_ADD2", this.fnc_Trim(this.dsTA_CUSTXM.getColumn(nRow, "COMP_ADD2"))); //사업장상세주소
+		
+	}
+	this.objDsImportTemp.clear();
+	
+	this.dsTA_INCMXM.set_updatecontrol(true);
+	this.dsTA_INCMXM.set_enableevent(true);
+	
+	this.dsTA_INCMXM.set_rowposition(0);
+	this.grdTA_INCMXM.setFocus();
+	
+	this.stInformation.set_text("[" + (this.dsTA_INCMXM.getRowCount() + "]건의 데이터를 로드 했습니다."));
+	
+	
+}
+
+/*-----------------------+
+ |  엑셀 업로드 전 처리 ! |
+ +------------------------*/
+this.fn_ExcelUploadCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsTA_INCMXM")) return this.fnc_Message("TMM023");
+	
+	return true;
+	
+}
+
+/*-----------------------+
+ |  소득자(거래처) 조회  |
+ +-----------------------*/
+this.fn_Search01 = function () {
+
+	this.fnc_DatasetClear("dsTA_CUSTXM");
+	var sMethodName = "SEARCH01";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsTA_CUSTXM=dsTA_CUSTXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*------------------------+
+ | 전표처리 버튼 클릭 시  |
+ +------------------------*/
+this.btnCREATE_SLIP_onclick = function (obj:Button, e:nexacro.ClickEventInfo) {
+	
+	if (!this.fn_CreateSlipItemCheck()) return;
+	
+	this.aKeyValue[0] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "INCM_IDXX");
+	
+    var sMethodName = "PROC00";
+    var sInDataSet 	= "dsTA_INCMXM_SLIP=dsTA_INCMXM_SLIP:A";
+    var sOutDataSet = "";
+    var sArgument 	= this.fn_CreateArgument(sMethodName);
+    this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+    this.grdTA_INCMXM.setFocus();
+    	
+}
+
+/*-----------------------+
+ | 전표삭제 버튼 클릭시  |
+ +-----------------------*/
+this.btnDELETE_SLIP_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	
+	if (!this.fn_DeleteSlipItemCheck()) return;
+	
+	this.aKeyValue[0] = this.dsTA_INCMXM.getColumn(this.dsTA_INCMXM.rowposition, "INCM_IDXX");
+	
+    var sMethodName = "PROC01";
+    var sInDataSet 	= "";
+    var sOutDataSet = "";
+    var sArgument 	= this.fn_CreateArgument(sMethodName);
+    this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+    this.grdTA_INCMXM.setFocus();
+    
+}
+]]></Script>
+  </Form>
+</FDL>

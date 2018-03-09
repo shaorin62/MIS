@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMA0320">
+
+<!--
+ *   프로그램명 : 경영계획및실적현황 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.11.23
+ *   작 성 자 : 최인철
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 최인철
+	 작 성 일 : 2016.11.23
+	 내    용 :  테이블 조회
+	 파라미터 : 
+	-->
+	<select id="TMMA0320.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+			 SELECT STDS_YMTH, MI03_AMOT, MI06_AMOT
+				FROM (SELECT A.STDS_YMTH,
+										 A.MI01_AMOT + A.MI02_AMOT AS MI03_AMOT,
+										 A.MI04_AMOT + A.MI05_AMOT AS MI06_AMOT
+								FROM TM_MAIDXM A
+							 WHERE SUBSTR(A.STDS_YMTH, 0, 4) =  #STDYEAR# /**P*/
+								 AND ('FMT10' = #MAID#  AND A.MAID_TYCD = #MAID# )
+							UNION ALL
+							SELECT A.STDS_YMTH, A.MI03_AMOT, A.MI06_AMOT
+								FROM TM_MAIDXM A
+							 WHERE SUBSTR(A.STDS_YMTH, 0, 4) =  #STDYEAR# /**P*/
+								 AND ('FMT20' = #MAID#  AND A.MAID_TYCD = #MAID# ))
+			 ORDER BY STDS_YMTH
+	]]>
+	</select>
+
+
+
+</sqlMap>

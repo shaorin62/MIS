@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYA0050">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 간이세액조견표 테이블 조회
+********************************************************************************/
+-->
+	<select id="PAYA0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+        SELECT /* PAYA0050.SEARCH00.간이세액조견표 테이블 조회 */
+               A.STDS_YMTH	 /*기준년월*/
+        	 , A.ABNR_AMOT   /*이상금액*/
+             , A.UNDR_AMOT   /*미만금액*/
+             , A.GNR1_AMOT   /*일반1금액*/
+             , A.GNR2_AMOT   /*일반2금액*/
+             , A.GNR3_AMOT   /*일반3금액*/
+             , A.GNR4_AMOT   /*일반4금액*/
+             , A.GNR5_AMOT   /*일반5금액*/
+             , A.GNR6_AMOT   /*일반6금액*/
+             , A.GNR7_AMOT   /*일반7금액*/
+             , A.GNR8_AMOT   /*일반8금액*/
+             , A.GNR9_AMOT   /*일반9금액*/
+             , A.GN10_AMOT   /*일반10금액*/
+             , A.GN11_AMOT   /*일반11금액*/                 
+          FROM PY_SIPLTX A
+         WHERE STDS_YMTH = #STDS_YMTH#
+         ORDER BY ABNR_AMOT
+	]]>
+	</select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 간이세액조견표 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYA0050.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE 
+		/* PAYA0050.SAVE00.급여마감여부 */
+			v_WADE_YSNO INTEGER;
+			v_ROWCOUNT     INT;
+		
+	    BEGIN
+	
+			/*고정 급여마감 체크-지급일*/
+		   	SELECT COUNT(*)
+		      INTO v_WADE_YSNO 
+		      FROM PY_PMDIRY A
+			 INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+		       AND A.WAGE_YMTH >= #STDS_YMTH#
+	           AND B.WAGP_CODE = '1000'
+			 ;
+			 
+		    /*마감되었다면 수정불가*/
+		    IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','간이세액표,입력')); 
+			END IF;
+		
+	         INSERT INTO PY_SIPLTX (
+	                STDS_YMTH   /*기준년월*/
+	               ,ABNR_AMOT   /*이상금액*/
+	               ,UNDR_AMOT   /*미만금액*/
+	               ,INCM_SETN   /*소득구간*/
+	               ,GNR1_AMOT   /*일반1금액*/
+	               ,GNR2_AMOT   /*일반2금액*/
+	               ,GNR3_AMOT   /*일반3금액*/
+	               ,GNR4_AMOT   /*일반4금액*/
+	               ,GNR5_AMOT   /*일반5금액*/
+	               ,GNR6_AMOT   /*일반6금액*/
+	               ,GNR7_AMOT   /*일반7금액*/
+	               ,GNR8_AMOT   /*일반8금액*/
+	               ,GNR9_AMOT   /*일반9금액*/
+	               ,GN10_AMOT   /*일반10금액*/
+	               ,GN11_AMOT   /*일반11금액*/
+	               ,INST_USID   /*입력작업자*/
+	               ,INST_DATE   /*입력일시*/
+	               ,UPDT_USID   /*수정작업자*/
+	               ,UPDT_DATE   /*수정일시*/
+	       ) VALUES (
+	                #STDS_YMTH#   /*기준년월*/
+	               ,#ABNR_AMOT#   /*이상금액*/
+	               ,#UNDR_AMOT#   /*미만금액*/
+	               ,#INCM_SETN#   /*소득구간*/
+	               ,#GNR1_AMOT#   /*일반1금액*/
+	               ,#GNR2_AMOT#   /*일반2금액*/
+	               ,#GNR3_AMOT#   /*일반3금액*/
+	               ,#GNR4_AMOT#   /*일반4금액*/
+	               ,#GNR5_AMOT#   /*일반5금액*/
+	               ,#GNR6_AMOT#   /*일반6금액*/
+	               ,#GNR7_AMOT#   /*일반7금액*/
+	               ,#GNR8_AMOT#   /*일반8금액*/
+	               ,#GNR9_AMOT#   /*일반9금액*/
+	               ,#GN10_AMOT#   /*일반10금액*/
+	               ,#GN11_AMOT#   /*일반11금액*/
+	               ,#UPDT_USID#   /*입력작업자*/
+	               ,SYSDATE   	  /*입력일시*/
+	               ,#UPDT_USID#   /*수정작업자*/
+	               ,SYSDATE   	  /*수정일시*/
+	        );
+		END;
+	]]>
+	</insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 간이세액조견표 테이블 수정
+********************************************************************************/
+-->
+	<update id="PAYA0050.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE 
+		/* PAYA0050.UPDATE00.급여마감여부 */
+			v_WADE_YSNO INTEGER;
+		 	v_ROWCOUNT     INT;
+		
+	    BEGIN
+	
+			/*고정 급여마감 체크-지급일*/
+		   	SELECT COUNT(*)
+		      INTO v_WADE_YSNO 
+		      FROM PY_PMDIRY A
+			 INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+		          AND A.WAGE_YMTH >= #STDS_YMTH#
+		          AND B.WAGP_CODE = '1000'
+			;
+			
+		    /*마감되었다면 수정불가*/
+		    IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','간이세액표,변경')); 
+			END IF;
+			
+	        UPDATE PY_SIPLTX
+	           SET  INCM_SETN = #INCM_SETN#   /*소득구간*/
+	               ,GNR1_AMOT = #GNR1_AMOT#   /*일반1금액*/
+	               ,GNR2_AMOT = #GNR2_AMOT#   /*일반2금액*/
+	               ,GNR3_AMOT = #GNR3_AMOT#   /*일반3금액*/
+	               ,GNR4_AMOT = #GNR4_AMOT#   /*일반4금액*/
+	               ,GNR5_AMOT = #GNR5_AMOT#   /*일반5금액*/
+	               ,GNR6_AMOT = #GNR6_AMOT#   /*일반6금액*/
+	               ,GNR7_AMOT = #GNR7_AMOT#   /*일반7금액*/
+	               ,GNR8_AMOT = #GNR8_AMOT#   /*일반8금액*/
+	               ,GNR9_AMOT = #GNR9_AMOT#   /*일반9금액*/
+	               ,GN10_AMOT = #GN10_AMOT#   /*일반10금액*/
+	               ,GN11_AMOT = #GN11_AMOT#   /*일반11금액*/
+	               ,UPDT_USID = #UPDT_USID#   /*수정작업자*/
+	               ,UPDT_DATE = SYSDATE   /*수정일시*/
+	         WHERE STDS_YMTH  = #STDS_YMTH#   /*기준년월*/
+	           AND ABNR_AMOT  = #ABNR_AMOT#   /*이상금액*/
+	           AND UNDR_AMOT  = #UNDR_AMOT#   /*미만금액*/
+	          ;
+		END;
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 간이세액조견표 테이블 삭제
+********************************************************************************/
+-->
+	<delete id="PAYA0050.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE 
+		/* PAYA0050.DELETE00.급여마감여부 */
+			v_WADE_YSNO 	INTEGER;
+		 	v_ROWCOUNT     	INT;
+		
+	    BEGIN
+			/*고정 급여마감 체크-지급일*/
+		   	SELECT COUNT(*)
+		   	  INTO v_WADE_YSNO 
+		      FROM PY_PMDIRY A
+			 INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+		          AND A.WAGE_YMTH >= #STDS_YMTH#
+		          AND B.WAGP_CODE = '1000'
+			 ;
+			 
+		    /*마감되었다면 수정불가*/
+		    IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','간이세액표,삭제')); 
+			END IF;
+				
+	        DELETE FROM PY_SIPLTX
+	         WHERE STDS_YMTH = #STDS_YMTH#   /*기준년월*/
+	           AND ABNR_AMOT = #ABNR_AMOT#   /*이상금액*/
+	           AND UNDR_AMOT = #UNDR_AMOT#   /*미만금액*/
+	         ;
+	    END;
+	]]>		
+	</delete>
+
+</sqlMap>

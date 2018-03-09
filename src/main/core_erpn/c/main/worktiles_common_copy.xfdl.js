@@ -1,0 +1,511 @@
+﻿(function()
+{
+    return function()
+    {
+        if (!this._is_form)
+            return;
+        
+        this.on_create = function()
+        {
+            // Declare Reference
+            var obj = null;
+            
+            if (Form == this.constructor) {
+                this.set_name("worktiles");
+                this.set_scrollbars("autovert");
+                this.set_titletext("[솔루션]하단컨텐츠");
+                this._setFormPosition(0,0,1156,580);
+            }
+            this.style.set_padding("0 0 10 0");
+
+            
+            // Object(Dataset, ExcelExportObject) Initialize
+            obj = new Dataset("dsBoardItem", this);
+            obj._setContents("<ColumnInfo><Column id=\"DBSC_SEQN\" type=\"STRING\" size=\"256\"/><Column id=\"EMPL_NUMB\" type=\"STRING\" size=\"256\"/><Column id=\"DBSC_TYCD\" type=\"STRING\" size=\"256\"/><Column id=\"DBSC_NAME\" type=\"STRING\" size=\"256\"/><Column id=\"DBSC_PATH\" type=\"STRING\" size=\"256\"/><Column id=\"DBCN_QURY\" type=\"STRING\" size=\"256\"/><Column id=\"ICON_FLPT\" type=\"STRING\" size=\"256\"/><Column id=\"DBCD_YSNO\" type=\"STRING\" size=\"256\"/><Column id=\"USEX_YSNO\" type=\"STRING\" size=\"256\"/><Column id=\"SORT_ORDR\" type=\"STRING\" size=\"256\"/><Column id=\"REMK_200X\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
+
+
+            
+            // UI Components Initialize
+            obj = new Button("btnCancel", "absolute", "1073", "545", "62", "24", null, null, this);
+            obj.set_taborder("19");
+            obj.set_text("취소");
+            obj.set_cssclass("btn_POP_CRUD");
+            obj.set_visible("true");
+            this.addChild(obj.name, obj);
+
+            obj = new Button("btnSave", "absolute", "1008", "545", "62", "24", null, null, this);
+            obj.set_taborder("20");
+            obj.set_text("저장");
+            obj.set_cssclass("btn_POP_CRUD");
+            this.addChild(obj.name, obj);
+
+            obj = new Static("Static06", "absolute", "945", "569", "196", "11", null, null, this);
+            obj.set_taborder("46");
+            obj.set_text("h 10");
+            obj.set_visible("false");
+            obj.style.set_background("#fb7b7b7a");
+            this.addChild(obj.name, obj);
+
+
+            
+            // Layout Functions
+            //-- Default Layout
+            obj = new Layout("default", "", 1156, 580, this,
+            	//-- Layout function
+            	function(p) {
+            		p.set_scrollbars("autovert");
+            		p.set_titletext("[솔루션]하단컨텐츠");
+            		p.style.set_padding("0 0 10 0");
+
+            	}
+            );
+            this.addLayout(obj.name, obj);
+
+
+            
+            // BindItem Information
+
+            
+            // Remove Reference
+            obj = null;
+        };
+        
+
+        
+        // User Script
+        this.addIncludeScript("worktiles_common_copy.xfdl", "script::lib_script_common.xjs");
+        this.addIncludeScript("worktiles_common_copy.xfdl", "script::lib_script_dashboard.xjs");
+        this.registerScript("worktiles_common_copy.xfdl", function() {
+        /***************************************************************************************************
+         * # Program: 	worktiles_common.xfdl 메인 대시보드>하단>업무버튼
+         * 
+         * # Modification Information
+         * -------------------------------------------------------------------------------------------------
+         *   Date			Modifier	Comment
+         * -------------------------------------------------------------------------------------------------
+         *   2016.10.27		jsh			Initial Created.
+         *   
+         * -------------------------------------------------------------------------------------------------
+         * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+         ****************************************************************************************************
+         *   Form Common Script
+         *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+         *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+         *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+         *
+         *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+         *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+         123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+         ********************************************************************************INBUS*CO*KR********/
+
+        
+        /**
+         * 공통 스크립트 Include
+         */
+        //include "script::lib_script_common.xjs"
+        //include "script::lib_script_dashboard.xjs"
+
+        
+        /**********************
+         *  화면 변수 선언부  *
+         *********************/
+        this.sPACKAGENAME = "ComMain"; //해당 Form에서 사용 할 Package 명
+
+        this.bEditMode = false;
+
+        this.MAX_COL = 6; // 바로가기 최대 열 갯수
+        this.LEFT_SPACE = 194;	// 바로가기 간 좌측 시작점 간격
+        this.TOP_SPACE = 190;	// 바로가기 간 상단 시작점 간격
+
+        // 버튼 기본 시작위치
+        this.BASE_TOP = 5;
+        this.BASE_LEFT = 25;
+
+        // 각 컴포넌트의 기본 높이/넓이
+        this.BTN_WIDTH = 140;
+        this.BTN_HEIGHT = 145;
+        this.STATIC_WIDTH = 31;
+        this.STATIC_HEIGHT = 36;
+        this.CHECK_WIDTH = 24;
+        this.CHECH_HEIGHT = 24;
+
+        // 각 컴포넌트명의 기본 Prefix
+        this.BTN_PREFIX = "BTN_LINK_";
+        this.STA_PREFIX = "STA_LINK_";
+        this.CHK_PREFIX = "CHK_LINK_";
+
+        
+        this.arrCheckBoxes = null;
+
+        /**
+         * Form Load 시 실행
+         */
+        this.fn_FormLoadSetting = function(obj,e)
+        {
+        	// 최초에는 수정모드가 아님
+        	this.bEditMode = false;
+        	
+        	// 대시보드 바로가기 목록을 조회
+        	this.fn_GetBoardItems();
+        	
+        }
+
+        
+
+        /**
+         * 링크버튼 클릭 이벤트 핸들러
+         */
+        this.fn_LinkButtonClick = function(obj,e)
+        {
+        	trace("Object : " + obj.name);
+        }
+
+        
+        /**
+         * 링크버튼 사용여부 체크박스 값 변경 시
+         */
+        this.fn_LinkBtnUseCheck = function(obj,e)
+        {
+        	
+        	var bUseLink = e.postvalue;
+        	var oRelatedLinkBtn = obj._RELATED_BTN;
+        	oRelatedLinkBtn.set_enable(bUseLink);
+        	
+        	// 데이터셋 처리.
+        	var itemSeq = oRelatedLinkBtn._itemSeq;
+        	var row = this.dsBoardItem.findRow("DBSC_SEQN", itemSeq);
+        	
+        	if (row > -1) {
+        		this.dsBoardItem.setColumn(row, "USEX_YSNO", (bUseLink ? "1" : "0"));
+        	}
+        	
+        }
+
+        
+        /**
+         * 저장버튼 클릭 시 사용자의 변경(사용여부) 내역을 저장한다.
+         */
+        this.btnSave_onclick = function(obj,e)
+        {
+        	// 수정모드 변경
+        	this.bEditMode = false;
+        	
+        	// 테스트용으로 데이터 조회 및 바로가기 재구성
+        	this.fn_PlaceBoardItems();
+        }
+
+        
+        /**
+         * 취소버튼 클릭 시 이벤트 처리
+         */
+        this.btnCancel_onclick = function(obj,e)
+        {
+        	if (this.bEditMode) {
+        		
+        		var chkCnt = this.arrCheckBoxes.length;
+        		if (chkCnt > 0) {
+        			for (var idx in this.arrCheckBoxes) {
+        				this.arrCheckBoxes[idx].set_visible(false);
+        			}
+        		}
+        		
+        		this.btnSave.set_visible(false);
+        		this.btnCancel.set_visible(false);
+        		
+        		// 데이터셋 원상복구.
+        		this.dsBoardItem.reset();
+        		
+        		this.bEditMode = false;
+        		
+        	}
+        }
+
+        
+        /*-----------------------------------------+
+        |  Service 호출 시 넘어 갈 Argument 생성!  |
+        +------------------------------------------*/
+        this.fn_CreateArgument = function (sKind) {
+
+        	var sReturnString;
+
+        	if (sKind == 'GetBoardItems') {
+        	
+        		sReturnString  = " pgm="			+ this.fnc_Quote(this.sPACKAGENAME);
+        		sReturnString += " action="			+ this.fnc_Quote(sKind);
+        		sReturnString += " USER_IDXX=" 		+ this.fnc_Quote(application.GBL_USERID);
+        		sReturnString += " EMPL_NUMB=" 		+ this.fnc_Quote(application.GBL_EMPLNO);
+
+        	}
+
+        	return sReturnString;
+        }
+
+        
+        /*------------------------------------+
+        |  Transaction 후 처리 해야 할 내용!  |
+        +-------------------------------------*/
+        this.fn_CallBack = function (sMethodName,ErrorCode,ErrorMSG) {
+
+        	if (ErrorCode < 0) {
+        		
+        		if (application.GBL_SESSONCHK == "E0001") {
+        			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+        		} else {
+        			this.fnc_Message("SERVERMSG", ErrorMSG);
+        		}
+        		
+        	} else {
+
+        		this.fn_PostProcess(sMethodName);
+
+        	}
+
+        }
+
+        
+        /*-------------------------------------+
+         |  Transaction 후 Post Process!       |
+         +-------------------------------------*/
+        this.fn_PostProcess = function (sMethodName) {
+        	
+        	if (sMethodName == 'GetBoardItems') {
+        		this.fn_PlaceBoardItems();
+        	}
+        	
+        }
+
+        
+        /**
+         * 대시보드 바로가기 아이템 목록을 조회한다.
+         */
+        this.fn_GetBoardItems = function() {
+        	
+        	var sMethodName = "GetBoardItems";
+        	var sInDataSet = "";
+        	var sOutDataSet = "dsBoardItem=dsBoardItem";
+        	var sArgument = this.fn_CreateArgument(sMethodName);
+
+        	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+        }
+
+        
+        /**
+         * 사용자 바로가기 아이템을 구성한다.
+         */
+        this.fn_PlaceBoardItems = function() {
+        	
+        	// 현재 버튼 시작점
+        	var startLeft = 25;	
+        	var startTop = 5;
+        	
+        	var dsObj = this.dsBoardItem;
+        	
+        	var nCol = 0;
+        	var nRow = 0;
+        	var nTotalRows = dsObj.rowcount;
+        	
+        	var itemSeq, itemType, itemName, linkUrl;	// 바로가기 유형, 바로가기명, 바로가기경로(링크메뉴,팝업 등);
+        	var iconUrl, useYn, countYn;				// 바로가기 아이콘 이미지, 바로가기 사용여부, 카운트 표시 여부
+        	
+        	this.arrCheckBoxes = new Array();
+        	chkboxCnt = 0;
+        	
+        	// 바로가기 아이템 수
+        	for(var row = 0; row < nTotalRows; row++) {
+        		
+        		if ((nCol > 0) && ((nCol % this.MAX_COL) == 0)) {
+        			nRow++;
+        			nCol = 0;
+        			startLeft = this.BASE_LEFT;
+        		}
+        		
+        		itemSeq = dsObj.getColumn(row, "DBSC_SEQN");	// 대시보드바로가기일련번호
+        		itemType = dsObj.getColumn(row, "DBSC_TYCD");	// 대시보드바로가기유형코드
+        		itemName = dsObj.getColumn(row, "DBSC_NAME");	// 대시보드바로가기명
+        		linkUrl = dsObj.getColumn(row, "DBSC_PATH");	// 대시보드바로가기경로
+        		iconUrl = dsObj.getColumn(row, "ICON_FLPT");	// 아이콘파일경로
+        		useYn = dsObj.getColumn(row, "USEX_YSNO");		// 바로가기사용여부
+        		countYn = dsObj.getColumn(row, "DBCD_YSNO");	// 대시보드 카운트 표시여부
+
+        		// 버튼 컴포넌트의 시작점 계산
+        		startLeft = (this.LEFT_SPACE * nCol) + 25;
+        		startTop = (this.TOP_SPACE * nRow) + 5;
+        		
+        		// 버튼 생성
+        		var btnName = this.BTN_PREFIX + itemSeq;
+        		var btnObj = this.fn_CreateLinkButton(btnName);
+        		// 체크박스 생성
+        		var chkObj = this.fn_CreateChkbox(this.CHK_PREFIX + itemSeq);
+        		
+        		// 바로가기 링크버튼 속성 부여
+        		btnObj.set_left(startLeft);
+        		btnObj.set_top(startTop);
+        		btnObj.set_text(itemName);
+        		btnObj.style.set_background_color("#ffffffff");
+        		btnObj.style.set_background_image(iconUrl);
+        		btnObj.style.set_background_repeat("no-repeat");
+        		btnObj.style.set_background_clientonly(true);
+        		btnObj.style.set_background_position("center middle");
+        		btnObj._itemSeq = itemSeq;
+        		btnObj._itemType = itemType;
+        		btnObj._linkUrl = linkUrl;
+        		btnObj.show();
+        		
+        		// 바로가기 링크버튼 사용여부 체크박스 
+        		chkObj.set_top(startTop + this.BTN_HEIGHT - 19);
+        		chkObj.set_left(startLeft + this.BTN_WIDTH - 19);
+        		chkObj.set_visible(false);
+        		chkObj._RELATED_BTN = btnObj;
+        		chkObj.show();
+        		
+        		if (useYn == "1") {
+        			btnObj.set_enable(true);
+        			chkObj.set_value(true);
+        		} else {
+        			btnObj.set_enable(false);
+        			chkObj.set_value(false);
+        		}
+        		
+        		// 체크박스는 추후 처리 편의를 위하여 배열에 저장.
+        		this.arrCheckBoxes[chkboxCnt++] = chkObj;
+        		
+        		
+        		// 대시보드의 카운트 표시 여부에 따라..
+        		if (countYn == "1") {
+        			var staCnt = this.fn_CreateCountStatic(this.STA_PREFIX + itemSeq);
+        			staCnt.set_text("1");
+        			staCnt.set_top(startTop - 5);
+        			staCnt.set_left(startLeft - 5);
+        			staCnt._RELATED_BTN = btnName;
+        			staCnt.show();
+        		}
+        		
+        		nCol++;
+        	}
+        	
+        	// 저장/취소 버튼의 Top 조절
+        	this.btnSave.set_top(startTop + this.BTN_HEIGHT + 15);
+        	this.btnSave.set_visible(this.bEditMode);
+        	this.btnCancel.set_top(startTop + this.BTN_HEIGHT + 15);
+        	this.btnCancel.set_visible(this.bEditMode);
+        	
+        	// 폼의 높이 조절
+        	this.set_scrollbars("autovert");
+        	this.resetScroll();
+        	
+        }
+
+        
+        /**
+         * 바로가기 링크버튼을 생성한다.
+         */
+        this.fn_CreateLinkButton = function(name) {
+        	
+        	var btnObj = this.components[name];
+        	
+        	if (btnObj != null) {
+        		this.removeChild(name);
+        		btnObj.destroy();
+        		btnObj = null;
+        	}
+        	
+        	var oButton = new nexacro.Button;
+        	oButton.init(name, "absolute", 25, 5, this.BTN_WIDTH, this.BTN_HEIGHT, null, null);
+        	this.addChild(name, oButton);
+        	oButton.set_cssclass("btn_MF_content");
+        	oButton.set_tabstop(true);
+        	oButton.addEventHandler("onclick", this.fn_LinkButtonClick, this);
+        	return oButton;
+        	
+        }
+
+        /**
+         * 바로가기 링크버튼의 카운트 아이템을 생성한다.
+         */
+        this.fn_CreateCountStatic = function(name) {
+        	
+        	var staCnt = this.components[name];
+        	if (staCnt != null) {
+        		this.removeChild(name);
+        		staCnt.destroy();
+        		staCnt = null;
+        	}
+        	
+        	var oStatic = new nexacro.Static;
+        	oStatic.init(name, "absolute", 0, 0, this.STATIC_WIDTH, this.STATIC_HEIGHT, null, null);
+        	this.addChild(name, oStatic);
+        	oStatic.set_cssclass("sta_MF_number");
+        	oStatic.set_tabstop(false);
+        	return oStatic;
+        	
+        }
+
+        
+        /**
+         * 대시보드 바로가기 버튼 사용여부 처리를 위한 체크박스를 생성한다.
+         */
+        this.fn_CreateChkbox = function(name) {
+        	
+        	var chkObj = this.components[name];
+        	if (chkObj != null) {
+        		this.removeChild(name);
+        		chkObj.destroy();
+        		chkObj = null;
+        	}
+        	
+        	var oChkbox = new nexacro.CheckBox;
+        	oChkbox.init(name, "absolute", 0, 0, this.CHECK_WIDTH, this.CHECH_HEIGHT, null, null);
+        	this.addChild(name, oChkbox);
+        	oChkbox.set_cssclass("che_MF_C");
+        	oChkbox.set_tabstop(true);
+        	oChkbox.addEventHandler("onchanged", this.fn_LinkBtnUseCheck, this);
+        	return oChkbox;
+        	
+        }
+
+        
+        /**
+         * 대시보드 바로가기 사용여부 변경
+         */
+        this.fn_SetLinkEditMode = function() {
+        	
+        	if (!this.bEditMode) {
+        		
+        		var chkCnt = this.arrCheckBoxes.length;
+        		if (chkCnt > 0) {
+        			for (var idx in this.arrCheckBoxes) {
+        				this.arrCheckBoxes[idx].set_visible(true);
+        			}
+        		}
+        		
+        		this.btnSave.set_visible(true);
+        		this.btnCancel.set_visible(true);
+        		
+        		this.bEditMode = true;
+        		
+        	}
+        	
+        }
+
+        
+        });
+
+
+        
+        // Regist UI Components Event
+        this.on_initEvent = function()
+        {
+            this.addEventHandler("onload", this.fn_FormLoadSetting, this);
+            this.btnCancel.addEventHandler("onclick", this.btnCancel_onclick, this);
+            this.btnSave.addEventHandler("onclick", this.btnSave_onclick, this);
+
+        };
+
+        this.loadIncludeScript("worktiles_common_copy.xfdl");
+
+       
+    };
+}
+)();

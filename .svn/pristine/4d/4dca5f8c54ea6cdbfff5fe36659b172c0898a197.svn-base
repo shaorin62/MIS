@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TXMD0040">
+<!-- 
+/* ******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : 사업소득전산매체 조회
+******************************************************************************* */
+ -->
+    <select id="TXMD0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+          SELECT    /*  TXMD0040.SEARCH00.사업소득전산매체 조회   */
+                 SF_GET_COMMNAME('CNTL_TXOF', A.CNTL_TXOF) AS TAXO_NAME  /* 세무서 */
+                ,#PRES_DATE# AS PRES_DATE                            /* 제출년월일 */
+                ,'법인'     AS PRES_GUBN                            /* 제출자구분(법인) */
+                ,A.HTSX_IDXX                                        /* 홈택스ID */
+                ,A.BSNS_NUMB                                        /* 사업자등록번호 */
+                ,A.OFFI_NAME                                        /* 업체명 */
+                ,SF_GET_DEPTNAME(B.DEPT_CODE) AS DEPT_NAME          /* 담당자부서 */
+                ,B.USER_NAME AS EMPL_NAME                           /* 담당자성명 */
+                ,NVL(A.TELE_NUMB, ' ') AS HTEL_NUMB  /* 담당자전화번호 */
+          FROM TM_OFFICE A
+          LEFT OUTER JOIN TM_USERXM B ON B.EMPL_NUMB = #UPDT_USID#
+         WHERE A.OFFI_GUBN = '1'
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : RMME0060_Oracle 화면의 원천징수의무자별 집계레코드
+******************************************************************************* */   
+ -->
+    <select id="TXMD0040.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT  /*  TXMD0040.SEARCH01.사업소득전산매체   */
+                 SF_GET_COMMNAME('CNTL_TXOF', A.CNTL_TXOF) AS TAXO_NAME  /* 세무서 */
+                ,A.BSNS_NUMB                                        /* 사업자등록번호 */
+                ,A.OFFI_NAME                                        /* 업체명 */
+                ,A.OWNR_NAME                                        /* 대표자 */
+                ,A.JURI_NUMB                                        /* 법인등록번호 */
+                ,NVL(B.CUST_CNT, 0) AS CUST_CNT                                         /* 연간소득인원 */
+                ,NVL(B.PAYY_CNT, 0) AS PAYY_CNT                                         /* 총지급건수 */
+                ,NVL(B.SUPP_KMAK, 0) AS SUPP_KMAK                                        /* 지급총액 */
+                ,CASE WHEN B.INCM_TAXX >= 0 THEN B.INCM_TAXX ELSE 0 END AS INCM_TAXX  /* 소득세총계 */
+                ,CASE WHEN B.INHA_TAXX >= 0 THEN B.INHA_TAXX ELSE 0 END AS INHA_TAXX  /* 주민세총계 */
+                ,CASE WHEN B.SEKM_TOKM >= 0 THEN B.SEKM_TOKM ELSE 0 END AS SEKM_TOKM  /* 세액총계 */
+                ,B.STAX_CNT
+                ,B.STAX_AMNT
+           FROM TM_OFFICE A
+           RIGHT OUTER JOIN 
+             (
+              SELECT
+                     COUNT(A.CUST_CODE) AS CUST_CNT
+                    ,SUM(A.PAYY_CNT) AS PAYY_CNT
+                    ,SUM(A.SUPP_KMAK) AS SUPP_KMAK
+                    ,SUM(A.INCM_TAXX) AS INCM_TAXX
+                    ,SUM(A.INHA_TAXX) AS INHA_TAXX
+                    ,SUM(A.SEKM_TOKM) AS SEKM_TOKM
+                    ,SUM(STAX_CNT) AS STAX_CNT
+                    ,SUM(STAX_AMNT) AS STAX_AMNT
+              FROM (
+                  SELECT
+                         B.CUST_CODE
+                        ,COUNT(B.CUST_CODE) AS PAYY_CNT
+                        ,SUM(B.SUPP_KMAK) AS SUPP_KMAK
+                        ,SUM(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END) AS INCM_TAXX
+                        ,SUM(B.INHA_TAXX) AS INHA_TAXX
+                        ,SUM(NVL(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END, 0) + NVL(B.INHA_TAXX, 0)) AS SEKM_TOKM
+                        ,COUNT(CASE WHEN B.INCM_TAXX < 1000 AND B.INCM_TAXX > 0 THEN B.CUST_CODE END) AS STAX_CNT
+                        ,SUM(CASE WHEN B.INCM_TAXX < 1000 AND B.INCM_TAXX > 0 THEN B.INCM_TAXX ELSE 0 END) AS STAX_AMNT
+                   FROM TA_INCMXM B
+                  INNER JOIN TA_CUSTXM C
+                     ON B.CUST_CODE = C.CUST_CODE
+                  WHERE 1 = 1
+                    AND B.INCM_TYCD = 'FA010010'		/* 사업소득 */
+                    AND SUBSTR(B.PERS_YYMM, 1, 4) = #BASE_YEAR#
+                    AND C.RESI_GUBN = #LIVE_GUBN#                  
+                  GROUP BY B.CUST_CODE
+                  ) A
+          ) B
+          ON 1=1
+       WHERE 1=1       
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : RMME0060_Oracle 화면의  주(현)근무처 레코드
+******************************************************************************* */
+ -->
+    <select id="TXMD0040.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT  /*  TXMD0040.SEARCH02.사업소득전산매체   */
+                 C.BIZR_NUMB
+                ,NVL(C.OWNR_NAME, C.CUST_NAME) AS OWNR_NAME
+                ,C.CUST_NAME
+                ,C.RERN_NUMB
+                ,SF_GET_COMMNAME('FORI_GUBN', C.FORI_GUBN) AS FRGN_NAME
+                ,SF_GET_COMMNAME('JOBS_GUBN', C.JOBS_GUBN) AS BIZZ_NAME
+                ,COUNT(B.CUST_CODE) AS CUST_CNT
+                ,SUM(B.SUPP_KMAK) AS SUPP_KMAK
+                ,B.TAXX_RATE
+                ,SUM(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END) AS INCM_TAXX
+                ,SUM(B.INHA_TAXX) AS INHA_TAXX
+                ,SUM(NVL(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END, 0) + NVL(B.INHA_TAXX, 0)) AS SEKM_TOKM
+                ,C.RESI_GUBN  /* 소득자거주구분 */
+                ,SF_GET_COMMNAME('RESI_GUBN', C.RESI_GUBN) AS RESI_NAME /* 소득자거주구분명 */
+                /* ,DECODE(C.RESI_GUBN,'RM080001', '거주자', 'RM080002', '비거주자') AS RESI_NAME */  
+           FROM TA_INCMXM B
+          INNER JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+          WHERE 1 = 1 /*  B.GITA_SEQX = '3' */ /* 승인전표 */
+          	AND B.INCM_TYCD = 'FA010010'		/* 사업소득 */
+            AND SUBSTR(B.PERS_YYMM, 1, 4) = #BASE_YEAR#
+            AND C.RESI_GUBN = #LIVE_GUBN#
+          GROUP BY C.RERN_NUMB, C.CUST_NAME, C.BIZR_NUMB , C.OWNR_NAME , C.FORI_GUBN, C.JOBS_GUBN, SUBSTR(B.PERS_YYMM, 1, 4), SUBSTR(B.SUPP_DATE, 1, 4), B.TAXX_RATE
+                 , C.RESI_GUBN
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : RMME0060_Oracle 화면의 전산매체자료
+******************************************************************************* */
+ -->
+    <select id="TXMD0040.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[   
+          /*  TXMD0040.SEARCH04.사업소득전산매체  */
+          /* 제출자레코드(A레코드) */
+          SELECT	    
+                /* ====== 자료관리번호 ====== */
+                 'A'                                    /* A1 레코드구분 */
+                || '24'                                 /* A2 자료구분 */
+                || RPAD(NVL(A.CNTL_TXOF, ' '), 3, ' ')  /* A3 세무서 */
+                || #PRES_DATE#                          /* A4 제출년월일 */
+                /* ====== 제출자 ====== */
+                || '2'                                                    /* A5 제출자구분(법인) */
+                || RPAD(' ', 6, ' ')                                       /* A6 세무대리인관리번호 */
+                || RPAD(NVL(A.HTSX_IDXX, ' '), 20, ' ')                   /* A7 홈택스ID */
+                || '9000'                                                 /* A8 세무프로그램코드 */
+                || RPAD(NVL(A.BSNS_NUMB, ' '), 10, ' ')                   /* A9 사업자등록번호 */
+                || RPAD(NVL(A.OFFI_NAME, ' '), 30, ' ')                   /* A10 법인명(상호) */
+                || RPAD(NVL(SF_GET_DEPTNAME(B.DEPT_CODE), ' '), 30, ' ')  /* A11 담당자부서 */
+                || RPAD(NVL(B.USER_NAME, ' '), 30, ' ')                   /* A12 담당자성명 */
+                || RPAD(NVL(A.TELE_NUMB, ' '), 15, ' ')                  /* A13 담당자전화번호 */
+                /* ====== 제출내역 ====== */
+                || LPAD('1', 5, '0')                /* A14 신고의무자수 */
+                || RPAD(' ', 25, ' ') AS RECD_DATA  /* A15 공란 */
+          FROM TM_OFFICE A
+          LEFT OUTER JOIN TM_USERXM B ON B.EMPL_NUMB = #UPDT_USID#
+         WHERE A.OFFI_GUBN = '1'    
+         
+          /* 원천징수의무자별 집계레코드(B레코드) */
+          UNION ALL
+          
+          SELECT
+                /* ===== 자료관리번호 ===== */
+                 'B'                                                       /* B1 레코드구분 */
+                || '24'                                                    /* B2 자료구분 */
+                || RPAD(NVL(A.CNTL_TXOF, ' '), 3, ' ')                     /* B3 세무서 */
+                || LPAD(ROW_NUMBER() OVER (ORDER BY A.OFFI_NAME), 6, '0')  /* B4 일련번호 */
+                /* ===== 원천징수의무자 ===== */
+                || RPAD(NVL(A.BSNS_NUMB, ' '), 10, ' ')  /* B5 사업자등록번호 */
+                || RPAD(NVL(A.OFFI_NAME, ' '), 30, ' ')  /* B6 법인명(상호) */
+                /* ===== 제출내역 ===== */
+                || LPAD(NVL(B.CUST_CNT, '0'), 6, '0')    /* B7 연간소득인원 */
+                || LPAD(NVL(B.PAYY_CNT, '0'), 10, '0')   /* B8 연간총지급건수 */
+                || LPAD(NVL(B.SUPP_KMAK, '0'), 15, '0')  /* B9 연간총지급액계 */
+                || LPAD(NVL(CASE WHEN B.INCM_TAXX >= 0 THEN B.INCM_TAXX ELSE 0 END, '0'), 15, '0')  /* B10 소득세총계 */
+                || LPAD(NVL(CASE WHEN B.INHA_TAXX >= 0 THEN B.INHA_TAXX ELSE 0 END, '0'), 15, '0')  /* B11 주민세결정세액총계 */
+                || LPAD(NVL(CASE WHEN B.SEKM_TOKM >= 0 THEN B.SEKM_TOKM ELSE 0 END, '0'), 15, '0')  /* B12 세액총계 */
+                || LPAD(NVL(B.STAX_CNT, '0'), 10, '0')   /* B13 소액부징수건수 */
+                || LPAD(NVL(B.STAX_AMNT, '0'), 15, '0')  /* B14 소액부징수금액 */
+                || '1'                                   /* B15 제출대상기간코드(연간합산제출) */
+                || RPAD(' ', 36, ' ') AS RECD_DATA       /* B16 공란 */
+          FROM
+          (
+              SELECT
+                     COUNT(A.CUST_CODE) AS CUST_CNT
+                    ,SUM(A.PAYY_CNT) AS PAYY_CNT
+                    ,SUM(A.SUPP_KMAK) AS SUPP_KMAK
+                    ,SUM(A.INCM_TAXX) AS INCM_TAXX
+                    ,SUM(A.INHA_TAXX) AS INHA_TAXX
+                    ,SUM(A.SEKM_TOKM) AS SEKM_TOKM
+                    ,SUM(STAX_CNT) AS STAX_CNT
+                    ,SUM(STAX_AMNT) AS STAX_AMNT
+              FROM (
+                  SELECT
+                         B.CUST_CODE
+                        ,COUNT(B.CUST_CODE) AS PAYY_CNT
+                        ,SUM(B.SUPP_KMAK) AS SUPP_KMAK
+                        ,SUM(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END) AS INCM_TAXX
+                        ,SUM(B.INHA_TAXX) AS INHA_TAXX
+                        ,SUM(NVL(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END, 0) + NVL(B.INHA_TAXX, 0)) AS SEKM_TOKM
+                        ,COUNT(CASE WHEN B.INCM_TAXX < 1000 AND B.INCM_TAXX > 0 THEN B.CUST_CODE END) AS STAX_CNT
+                        ,SUM(CASE WHEN B.INCM_TAXX < 1000 AND B.INCM_TAXX > 0 THEN B.INCM_TAXX ELSE 0 END) AS STAX_AMNT
+                   FROM TA_INCMXM B
+                  INNER JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+                  WHERE 1 = 1 /* B.GITA_SEQX = '3' */ /* 승인전표 */
+                    AND B.INCM_TYCD = 'FA010010'		/* 사업소득 */
+                    AND SUBSTR(B.PERS_YYMM, 1, 4) = #BASE_YEAR#
+                    AND C.RESI_GUBN = #LIVE_GUBN#
+                  GROUP BY B.CUST_CODE
+              ) A
+          ) B
+          LEFT OUTER JOIN TM_OFFICE A ON 1 = 1
+          WHERE 1=1
+    
+    
+          /* 소득자레코드(C레코드) */
+          UNION ALL
+          SELECT
+                /* ===== 자료관리번호 ===== */
+                'C'                                                        /* C1 레코드구분 */
+                || '24'                                                    /* C2 자료구분 */
+                || RPAD(NVL(B.CNTL_TXOF, ' '), 3, ' ')                     /* C3 세무서 */
+                || LPAD(ROW_NUMBER() OVER (ORDER BY A.BIZR_NUMB), 7, '0')  /* C4 일련번호 */
+                /* ===== 원천징수의무자 ===== */
+                || RPAD(NVL(B.BSNS_NUMB, ' '), 10, ' ')     /* C5 사업자등록번호 */
+                /* ===== 소득자 ===== */
+                || RPAD(NVL(A.RERN_NUMB, ' '), 13, ' ')     /* C6 주민등록번호 */
+                || RPAD(NVL(A.OWNR_NAME, ' '), 30, ' ')     /* C7 소득자성명 */
+                || RPAD(NVL(A.BIZR_NUMB, ' '), 10, ' ')     /* C8 사업자등록번호 */
+                || RPAD(NVL(A.CUST_NAME, ' '), 30, ' ')     /* C9 상호 */
+                || '1'                                      /* C10 거주구분 */
+                || LPAD(SUBSTR(A.FORI_GUBN, 8, 1) ,1, '0')  /* C11 내외국인구분 */
+                || LPAD(NVL(A.BIZZ_TYPE,'0'), 6, '0')       /* C12 업종구분코드 */
+                /* ===== 소득지급명세 ===== */
+                || RPAD(A.IMPT_YEAR, 4, ' ')                /* C13 소득귀속년도 */
+                || RPAD(A.PAYY_YEAR, 4, ' ')                /* C14 지급년도 */
+                || LPAD(A.CUST_CNT, 4, '0')                 /* C15 지급건수 */
+                || CASE WHEN A.SUPP_KMAK >= 0 THEN '0' WHEN A.SUPP_KMAK < 0 THEN '1' ELSE ' ' END  /* C16 음수표시 */
+                || LPAD(A.SUPP_KMAK, 13, '0')                                                      /* C16 연간지급총액 */
+                || LPAD(A.TAXX_RATE, 2, '0')                                                       /* C17 세율 */
+                /* ===== 원천징수액 ===== */
+                || CASE WHEN A.INCM_TAXX >= 0 THEN '0' WHEN A.INCM_TAXX < 0 THEN '1' ELSE ' ' END  /* C18 음수표시 */
+                || LPAD(A.INCM_TAXX, 13, '0')                                                      /* C18 소득세 */
+                || CASE WHEN A.INHA_TAXX >= 0 THEN '0' WHEN A.INHA_TAXX < 0 THEN '1' ELSE ' ' END  /* C19 음수표시 */
+                || LPAD(A.INHA_TAXX, 13, '0')                                                      /* C19 주민세 */
+                || CASE WHEN A.SEKM_TOKM >= 0 THEN '0' WHEN A.SEKM_TOKM < 0 THEN '1' ELSE ' ' END  /* C20 음수표시 */
+                || LPAD(A.SEKM_TOKM, 13, '0')                                                       /* C20 계 */
+                || RPAD(' ', 6, ' ') AS RECD_DATA    /* C21 공란 */
+          FROM (
+                SELECT
+                       REPLACE(C.RERN_NUMB, '-', '') AS RERN_NUMB
+                      ,C.CUST_NAME
+                      ,C.BIZR_NUMB
+                      ,NVL(C.OWNR_NAME, C.CUST_NAME) AS OWNR_NAME
+                      ,C.FORI_GUBN
+                      ,D.REF1_FILD AS BIZZ_TYPE
+                      ,SUBSTR(B.PERS_YYMM, 1, 4) AS IMPT_YEAR
+                      ,SUBSTR(B.SUPP_DATE, 1, 4) AS PAYY_YEAR
+                      ,COUNT(B.CUST_CODE) AS CUST_CNT
+                      ,SUM(B.SUPP_KMAK) AS SUPP_KMAK
+                      ,B.TAXX_RATE * 100 AS TAXX_RATE
+                      ,SUM(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END) AS INCM_TAXX
+                      ,SUM(B.INHA_TAXX) AS INHA_TAXX
+                      ,SUM(NVL(CASE WHEN B.INCM_TAXX > 1000 OR B.INCM_TAXX < 0 THEN B.INCM_TAXX ELSE 0 END, 0) + NVL(B.INHA_TAXX, 0)) AS SEKM_TOKM
+                 FROM TA_INCMXM B
+                INNER JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+                 LEFT OUTER JOIN TM_CODEXD D ON D.COMM_CODE = 'JOBS_GUBN' AND C.JOBS_GUBN = D.COMD_CODE
+                WHERE 1 = 1 /* B.GITA_SEQX = '3' */ /* 승인전표 */
+                  AND B.INCM_TYCD = 'FA010010'		/* 사업소득 */
+                  AND SUBSTR(B.PERS_YYMM, 1, 4) = #BASE_YEAR#
+                  AND C.RESI_GUBN = #LIVE_GUBN#
+                GROUP BY C.RERN_NUMB, C.CUST_NAME, C.BIZR_NUMB , C.OWNR_NAME , C.FORI_GUBN, D.REF1_FILD, SUBSTR(B.PERS_YYMM, 1, 4), SUBSTR(B.SUPP_DATE, 1, 4), B.TAXX_RATE
+          ) A
+          LEFT OUTER JOIN TM_OFFICE B ON 1 = 1
+        ]]>
+    </select>
+</sqlMap>

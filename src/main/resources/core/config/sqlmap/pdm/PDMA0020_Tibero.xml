@@ -1,0 +1,643 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PDMA0020">
+
+<!--  
+ *   프로그램명 : 제작 계약관리 화면 
+ *   작 성 일 : 2016.09.19
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 상단 계약서 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="CONT_DATE1" >
+			 C.COMP_DATE BETWEEN #CONT_DATE1# AND '99999999'  /*  A.CONT_DATE */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CONT_DATE2" >
+			 C.COMP_DATE BETWEEN '00000000' AND #CONT_DATE2#   /*  A.CONT_DATE */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CONT_NUMB" >
+			  A.CONT_NUMB LIKE '%' || #CONT_NUMB# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  A.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  B.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="JOBN_NUMB" >
+			  A.JOBN_NUMB = #JOBN_NUMB#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="JOBN_NAME" >
+			  C.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%'
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 하단 계약서 기초데이터 검색 조건 -->
+	<sql id="search1">
+		<isNotEmpty prepend="AND" property="CONT_DATE1" >
+			 REGI_DATE BETWEEN #CONT_DATE1# AND '99999999'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CONT_DATE2" >
+			 REGI_DATE BETWEEN '00000000' AND #CONT_DATE2#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  A.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  A.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="JOBN_NUMB" >
+			  A.JOBN_NUMB = #JOBN_NUMB#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="JOBN_NAME" >
+			  A.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%'
+		</isNotEmpty>
+	</sql>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 제작 계약관리 화면 조회
+     파라미터   : CONT_DATE1 : 계약일 FROM
+     			 CONT_DATE2 : 계약일 TO
+     			 CONT_NUMB : 계약번호
+     			 CUST_CODE : 제작사코드
+     			 CUST_NAME : 제작사명
+     			 JOBN_NUMB : 제작번호
+     			 JOBN_NAME : 제작명
+    /*********************************************************************************** 
+     -->
+	<select id="PDMA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+						SELECT					 /* PDMA0020.SEARCH00.제작 계약관리 조회 */
+						'0' CHK     				 /* 선택 */
+						,A.CONT_NUMB     	 /* 계약서번호 */
+						,NVL(A.SEND_FLAG,0) AS SEND_FLAG          /* 계약서발송여부 */
+						,A.REGI_DATE		     /* 등록일 */
+						,A.JOBN_NUMB			 /* 제작번호 */
+						,C.JOBN_NAME			 /* 제작명 */
+						,A.CONT_NAME		 /* 계약명 */
+						,A.CUST_CODE			 /* 제작사코드 */
+						,B.CUST_NAME			 /* 제작사명 */
+						,A.CONT_DATE			 /* 계약일 */
+						,A.CONT_AMTX		 /* 계약금 */
+						,A.PREP_AMTX			 /* 선급금액 */
+						,A.BALA_AMTX			 /* 잔액 */
+						,A.DELI_DATE			 /* 납품일 */
+						,A.CONT_STDT		 /* 계약시작일 */
+						,A.CONT_EDDT			 /* 계약종료일 */
+						,A.MEMO_FILD  		 /* 비고 */
+						,A.PREP_DATE          /* 선급금 지급기일 */
+						,A.BALA_DATE			 /* 잔금 지급기일 */
+						,A.PREP_PAYM			 /* 선급금 지급방법 */
+						,A.BALA_PAYM			 /* 잔금 지급방법 */
+						,D.CHSN_NAME AS EMPL_NAME	 /* 제작 담당자   D.EMPL_NAME */
+						,NVL(D.HNPN_TENR,D.TELE_NUMB) AS PHON_NUMB	 /* 제작 담당자  전화번호   D.PHON_NUMB */
+						,D.ELTR_MLAD AS EMAL_ADDR	 /* 제작 담당자 이메일주소  D.EMAL_ADDR */
+						,NULL AS DROP_FILE	  /*  생성할 PDF 파일*/
+						, E.CUST_NAME AS OUTS_NAME				/* 제작사명 */
+						, E.ADDR_DESC || E.DTL1_ADDR || E.DTL2_ADDR  AS OUTS_ADDR 		/* 제작사주소 */
+						, E.OWNR_NAME AS OUTS_OWNR													/* 제작사대표 */
+						, F.OFFI_NAME AS HOME_NAME														/* 농심기획 */
+						, F.ADDR_DESC  AS HOME_ADDR		/* 농심기획주소 */
+						, F.OWNR_NAME AS HOME_OWNR													/* 농심기획대표자 */
+						FROM PD_CONTXH A  
+						LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+						LEFT JOIN PD_JOBNXM C ON A.JOBN_NUMB = C.JOBN_NUMB
+						LEFT JOIN TA_CUSTMN D ON A.CUST_CODE = D.CUST_CODE AND D.MJCH_YSNO = '1'  /* LEFT JOIN PD_EMPLMX D ON A.CUST_CODE = D.CUST_CODE AND D.REPR_EMPL = '1'  거래처 담당자 제작사관리 에서 기본 거래처관리로 변경*/ 
+						LEFT JOIN TA_CUSTXM E ON E.CUST_CODE = A.CUST_CODE
+						LEFT JOIN TM_OFFICE F ON F.ACCT_GUBN = '100' AND F.OFFI_GUBN ='1'
+						WHERE 1=1
+
+			]]>
+			     <include refid="search" />	
+			<![CDATA[
+				 ORDER BY  A.CONT_NUMB
+			]]>
+	</select>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 제작 계약관리 하단 기초 데이터 조회
+     파라미터   : CUST_CODE : 제작사코드
+     			 CUST_NAME : 제작사명
+     			 JOBN_NUMB : 제작번호
+     			 JOBN_NAME : 제작명
+    /*********************************************************************************** 
+     -->
+	<select id="PDMA0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+				
+				SELECT								/* PDMA0020.SEARCH01.제작 계약관리 하단 기초 데이터 조회*/
+				'0'CHK								/* 선택 */
+				,CONT_IDXX						/* 순번 */
+				,CUST_CODE						/* 제작사코드 */
+				,CUST_NAME						/* 제작사명 */
+				,REGI_DATE							/* 생성일 */
+				,JOBN_NUMB						/* 제작번호 */
+				,JOBN_NAME						/* 제작명 */
+				,CONT_NAME						/* 계약명 */
+				,CONT_AMTX						/* 금액 */
+				]]><isEqual property="CONT_CRET" compareValue="0">
+					,ROW_NUMBER() OVER (ORDER BY CUST_CODE) RANK_TANS /*제작사별 합산기준*/
+				</isEqual>
+					<isEqual property="CONT_CRET" compareValue="1">
+					,DENSE_RANK() OVER (ORDER BY CUST_CODE) RANK_TANS /*제작사별 합산기준*/
+					</isEqual>
+				<![CDATA[
+				FROM(
+				    SELECT             
+				    A.CONT_IDXX        
+				    ,A.CUST_CODE       
+				    ,B.CUST_NAME       
+				    ,A.REGI_DATE       
+				    ,A.JOBN_NUMB       
+				    ,C.JOBN_NAME       
+				    ,A.CONT_NAME       
+				    ,A.CONT_AMTX       
+				    FROM PD_CONTXD A  
+				    LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE 
+				    LEFT JOIN PD_JOBNXM C ON A.JOBN_NUMB = C.JOBN_NUMB
+				    WHERE 1=1
+				    AND CONT_NUMB IS NULL 
+				    UNION ALL
+				    SELECT
+				     A.PREE_IDXX CONT_IDXX
+				    ,A.OUTS_CODE AS CUST_CODE                
+				    ,C.CUST_NAME                
+				    ,A.SUJU_DATE AS REGI_DATE   
+				    ,A.JOBN_NUMB                
+				    ,B.JOBN_NAME                
+				    ,B.JOBN_NAME || '-' || D.SUBX_NAME AS CONT_NAME
+				    ,A.SUJU_AMTX AS CONT_AMTX
+				    FROM PD_SUJUMD A 
+				    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				    LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				    LEFT JOIN PD_ITEMXD D ON A.ITEM_CODE = D.ITEM_CODE 
+				    LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				    WHERE 1=1
+				    AND NVL(C.BIZR_NUMB,'') <> E.BSNS_NUMB
+				    AND A.CONT_NUMB IS NULL 
+				)A
+				WHERE 1=1
+
+			]]>
+			     <include refid="search1" />	
+			<![CDATA[
+			
+				 ORDER BY  A.JOBN_NUMB, A.CUST_CODE
+			]]>
+	</select>
+	
+<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.17
+     내      용 : 제작 계약관리 하단 기초 데이터 조회
+     파라미터   : CUST_CODE : 제작사코드
+     			 CUST_NAME : 제작사명
+     			 JOBN_NUMB : 제작번호
+     			 JOBN_NAME : 제작명
+    /*********************************************************************************** 
+     -->
+	<select id="PDMA0020.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+				
+				SELECT                                /* PDMA0020.SEARCH02.제작 계약관리 상세 데이터 조회*/
+				CONT_IDXX                        		/* 순번 */
+				,CUST_CODE                        	/* 제작사코드 */
+				,CUST_NAME                        	/* 제작사명 */
+				,REGI_DATE                            	/* 생성일 */
+				,JOBN_NUMB                        	/* 제작번호 */
+				,JOBN_NAME                        	/* 제작명 */
+				,CONT_NAME                        	/* 계약명 */
+				,CONT_AMTX                        	/* 금액 */
+				,CONT_NUMB                        	/* 계약서번호 */
+				FROM(
+				    SELECT             
+				    A.CONT_IDXX        
+				    ,A.CUST_CODE       
+				    ,B.CUST_NAME       
+				    ,A.REGI_DATE       
+				    ,A.JOBN_NUMB       
+				    ,C.JOBN_NAME       
+				    ,A.CONT_NAME       
+				    ,A.CONT_AMTX     
+				    ,A.CONT_NUMB 
+				    FROM PD_CONTXD A  
+				    LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE 
+				    LEFT JOIN PD_JOBNXM C ON A.JOBN_NUMB = C.JOBN_NUMB
+				    WHERE 1=1
+				    AND CONT_NUMB IS NOT NULL 
+				    UNION ALL
+				    SELECT
+				     A.PREE_IDXX CONT_IDXX
+				    ,A.OUTS_CODE AS CUST_CODE                
+				    ,C.CUST_NAME                
+				    ,A.SUJU_DATE AS REGI_DATE   
+				    ,A.JOBN_NUMB                
+				    ,B.JOBN_NAME                
+				    ,D.SUBX_NAME AS CONT_NAME   
+				    ,A.SUJU_AMTX AS CONT_AMTX
+				    ,A.CONT_NUMB
+				    FROM PD_SUJUMD A 
+				    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				    LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE 
+				    LEFT JOIN PD_ITEMXD D ON A.ITEM_CODE = D.ITEM_CODE
+				    LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				    WHERE 1=1
+				    AND NVL(C.BIZR_NUMB,'') <> E.BSNS_NUMB
+				    AND A.CONT_NUMB IS NOT NULL 
+				)A
+				WHERE 1=1
+				AND A.CONT_NUMB = #CONT_NUMB#
+
+			]]>
+	</select>
+	
+	
+	
+		
+<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 계약서 기초 데이터 수정
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PDMA0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	
+			        UPDATE PD_CONTXH    							 /* PDMA0020.UPDATE00.제작 계약관리 계약서 데이터 수정*/
+		           SET  REGI_DATE = #REGI_DATE#  				/* 생성일자 */
+		             , JOBN_NUMB = #JOBN_NUMB#  				/* 제작번호 */
+		             , CONT_NAME = #CONT_NAME#  				/* 계약명 */
+		             , CONT_DATE = #CONT_DATE# 					/* 계약일자(발주일) */
+		             , CONT_AMTX = #CONT_AMTX#  				/* 계약금액 */
+		             , PREP_AMTX = #PREP_AMTX#  				/* 선급금액 */
+		             , BALA_AMTX = #BALA_AMTX#  				/* 잔금 */
+		             , PREP_DATE = #PREP_DATE#  					/* 선급금지급기일 */
+		             , BALA_DATE = #BALA_DATE#  					/* 잔금 지급기일 */
+		             , PREP_PAYM = #PREP_PAYM#  					/* 선급금 지급방법 */
+		             , BALA_PAYM = #BALA_PAYM#  					/* 잔금지급방법 */
+		             , DELI_DATE = #DELI_DATE#  					/* 납품일자 */
+		             , CONT_STDT = #CONT_STDT#  				/* 계약시작일 */
+		             , CONT_EDDT = #CONT_EDDT#  				/* 계약 종료일 */
+		             , MEMO_FILD = #MEMO_FILD#  					/* 비고 */
+	           	 	 , UPDT_USID = #UPDT_USID#  					/*수정자*/
+                 	 , UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+                 WHERE CONT_NUMB = #CONT_NUMB# 
+
+	]]>
+	</update>
+	
+	
+	
+	<!-- 
+/***********************************************************************************	
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 계약서 하단 기초 데이터 생성
+     파라미터   : 	
+/***********************************************************************************
+     -->
+	<insert id="PDMA0020.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+	
+	   INSERT INTO PD_CONTXD (  	/* PDMA0020.SAVE01.계약서 신규 데이터 저장  *//* [계약서 생성을 위한 신규 기초 데이터] */
+                CONT_IDXX        			/* 순번 */
+               ,CUST_CODE        		/* 제작사코드 */
+               ,REGI_DATE         			/* 등록일 */
+               ,JOBN_NUMB        			/* 제작번호 */
+               ,CONT_NAME        		/* 계약명 */
+               ,CONT_AMTX        		/* 계약금액 */
+               ,CONT_NUMB        		/* 계약번호 */
+               ,INST_USID        			/* 생성자 */
+               ,INST_DATE        			/* 생성일자 */
+               ,UPDT_USID        			/* 수정자 */
+               ,UPDT_DATE        			/* 수정일자 */
+              )
+       VALUES (
+               #CONT_IDXX#       		/* 순번 */
+              ,#CUST_CODE#      		/* 제작사코드 */
+              ,#REGI_DATE#       		/* 등록일 */
+              ,#JOBN_NUMB#       		/* 제작번호 */
+              ,#CONT_NAME#       		/* 계약명 */
+              ,#CONT_AMTX#      		/* 계약금액 */
+              ,#CONT_NUMB#       		/* 계약번호 */
+              ,#UPDT_USID#   			/*입력작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+		      ,#UPDT_USID#   			/*수정작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+              )
+
+	]]>
+	</insert>
+	
+	
+	<!-- 
+/***********************************************************************************	
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 계약서 기초 데이터 수정
+     파라미터   : 			
+/***********************************************************************************
+     -->
+	<update id="PDMA0020.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+               
+            UPDATE PD_CONTXD   							/* PDMA0020.UPDATE01.계약서 신규 데이터 수정  */
+           		SET  CUST_CODE = #CUST_CODE#  	/* 제작사코드 */
+		             , REGI_DATE = #REGI_DATE#  		/* 등록일자 */
+		             , JOBN_NUMB = #JOBN_NUMB#  	/* 제작번호 */
+		             , CONT_NAME = #CONT_NAME#  	/* 제작명 */
+		             , CONT_AMTX = #CONT_AMTX#  	/* 계약금액 */
+		             , CONT_NUMB = #CONT_NUMB#  	/* 계약번호 */
+		             ,UPDT_USID = #UPDT_USID#  		/*수정자*/
+                 ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+                 WHERE CONT_IDXX = #CONT_IDXX#
+
+	]]>
+	</update>
+	
+	
+<!-- 
+/***********************************************************************************	
+     작  성  자 : 오세훈
+     작  성  일 : 2017.02.17
+     내      용 : 계약서 메일 발송시 발송 상태값 변경 추가 
+     파라미터   : 			
+/***********************************************************************************
+-->
+	<update id="PDMA0020.UPDATE02" parameterClass="hashmap">
+	<![CDATA[
+               
+            UPDATE PD_CONTXH
+			SET SEND_FLAG = #SEND_FLAG#
+			WHERE 1=1
+			AND CONT_NUMB = #CONT_NUMB#
+
+	]]>
+	</update>
+	
+	
+	
+		<!-- 
+/***********************************************************************************	
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 기초데이터로 계약서 데이터 생성(합산및 분할 데이터로 입력 최초 날짜로 일단 저장)
+     파라미터   : 	
+     
+       VALUES (
+               #CONT_NUMB#       			/* 계약서번호 */
+              ,#CUST_CODE#       			/* 제작사코드 */
+              ,#REGI_DATE#       			/* 등록일 */
+              ,#JOBN_NUMB#       			/* 제작번호 */
+              ,#CONT_NAME#      			/* 계약명 */
+              ,#CONT_DATE#       			/* 계약일자 */
+              ,#CONT_AMTX#       			/* 계약금액 */
+              ,#PREP_AMTX#       			/* 선급금액 */
+              ,#CONT_AMTX#       			/* 잔금        BALA_AMTX */
+              ,#PREP_DATE#					/* 선급금 지급일자 */
+			  ,#BALA_DATE#					/* 잔금 지급일자 */
+			  ,#PREP_PAYM#					/* 선급금 지급방법 */
+			  ,'익월 30일이내 현금'				/* 잔금지급방법   BALA_PAYM */
+              ,(select COMP_DATE from PD_JOBNXM where JOBN_NUMB = #JOBN_NUMB# )       			/* 납품일     DELI_DATE */
+              ,#CONT_STDT#       			/* 계약시작일 */
+              ,#CONT_EDDT#       			/* 계약종료일 */
+              ,#MEMO_FILD#       			/* 비고 */
+              ,#UPDT_USID#      			/* 입력자 */
+              ,#UPDT_DATE#       			/* 입력일자 */
+              ,#UPDT_USID#       			/* 수정자 */
+              ,#UPDT_DATE#      			/* 수정일자 */
+              )
+/***********************************************************************************
+     -->
+	<insert id="PDMA0020.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+	
+	          INSERT INTO PD_CONTXH (  /* PDMA0020.SAVE02.계약서 데이터 생성 *//* [계약서 생성] */
+                CONT_NUMB        			/* 계약서번호 */
+               ,CUST_CODE        			/* 제작사코드 */
+               ,REGI_DATE        				/* 등록일 */
+               ,JOBN_NUMB        				/* 제작번호 */
+               ,CONT_NAME        			/* 계약명 */
+               ,CONT_DATE        				/* 계약일자 */
+               ,CONT_AMTX        			/* 계약금액 */
+               ,PREP_AMTX        				/* 선급금액 */
+               ,BALA_AMTX        				/* 잔금 */
+               ,PREP_DATE						/* 선급금 지급일 */
+			   ,BALA_DATE						/* 잔금 지급일 */
+			   ,PREP_PAYM						/* 선금급 지급방법 */
+			   ,BALA_PAYM						/* 잔금 지급방법 */
+               ,DELI_DATE        				/* 납품일 */
+               ,CONT_STDT        			/* 계약시작일 */
+               ,CONT_EDDT        			/* 계약종료일 */
+               ,MEMO_FILD        				/* 비고 */
+               ,INST_USID        				/* 입력자 */
+               ,INST_DATE        				/* 입력일자 */
+               ,UPDT_USID        				/* 수정자 */
+               ,UPDT_DATE        				/* 수정일자 */
+              )
+       select  #CONT_NUMB#       			/* 계약서번호 */
+              ,#CUST_CODE#       			/* 제작사코드 */
+              ,#REGI_DATE#       			/* 등록일 */
+              ,#JOBN_NUMB#       			/* 제작번호 */
+              ,#CONT_NAME#      			/* 계약명 */
+              ,REQU_DATE        			/* 계약일자   CONT_DATE */
+              ,#CONT_AMTX#       			/* 계약금액 */
+              ,#PREP_AMTX#       			/* 선급금액 */
+              ,#CONT_AMTX#       			/* 잔금        BALA_AMTX */
+              ,#PREP_DATE#					/* 선급금 지급일자 */
+			  ,TO_NCHAR(ADD_MONTHS(COMP_DATE,2),'YYYYMMdd')  	/* 잔금 지급일자  BALA_DATE */
+			  ,#PREP_PAYM#					/* 선급금 지급방법 */
+			  ,'익월 30일이내 현금'				/* 잔금지급방법   BALA_PAYM */
+              ,COMP_DATE        			/* 납품일     DELI_DATE */
+              ,REQU_DATE       			    /* 계약시작일   CONT_STDT*/
+              ,COMP_DATE         			/* 계약종료일   CONT_EDDT*/
+              ,#MEMO_FILD#       			/* 비고 */
+              ,#UPDT_USID#      			/* 입력자 */
+              ,#UPDT_DATE#       			/* 입력일자 */
+              ,#UPDT_USID#       			/* 수정자 */
+              ,#UPDT_DATE#      			/* 수정일자 */
+              FROM
+              PD_JOBNXM 
+              WHERE JOBN_NUMB = #JOBN_NUMB#
+              ;
+	]]>
+	</insert>
+	
+
+<!-- 
+/***********************************************************************************
+작  성  자 : 오세훈
+작  성  일 : 2016.09.19
+내      용 : 계약서 관리 계약서 삭제, 생성 테이블 및 확정견적 계약서 생성까지 삭제
+파라미터   : 
+/***********************************************************************************			 				
+-->
+	<delete id="PDMA0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		
+		BEGIN
+			DELETE FROM PD_CONTXH
+			WHERE CONT_NUMB = #CONT_NUMB#
+            ;
+            
+            UPDATE  PD_CONTXD
+			SET CONT_NUMB = ''
+			WHERE CONT_NUMB = #CONT_NUMB#
+			;
+			
+			UPDATE PD_SUJUMD
+			SET CONT_NUMB = ''
+			WHERE CONT_NUMB = #CONT_NUMB#
+			;
+	
+        END;
+	]]>		
+	</delete>
+	
+	
+<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 견적 하단 기초 데이터 삭제
+     파라미터   : CONT_IDXX
+/***********************************************************************************     			 				
+     -->
+	<delete id="PDMA0020.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		
+		BEGIN
+			DELETE  FROM PD_CONTXD
+            WHERE CONT_IDXX = #CONT_IDXX#
+            ;
+	
+        END;
+	]]>		
+	</delete>
+	
+	
+	<!-- 계약서데이터 하단 기초 데이터 순번 만들기 -->
+	<select id="PDMA0020.getCONT_IDXX" resultClass="String">			
+			SELECT 
+			CAST(NVL(MAX(CONT_IDXX),0) AS NUMERIC) + 1 
+			FROM PD_CONTXD
+			WHERE 1=1
+	</select>
+	
+	
+	<!-- 계약서 번호 채번 -->
+	<select id="PDMA0020.getCONT_NUMB" resultClass="String">			
+			SELECT 
+            TO_CHAR(SYSDATE, 'YYYYMM') || '-' || LPAD(CAST(NVL(MAX(SUBSTR(CONT_NUMB,8,3)),0) AS NUMERIC) + 1,3,'0')  
+            FROM PD_CONTXH
+            WHERE 1=1
+            AND SUBSTR(CONT_NUMB,1,6) = TO_CHAR(SYSDATE, 'YYYYMM')
+	</select>
+	
+	
+	
+	<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.19
+     내      용 : 계약서 번호 저장
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PDMA0020.updateCONT_NUMB" parameterClass="hashmap">
+	<![CDATA[
+	
+	       UPDATE PD_CONTXD
+			SET CONT_NUMB = #CONT_NUMB#
+			WHERE CONT_IDXX = #CONT_IDXX#
+
+	]]>
+	</update>
+	
+	
+<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.07
+     내      용 : 계약서 번호 실행견적에 업데이트
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PDMA0020.updateESTI_NUMB" parameterClass="hashmap">
+	<![CDATA[
+
+			UPDATE PD_SUJUMD
+			SET CONT_NUMB = #CONT_NUMB#
+			WHERE 1=1
+			AND PREE_IDXX = #CONT_IDXX#
+			AND JOBN_NUMB = #JOBN_NUMB#
+
+	]]>
+	</update>
+	
+
+	<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.17
+     내      용 : 제작 계약서 관리 출력을 위한 조회(외주 업체의경우 금액이 가장 큰 업체만 대표지정)
+     파라미터   : 
+/***********************************************************************************
+     -->
+	<select id="PDMA0020.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 		         
+				SELECT							/* PDMA0020.PRINT00.제작 계약서 관리 출력 조회*//* [계약서 생성] */
+				C.CUST_NAME					/* 광고주명 */	
+				, B.JOBN_NUMB				/* 제작번호 */
+				, B.JOBN_NAME				/* 제작건명 */	
+				, B.JOBN_SIZE					/* 규격 */
+				, A.CONT_DATE				/* 계약일 */
+				, A.CONT_STDT				/* 계약시작일 */
+				, A.CONT_EDDT				/* 계약종료일 */
+				, A.CONT_AMTX				/* 계약금액 */
+				, A.PREP_AMTX				/* 선급금액 */
+				, A.BALA_AMTX				/* 잔금 */
+				, A.DELI_DATE					/* 납품일자 */
+				, A.MEMO_FILD				/* 비고 */
+				, A.PREP_DATE                /*선급금 지급기일*/
+				, A.BALA_DATE                /*잔금 지급기일*/
+				, A.PREP_PAYM                /* 선급금 지급방법 */
+				, A.BALA_PAYM                /* 잔금 지급방법 */
+				, A.CUST_CODE AS OUTS_CODE				/* 제작사코드 */
+				, E.CUST_NAME AS OUTS_NAME				/* 제작사명 */
+				, E.ADDR_DESC || E.DTL1_ADDR || E.DTL2_ADDR  AS OUTS_ADDR 		/* 제작사주소 */
+				, E.OWNR_NAME AS OUTS_OWNR													/* 제작사대표 */
+				, F.OFFI_NAME AS HOME_NAME														/* 농심기획 */
+				, F.ADDR_DESC  AS HOME_ADDR		/* 농심기획주소 */
+				, F.OWNR_NAME AS HOME_OWNR													/* 농심기획대표자 */
+				, DECODE(E.BIZR_NUMB,NULL,SUBSTR(E.RERN_NUMB,1,6)||'-'||SUBSTR(E.RERN_NUMB,7,7)
+				,SUBSTR(E.BIZR_NUMB,1,3)||'-'||SUBSTR(E.BIZR_NUMB,4,2)||'-'||SUBSTR(E.BIZR_NUMB,6,5)) AS OUTS_BNUM /* 제작사 사업자(주민)번호 */
+				, E.TELE_NUMB AS OUTS_TNUM  /* 제작사번호 */
+				, SUBSTR(F.BSNS_NUMB,1,3)||'-'||SUBSTR(F.BSNS_NUMB,4,2)||'-'||SUBSTR(F.BSNS_NUMB,6,5) AS HOME_BNUM /* 농심기획 사업자번호 */
+				, F.TELE_NUMB AS HOME_TNUM /* 농심기획 전화번호 */
+				FROM PD_CONTXH A
+				LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+				LEFT JOIN TA_CUSTXM E ON E.CUST_CODE = A.CUST_CODE
+				LEFT JOIN TM_OFFICE F ON F.ACCT_GUBN = '100' AND F.OFFI_GUBN ='1'
+				WHERE 1=1
+				AND A.CONT_NUMB IN ($CONT_NUMB_QUERY$)
+			]]>
+	</select>
+	
+</sqlMap>

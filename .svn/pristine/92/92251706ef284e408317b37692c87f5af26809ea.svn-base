@@ -1,0 +1,1198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="test_grid_autosizingtype_row" classname="test_grid_autosizingtype_row" left="0" top="0" width="1024" height="768" titletext="suppress, row autosizing">
+    <Layouts>
+      <Layout>
+        <Grid id="Grid00" taborder="0" useinputpanel="false" left="13" top="120" width="411" height="267" autosizingtype="row" binddataset="Dataset00" extendsizetype="row">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="Column0"/>
+                <Cell col="1" text="Column1"/>
+              </Band>
+              <Band id="body">
+                <Cell style="padding: ;" text="bind:Column0" wordwrap="char" suppress="1" suppressalign="middle,over" autosizerow="limitmax"/>
+                <Cell col="1" text="bind:Column1" autosizerow="limitmin"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static00" taborder="1" left="16" top="16" width="806" height="83" text="grid.autosizingtype=&quot;row&quot;&#13;&#10;grid.extendsizetype=&quot;row&quot;&#13;&#10;&lt;Cell suppress=&quot;1&quot; suppressalign=&quot;middle,over&quot; autosizerow=&quot;limitmax&quot;/&gt;&#13;&#10;&lt;Cell col=&quot;1&quot; text=&quot;bind:Column1&quot; autosizerow=&quot;limitmin&quot;/&gt;" style="color:#333333ff;" onclick="Static00_onclick"/>
+        <Grid id="Grid01" taborder="2" useinputpanel="false" left="19" top="416" width="301" height="316" binddataset="Dataset00" autosizingtype="row" extendsizetype="row">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="Column0"/>
+                <Cell col="1" text="Column1"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:Column0" wordwrap="char"/>
+                <Cell col="1" text="bind:Column1" autosizerow="limitmin"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static01" taborder="3" text="autosizerow=&quot;limitmin&quot;" left="626" top="334" width="265" height="68" onclick="Static01_onclick"/>
+        <Grid id="Grid02" taborder="4" useinputpanel="false" left="448" top="64" width="413" height="315" binddataset="Dataset00" cellsizingtype="col" autosizingtype="row" extendsizetype="row">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="181"/>
+                <Column size="164"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24"/>
+                <Row size="24"/>
+                <Row size="24"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="Column0"/>
+                <Cell col="1" text="Column1"/>
+              </Band>
+              <Band id="body">
+                <Cell rowspan="5" text="bind:Column0" wordwrap="char" autosizerow="limitmin"/>
+                <Cell col="1" text="bind:Column1" wordwrap="char" autosizerow="limitmin"/>
+                <Cell row="1" col="1" text="bind:Column2" wordwrap="char" autosizerow="limitmin"/>
+                <Cell row="2" col="1" text="bind:Column3" wordwrap="char" autosizerow="limitmin"/>
+                <Cell row="3" col="1" text="bind:Column4" wordwrap="char" autosizerow="limitmin"/>
+                <Cell row="4" col="1" text="bind:Column5" wordwrap="char" autosizerow="limitmin"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="Grid03" taborder="5" binddataset="Dataset00" useinputpanel="false" extendsizetype="none" cellsizingtype="col" autosizingtype="none" left="440" top="408" width="413" height="302">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="225"/>
+                <Column size="183"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="43"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="Column0"/>
+                <Cell col="1" text="Column1"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="decoratetext" edittype="textarea" text="bind:Column0" wordwrap="char" suppress="1" suppressalign="middle" autosizerow="limitmax"/>
+                <Cell col="1" text="bind:Column1" wordwrap="char" autosizerow="limitmin"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset00" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+          <Column id="Column5" type="STRING" size="256"/>
+          <Column id="Column4" type="STRING" size="256"/>
+          <Column id="Column3" type="STRING" size="256"/>
+          <Column id="Column2" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="Column0">111111111111111111111111111111111111111111111SDFHA;SDJFLKASJDF;LJAKSDLFKJASD;KFJAL;SJF;LAKSJF;ASJFLSDFL;AJF;ASDJF;LASFL;KADLKFJASDJF;LSJFLSDFLASDLKASDFLKAD;LKAS;FDKASLKA;LSKJFLDJFALSJLSJF</Col>
+            <Col id="Column1">4313241234DDJSKFJA;SLKJF;LKADJF;LKASJFL;KASJF;LKASJFLASLKSD;JFLAJF;SDJF;LSJF;LASDJLASDFLKAJF;JALK;JASLJFL;AJFKADJLASFASDJKL</Col>
+            <Col id="Column5">ASDFASDFJASDKLFJA;LSJFL;KADJFLK;ASJFLK;ASJFLK;ASJF;LKASFLKASJF;KAJLKFJASDLJFA;SJFLASF;LSJFLAJFLASDFKASLSD</Col>
+            <Col id="Column4">ASFDASDFASDF</Col>
+            <Col id="Column3">FDSAADSFASDF</Col>
+            <Col id="Column2">ASFDASDFASD</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+          <Row>
+            <Col id="Column0">1</Col>
+            <Col id="Column1">2</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue titletext="suppress, row utosizing"/>
+    <Script type="xscript5.0"><![CDATA[ 
+this.Static01_onclick = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	
+}
+ 
+this.Static00_onclick = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	
+}
+]]></Script>
+  </Form>
+</FDL>

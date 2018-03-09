@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMB0120">
+
+	<!-- 
+	    제  목 : 프로그램별실행 현황 조회
+	    작성자 : 임선빈
+	    작성일 : 2014.10.17
+	-->
+	<select id="TMMB0120.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* TMMB0120.SEARCH00.프로그램별실행 현황 조회 */
+		       C.COMD_CDNM        AS LOGX_NAME
+		     , A.USER_IDXX
+		     , B.EMPL_NUMB
+		     , D.EMPL_NAME 
+		     , TO_CHAR(A.EXCT_DATE, 'YYYYMMDDHH24MISS')   AS EXCT_DATE 
+		     , A.MENU_IDXX 
+		     , NVL(E.MENU_NAME, F.PROG_NAME)  AS MENU_NAME 
+		     , A.USEX_IPAR 
+		     , A.EXCT_CNTT 
+		     , A.CAFN_NAME
+		  FROM TM_OPERXM A  /* [프로그램실행정보] */
+		       LEFT JOIN TM_USERXM B ON A.USER_IDXX = B.USER_IDXX
+		       LEFT JOIN TM_CODEXD C ON C.COMM_CODE = 'LOGD_CODE' AND A.LOGD_CODE = C.COMD_CODE
+		       LEFT JOIN HR_MASTXM D ON B.EMPL_NUMB = D.EMPL_NUMB
+		       LEFT JOIN TM_MENUXM E ON A.MENU_IDXX = E.MENU_IDXX
+		       LEFT JOIN TM_PROGXM F ON A.MENU_IDXX = F.PROG_IDXX
+		 WHERE A.EXCT_DATE >= TO_DATE(#OPER_STDT#, 'YYYYMMDD')
+		   AND A.EXCT_DATE <= TO_DATE(#OPER_ENDT#, 'YYYYMMDD') + 1  
+	]]>    
+    <isNotEmpty prepend="AND" property="USER_IDXX">   
+        A.USER_IDXX = #USER_IDXX#
+    </isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">	  
+		A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>  
+	<isNotEmpty prepend="AND" property="MENU_IDXX">	  
+		A.MENU_IDXX = #MENU_IDXX#
+	</isNotEmpty>  	
+	<![CDATA[        
+		ORDER BY A.EXCT_DATE DESC
+	]]>
+	</select>
+
+	<!-- 
+	    제  목 : 로그 삭제    
+	    작성자 : 권순환
+	    작성일 : 2015.03.05
+	-->
+	<delete id="TMMB0120.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+	        DELETE FROM TM_OPERXM /* TMMB0120.DELETE00 로그 삭제 */
+	         WHERE EXCT_DATE <= #BASE_DATE#
+	]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Temp00005M" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" position="absolute" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess" titletext="C. Master Detail 3">
+    <Layouts>
+      <Layout>
+        <Static id="Static02" taborder="0" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="1" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="st_FormTitle" taborder="2" text="자금계획관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="3" text="홈 &gt; 1메뉴 &gt; 자금계획관리" top="0" right="25" width="640" height="29" cssclass="styFormLocation"/>
+        <Div id="div_ButtonList" taborder="5" tabstop="false" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList" url="common::comButtonType01.xfdl"/>
+        <Button id="btn_favorite" taborder="6" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static03" taborder="46" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="47" text="h 6" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="48" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Grid id="grdTR_MONEPL" taborder="108" binddataset="dsTR_MONEPL" wheelscrollrow="1" useinputpanel="false" selecttype="multirow"  autofittype="col" onexpanddown="fn_HelpDialoge" left="8" top="128" right="25" fillareatype="none" height="213">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="150"/>
+                <Column size="43"/>
+                <Column size="144"/>
+                <Column size="175"/>
+                <Column size="80"/>
+                <Column size="68"/>
+                <Column size="71"/>
+                <Column size="258"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell style="background: ;" text="대분류"/>
+                <Cell col="1" style="background: ;" cssclass="Cellgrd_WF_essential" text="지급구분"/>
+                <Cell col="2" text="순번"/>
+                <Cell col="3" style="background: ;" cssclass="Cellgrd_WF_edit" text="계좌번호"/>
+                <Cell col="4" style="background: ;" cssclass="Cellgrd_WF_edit" text="계좌명"/>
+                <Cell col="5" style="background: ;" cssclass="Cellgrd_WF_edit" text="은행"/>
+                <Cell col="6" style="background: ;" cssclass="Cellgrd_WF_edit" text="환종"/>
+                <Cell col="7" style="background: ;" cssclass="Cellgrd_WF_essential" text="금액"/>
+                <Cell col="8" style="background: ;" cssclass="Cellgrd_WF_essential" text="내용"/>
+              </Band>
+              <Band id="body">
+                <Cell edittype="none" style="align: ;" editlimit="0" suppress="1"/>
+                <Cell col="1" style="align: ;" editlimit="0"/>
+                <Cell col="2" style="align: ;" editlimit="0"/>
+                <Cell col="3" style="align: ;" editlimit="0"/>
+                <Cell col="4" style="align: ;" editlimit="0"/>
+                <Cell col="5" style="align: ;" editlimit="0"/>
+                <Cell col="6" style="align: ;" editlimit="0"/>
+                <Cell col="7" style="align: ;" editlimit="0"/>
+                <Cell col="8" style="align: ;"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static12" taborder="168" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Tab id="Tab00" left="8" top="351" tabindex="0" scrollbars="autoboth" right="25" bottom="15" style="showextrabutton:false;">
+          <Tabpages>
+            <Tabpage id="tabpage1" text="탭페이지">
+              <Layouts>
+                <Layout>
+                  <Static id="stInformation00" taborder="0" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="10" top="9" width="262" height="21"/>
+                  <Static id="Static11" taborder="1" text="h 30" visible="false" left="580" top="0" width="80" height="30" style="background:#fb7b7b7a;"/>
+                  <Button id="Button41" taborder="2" text="행삭제" cssclass="btn_WF_Module" top="5" right="10" width="62" height="21"/>
+                  <Button id="Button55" taborder="3" text="행추가" cssclass="btn_WF_Module" top="5" right="75" width="62" height="21"/>
+                  <Static id="Static22" taborder="4" text="h 4" visible="false" left="938" top="26" width="216" height="4" style="background:#fb7b7b7a;"/>
+                  <Static id="Static15" taborder="5" text="w&#13;&#10;10" visible="false" left="0" top="75" width="10" height="67" style="background:#fb7b7b7a;"/>
+                  <Grid id="grdTR_MONEPL00" taborder="6" binddataset="dsTR_MONEPL" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both"  autofittype="col" onexpanddown="fn_HelpDialoge" left="10" top="30" right="10" bottom="100">
+                    <Formats>
+                      <Format id="default">
+                        <Columns>
+                          <Column size="80"/>
+                          <Column size="150"/>
+                          <Column size="43"/>
+                          <Column size="144"/>
+                          <Column size="175"/>
+                          <Column size="80"/>
+                          <Column size="68"/>
+                          <Column size="71"/>
+                          <Column size="258"/>
+                        </Columns>
+                        <Rows>
+                          <Row size="29" band="head"/>
+                          <Row size="26"/>
+                        </Rows>
+                        <Band id="head">
+                          <Cell style="background: ;" text="대분류"/>
+                          <Cell col="1" style="background: ;" cssclass="Cellgrd_WF_essential" text="지급구분"/>
+                          <Cell col="2" text="순번"/>
+                          <Cell col="3" style="background: ;" cssclass="Cellgrd_WF_edit" text="계좌번호"/>
+                          <Cell col="4" style="background: ;" cssclass="Cellgrd_WF_edit" text="계좌명"/>
+                          <Cell col="5" style="background: ;" cssclass="Cellgrd_WF_edit" text="은행"/>
+                          <Cell col="6" style="background: ;" cssclass="Cellgrd_WF_edit" text="환종"/>
+                          <Cell col="7" style="background: ;" cssclass="Cellgrd_WF_essential" text="금액"/>
+                          <Cell col="8" style="background: ;" cssclass="Cellgrd_WF_essential" text="내용"/>
+                        </Band>
+                        <Band id="body">
+                          <Cell style="align: ;" editlimit="0" suppress="1"/>
+                          <Cell col="1" style="align: ;" editlimit="0"/>
+                          <Cell col="2" style="align: ;" editlimit="0"/>
+                          <Cell col="3" style="align: ;" editlimit="0"/>
+                          <Cell col="4" style="align: ;" editlimit="0"/>
+                          <Cell col="5" style="align: ;" editlimit="0"/>
+                          <Cell col="6" style="align: ;" editlimit="0"/>
+                          <Cell col="7" style="align: ;" editlimit="0"/>
+                          <Cell col="8" style="align: ;"/>
+                        </Band>
+                      </Format>
+                    </Formats>
+                  </Grid>
+                  <Static id="Static16" taborder="7" text="w&#13;&#10;10" visible="false" left="1142" top="75" width="10" height="75" style="background:#fb7b7b7a;"/>
+                  <Static id="Static93" taborder="8" text="상세정보" cssclass="sta_WF_Subtitle" left="10" bottom="75" width="262" height="21"/>
+                  <Static id="spSearchBox03" taborder="9" cssclass="styFormItemBoxOut" left="10" right="10" bottom="10" height="65" radiusy="10" radiusx="10" type="roundrectangle"/>
+                  <Static id="Static25" taborder="10" text="h 25" visible="false" left="653" top="222" width="80" height="25" style="background:#fb7b7b7a;"/>
+                  <Static id="Static64" taborder="11" text="라벨라벨" cssclass="styFormItemCapBE" left="30" bottom="45" width="80" height="21"/>
+                  <Combo id="cmbSHRACCT_UNIT06" taborder="12" autoselect="true" displayrowcount="20" ontextchanged="fn_clearData" onitemchanged="fn_clearData" left="98" bottom="45" width="179" height="21"/>
+                  <Static id="Static67" taborder="13" text="라벨라벨" cssclass="styFormItemCap" left="306" bottom="45" width="80" height="21"/>
+                  <Edit id="Edit15" taborder="14" left="374" bottom="45" width="179" height="21"/>
+                  <Static id="Static69" taborder="15" text="라벨라벨" cssclass="styFormItemCap" left="582" bottom="45" width="80" height="21"/>
+                  <Edit id="Edit17" taborder="16" left="650" bottom="45" width="179" height="21"/>
+                  <Static id="Static19" taborder="17" text="라벨라벨" cssclass="styFormItemCap" left="858" bottom="45" width="80" height="21"/>
+                  <Edit id="Edit00" taborder="18" left="926" bottom="45" width="195" height="21"/>
+                  <Static id="Static00" taborder="19" text="라벨라벨" cssclass="styFormItemCapBE" left="30" bottom="19" width="80" height="21"/>
+                  <Combo id="cmbSHRACCT_UNIT00" taborder="20" autoselect="true" displayrowcount="20" ontextchanged="fn_clearData" onitemchanged="fn_clearData" left="98" bottom="19" width="179" height="21"/>
+                  <Static id="Static01" taborder="21" text="라벨라벨" cssclass="styFormItemCap" left="306" bottom="19" width="80" height="21"/>
+                  <Edit id="Edit01" taborder="22" left="374" bottom="19" width="179" height="21"/>
+                  <Static id="Static02" taborder="23" text="라벨라벨" cssclass="styFormItemCap" left="582" bottom="19" width="80" height="21"/>
+                  <Edit id="Edit02" taborder="24" left="650" bottom="19" width="179" height="21"/>
+                  <Static id="Static03" taborder="25" text="라벨라벨" cssclass="styFormItemCap" left="858" bottom="19" width="80" height="21"/>
+                  <Edit id="Edit03" taborder="26" left="926" bottom="19" width="195" height="21"/>
+                </Layout>
+              </Layouts>
+            </Tabpage>
+            <Tabpage id="tabpage2" text="탭페이지2"/>
+            <Tabpage id="tabpage3" text="탭페이지3"/>
+          </Tabpages>
+        </Tab>
+        <Static id="Static01" taborder="170" text="h 37" visible="false" left="661" top="341" width="80" height="37" style="background:#fb7b7b7a;"/>
+        <Static id="Static59" taborder="175" text="w30" visible="false" left="20" top="634" width="30" height="43" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="212" text="h 10" visible="false" left="29" top="341" width="80" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="spSearchBox0" taborder="215" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="Static41" taborder="216" text="w 40" visible="false" left="682" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static30" taborder="217" text="회계단위" cssclass="styFormSearchCapBe" left="28" top="71" width="70" height="21"/>
+        <Combo id="cmbSHRACCT_UNIT" taborder="218" autoselect="true" displayrowcount="20" ontextchanged="fn_clearData" onitemchanged="fn_clearData" left="96" top="71" width="146" height="21"/>
+        <Static id="Static31" taborder="219" text="기준일자" cssclass="styFormSearchCapBe" left="271" top="71" width="68" height="21"/>
+        <Static id="Static32" taborder="220" text="자금구분" cssclass="styFormSearchCapBe" left="467" top="71" width="70" height="21"/>
+        <Combo id="cmbSHREXCE_GUBN" taborder="221" autoselect="true" displayrowcount="20" left="536" top="71" width="146" height="21"/>
+        <Calendar id="calSHRPROV_DATE" taborder="222" dateformat="yyyy-MM-dd" onchanged="fn_clearData" onspin="fn_clearData" ontextchange="fn_clearData" left="339" top="71" width="99" height="21"/>
+        <Static id="Static33" taborder="223" text="입출구분" cssclass="styFormSearchCap" left="711" top="71" width="70" height="21"/>
+        <Combo id="cmbSHRBANK_INOU" taborder="224" autoselect="true" displayrowcount="20" left="780" top="71" width="146" height="21"/>
+        <Static id="Static34" taborder="225" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="226" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="227" text="w 40" visible="false" left="242" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static38" taborder="228" text="w 40" visible="false" left="438" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="229" text="h 25" visible="false" left="568" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="230" text="h 4" visible="false" left="626" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation" taborder="232" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="107" width="230" height="21"/>
+        <Button id="btn_PROC" taborder="234" text="일계획가져오기" onclick="btn_PROC_OnClick" cssclass="btn_WF_Module" left="8" top="35" width="110" height="21"/>
+        <Static id="Static08" taborder="235" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="236" text="h 10" visible="false" left="605" top="691" width="80" height="10" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

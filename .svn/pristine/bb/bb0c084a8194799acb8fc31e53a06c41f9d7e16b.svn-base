@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PAYF0100">
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 8
+     내    용 : 퇴직연금예치금 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYF0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT  /* PAYF0100.SEARCH00 퇴직연금예치금 테이블 조회 */
+                   B.STDS_DATE      /* 기준일 */
+                 , A.ENFC_CODE      /* 사업장 */
+                 , A.EMPL_NUMB      /* 사번 */
+                 , C.EMPL_NAME      /* 성명 */
+                 , E.DEPT_NAME      /* 부서 */
+                 , SF_GET_COMMNAME('OPOS_CODE', C.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+                 , SF_GET_COMMNAME('CPOS_CODE', C.CPOS_CODE) AS CPOS_NAME   /* 직급 */
+                 , SF_GET_COMMNAME('DUTY_CODE', C.DUTY_CODE) AS DUTY_NAME   /* 직무 */
+                 , NVL(A.AVER_WAGE,0) AS AVER_WAGE      /* 평균임금*/
+                 , TO_CHAR(A.CWRK_YCNT) || '년' || TO_CHAR(A.CWRK_MCNT) || '월' || TO_CHAR(A.CWRK_DCNT) || '일' AS CWRK_YMCT /* 근속기간 */
+                 , NVL(A.RETI_ALWN,0) AS RETI_ALWN      /* 퇴직충당금 */
+                 , NVL(D.RTPD_AMOT,0) AS BEFO_ALWN /* 이전충당금 */
+                 , NVL(A.RETI_ALWN,0) - NVL(D.RTPD_AMOT,0) AS OCUR_ALWN   /* 추가충당금 */
+                 , E.SECT_CODE /* 소속코드 */
+                 , E.SECT_NAME /* 소속명 */
+    ]]>
+    <iterate property="REAY_LIST">
+                 , SUM(CASE WHEN B.REAY_JOCD = #REAY_LIST[].REAY_JOCD# THEN B.RTPD_AMOT END) AS "$REAY_LIST[].REAY_JOCD$"
+    </iterate>
+    <![CDATA[
+
+              FROM PY_RTRESE A                /* [퇴직추계액]     */
+                INNER JOIN PY_RTPSDB B        /* [퇴직연금예치금] */
+                  ON A.STDS_DATE = B.STDS_DATE
+                 AND A.EMPL_NUMB = B.EMPL_NUMB
+                LEFT OUTER JOIN (SELECT EMPL_NUMB
+                                      , SUM(RTPD_AMOT) AS RTPD_AMOT
+                                   FROM PY_RTPSDB Z                 /* [퇴직연금예치금] */
+                                  WHERE STDS_DATE < #STDS_DATE#
+                                  GROUP BY EMPL_NUMB
+                                ) D
+                  ON A.EMPL_NUMB = D.EMPL_NUMB
+                LEFT OUTER JOIN HR_MASTXM C                        /* [인사마스터] */
+                  ON A.EMPL_NUMB = C.EMPL_NUMB
+                LEFT OUTER JOIN VI_DEPTXM E                        /* [부서] */
+                  ON C.DEPT_CODE = E.DEPT_CODE
+                LEFT OUTER JOIN TM_CODEXD F                        /* [공통코드세부] */
+                  ON C.CPOS_CODE = F.COMD_CODE
+                 AND F.COMM_CODE = 'CPOS_CODE'
+               WHERE A.PAYX_YSNO = '1'
+                 AND A.STDS_DATE = #STDS_DATE#
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                  E.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                  A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+            GROUP BY E.DEPT_NAME, A.EMPL_NUMB, C.EMPL_NAME, A.AVER_WAGE, A.PAYX_RATE
+                   , A.RETI_ALWN, D.RTPD_AMOT, B.STDS_DATE, E.DEPT_FCOD, F.SORT_ORDR
+                   , C.PRON_DATE, C.ENCO_DATE, A.ENFC_CODE, C.CPOS_CODE, C.DUTY_CODE
+                   , A.CWRK_YCNT, A.CWRK_MCNT, A.CWRK_DCNT, C.OPOS_CODE, E.SECT_CODE, E.SECT_NAME
+            ORDER BY E.DEPT_FCOD, F.SORT_ORDR, C.PRON_DATE, C.ENCO_DATE
+    </select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 8
+     내    용 : 퇴직연금예치금 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYF0100.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYF0100.SEARCH01 퇴직연금예치금 테이블 조회 */
+                   A.STDS_DATE  /*기준일*/
+                 , A.ENFC_CODE  /*사업장코드*/
+                 , A.REAY_JOCD  /*퇴직연금가입기관코드*/
+                 , B.BIZR_NAME  /*퇴직연금가입기관명*/
+                 , A.DEPO_RATE  /*예치비율*/
+              FROM PY_RTPSRT A
+                LEFT JOIN PY_RTBUSI B ON A.REAY_JOCD = B.REAY_JOCD
+             WHERE A.STDS_DATE = #STDS_DATE#
+               AND B.DBTU_YSNO = '1'    /*DB형사용여부*/
+    ]]>
+
+    </select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 8
+     내    용 : 퇴직연금예치금_가입기관 조회
+********************************************************************************/
+-->
+    <select id="PAYF0100.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYF0100.SEARCH02 퇴직연금예치금_가입기관 조회  */
+                REAY_JOCD
+              , BIZR_NAME
+              FROM PY_RTBUSI
+             WHERE ENFC_CODE = #ENFC_CODE#
+               AND DBTU_YSNO = '1'
+    ]]>
+
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 8
+     내    용 : 퇴직연금예치금 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYF0100.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_RTPSDB    /* PAYF0100.UPDATE00 퇴직연금예치금 테이블 수정 */
+           SET RTPD_AMOT = #RTPD_AMOT#   /*퇴직연금예치금액*/
+             , UPDT_USID = #UPDT_USID#   /*수정작업자*/
+             , UPDT_DATE = SYSDATE     /*수정일시*/
+         WHERE STDS_DATE = #STDS_DATE#   /*기준일*/
+           AND EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+           AND REAY_JOCD = #REAY_JOCD#   /*퇴직연금가입기관코드*/
+           AND ENFC_CODE = #ENFC_CODE#   /*사업장코드*/
+    ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 8
+     내    용 : 퇴직연금예치금 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYF0100.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+
+        UPDATE PY_RTPSRT    /* PAYF0100.UPDATE01 퇴직연금예치율 테이블 수정 */
+           SET DEPO_RATE = #DEPO_RATE#   /*예치비율*/
+             , UPDT_USID = #UPDT_USID#   /*수정작업자*/
+             , UPDT_DATE = SYSDATE       /*수정일시*/
+         WHERE STDS_DATE = #STDS_DATE#   /*기준일*/
+           AND REAY_JOCD = #REAY_JOCD#   /*퇴직연금가입기관코드*/
+
+    ]]>
+    </update>
+
+
+</sqlMap>

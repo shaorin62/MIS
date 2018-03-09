@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MCMA0010">
+
+<!--  
+ *   프로그램명 : 공통코드관리
+ *   작 성 일 : 2016.10.05(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 : 
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내      용  : 공통코드 마스터 조회
+		파라미터  : COMM_CODE : 코드, COMM_CDNM : 코드명, USEX_YSNO : 사용구분, GRUP_CODE : 그룹코드	
+	-->
+	<select id="MCMA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT   '0' CHEK_FILD
+					,COMM_CODE	 /*코드*/
+					,COMM_CDNM	/*코드명*/
+					,GRUP_CODE	/*그룹코드*/
+					,GRUP_NAME	/*그룹코드명*/
+					,MAJR_LEVL		/*대분류*/
+					,MIDD_LEVL		/*중분류*/
+					,SORT_ORDR	/*정렬순서*/
+					,USEX_YSNO	/*사용구분*/
+					,MEMO_FILD	/*비고*/
+					,KBNT_CODE	/*코바넷코드*/
+					,ACCT_NAME	/*계정명*/
+					,STAR_DATE	/*시작일*/
+					,ENDD_DATE	/*종료일*/
+					,REF1_FILD		/*여분1필드*/
+					,REF2_FILD		/*여분2필드*/
+					,REF3_FILD		/*여분3필드*/
+					,REF4_FILD		/*여분4필드*/
+					,REF5_FILD		/*여분5필드*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+		FROM MD_CODEXM		/* MCMA0010.SEARCH00 공통코드관리 조회 */
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="COMM_CODE">
+				COMM_CODE LIKE UPPER('%' || #COMM_CODE# || '%')	/* 코드 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="COMM_CDNM">
+				COMM_CDNM LIKE UPPER('%' || #COMM_CDNM# || '%')	/* 코드명 */
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="USEX_YSNO">
+				USEX_YSNO LIKE '%' || #USEX_YSNO# || '%'				/* 사용구분 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="GRUP_CODE">
+				GRUP_CODE LIKE '%' || #GRUP_CODE# || '%'				/* 그룹코드 */
+		</isNotEmpty>	
+	</dynamic>
+	<![CDATA[
+		 ORDER BY COMM_CODE
+		
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내      용  : 그룹코드명 조회
+		파라미터  : 	
+	-->
+	<select id="MCMA0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT   DISTINCT GRUP_CODE ||' : ' || GRUP_NAME GRUP_CDNM	/* 그룹코드 + 그룹명 */
+					,GRUP_CODE																/* 그룹코드 */
+					,GRUP_NAME																/* 그룹명 */
+		FROM MD_CODEXM																	/* MCMA0010.SEARCH01 그룹코드명 조회 */
+		ORDER BY GRUP_CODE
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내      용 : 공통코드 마스터 저장 처리
+	-->
+	<insert id="MCMA0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_CODEXM (	/* MCMA0010.SAVE00 공통코드관리 저장 */
+				     COMM_CODE	 /*코드*/
+					,COMM_CDNM	/*코드명*/
+					,GRUP_CODE	/*그룹코드*/
+					,GRUP_NAME	/*그룹코드명*/
+					,MAJR_LEVL		/*대분류*/
+					,MIDD_LEVL		/*중분류*/
+					,SORT_ORDR	/*정렬순서*/
+					,USEX_YSNO	/*사용구분*/
+					,MEMO_FILD	/*비고*/
+					,KBNT_CODE	/*코바넷코드*/
+					,ACCT_NAME	/*계정명*/
+					,STAR_DATE	/*시작일*/
+					,ENDD_DATE	/*종료일*/
+					,REF1_FILD		/*여분1필드*/
+					,REF2_FILD		/*여분2필드*/
+					,REF3_FILD		/*여분3필드*/
+					,REF4_FILD		/*여분4필드*/
+					,REF5_FILD		/*여분5필드*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+		) VALUES (
+					 #COMM_CODE#	 /*코드*/
+					,#COMM_CDNM#	/*코드명*/
+					,#GRUP_CODE#	/*그룹코드*/
+					,#GRUP_NAME#	/*그룹코드명*/
+					,#MAJR_LEVL#		/*대분류*/
+					,#MIDD_LEVL#		/*중분류*/
+					,#SORT_ORDR#	/*정렬순서*/
+					,#USEX_YSNO#	/*사용구분*/
+					,#MEMO_FILD#	/*비고*/
+					,#KBNT_CODE#	/*코바넷코드*/
+					,#ACCT_NAME#	/*계정명*/
+					,#STAR_DATE#	/*시작일*/
+					,#ENDD_DATE#	/*종료일*/
+					,#REF1_FILD#		/*여분1필드*/
+					,#REF2_FILD#		/*여분2필드*/
+					,#REF3_FILD#		/*여분3필드*/
+					,#REF4_FILD#		/*여분4필드*/
+					,#REF5_FILD#		/*여분5필드*/
+					,#INST_USID#		/*입력자*/
+					,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')			/*입력일*/
+					,#UPDT_USID#	/*수정자*/
+					,#UPDT_DATE#	/*수정일*/
+		)
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내      용 : 공통코드 마스터 수정 처리
+	-->
+	<update id="MCMA0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_CODEXM								/* MCMA0010.UPDATE00 공통코드관리 수정 */
+			SET    COMM_CDNM	= #COMM_CDNM#	/*코드명*/
+					,GRUP_CODE	= #GRUP_CODE#		/*그룹코드*/
+					,GRUP_NAME	= #GRUP_NAME#		/*그룹코드명*/
+					,MAJR_LEVL		= #MAJR_LEVL#		/*대분류*/
+					,MIDD_LEVL		= #MIDD_LEVL#		/*중분류*/
+					,SORT_ORDR	= #SORT_ORDR#		/*정렬순서*/
+					,USEX_YSNO	= #USEX_YSNO#		/*사용구분*/
+					,MEMO_FILD	= #MEMO_FILD#		/*비고*/
+					,KBNT_CODE	= #KBNT_CODE#		/*코바넷코드*/
+					,ACCT_NAME	= #ACCT_NAME#		/*계정명*/
+					,STAR_DATE	= #STAR_DATE#		/*시작일*/
+					,ENDD_DATE	= #ENDD_DATE#		/*종료일*/
+					,REF1_FILD		= #REF1_FILD#		/*여분1필드*/
+					,REF2_FILD		= #REF2_FILD#		/*여분2필드*/
+					,REF3_FILD		= #REF3_FILD#		/*여분3필드*/
+					,REF4_FILD		= #REF4_FILD#		/*여분4필드*/
+					,REF5_FILD		= #REF5_FILD#		/*여분5필드*/
+					,INST_USID		= #INST_USID#		/*입력자*/
+					,INST_DATE		= #INST_DATE#		/*입력일*/
+					,UPDT_USID	= #UPDT_USID#		/*수정자*/
+					,UPDT_DATE	= TO_CHAR(SYSDATE, 'YYYYMMDD')		/*수정일*/
+         WHERE COMM_CODE  = #COMM_CODE#		/*코드*/
+	]]>
+	</update>
+	
+
+	<!-- /* ****************************************************************************** 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내 용 : 신규코드 채번 
+		******************************************************************************* */ -->
+	<select id="MCMA0010.NEW_COMM_CODE" parameterClass="hashmap" resultClass="String">
+		<![CDATA[
+			SELECT /* MCMA0010.NEW_COMM_CODE 신규 코드 채번 */
+					SUBSTR(MAX(COMM_CODE),1,1) || LPAD(CAST(SUBSTR(MAX(COMM_CODE),2,4) AS NUMERIC)+1,3,'0') 	/* 신규코드 */
+			FROM  MD_CODEXM
+   		    WHERE GRUP_CODE = #GRUP_CODE# 	/* 그룹코드 */
+		]]>
+	</select>
+	
+	
+		
+	<!-- /* ****************************************************************************** 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.95(표준화 완료)
+		내 용 : 신규그룹코드 채번 
+		******************************************************************************* */ -->
+	<select id="MCMA0010.NEW_GRUP_CODE" parameterClass="hashmap" resultClass="String">
+		<![CDATA[
+			SELECT /* MCMA0010.NEW_GRUP_CODE 신규 그룹코드 채번 */
+					MAX(GRUP_CODE)		/* 신규 그룹코드 */
+			FROM MD_CODEXM
+		]]>
+	</select>
+	
+
+</sqlMap>

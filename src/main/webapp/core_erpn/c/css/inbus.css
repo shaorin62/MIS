@@ -1,0 +1,622 @@
+﻿/***** BASIC COMPONENT END *****/
+
+/*****************************************************************
+  2014.10.06 Inbus Class Ttyp 정의
+  김석두(KSD)
+*****************************************************************/  
+
+
+
+
+/************************************************
+  tree menu grid작업
+*************************************************/
+
+Grid.styGrid02
+{
+	align 			: left middle ;
+	background		: white ;
+	border 			: 0 none #dcdcdcff, 1 solid #dcdcdcff, 1 solid #dcdcdcff, 1 solid #dcdcdcff ;
+	color			: #3d3d3dff ;
+	font 			: 9 dotum ;
+	line 			: 0 none #c8d0deff ;
+	padding 		: 3 3 3 3 ;
+	treeclosebuttonimage	: URL('theme://imagesInbus/ico_treeclose.png');
+	treecollapseimage	: URL('theme://imagesInbus/ico_treecollapse.png');
+	treeexpandimage		: URL('theme://imagesInbus/ico_treeexpand.png');
+	treeitemimage		: URL('theme://imagesInbus/ico_treeitem.png');
+	treelinetype		: 1 dotted #a5b6b6ff;
+	treeopenbuttonimage	: URL('theme://imagesInbus/ico_treeopen.png');
+
+}Grid.styGrid02>#head
+{
+	background 		: transparent ;
+	border 			: 0 none #808080 ;
+	cellbackground 		: @gradation ;
+	cellbackground2 	: @gradation ;
+	cellcolor 		: black ;	
+	cellcolor2 		: black ;	
+	cellfont 		: bold 9 dotum ;	
+	cellline 		: 1 solid #b7b7b7ff ;	
+	celllinetype 		: exvert ;	
+	cellpadding 		: 0 3 0 3 ;	
+	selectcolor 		: midnightblue ;	
+	selectfont 		: bold 9 dotum ;	
+	cellalign 		: center middle ;	
+	cellgradation 		: linear 0,0 #eaeaeaff 0,100 #fdfdfdff ;	
+}
+Grid.styGrid02>#body
+{
+	background 		: white ;	
+	border 			: 0 none #808080  ;	
+	cellalign 		: center middle ;	
+	cellbackground 		: white ;
+	cellbackground2 	: white 0ff 0ff ;	
+	cellcolor 		: #424b5cff ;	
+	cellfont 		: 9 dotum ;	
+	cellline 		: 1 solid #c8d0deff ;	
+	celllinetype 		: exvert ;	
+	cellpadding 		: 1 3 1 3 ;
+	selectbackground 	: #eff5ffff 0fb 0fb ;	
+	selectcolor 		: dodgerblue ;	
+	selectfont 		: bold 9 dotum ;	
+	selectline 		: 0 none #c8d0deff ;
+	selectlinetype 		: exvert ;
+	cellcolor2 		: #424b5cff ;	
+}
+Grid.styGrid02>#body:mouseover
+{
+	border 			: 0 none #808080  ;
+	cellbackground 		: white ;	
+	cellbackground2 	: #eff5ffff 0ff ;	
+	cellcolor 		: #424b5cff ;	
+	cellcolor2 		: #424b5cff ;
+	selectline 		: 1 solid #c8d0deff ;	
+}
+Grid.styGrid02>#summ
+{
+	background 		: white ;	
+	border 			: 0 none #808080  ;	
+	cellbackground 		: #ffef99ff  ;	
+	cellbackground2 	: #ffef99ff ;
+	cellcolor 		: #424b5cff ;
+	cellcolor2 		: #424b5cff ;
+	cellline 		: 1 solid #808080ff ;		
+}
+Grid.styGrid02>#summary
+{
+	background 		: white ;	
+	border 			: 0 none #808080  ;	
+	cellbackground 		: #ffef99ff  ;	
+	cellbackground2 	: #ffef99ff ;
+	cellcolor 		: #424b5cff ;
+	cellcolor2 		: #424b5cff ;
+	cellline 		: 1 solid #808080ff ;	
+}
+Grid.styGrid02>#resizebutton
+{
+	background		: #ffffffff;
+	border			: 1 solid #c8d0deff, 0 none, 0 none, 1 solid #c8d0deff;
+	bordertype		: normal 0 0;
+	color 			: #424b5cff ;		
+}
+Grid.styGrid02>#hscrollbar
+{
+	
+}
+Grid.styGrid02>#vscrollbar
+{
+	
+}
+
+
+
+
+Div.styMenuTabControl
+{
+	background		: URL('theme://imagesInbus/btnAddRow_N.png') ;
+}
+
+
+
+
+
+
+Tab.styMenuTabControl
+{
+	background		: #ffffff00;
+	bordertype		: round 0 0;
+	buttonbackground	: URL('theme://images/btn_BT_Mdi.png') stretch 10,10 ;
+	buttonborder		: 0 none;
+	buttonbordertype	: ;
+	buttonpadding		: 5 20 2 10;
+	color 			: #9b9b9b;
+	font 			: 9 Dotum;
+	showextrabutton		: true;
+	cursor 			: Pointer ;
+}Tab.styMenuTabControl:disabled
+{
+
+}Tab.styMenuTabControl:focused
+{
+	buttonbackground	: @gradation;
+	
+	buttonborder		: 1 solid #C4C9CFff;
+
+	color 			: #ffffffff;
+	font 			: bold 9 Dotum;
+	buttongradation 	: linear 0,0 #60afdeff 0,100 #0077beff ;
+}
+
+
+Tab.styMenuTabControl:mouseover
+{
+	buttonbackground	: @gradation;
+	
+	buttonborder		: 1 solid #C4C9CFff;
+	
+	color 			: #C33A3Fff;
+	font 			: 9 Dotum;
+	buttongradation 	: linear 0,0 #dcdcdcff 0,100 #ffffffff ;
+
+}Tab.styMenuTabControl:selected
+{
+	buttonbackground	: #ffffffff;
+	
+	buttonborder		: 1 solid #C4C9CFff;
+	
+	color 			: #b72025ff;
+	font 			: bold 9 Dotum;
+}ScrollBar.styCommScrollBar
+{
+	background		: #f9fafcff ;
+	barminsize		: 40 ;
+	baroutsize		: ;
+	border			: 0 none ;
+	bordertype		: normal ;
+	color			: ;
+	cursor			: ;
+	decbtnsize		: 15 ;
+	font			: ;
+	gradation		: ;
+	imgoutsize		: ;
+	incbtnsize		: 15 ;
+	opacity			: ;
+	padding			: ;
+	scrollbarsize		: 15 ;
+	shadow			: ;
+	trackbarsize		: ;
+}
+
+ScrollBar.styCommScrollBar:disabled
+{
+	background	: #f9fafcff ;
+}
+
+ScrollBar.styCommScrollBar:mouseover
+{
+	background	: #f9fafcff ;
+}
+
+ScrollBar.styCommScrollBar:pushed
+{
+	background	: #f9fafcff ;
+}
+
+
+
+
+
+/******************* 추후 삭제해야 할 목록들************************/
+Button.styCommBtnAddRow
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnAddRow_N.png') ;
+
+}
+
+Button.styCommBtnAddRow:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnAddRow_D.png') ;
+}
+
+Button.styCommBtnAddRow:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnAddRow_O.png') ;
+}
+
+
+
+Button.styCommBtnAddRow:pushed
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnAddRow_P.png') ;
+}
+
+Button.styCommBtnAddRow:focused
+{
+	background		: #ffffff00 ;
+	border			: 1 dotted #0259e9ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnAddRow_O.png') ;
+}
+
+Button.styCommBtnDeleteRow
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnDeleteRow_N.png') ;
+}
+
+Button.styCommBtnDeleteRow:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnDeleteRow_D.png') ;
+}
+
+Button.styCommBtnDeleteRow:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnDeleteRow_O.png') ;
+}
+
+
+
+Button.styCommBtnDeleteRow:pushed
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnDeleteRow_P.png') ;
+}
+
+Button.styCommBtnDeleteRow:focused
+{
+	background		: #ffffff00 ;
+	border			: 1 dotted #0259e9ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnDeleteRow_O.png') ;
+}
+
+
+
+
+Button.styCommBtnXlsFormDown
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnXlsFormDown_N.png') ;
+}
+
+Button.styCommBtnXlsFormDown:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnXlsFormDown_D.png') ;
+}
+
+Button.styCommBtnXlsFormDown:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnXlsFormDown_O.png') ;
+}
+
+Button.styCommBtnXlsFormDown:pushed
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnXlsFormDown_P.png') ;
+}
+
+
+Button.styCommBtnXlsFormDown:focused
+{
+	background		: #ffffff00 ;
+	border			: 1 dotted #0259e9ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnXlsFormDown_O.png') ;
+}
+
+
+
+
+Button.styCommBtnExcelUpload
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnExcelUpload_N.png') ;
+}
+
+Button.styCommBtnExcelUpload:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnExcelUpload_D.png') ;
+}
+
+Button.styCommBtnExcelUpload:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnExcelUpload_O.png') ;
+}
+
+Button.styCommBtnExcelUpload:pushed
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnExcelUpload_P.png') ;
+}
+
+
+Button.styCommBtnExcelUpload:focused
+{
+	background		: #ffffff00 ;
+	border			: 1 dotted #0259e9ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnExcelUpload_O.png') ;
+}
+
+Button.styCommBtnInsertRow
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/BtnInsertRow_N.png') ;
+}
+
+Button.styCommBtnInsertRow:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/BtnInsertRow_D.png') ;
+}
+
+Button.styCommBtnInsertRow:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/BtnInsertRow_O.png') ;
+}
+
+Button.styCommBtnInsertRow:pushed
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/BtnInsertRow_P.png') ;
+}
+
+
+Button.styCommBtnInsertRow:focused
+{
+	background		: #ffffff00 ;
+	border			: 1 dotted #0259e9ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/BtnInsertRow_O.png') ;
+}
+/******************* 추후 삭제해야 할 목록들(인버스소스들) end ************************/
+
+
+
+Static.styLeftTreeMenu
+{
+	background : URL('theme://imagesInbus/imgLeftbg_middle.png') repeat-y 2,2 ;
+	border	: 0 none ;
+}
+
+Static.styImgEVMGB
+{
+	background : URL('theme://imagesInbus/imgEVMGB.png') stretch 10,10 ;
+	border	: 0 none ;
+
+}
+
+
+Button.styCommBtnLogin
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnlogin_N.png') ;
+}
+
+Button.styCommBtnLogin:disabled
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnlogin_N.png') ;
+}
+
+Button.styCommBtnLogin:mouseover
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnlogin_O.png') ;
+}
+
+Button.styCommBtnLogin:selected
+{
+	background		: #ffffff00 ;
+	border			: 0 none ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnlogin_P.png') ;
+}
+
+Button.styCommBtnLogin:focused
+{
+	background		: #ffffff00 ;
+	border 			: 1 solid #db0000ff ;
+	bordertype 		: normal 0 0  ;	
+	cursor			: point ;
+	image 			: URL('theme://imagesInbus/btnlogin_P.png') ;
+}
+
+
+Tab.styTopMenuTabControl
+{
+	accessibility 		: enable all '' '' '' ;
+	background		: transparent ;
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonbackground : URL('theme://imagesNex/topframe/top_btn_bg_blank.gif') stretch ;
+	
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	buttonpadding		: 5 10 5 10 ;
+	color	: #565656ff ;
+	cursor	: pointer ;
+	font : bold 11 돋움 ;
+	gradation	: none 0,0 white 100,100 black ;
+	showextrabutton : false ;
+	
+	
+}Tab.styTopMenuTabControl:enabled
+{
+	buttonbackground 	: #transparent URL('theme://imagesNex/topframe/top_btn_bg_blank.gif') stretch ;
+	color 			: #565656ff;
+	buttonpadding : 5 10 5 10 ;
+	
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	gradation		: none 0,0 white 100,100 black ;
+}
+
+Tab.styTopMenuTabControl:disabled
+{
+
+	buttonbackground 	: #transparent URL('theme://imagesNex/topframe/top_btn_bg_blank.gif') stretch ;
+	color 			: #B6B6B6ff;
+	buttonpadding : 5 10 5 10 ;
+	
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	gradation		: none 0,0 white 100,100 black ;
+
+}
+
+Tab.styTopMenuTabControl:focused
+{
+	buttonbackground 	: #transparent URL('theme://imagesNex/topframe/top_btn_bg_add_bottom_margin.gif') stretch 10,10 ;
+	color 			: #B6B6B6ff;
+	buttonpadding : 5 10 5 10 ;
+	
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	gradation	: none 0,0 white 100,100 black ;
+}
+
+Tab.styTopMenuTabControl:mouseover
+{
+	buttonbackground 	: #transparent URL('theme://imagesNex/topframe/top_btn_bg_add_bottom_margin.gif') stretch 10,10 ;
+	color 			: #B6B6B6ff;
+	buttonpadding : 5 10 5 10 ;
+	
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	gradation	: none 0,0 white 100,100 black ;
+}
+
+Tab.styTopMenuTabControl:selected
+{
+	buttonbackground 	: #transparent URL('theme://imagesNex/topframe/top_btn_bg_add_bottom_margin.gif') stretch 10,10 ;
+	color 			: #D12222ff;
+	buttonpadding : 5 10 5 10 ;
+	
+	border 			: 0 none #808080ff ;
+	bordertype		: normal 0 0 ;
+	buttonborder 		: 0 none #808080ff ;
+	buttonbordertype	: normal 0 0 ;
+	buttongradation		: none 0,0 white 100,100 black ;
+	gradation	: none 0,0 white 100,100 black ;
+}
+
+Tab.styMenuTabControl>#extrabutton
+{
+	background		: #ffffff00;
+	image			: theme://imagesInbus/tab_extra.png;
+	imagealign		: center middle;
+	padding			: 2 0 0 0;
+	border 			: 0 none #808080  ;
+	cursor 			: Pointer ;
+}
+
+Tab.styMenuTabControl>#extrabutton:mouseover
+{
+	background		: #ffffff00;
+	image			: theme://imagesInbus/tab_extra.png;
+	imagealign		: center middle;
+	padding			: 2 0 0 0;
+	border 			: 0 none #808080  ;	
+	cursor 			: Pointer ;		
+}

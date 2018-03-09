@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MCMA0080">
+
+<!--  
+ *   프로그램명 : 인쇄사이즈관리
+ *   작 성 일 : 2016.10.07(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+ 
+ 
+ 
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.07(표준화 완료)
+		내      용  : 인쇄사이즈관리 조회
+		파라미터  : CUST_CODE : 광고주코드 , MNDY_FLAG : 월간일간 구분
+	-->
+	<select id="MCMA0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	 /*  MCMA0080.SEARCH00 인쇄사이즈관리 조회  */ 
+					DECODE(A.UPDT_DATE,NULL,'0',A.UPDT_DATE) ARRAY /*입력한 데이터가 제일 위로 올라가도록 정렬기준*/
+					,'0' CHEK_FILD		/* 체크박스 */
+					,A.SEQX_FILD		/* 순번 */
+					,A.MNDY_FLAG		/* 월간일간구분 */
+					,A.CUST_CODE		/* 매체코드 */
+					,B.CUST_NAME		/* 매체명 */
+					,A.STAD_STEP		/* 규격_단 */
+					,A.STAD_MEDM	/* 규격_통 */
+					,A.STAD_SIZE		/* 규격_사이즈 */
+					,A.REF1_FILD		/* 여분1 */
+					,A.REF2_FILD		/* 여분2 */
+					,A.REF3_FILD		/* 여분3 */
+					,A.REF4_FILD		/* 여분4 */
+					,A.REF5_FILD		/* 여분5 */
+					,A.INST_USID		/* 등록자 */
+					,A.INST_DATE		/* 등록일 */
+					,A.UPDT_USID		/* 수정자 */
+					,A.UPDT_DATE		/* 수정일 */
+		FROM MD_NPAPXM A
+		LEFT JOIN MD_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'		/* 광고주코드 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="MNDY_FLAG">
+				A.MNDY_FLAG LIKE '%' || #MNDY_FLAG# || '%'		/* 월간일간구분 */
+		</isNotEmpty>		
+	</dynamic>
+	<![CDATA[
+		 ORDER BY ARRAY DESC
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.07(표준화 완료)
+		내      용 : 인쇄사이즈관리 저장 처리
+	-->
+	<insert id="MCMA0080.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_NPAPXM (	 /*  MCMA0080.SAVE00 인쇄사이즈관리 저장  */
+				     SEQX_FILD	 /*순번*/
+					,MNDY_FLAG	/*월간일간구분*/
+					,CUST_CODE	/*매체코드*/
+					,STAD_STEP	/*규격_단*/
+					,STAD_MEDM	/*규격_통*/
+					,STAD_SIZE		/*규격_사이즈*/
+					,REF1_FILD		/*여분1*/
+					,REF2_FILD		/*여분2*/
+					,REF3_FILD		/*여분3*/
+					,REF4_FILD		/*여분4*/
+					,REF5_FILD		/*여분5*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+		) VALUES (
+					 #SEQX_FILD#	 	/*순번*/
+					,#MNDY_FLAG#	/*월간일간구분*/
+					,#CUST_CODE#	/*매체코드*/
+					,#STAD_STEP#	/*규격_단*/
+					,#STAD_MEDM#	/*규격_통*/
+					,#STAD_SIZE#		/*규격_사이즈*/
+					,#REF1_FILD#		/*여분1*/
+					,#REF2_FILD#		/*여분2*/
+					,#REF3_FILD#		/*여분3*/
+					,#REF4_FILD#		/*여분4*/
+					,#REF5_FILD#		/*여분5*/
+					,#INST_USID#		/*입력자*/
+					,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')			/*입력일*/
+					,#UPDT_USID#	/*수정자*/
+					,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')	/*수정일*/
+		)
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.07(표준화 완료)
+		내      용 : 인쇄사이즈관리 수정 처리
+	-->
+	<update id="MCMA0080.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_NPAPXM			 /*  MCMA0080.UPDATE00 인쇄사이즈관리 수정  */
+			SET    MNDY_FLAG	= #MNDY_FLAG#		/*월간일간구분*/
+					,CUST_CODE	= #CUST_CODE#		/*매체코드*/
+					,STAD_STEP	= #STAD_STEP#		/*규격_단*/
+					,STAD_MEDM	= #STAD_MEDM#		/*규격_통*/
+					,STAD_SIZE		= #STAD_SIZE#		/*규격_사이즈*/
+					,REF1_FILD		= #REF1_FILD#		/*여분1*/
+					,REF2_FILD		= #REF2_FILD#		/*여분2*/
+					,REF3_FILD		= #REF3_FILD#		/*여분3*/
+					,REF4_FILD		= #REF4_FILD#		/*여분4*/
+					,REF5_FILD		= #REF5_FILD#		/*여분5*/
+					,UPDT_USID	= #UPDT_USID#		/*수정자*/
+					,UPDT_DATE	= TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')		/*수정일*/
+         WHERE SEQX_FILD  = #SEQX_FILD#		/*순번*/
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.07(표준화 완료)
+		내      용 : 인쇄사이즈관리 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MCMA0080.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_NPAPXM		 /*  MCMA0080.DELETE00 인쇄사이즈관리 삭제  */
+			WHERE SEQX_FILD = #SEQX_FILD#		/* 순번 */
+	]]>
+	</delete>
+
+	<!-- /* ****************************************************************************** 
+		작 성 자 : 최제현 
+		작 성 일 : 2016. 09.06(표준화 완료)
+		내 용 : 거래처코드 채번 
+		******************************************************************************* */ -->
+	<select id="MCMA0080.NEW_SEQX_FILD" parameterClass="hashmap" resultClass="String">
+		<![CDATA[
+			SELECT /* MCMA0080.NEW_SEQX_FILD 신규 순번 채번 */
+					MAX(CAST(SEQX_FILD AS INTEGER) +1)	/* 신규순번 */
+			FROM  MD_NPAPXM
+		]]>
+	</select>
+	
+
+</sqlMap>

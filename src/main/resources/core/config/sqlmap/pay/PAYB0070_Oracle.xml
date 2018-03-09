@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0070">
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 국민연금납부 테이블 조회
+********************************************************************************/
+-->
+	<select id="PAYB0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* PAYB0070.SEARCH00.국민연금납부 테이블 조회 */ 
+		       '0' AS CHK
+		     , SF_DECRYPT(RERN_NUMB) AS RERN_NUMB
+		     , EMPL_NUMB
+		     , EMPL_NAME
+		     , SUM(PAYX_MOAT) AS PAYX_MOAT
+		     , ISTY_CODE
+		     , SUM(NOTC_AMOT) AS NOTC_AMOT   /*국민연금*/
+		     , SUM(PMNT_AMOT) AS PMNT_AMOT   /*국민연금공단납부금액*/
+		     , NVL(SUM(NOTC_AMOT), 0) - NVL(SUM(PMNT_AMOT), 0) AS AMT1  /*차액*/
+		     , STDS_YMTH 
+		     , SF_GET_COMMNAME('CLSD_CODE',CLSD_CODE) AS CLSD_NAME
+		  FROM (
+		    SELECT  A.STDS_YMTH   /*기준년월*/
+		           ,B.RERN_NUMB   /*주민등록번호*/
+		           ,A.PAYX_MOAT   /*보수월액*/
+		           ,A.ISTY_CODE
+		           ,A.NOTC_AMOT   /*국민연금*/
+		           ,0 AS PMNT_AMOT   /*국민연금공단납부금액*/
+		           ,A.EMPL_NUMB
+		           ,B.EMPL_NAME  
+		           ,B.CLSD_CODE
+		      FROM PY_NPSXDE A
+		        INNER JOIN HR_MASTXM B
+		          ON A.EMPL_NUMB = B.EMPL_NUMB
+		        INNER JOIN PY_MASTPM C
+		          ON B.EMPL_NUMB = C.EMPL_NUMB 
+		     WHERE A.STDS_YMTH = #STDS_YMTH#
+	]]>
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">			     
+			           A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="ISTY_CODE">			     
+			           A.ISTY_CODE = #ISTY_CODE#
+	</isNotEmpty>
+	<![CDATA[		
+		    UNION ALL
+		        SELECT  A.WAGE_YMTH AS STDS_YMTH
+		           ,B.RERN_NUMB
+		           ,0 AS PAYX_MOAT
+		           ,CAST(CASE WHEN A.EXPD_CODE = 'D0304' THEN '01' WHEN A.EXPD_CODE = 'D1053' THEN '02' WHEN A.EXPD_CODE = 'D1056' THEN '03' END AS NVARCHAR2(6))
+		           ,0 AS NOTC_AMOT
+		           ,A.EXPD_AMOT AS PMNT_AMOT
+		           ,A.EMPL_NUMB
+		           ,B.EMPL_NAME
+		           ,B.CLSD_CODE
+		      FROM PY_PMDETL A
+		        INNER JOIN HR_MASTXM B
+		          ON A.EMPL_NUMB = B.EMPL_NUMB
+		        INNER JOIN PY_MASTPM C
+		          ON B.EMPL_NUMB = C.EMPL_NUMB
+		     WHERE A.WAGE_YMTH = #STDS_YMTH# 
+		       AND A.EXPD_AMOT <> 0
+	]]>			     
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">			     
+		           A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="ISTY_CODE">			     
+		           CASE WHEN A.EXPD_CODE = 'D0304' THEN '01' WHEN A.EXPD_CODE = 'D1053' THEN '02' WHEN A.EXPD_CODE = 'D1056' THEN '03' END = #ISTY_CODE#
+	</isNotEmpty>
+			       AND A.EXPD_CODE IN ('D0304','D1053','D1056')
+			  ) Z
+	<dynamic prepend="WHERE">
+  	<isNotEmpty prepend="AND" property="CLSD_CODE">			     
+			       Z.CLSD_CODE IN (SELECT COLUMN_VALUE FROM TABLE(SPLIT(#CLSD_CODE#, ',')))
+	</isNotEmpty>
+	</dynamic>
+			 GROUP BY STDS_YMTH, RERN_NUMB, EMPL_NUMB, EMPL_NAME, ISTY_CODE, CLSD_CODE
+			 ORDER BY EMPL_NAME
+	
+	</select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 황치웅
+     작 성 일 : 2016.11.25
+     내     용 : 국민연금공제적용 주민등록번호 조회
+********************************************************************************/
+-->
+	<select id="PAYB0070.SEARCH99" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* PAYB0070.SEARCH99.국민연금공제적용 주민등록번호 조회  */
+			   A.RERN_NUMB                 /* 주민등록번호 */
+             , A.EMPL_NUMB 	               /* 사원번호 */
+             , A.EMPL_NAME                 /* 사원명 */
+          FROM HR_MASTXM A		           /* [인사기본정보] */
+         WHERE A.RERN_NUMB = #RERN_NUMB#
+           AND SUBSTR(A.ENCO_DATE, 1,6 ) <= #STDS_YMTH# 
+           AND NVL(SUBSTR(A.RETR_DATE, 1,6 ), '999912') >= #STDS_YMTH#
+	]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 국민연금납부 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYB0070.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE 
+        	/* PAYB0070.SAVE00.급여마감여부*/
+			v_WADE_YSNO INTEGER;
+			v_ROWCNT  INT;
+		BEGIN
+			/*급여마감여부체크*/
+        	SELECT COUNT(*)
+        	  INTO v_WADE_YSNO 
+	          FROM PY_PMDIRY A
+			  INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+	           AND A.WAGE_YMTH >= #STDS_YMTH#
+	           AND B.WAGP_CODE = '1000'
+	        ;
+	          
+	        /*마감되었다면 수정불가*/
+	        IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','국민연금공제정보,저장')); 
+	        END IF;
+
+        
+		SELECT COUNT(*) INTO v_ROWCNT
+		  FROM PY_NPSXDE
+		 WHERE STDS_YMTH = #STDS_YMTH#
+		   AND EMPL_NUMB = #EMPL_NUMB#
+		   AND ISTY_CODE = #ISTY_CODE#
+			;
+
+		IF v_ROWCNT > 0 THEN
+	
+				UPDATE PY_NPSXDE
+				   SET PAYX_MOAT = #PAYX_MOAT#	/* 보수월액 */
+					 , NOTC_AMOT = #NOTC_AMOT#	/* 국민연금고지금액 */
+				 	 , UPDT_USID = #UPDT_USID#	/* 수정작업자 */
+					 , UPDT_DATE = SYSDATE		/* 수정일시 */
+				 WHERE STDS_YMTH = #STDS_YMTH#	/* 기준년월 */
+				   AND EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+						;
+		ELSE
+  	 
+			   INSERT INTO PY_NPSXDE (
+					      STDS_YMTH	/* 기준년월 */
+					    , EMPL_NUMB	/* 사원번호 */
+					    , PAYX_MOAT	/* 보수월액 */
+						, ISTY_CODE	/* 보험구분코드 */
+					    , NOTC_AMOT	/* 국민연금고지금액 */
+					    , INST_USID	/* 입력작업자 */
+					    , INST_DATE	/* 입력일시 */
+					    , UPDT_USID	/* 수정작업자 */
+					    , UPDT_DATE	/* 수정일시 */
+				) VALUES (
+					      #STDS_YMTH#	/* 기준년월 */
+					    , #EMPL_NUMB#	/* 사원번호 */
+					    , #PAYX_MOAT#	/* 보수월액 */
+						, #ISTY_CODE#	/* 보험구분코드 */
+					    , #NOTC_AMOT#	/* 국민연금고지금액 */
+					    , #UPDT_USID#	/* 입력작업자 */
+					    , SYSDATE		/* 입력일시 */
+					    , #UPDT_USID#	/* 수정작업자 */
+					    , SYSDATE		/* 수정일시 */
+				);
+		END IF;
+
+	END;	
+		
+	]]>
+	</insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 국민연금납부 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYB0070.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+		/* PAYB0070.SAVE01.급여마감여부*/
+		DECLARE	
+			v_ROWCNT INTEGER; 		
+        	v_WADE_YSNO INTEGER;
+		
+		BEGIN
+			/*급여마감여부체크*/
+        	SELECT COUNT(*)
+        	  INTO v_WADE_YSNO 
+	          FROM PY_PMDIRY A
+			  INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+	           AND A.WAGE_YMTH >= #STDS_YMT2#
+	           AND B.WAGP_CODE = '1000'
+	        ;
+	          
+	        /*마감되었다면 수정불가*/
+	        IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','국민연금공제정보,저장')); 
+	        END IF;
+			
+			DELETE FROM PY_NPSXDE
+			WHERE STDS_YMTH = #STDS_YMT2#
+			AND ISTY_CODE = '03'
+			;
+ 
+			INSERT INTO PY_NPSXDE (
+				 STDS_YMTH   /*기준년월*/
+				,EMPL_NUMB   /*사원번호*/
+				,PAYX_MOAT   /*보수월액*/
+				,ISTY_CODE   /*보험구분코드*/
+				,NOTC_AMOT   /*국민연금고지금액*/
+				,PMNT_AMOT   /*국민연금납부금액*/
+				,INST_USID   /*입력작업자*/
+				,INST_DATE   /*입력일시*/
+				,UPDT_USID   /*수정작업자*/
+				,UPDT_DATE   /*수정일시*/
+			)
+			SELECT  #STDS_YMT2#   /*기준년월*/
+				,	EMPL_NUMB
+				,	SUM(PAYX_MOAT) AS PAYX_MOAT
+				,	'03'
+				,	NVL(SUM(NOTC_AMOT), 0) - NVL(SUM(PMNT_AMOT), 0) AS NOTC_AMOT   /*국민연금*/
+				,	0
+				,	#UPDT_USID#   /*입력작업자*/
+				,	SYSDATE       /*입력일시*/
+				,	#UPDT_USID#   /*수정작업자*/
+				,	SYSDATE       /*수정일시*/
+			FROM (
+				SELECT  A.PAYX_MOAT   	/*보수월액*/
+					,	A.NOTC_AMOT   	/*국민연금*/
+					,	0 AS PMNT_AMOT  /*국민연금공단납부금액*/
+					,	A.EMPL_NUMB
+				FROM PY_NPSXDE A
+				INNER JOIN HR_MASTXM B
+					ON A.EMPL_NUMB = B.EMPL_NUMB
+				INNER JOIN PY_MASTPM C
+					ON B.EMPL_NUMB = C.EMPL_NUMB 
+				WHERE A.STDS_YMTH = #STDS_YMT1#
+				UNION ALL
+				SELECT  0 AS PAYX_MOAT
+					,	0 AS NOTC_AMOT
+					,	A.EXPD_AMOT AS PMNT_AMOT
+					,	A.EMPL_NUMB
+				FROM PY_PMDETL A
+				INNER JOIN HR_MASTXM B
+					ON A.EMPL_NUMB = B.EMPL_NUMB
+				INNER JOIN PY_MASTPM C
+					ON B.EMPL_NUMB = C.EMPL_NUMB
+				WHERE A.WAGE_YMTH = #STDS_YMT1# 
+				AND A.EXPD_CODE IN ('D0304','D1056')
+			) Z
+			GROUP BY EMPL_NUMB
+			HAVING NVL(SUM(NOTC_AMOT), 0) - NVL(SUM(PMNT_AMOT), 0) > 0
+			;
+		END;
+         
+	]]>
+	
+	</insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 국민연금납부 테이블 삭제
+********************************************************************************/
+-->
+	<delete id="PAYB0070.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE 
+		/* PAYB0070.DELETE00.급여마감여부*/
+			v_WADE_YSNO INTEGER;
+		
+		BEGIN
+			/*급여마감여부체크*/
+        	SELECT COUNT(*)
+        	  INTO v_WADE_YSNO 
+	          FROM PY_PMDIRY A
+			  INNER JOIN PY_PAYCOD B
+			    ON A.WAGE_CODE = B.WAGE_CODE
+			 WHERE A.WADE_YSNO = '1'
+	           AND A.WAGE_YMTH = #STDS_YMTH#
+	           AND B.WAGP_CODE = '1000'
+	        ;
+	          
+	        /*마감되었다면 수정불가*/
+	        IF v_WADE_YSNO > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','국민연금공제정보,삭제')); 
+	        END IF;
+			         
+			DELETE FROM PY_NPSXDE
+			WHERE STDS_YMTH = #STDS_YMTH#	/* 기준년월 */
+			AND EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+			;
+		END;
+		
+	]]>
+	</delete>
+
+</sqlMap>

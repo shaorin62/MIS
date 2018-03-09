@@ -1,0 +1,1195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="HRMB0020" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="개인신상변경요청" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="Shape0" taborder="95" cssclass="styFormItemBoxOut" left="8" top="128" height="91" right="25"/>
+        <Static id="Shape02" taborder="287" cssclass="styFormItemBoxOut" left="8" top="244" right="25" height="117"/>
+        <Static id="st_FormTitle" text="개인신상변경요청" position="absolute" style="align:left;" left="8" top="0" height="29" cssclass="styFormTitle" right="8" taborder="52"/>
+        <Static id="st_FormLocation" text="인사관리&gt;인사관리&gt;개인신상변경요청" position="absolute" style="align:right middle;" width="555" top="0" height="29" cssclass="styFormLocation" right="25" taborder="53"/>
+        <Div id="div_ButtonList" taborder="1" text="" url="common::comButtonType01.xfdl" position="absolute" scrollbars="none" width="563" top="33" height="23" right="25"/>
+        <Static id="spSearchBox" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="54"/>
+        <Static id="stInformation" taborder="58" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="8" top="375" width="192" height="21" usedecorate="true"/>
+        <Grid id="grdHR_MASTRQ" cssclass="styGrid01" taborder="59" tabstop="false" binddataset="dsHR_MASTRQ" wheelscrollrow="1" autoenter="select" useinputpanel="false" cellsizingtype="row" left="8" bottom="15" top="396" right="429" readonly="true">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="97"/>
+                <Column size="108"/>
+                <Column size="249"/>
+                <Column size="93"/>
+                <Column size="204"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="신청일"/>
+                <Cell col="1" text="승인구분"/>
+                <Cell col="2" text="신청내용"/>
+                <Cell col="3" text="승인일"/>
+                <Cell col="4" text="반려사유"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="date" edittype="none" style="align:center;background: ;" text="bind:CHRQ_DATE" editlimit="8" calendardisplaynulltype="none"/>
+                <Cell col="1" displaytype="combo" edittype="none" text="bind:CHRC_CODE"/>
+                <Cell col="2" displaytype="text" edittype="none" style="align:left;" text="bind:REMK_100X" editimemode="hangul"/>
+                <Cell col="3" displaytype="date" edittype="none" text="bind:RCGN_DATE" calendardisplaynulltype="none"/>
+                <Cell col="4" displaytype="text" edittype="none" style="align:left;" text="bind:RJCT_PROW"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="imgSearchTitle3" taborder="60" text="사원" cssclass="styFormSearchCapBe" left="28" top="71" width="57" height="21" style="align:left;"/>
+        <Edit id="edtSHREMPL_NUMB" taborder="22" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="edt_WF_Readonly" enable="true" left="70" top="71" width="68" height="21" readonly="true" tabstop="false" style="align:center;"/>
+        <Static id="imgHelpSHREMPL_NUMB" taborder="23" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="140" top="71" width="22" height="21" style="align:top;"/>
+        <Edit id="edtSHREMPL_NAME" taborder="0" imemode="hangul" lengthunit="ascii" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="163" top="71" width="92" height="21" onchar="edtSHREMPL_NAME_onchar"/>
+        <Static id="Static120" taborder="62" text="성명" onclick="Static120_onclick" cssclass="styFormItemCapBE" left="1193" width="55" height="25" top="143" visible="false"/>
+        <Static id="Static99" taborder="63" text="장애구분" cssclass="styFormItemCap" left="28" width="103" height="25" top="137"/>
+        <Edit id="edtEMPL_NAME_M" taborder="24" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="1235" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTXM" top="145" readonly="true" visible="false"/>
+        <Static id="Static10" taborder="100" text="성명(영문)" onclick="Static120_onclick" cssclass="styFormItemCap" left="1392" width="103" height="25" top="143" visible="false"/>
+        <Static id="Static11" taborder="101" text="장애등급" cssclass="styFormItemCap" left="294" width="103" height="25" top="137"/>
+        <Static id="Static12" taborder="102" text="중증여부" cssclass="styFormItemCap" left="294" width="103" height="25" top="163"/>
+        <Edit id="edtENEE_NAME_M" taborder="25" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="1473" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTXM" top="145" readonly="true" visible="false"/>
+        <Static id="Static13" taborder="106" text="성명(한자)" onclick="Static120_onclick" cssclass="styFormItemCap" left="1648" width="103" height="25" top="143" visible="false"/>
+        <Static id="Static14" taborder="107" text="장애유형" cssclass="styFormItemCap" left="544" width="103" top="137" height="25"/>
+        <Static id="Static15" taborder="108" text="보훈구분" cssclass="styFormItemCap" left="544" width="103" height="25" top="163"/>
+        <Edit id="edtCCEM_NAME_M" taborder="27" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="1729" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTXM" top="145" readonly="true" visible="false"/>
+        <Static id="Static19" taborder="118" text="주민등록번호" onclick="Static120_onclick" cssclass="styFormItemCap" left="1904" height="25" width="103" top="143" visible="false"/>
+        <Static id="Static20" taborder="119" text="장애인정시기" cssclass="styFormItemCap" left="781" width="103" top="137" height="25"/>
+        <Static id="stGROP_LIST" taborder="213" text="현장애보훈" left="8" height="21" top="107" width="113" cssclass="sta_WF_Subtitle"/>
+        <Static id="stInformation00" taborder="214" text="해당 변경내역에 대한 증빙서류를 첨부하여야 합니다." cssclass="sta_WF_Info" width="307" height="21" top="107" right="22"/>
+        <Static id="Static16" taborder="223" text="보훈번호" cssclass="styFormItemCap" left="781" width="103" height="25" top="163"/>
+        <Edit id="edtRCMP_NUMB_M" taborder="225" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="875" width="140" height="21" style="align:left; :disabled {align:center middle;}" binddataset="dsHR_MASTXM" top="163" readonly="true"/>
+        <Calendar id="calHAAD_DATE_M" taborder="228" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="875" width="140" binddataset="dsHR_MASTXM" top="137" height="21" enable="true" readonly="true"/>
+        <Combo id="cmbDEGC_CODE_M" taborder="229" cssclass="styFormSearchCombo" left="612" top="137" width="140" height="21" enable="true" readonly="true"/>
+        <Combo id="cmbREDN_CODE_M" taborder="230" cssclass="styFormSearchCombo" left="612" top="163" width="140" height="21" index="-1" enable="true" readonly="true" binddataset="dsHR_MASTXM"/>
+        <Combo id="cmbDEDY_CODE_M" taborder="231" cssclass="styFormSearchCombo" left="375" top="137" width="140" height="21" enable="true" readonly="true" binddataset="dsHR_MASTXM"/>
+        <Combo id="cmbSVIM_YSNO_M" taborder="232" cssclass="styFormSearchCombo" left="375" top="163" width="140" height="21" index="-1" enable="true" readonly="true" binddataset="dsHR_MASTXM"/>
+        <Combo id="cmbHALT_CODE_M" taborder="233" cssclass="styFormSearchCombo" left="125" top="137" width="140" height="21" enable="true" readonly="true"/>
+        <Static id="stGROP_LIST00" taborder="255" text="변경요청내역" left="8" height="21" top="223" width="116" cssclass="sta_WF_Subtitle"/>
+        <Static id="stInformation01" taborder="279" text="* 00건이 조회 되었습니다." cssclass="styFormSearchInfo" left="-824" top="-552" width="600" height="23" style="align:left middle; "/>
+        <Static id="stGROP_LIST02" taborder="281" text="증빙" top="375" width="73" height="21" right="336" cssclass="sta_WF_Subtitle"/>
+        <Button id="btnAddFile" taborder="16" text="파일첨부" cssclass="styTextButtonBizProc" top="371" right="101" width="74" height="21" onclick="btnFile_onclick"/>
+        <Button id="btnDelFile" taborder="17" text="파일삭제" cssclass="styTextButtonBizProc" top="371" right="25" width="74" height="21" onclick="btnFile_onclick"/>
+        <Grid id="grdTM_ATFILE" cssclass="styGrid01" taborder="284" binddataset="dsTM_ATFILE" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" bottom="15" tooltiptype="inplace" right="25" top="396" width="384" oncellclick="grdTM_ATFILE_oncellclick">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="270"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="파일명"/>
+                <Cell col="1" text="다운로드"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="none" style=", 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align:left;" text="bind:LFIL_NAME"/>
+                <Cell col="1" displaytype="button" edittype="button" style="cursor:hand;" text="다운로드"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btnChangeReq" taborder="26" text="변경요청" onclick="fn_btnChangeReq_OnClick" cssclass="styTextButtonBizProc" left="8" top="35" width="74" height="21"/>
+        <Button id="btnReqCancel" taborder="28" text="요청취소" onclick="fn_btnReqCancel_OnClick" cssclass="styTextButtonBizProc" left="85" top="35" width="74" height="21"/>
+        <MaskEdit id="medRERN_NUMB_M" taborder="286" type="string" mask="######-#######" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1985" top="145" width="129" height="21" binddataset="dsHR_MASTXM" enable="true" readonly="true" visible="false"/>
+        <Static id="staHALT_CODE" taborder="292" text="장애구분" cssclass="styFormItemCap" left="28" top="279" width="103" height="21"/>
+        <Edit id="edtEMPL_NAME" taborder="18" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1236" top="288" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ" visible="false"/>
+        <Static id="staENEE_NAME" taborder="294" text="성명(영문)" onclick="Static120_onclick" cssclass="styFormItemCap" left="1393" top="286" width="103" height="25" style="color:#515151ff;" visible="false"/>
+        <Static id="staDEDY_CODE" taborder="295" text="장애등급" cssclass="styFormItemCap" left="294" top="279" width="103" height="21"/>
+        <Static id="staSVIM_YSNO" taborder="296" text="중증여부" cssclass="styFormItemCap" left="294" top="305" width="103" height="21"/>
+        <Edit id="edtENEE_NAME" taborder="19" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1474" top="288" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ" visible="false"/>
+        <Static id="staCCEM_NAME" taborder="298" text="성명(한자)" onclick="Static120_onclick" cssclass="styFormItemCap" left="1649" top="286" width="103" height="25" visible="false"/>
+        <Static id="staDEGC_CODE" taborder="299" text="장애유형" cssclass="styFormItemCap" left="544" top="279" width="103" height="21"/>
+        <Static id="staREDN_CODE" taborder="300" text="보훈구분" cssclass="styFormItemCap" left="544" top="305" width="103" height="21"/>
+        <Edit id="edtCCEM_NAME" taborder="20" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1730" top="288" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ" visible="false"/>
+        <Static id="staRERN_NUMB" taborder="302" text="주민등록번호" onclick="Static120_onclick" cssclass="styFormItemCap" left="1905" top="286" width="103" height="25" visible="false"/>
+        <Static id="staHAAD_DATE" taborder="303" text="장애인정시기" cssclass="styFormItemCap" left="781" top="279" width="103" height="21"/>
+        <Static id="staRCMP_NUMB" taborder="304" text="보훈번호" cssclass="styFormItemCap" left="781" top="305" width="103" height="21"/>
+        <Edit id="edtRCMP_NUMB" taborder="11" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="875" top="305" width="140" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ"/>
+        <Calendar id="calHAAD_DATE" taborder="7" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="875" top="279" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Combo id="cmbREDN_CODE" taborder="10" cssclass="styFormSearchCombo" left="612" top="305" width="127" height="21" binddataset="dsHR_MASTRQ"/>
+        <Combo id="cmbDEDY_CODE" taborder="5" cssclass="styFormSearchCombo" left="375" top="279" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Combo id="cmbSVIM_YSNO" taborder="9" cssclass="styFormSearchCombo" left="375" top="305" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Combo id="cmbHALT_CODE" taborder="4" cssclass="styFormSearchCombo" left="125" top="279" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Static id="Static67" taborder="312" text="신청일" onclick="Static120_onclick" cssclass="styFormItemCapBE" left="28" top="253" width="103" height="21"/>
+        <Calendar id="calCHRQ_DATE" taborder="2" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="125" top="253" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Static id="Static68" taborder="314" text="신청내용" cssclass="styFormItemCap" left="294" top="253" width="103" height="21"/>
+        <Edit id="edtREMK_100X" taborder="3" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="375" top="253" width="640" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ"/>
+        <MaskEdit id="medRERN_NUMB" taborder="21" type="string" mask="######-#######" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1986" top="288" width="129" height="21" binddataset="dsHR_MASTRQ" visible="false"/>
+        <Combo id="cmbDEGC_CODE" taborder="6" cssclass="styFormSearchCombo" left="612" top="279" width="127" height="21" binddataset="dsHR_MASTRQ"/>
+        <Static id="Static00" taborder="315" text="장애원인" cssclass="styFormItemCap" left="28" top="163" width="103" height="25"/>
+        <Static id="Static03" taborder="319" text="보훈지정일자" cssclass="styFormItemCap" left="28" top="189" width="103" height="25"/>
+        <Static id="Static04" taborder="320" text="유공자관계" cssclass="styFormItemCap" left="294" top="189" width="103" height="25"/>
+        <Static id="Static05" taborder="321" text="유공자" cssclass="styFormItemCap" left="544" top="189" width="103" height="25"/>
+        <Static id="Static06" taborder="322" text="해당지청" cssclass="styFormItemCap" left="781" top="189" width="103" height="25"/>
+        <Combo id="cmbMAMR_CODE_M" taborder="324" readonly="true" cssclass="styFormSearchCombo" left="375" top="189" width="140" height="21" binddataset="dsHR_MASTXM"/>
+        <Edit id="edtHDPP_NAME_M" taborder="326" readonly="true" maxlength="20" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="875" top="189" width="140" height="21" style="align:left; :disabled {align:center middle;}" binddataset="dsHR_MASTXM"/>
+        <Static id="staRCMP_DATE" taborder="329" text="보훈지정일자" cssclass="styFormItemCap" left="28" top="331" width="103" height="21"/>
+        <Static id="staMAMR_CODE" taborder="330" text="유공자관계" cssclass="styFormItemCap" left="294" top="331" width="103" height="21"/>
+        <Static id="staMNOM_NAME" taborder="331" text="유공자" cssclass="styFormItemCap" left="544" top="331" width="103" height="21"/>
+        <Static id="staHDPP_NAME" taborder="332" text="해당지청" cssclass="styFormItemCap" left="781" top="331" width="103" height="21"/>
+        <Combo id="cmbMAMR_CODE" taborder="13" readonly="false" cssclass="styFormSearchCombo" left="375" top="331" width="140" height="21" binddataset="dsHR_MASTRQ" displayrowcount="10"/>
+        <Edit id="edtHDPP_NAME" taborder="15" readonly="false" lengthunit="utf16" maxlength="20" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="875" top="331" width="140" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ"/>
+        <Static id="staHALT_PROW" taborder="337" text="장애원인" cssclass="styFormItemCap" left="28" top="305" width="103" height="21"/>
+        <Edit id="edtHALT_PROW_M" taborder="341" readonly="true" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="125" top="163" width="140" height="21" style="align:left; :disabled {align:center middle;}" binddataset="dsHR_MASTXM"/>
+        <Edit id="edtHALT_PROW" taborder="8" lengthunit="utf16" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="125" top="305" width="140" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ"/>
+        <Calendar id="calRCMP_DATE_M" taborder="343" readonly="true" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="125" top="189" width="140" height="21" binddataset="dsHR_MASTXM"/>
+        <Calendar id="calRCMP_DATE" taborder="12" readonly="false" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="125" top="331" width="140" height="21" binddataset="dsHR_MASTRQ"/>
+        <Edit id="edtMNOM_NAME_M" taborder="345" readonly="true" maxlength="30" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="612" top="189" width="140" height="21" style="align:left; :disabled {align:center middle;}" binddataset="dsHR_MASTXM"/>
+        <Edit id="edtMNOM_NAME" taborder="14" readonly="false" maxlength="30" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="612" top="331" width="127" height="21" style=":disabled {align:center middle;}" binddataset="dsHR_MASTRQ"/>
+        <Static id="Static21" taborder="346" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static22" taborder="347" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static23" taborder="348" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static24" taborder="349" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="350" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="351" visible="false" left="62" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="352" text="w 40" visible="false" left="255" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Button id="btn_favorite" taborder="353" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static01" taborder="354" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="357" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="staEMPL_NAME" taborder="358" text="성명" onclick="Static120_onclick" cssclass="styFormItemCap" visible="false" left="1194" top="286" width="55" height="25" style="color:#515151ff;"/>
+        <Static id="Static02" taborder="359" text="w30" visible="false" left="9" top="140" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="360" text="h 25" visible="false" left="573" top="219" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="361" text="h 35" visible="false" left="573" top="361" width="80" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="362" text="h 6" visible="false" left="8" top="390" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static18" taborder="363" text="w20" visible="false" left="758" top="412" width="20" height="41" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">CGRG_CODE</Col>
+            <Col id="DSNAME">dsCGRG_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">CHRC_CODE</Col>
+            <Col id="DSNAME">dsCHRC_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsDEDY_CODE</Col>
+            <Col id="CODEID">DEDY_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsDEGC_CODE</Col>
+            <Col id="CODEID">DEGC_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsHALT_CODE</Col>
+            <Col id="CODEID">HALT_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSVIM_YSNO</Col>
+            <Col id="CODEID">SVIM_YSNO</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsREDN_CODE</Col>
+            <Col id="CODEID">REDN_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">FREL_CODE</Col>
+            <Col id="DSNAME">dsFREL_CODE</Col>
+            <Col id="HEADFLAG">EMPTY</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsHR_MASTXM">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CCEM_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="ENEE_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="RERN_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="REDN_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="RCMP_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="HALT_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="SVIM_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="DEDY_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="DEGC_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="HAAD_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="HALT_PROW" size="50" type="STRING" description="장애사유"/>
+          <Column id="RCMP_DATE" size="8" type="STRING" description="보훈일자"/>
+          <Column id="MAMR_CODE" size="10" type="STRING" description="유공자관계코드"/>
+          <Column id="MNOM_NAME" size="30" type="STRING" description="유공자성명"/>
+          <Column id="HDPP_NAME" size="20" type="STRING" description="해당지청명"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsHR_MASTRQ" onrowposchanged="fn_KeyFieldDisible" canrowposchange="dsHR_MASTRQ_canrowposchange">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="CHRQ_DATE" size="8" type="STRING" description="변경요청일"/>
+          <Column id="CHRQ_SEQN" size="5" type="BIGDECIMAL" description="변경요청일련번호"/>
+          <Column id="EMPL_NAME" size="30" type="STRING" description="사원명"/>
+          <Column id="CCEM_NAME" size="30" type="STRING" description="한자사원명"/>
+          <Column id="ENEE_NAME" size="30" type="STRING" description="영문사원명"/>
+          <Column id="RERN_NUMB" size="32" type="STRING" description="주민등록번호"/>
+          <Column id="EMPL_BIRT" size="8" type="STRING" description="사원생년월일"/>
+          <Column id="GNDR_CODE" size="10" type="STRING" description="성별코드"/>
+          <Column id="HALT_CODE" size="10" type="STRING" description="장애코드"/>
+          <Column id="DEDY_CODE" size="10" type="STRING" description="장애등급코드"/>
+          <Column id="DEGC_CODE" size="10" type="STRING" description="장애유형코드"/>
+          <Column id="HAAD_DATE" size="8" type="STRING" description="장애인정일"/>
+          <Column id="HALT_PROW" size="50" type="STRING" description="장애사유"/>
+          <Column id="SVIM_YSNO" size="1" type="STRING" description="중증장애여부"/>
+          <Column id="REDN_CODE" size="10" type="STRING" description="보훈구분코드"/>
+          <Column id="RCMP_NUMB" size="15" type="STRING" description="보훈번호"/>
+          <Column id="RCMP_DATE" size="8" type="STRING" description="보훈일자"/>
+          <Column id="MAMR_CODE" size="10" type="STRING" description="유공자관계코드"/>
+          <Column id="MNOM_NAME" size="30" type="STRING" description="유공자성명"/>
+          <Column id="HDPP_NAME" size="20" type="STRING" description="해당지청명"/>
+          <Column id="CHNG_CNTT" size="500" type="STRING" description="변경내용"/>
+          <Column id="CGRG_CODE" size="256" type="STRING" description="변경요청구분코드"/>
+          <Column id="CHRC_CODE" size="256" type="STRING" description="변경승인코드"/>
+          <Column id="RCGN_DATE" size="256" type="STRING" description="승인일"/>
+          <Column id="RJCT_PROW" size="256" type="STRING" description="반려사유"/>
+          <Column id="FILE_IDXX" size="256" type="STRING" description="파일ID"/>
+          <Column id="REMK_100X" size="256" type="STRING" description="비고100"/>
+          <Column id="WKNT_EMNR" size="256" type="STRING" description="작업알림사원번호"/>
+          <Column id="WKNT_DATE" size="256" type="STRING" description="작업알림일자"/>
+          <Column id="WKNT_TIME" size="256" type="STRING" description="작업알림시간"/>
+          <Column id="SRAL_NUMB" size="256" type="STRING" description="일련번호"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTM_ATFILE">
+        <ColumnInfo>
+          <Column id="FILE_IDXX" type="STRING" size="256"/>
+          <Column id="FILE_PATH" type="STRING" size="256"/>
+          <Column id="PFIL_NAME" type="STRING" size="256"/>
+          <Column id="LFIL_NAME" type="STRING" size="256"/>
+          <Column id="EXTN_NAME" type="STRING" size="256"/>
+          <Column id="FILE_SIZE" type="STRING" size="256"/>
+          <Column id="FITY_CODE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edtEMPL_NAME_M" propid="value" datasetid="dsHR_MASTXM" columnid="EMPL_NAME"/>
+      <BindItem id="item1" compid="edtENEE_NAME_M" propid="value" datasetid="dsHR_MASTXM" columnid="ENEE_NAME"/>
+      <BindItem id="item2" compid="edtCCEM_NAME_M" propid="value" datasetid="dsHR_MASTXM" columnid="CCEM_NAME"/>
+      <BindItem id="item3" compid="medRERN_NUMB_M" propid="value" datasetid="dsHR_MASTXM" columnid="RERN_NUMB"/>
+      <BindItem id="item4" compid="cmbHALT_CODE_M" propid="value" datasetid="dsHR_MASTXM" columnid="HALT_CODE"/>
+      <BindItem id="item5" compid="cmbDEDY_CODE_M" propid="value" datasetid="dsHR_MASTXM" columnid="DEDY_CODE"/>
+      <BindItem id="item6" compid="cmbDEGC_CODE_M" propid="value" datasetid="dsHR_MASTXM" columnid="DEGC_CODE"/>
+      <BindItem id="item7" compid="calHAAD_DATE_M" propid="value" datasetid="dsHR_MASTXM" columnid="HAAD_DATE"/>
+      <BindItem id="item8" compid="cmbSVIM_YSNO_M" propid="value" datasetid="dsHR_MASTXM" columnid="SVIM_YSNO"/>
+      <BindItem id="item9" compid="cmbREDN_CODE_M" propid="value" datasetid="dsHR_MASTXM" columnid="REDN_CODE"/>
+      <BindItem id="item10" compid="edtRCMP_NUMB_M" propid="value" datasetid="dsHR_MASTXM" columnid="RCMP_NUMB"/>
+      <BindItem id="item20" compid="medRERN_NUMB_M" propid="value" datasetid="dsHR_MASTXM" columnid="RERN_NUMB"/>
+      <BindItem id="item14" compid="edtEMPL_NAME" propid="value" datasetid="dsHR_MASTRQ" columnid="EMPL_NAME"/>
+      <BindItem id="item15" compid="edtENEE_NAME" propid="value" datasetid="dsHR_MASTRQ" columnid="ENEE_NAME"/>
+      <BindItem id="item16" compid="edtCCEM_NAME" propid="value" datasetid="dsHR_MASTRQ" columnid="CCEM_NAME"/>
+      <BindItem id="item25" compid="edtRCMP_NUMB" propid="value" datasetid="dsHR_MASTRQ" columnid="RCMP_NUMB"/>
+      <BindItem id="item21" compid="calHAAD_DATE" propid="value" datasetid="dsHR_MASTRQ" columnid="HAAD_DATE"/>
+      <BindItem id="item24" compid="cmbREDN_CODE" propid="value" datasetid="dsHR_MASTRQ" columnid="REDN_CODE"/>
+      <BindItem id="item19" compid="cmbDEDY_CODE" propid="value" datasetid="dsHR_MASTRQ" columnid="DEDY_CODE"/>
+      <BindItem id="item22" compid="cmbSVIM_YSNO" propid="value" datasetid="dsHR_MASTRQ" columnid="SVIM_YSNO"/>
+      <BindItem id="item18" compid="cmbHALT_CODE" propid="value" datasetid="dsHR_MASTRQ" columnid="HALT_CODE"/>
+      <BindItem id="item12" compid="calCHRQ_DATE" propid="value" datasetid="dsHR_MASTRQ" columnid="CHRQ_DATE"/>
+      <BindItem id="item13" compid="edtREMK_100X" propid="value" datasetid="dsHR_MASTRQ" columnid="REMK_100X"/>
+      <BindItem id="item17" compid="medRERN_NUMB" propid="value" datasetid="dsHR_MASTRQ" columnid="RERN_NUMB"/>
+      <BindItem id="item23" compid="cmbDEGC_CODE" propid="value" datasetid="dsHR_MASTRQ" columnid="DEGC_CODE"/>
+      <BindItem id="item27" compid="cmbMAMR_CODE_M" propid="value" datasetid="dsHR_MASTXM" columnid="MAMR_CODE"/>
+      <BindItem id="item29" compid="edtHDPP_NAME_M" propid="value" datasetid="dsHR_MASTXM" columnid="HDPP_NAME"/>
+      <BindItem id="item31" compid="cmbMAMR_CODE" propid="value" datasetid="dsHR_MASTRQ" columnid="MAMR_CODE"/>
+      <BindItem id="item33" compid="edtHDPP_NAME" propid="value" datasetid="dsHR_MASTRQ" columnid="HDPP_NAME"/>
+      <BindItem id="item37" compid="edtHALT_PROW_M" propid="value" datasetid="dsHR_MASTXM" columnid="HALT_PROW"/>
+      <BindItem id="item11" compid="edtHALT_PROW" propid="value" datasetid="dsHR_MASTRQ" columnid="HALT_PROW"/>
+      <BindItem id="item26" compid="calRCMP_DATE_M" propid="value" datasetid="dsHR_MASTXM" columnid="RCMP_DATE"/>
+      <BindItem id="item30" compid="calRCMP_DATE" propid="value" datasetid="dsHR_MASTRQ" columnid="RCMP_DATE"/>
+      <BindItem id="item28" compid="edtMNOM_NAME_M" propid="value" datasetid="dsHR_MASTXM" columnid="MNOM_NAME"/>
+      <BindItem id="item32" compid="edtMNOM_NAME" propid="value" datasetid="dsHR_MASTRQ" columnid="MNOM_NAME"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	HRMB0020 개인신상변경요청
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.23		안윤준		Initial Created.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+ /************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/************************
+ *  화면 변수 선언부  *
+ ************************/
+this.sBUTTONLIST 	= "TTTTTTTF";
+this.sPACKAGENAME 	= "HRMB0020";
+this.sSAVE_CODE 	= "";			//저장(""),변경요청("R"),변경요청취소("C") 구분코드
+this.sKeyValue 		= new Array();
+
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+	
+}
+
+/****************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*---------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +--------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fnc_SetReadonly(this.edtSHREMPL_NUMB, true);
+	
+	if ( this.sUSERLAVEL == "5" ) {
+		this.edtSHREMPL_NUMB.set_value(application.GBL_EMPLNO);
+		this.edtSHREMPL_NAME.set_value(application.GBL_USERNM);
+		this.edtSHREMPL_NAME.set_enable(false);
+		this.imgHelpSHREMPL_NUMB.set_enable(false);
+		this.fn_Search();
+		
+	} else {
+		this.edtSHREMPL_NAME.set_enable(true);
+		this.imgHelpSHREMPL_NUMB.set_enable(true);
+		this.edtSHREMPL_NAME.setFocus();
+		
+	}
+	
+}
+
+/*--------------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ---------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+
+}
+
+/*--------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_searchItemCheck()) return;
+	
+	this.fnc_DatasetClear("dsHR_MASTXM,dsHR_MASTRQ,dsTM_ATFILE");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsHR_MASTXM=dsHR_MASTXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack", false);
+	
+		sMethodName = "SEARCH01";
+		sInDataSet 	= "";
+		sOutDataSet = "dsHR_MASTRQ=dsHR_MASTRQ";
+		sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*--------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Input = function (obj) {
+	
+	if (this.fnc_Length(this.edtSHREMPL_NUMB.value) < 1) {
+		this.fnc_Message("HRM035");
+		return;
+	}
+	
+	this.fnc_DatasetClear("dsTM_ATFILE");
+	
+	var iRow = this.dsHR_MASTRQ.mergeData(this.dsHR_MASTXM)-1;
+	
+	this.dsHR_MASTRQ.set_rowposition(iRow);
+	this.grdHR_MASTRQ.setCellPos(this.fnc_GridColumnIndex(this.grdHR_MASTRQ, 0));
+	
+	this.dsHR_MASTRQ.setColumn(iRow, "EMPL_NUMB", this.edtSHREMPL_NUMB.value); 				//사원번호
+	this.dsHR_MASTRQ.setColumn(iRow, "CHRQ_DATE", this.fnc_GetServerDateTime("DATE")); 	//변경요청일
+	this.dsHR_MASTRQ.setColumn(iRow, "CHRC_CODE", "S");									//승인구분
+	this.dsHR_MASTRQ.setColumn(iRow, "CHRQ_SEQN", this.fnc_GetSequence("HR_MSTCRQ","CHRQ_SEQN",this.edtSHREMPL_NUMB.value,"")); 								//일련번호
+	this.dsHR_MASTRQ.setColumn(iRow, "CGRG_CODE", "MASTXM");							//변경요청구분코드 
+	
+	//컴포넌트 활성화
+	this.edtHALT_PROW.set_readonly(false);
+	this.calRCMP_DATE.set_readonly(false);
+	this.cmbMAMR_CODE.set_readonly(false);
+	this.edtMNOM_NAME.set_readonly(false);
+	this.edtHDPP_NAME.set_readonly(false);
+	
+	this.calCHRQ_DATE.set_readonly(true);
+	this.edtREMK_100X.set_readonly(false);
+	this.btnChangeReq.set_enable(false);
+	this.btnReqCancel.set_enable(false);
+	this.div_ButtonList.btnDelete.set_enable(true);
+  
+	this.edtCCEM_NAME.set_readonly(false);
+	this.medRERN_NUMB.set_readonly(false);
+	this.edtREMK_100X.set_readonly(false);
+	this.edtEMPL_NAME.set_readonly(false);
+	this.edtENEE_NAME.set_readonly(false);
+	this.medRERN_NUMB.set_readonly(false);
+	this.cmbHALT_CODE.set_readonly(false);
+	this.cmbDEDY_CODE.set_readonly(false);
+	this.cmbDEGC_CODE.set_readonly(false);
+	this.calHAAD_DATE.set_readonly(false);
+	this.cmbSVIM_YSNO.set_readonly(false);
+	this.cmbREDN_CODE.set_readonly(false);
+	this.edtRCMP_NUMB.set_readonly(false); 
+	
+	this.dsHR_MASTRQ.set_updatecontrol(false);
+	this.dsHR_MASTRQ.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+	this.dsHR_MASTRQ.set_updatecontrol(true);
+	
+	this.grdTM_ATFILE.set_readonly(false);
+	
+	this.edtREMK_100X.setFocus();
+}
+
+/*---------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()){
+		this.dsHR_MASTRQ.deleteRow(this.dsHR_MASTRQ.rowposition);
+		this.fnc_DatasetClear("dsTM_ATFILE");
+		this.fn_KeyFieldDisible();
+		
+	}
+	
+	this.grdHR_MASTRQ.setFocus();
+	
+}
+
+/*--------------------------+
+ |  06.취소 버튼 클릭 時  |
+ --------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsHR_MASTXM");
+	this.grdHR_MASTRQ.setFocus();
+	
+}
+
+/*--------------------------+
+ |  07.저장 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	
+	this.sKeyValue[0] = this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition,"CHRQ_SEQN");
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet 	= "dsHR_MASTRQ=dsHR_MASTRQ:U dsTM_ATFILE=dsTM_ATFILE:U";
+	var sOutDataSet = "";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*--------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ --------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*--------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +-------------------------*/
+this.fn_Print = function (obj){
+	
+}
+
+/*------------------------------------+
+ |  10. 화면 종료時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsHR_MASTRQ,dsHR_MASTXM,dsTM_ATFILE", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+	
+}
+
+
+/*-------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +-------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +-------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+
+}
+
+/****************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*---------------------+
+ |  조회 필수 체크!  |
+ +---------------------*/
+this.fn_searchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsHR_MASTRQ,dsHR_MASTXM,dsTM_ATFILE")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	if (this.fnc_Length(this.edtSHREMPL_NUMB.value) < 1) {
+		return this.fnc_CheckPostAction("TMM072", "사원번호", "", "", this.edtSHREMPL_NAME, "");
+	}
+	
+	return true;
+	
+}
+
+/*---------------------+
+ |  삭제 여부 체크!  |
+ +---------------------*/
+this.fn_DeleteCheck = function () {
+
+	if (this.dsHR_MASTRQ.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var sQuestionText = "요청일:" + this.fnc_Trim(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRQ_DATE"));
+	return this.fnc_Message("TMM002", sQuestionText);
+  
+}
+
+/*---------------------+
+ |  저장 여부 체크!  |
+ +---------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsHR_MASTRQ,dsTM_ATFILE")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	return true;
+	
+}
+
+/*--------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +--------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.edtSHREMPL_NUMB.value);
+		
+	} else if (sKind == "SEARCH01") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.edtSHREMPL_NUMB.value);
+		
+	} else if (sKind == "SEARCH04") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind); 
+		sReturnString += " CGRG_CODE=MASTXM";
+		sReturnString += " EMPL_NUMB=" + this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "EMPL_NUMB"));
+		sReturnString += " FILE_IDXX=" + this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "FILE_IDXX"));
+		sReturnString += " CHRQ_DATE=" + this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRQ_DATE"));
+		sReturnString += " CHRQ_SEQN=" + this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRQ_SEQN"));
+		
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm=" 	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+
+		if ( this.sSAVE_CODE == "R" || this.sSAVE_CODE == "C" ) {
+			sReturnString += " SYST_LNCD=" + this.fnc_Quote(application.GBL_LANGCD); //사용자언어코드
+			sReturnString += " WORK_USID=" + this.fnc_Quote(application.GBL_USERID); //작업자ID
+			sReturnString += " WKNT_TYCD=" + this.fnc_Quote("HRM020"); // 작업알림유형코드
+			sReturnString += " SOUS_LNKY=" + this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "EMPL_NUMB")+"-"+this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRQ_DATE")+"-"+this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRQ_SEQN")); //출처연결키
+			sReturnString += " WKNT_CNTT=" + this.fnc_Quote("개인신상변경요청 신청이 등록되었습니다."); // 작업알림내용
+		}
+		sReturnString += " SAVE_CODE=" + this.fnc_Quote(this.sSAVE_CODE); // 작업알림내용
+		
+	}
+
+	return sReturnString;
+	
+}
+
+/*---------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +---------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+	
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+		
+	} else {
+		this.fn_PostProcess(sMethodName);
+
+	}
+	
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH01") {
+		this.fnc_Information(this.stInformation, this.dsHR_MASTRQ.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsHR_MASTRQ.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.grdHR_MASTRQ.setFocus();
+		
+		if ( this.sKeyValue[0] != "" ) {
+			var irow = this.dsHR_MASTRQ.findRow("CHRQ_SEQN",this.sKeyValue[0]);
+			this.sKeyValue[0] = "";
+			if(irow<0) irow=0;
+			this.dsHR_MASTRQ.set_rowposition(irow);
+		}
+		
+	} else if (sMethodName == "SAVE00")	{
+	 
+		if (this.sSAVE_CODE == "R") {
+			this.fnc_Message("HRM040", true);
+			this.sSAVE_CODE = "";
+			this.fn_KeyFieldDisible();
+			
+		} else if (this.sSAVE_CODE == "C") {
+			this.fnc_Message("HRM041", true);
+			this.sSAVE_CODE = "";
+			this.fn_KeyFieldDisible();
+			
+		} else {
+			this.fnc_Information(this.stInformation, 0, "SAVE");		
+			this.fnc_Message("TMM103");
+			this.fn_KeyFieldDisible();
+			
+		}
+		this.fn_Search();
+
+	} else if (sMethodName == "GetCommCode") {
+	
+		var arrParam = new Array();
+		var arrInt   = 0;
+			arrParam[arrInt++] = "COMBO,cmbHALT_CODE_M,dsHALT_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbDEDY_CODE_M,dsDEDY_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbDEGC_CODE_M,dsDEGC_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbREDN_CODE_M,dsREDN_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbSVIM_YSNO_M,dsSVIM_YSNO,0"; 
+			arrParam[arrInt++] = "COMBO,cmbHALT_CODE,dsHALT_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbDEDY_CODE,dsDEDY_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbDEGC_CODE,dsDEGC_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbREDN_CODE,dsREDN_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbSVIM_YSNO,dsSVIM_YSNO,0"; 
+			arrParam[arrInt++] = "GRID,grdHR_MASTRQ,dsCHRC_CODE,CHRC_CODE"; 
+			arrParam[arrInt++] = "GRID,grdHR_MASTRQ,dsCGRG_CODE,CGRG_CODE"; 
+			arrParam[arrInt++] = "COMBO,cmbMAMR_CODE_M,dsFREL_CODE,0"; 
+			arrParam[arrInt++] = "COMBO,cmbMAMR_CODE,dsFREL_CODE,0"; 
+		this.fnc_CommonCodeInnerBind(arrParam);
+	
+	}
+	
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+	
+	this.dsHR_MASTRQ.set_enableevent(false);
+	this.dsHR_MASTXM.set_enableevent(false);
+	for ( var i=0; i<this.dsHR_MASTRQ.getColCount(); i++ ) {
+		if ( typeof eval("this.sta"+this.dsHR_MASTRQ.getColID(i)) == "undefined" ) {
+			continue;
+		} else {
+			if ( this.fnc_Quote(this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, this.dsHR_MASTRQ.getColID(i))) 
+			  == this.fnc_Quote(this.dsHR_MASTXM.getColumn(0, this.dsHR_MASTRQ.getColID(i)))){
+				eval("this.sta"+this.dsHR_MASTRQ.getColID(i)).style.set_color("#515151ff");
+			} else {
+				eval("this.sta"+this.dsHR_MASTRQ.getColID(i)).style.set_color("#e74343ff");
+			}
+		}
+	}
+	this.dsHR_MASTRQ.set_enableevent(true);
+	this.dsHR_MASTXM.set_enableevent(true);
+	
+	//승인구분이 S(임시저장)이 아닌경우 전체 readonly
+	switch (this.dsHR_MASTRQ.getColumn(this.dsHR_MASTRQ.rowposition, "CHRC_CODE")) {
+		case "S" :	//임시저장
+			this.edtHALT_PROW.set_readonly(false);
+			this.calRCMP_DATE.set_readonly(false);
+			this.cmbMAMR_CODE.set_readonly(false);
+			this.edtMNOM_NAME.set_readonly(false);
+			this.edtHDPP_NAME.set_readonly(false);
+			
+			this.edtCCEM_NAME.set_readonly(false);
+			this.medRERN_NUMB.set_readonly(false); 
+			this.edtREMK_100X.set_readonly(false);
+			this.edtEMPL_NAME.set_readonly(false);
+			this.edtENEE_NAME.set_readonly(false);
+			this.medRERN_NUMB.set_readonly(false);
+			this.cmbHALT_CODE.set_readonly(false);
+			this.cmbDEDY_CODE.set_readonly(false);
+			this.cmbDEGC_CODE.set_readonly(false);
+			this.calHAAD_DATE.set_readonly(false);
+			this.cmbSVIM_YSNO.set_readonly(false);
+			this.cmbREDN_CODE.set_readonly(false);
+			this.edtRCMP_NUMB.set_readonly(false);  
+
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(false);
+		
+			if ( this.fnc_ToUpper(this.dsHR_MASTRQ.getRowType(this.dsHR_MASTRQ.rowposition)) == "INSERT" ) {	
+				//신규입력행에는 확인요청 버튼을 막음
+				
+				this.btnChangeReq.set_enable(false);
+				
+			} else {
+				this.btnChangeReq.set_enable(true);
+				
+			}
+			this.btnReqCancel.set_enable(false);
+			
+			this.div_ButtonList.btnDelete.set_enable(true);
+			
+			this.btnAddFile.set_enable(true);
+			this.btnDelFile.set_enable(true);
+								 
+			this.grdTM_ATFILE.set_readonly(false);
+			break;
+			
+		case "0" : //변경요청
+			this.edtHALT_PROW.set_readonly(true);
+			this.calRCMP_DATE.set_readonly(true);
+			this.cmbMAMR_CODE.set_readonly(true);
+			this.edtMNOM_NAME.set_readonly(true);
+			this.edtHDPP_NAME.set_readonly(true);
+			
+			this.edtCCEM_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true);
+			this.edtEMPL_NAME.set_readonly(true);
+			this.edtENEE_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.cmbHALT_CODE.set_readonly(true);
+			this.cmbDEDY_CODE.set_readonly(true);
+			this.cmbDEGC_CODE.set_readonly(true);
+			this.calHAAD_DATE.set_readonly(true);
+			this.cmbSVIM_YSNO.set_readonly(true);
+			this.cmbREDN_CODE.set_readonly(true);
+			this.edtRCMP_NUMB.set_readonly(true);  
+
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true); 
+			
+			this.btnChangeReq.set_enable(false);
+			this.btnReqCancel.set_enable(true);
+			
+			this.div_ButtonList.btnDelete.set_enable(false);
+			
+			this.btnAddFile.set_enable(false);
+			this.btnDelFile.set_enable(false);
+			
+			this.grdTM_ATFILE.set_readonly(true);
+			break;
+			
+		case "1" : //승인
+			this.edtHALT_PROW.set_readonly(true);
+			this.calRCMP_DATE.set_readonly(true);
+			this.cmbMAMR_CODE.set_readonly(true);
+			this.edtMNOM_NAME.set_readonly(true);
+			this.edtHDPP_NAME.set_readonly(true);
+			
+			this.edtCCEM_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true);
+			this.edtEMPL_NAME.set_readonly(true);
+			this.edtENEE_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.cmbHALT_CODE.set_readonly(true);
+			this.cmbDEDY_CODE.set_readonly(true);
+			this.cmbDEGC_CODE.set_readonly(true);
+			this.calHAAD_DATE.set_readonly(true);
+			this.cmbSVIM_YSNO.set_readonly(true);
+			this.cmbREDN_CODE.set_readonly(true);
+			this.edtRCMP_NUMB.set_readonly(true);  
+		
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true); 
+			
+			this.btnChangeReq.set_enable(false);
+			this.btnReqCancel.set_enable(false);
+			
+			this.div_ButtonList.btnDelete.set_enable(false);
+			
+			this.btnAddFile.set_enable(false);
+			this.btnDelFile.set_enable(false);
+			
+			this.grdTM_ATFILE.set_readonly(true);
+			break;
+			
+		case "2" : //반려		
+			this.edtHALT_PROW.set_readonly(true);
+			this.calRCMP_DATE.set_readonly(true);
+			this.cmbMAMR_CODE.set_readonly(true);
+			this.edtMNOM_NAME.set_readonly(true);
+			this.edtHDPP_NAME.set_readonly(true);
+			
+			this.edtCCEM_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true);
+			this.edtEMPL_NAME.set_readonly(true);
+			this.edtENEE_NAME.set_readonly(true);
+			this.medRERN_NUMB.set_readonly(true);
+			this.cmbHALT_CODE.set_readonly(true);
+			this.cmbDEDY_CODE.set_readonly(true);
+			this.cmbDEGC_CODE.set_readonly(true);
+			this.calHAAD_DATE.set_readonly(true);
+			this.cmbSVIM_YSNO.set_readonly(true);
+			this.cmbREDN_CODE.set_readonly(true);
+			this.edtRCMP_NUMB.set_readonly(true);  
+
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true); 
+			
+			this.btnChangeReq.set_enable(false);
+			this.btnReqCancel.set_enable(false);
+			
+			this.div_ButtonList.btnDelete.set_enable(false);
+			
+			this.btnAddFile.set_enable(false);
+			this.btnDelFile.set_enable(false);
+
+			this.grdTM_ATFILE.set_readonly(true);
+			break;
+			
+		default :
+			this.calCHRQ_DATE.set_readonly(true);
+			this.edtREMK_100X.set_readonly(true);  
+			
+			this.btnChangeReq.set_enable(false);
+			this.btnReqCancel.set_enable(false);
+			
+			this.div_ButtonList.btnDelete.set_enable(false); 
+			
+			this.btnAddFile.set_enable(false);
+			this.btnDelFile.set_enable(false);
+
+			this.grdTM_ATFILE.set_readonly(true);
+			
+			break;
+		
+	}
+	
+	this.dsTM_ATFILE_search04();
+	
+}
+
+/*----------------------+
+ |  DATASET ROW 변경 전 |
+ +----------------------*/
+this.dsHR_MASTRQ_canrowposchange = function(obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+	if (this.fnc_DatasetChangeCheck("dsHR_MASTRQ")) {
+		if (this.fnc_Message("TMM023") == false)  { 
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
+
+/***************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/***************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  팝업 Setting  |
+ +------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue) {
+
+	var arrParam = new Array();
+	
+	if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) {
+		arrParam[0] = "HRM0001";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHREMPL_NAME";
+		arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+		
+		if ( this.fnc_Length(this.edtSHREMPL_NUMB.value) > 0 ) this.fn_Search();
+		
+	}
+
+}
+
+/*----------------------+
+ |  변경요청 버튼 클릭 時 |
+ +----------------------*/
+this.fn_btnChangeReq_OnClick = function(obj:Button, e:ClickEventInfo) {
+	
+	var row = this.dsHR_MASTRQ.rowposition;
+	
+	if (row < 0) {
+		this.fnc_Message("TMM010");   //Message 처리 후
+		this.grdHR_MASTRQ.setFocus();          
+		return;
+	}
+
+	/*
+		//증빙파일이 있는 지 체크
+		if (dtlTM_ATFILE.getRowCount() < 1) {
+			//해당 변경내역에 대한 증빙서류를 첨부하여야 합니다!
+			this.fnc_Message("HRM044");
+			btnAddFile.focus();
+			return false;
+		}
+	*/
+			
+	if ( this.fnc_Message("HRM015")) {
+		this.dsHR_MASTRQ.setColumn(row, "CHRC_CODE", "0");
+		this.sSAVE_CODE = "R";	//변경요청
+		this.fn_Save();
+	}
+}
+
+/*----------------------+
+ |  요청취소 버튼 클릭 時 |
+ +----------------------*/
+this.fn_btnReqCancel_OnClick = function(obj:Button, e:ClickEventInfo) {
+	
+	var row = this.dsHR_MASTRQ.rowposition;
+	
+	if (row < 0) {
+		this.fnc_Message("TMM010");   //Message 처리 후
+		this.grdHR_MASTRQ.setFocus();          
+		return;
+	}
+
+	if ( this.fnc_Message("HRM016")) {
+		this.dsHR_MASTRQ.setColumn(row, "CHRC_CODE", "S");
+		this.sSAVE_CODE = "C";	//요청취소
+		this.fn_Save();
+	}
+}
+
+/*--------------+
+ |  성명 변경 시 |
+ +--------------*/
+this.edtSHREMPL_NAME_onchar = function(obj:Edit,  e:nexacro.CharEventInfo) {
+	this.fnc_DatasetClear("dsHR_MASTXM,dsHR_MASTRQ,dsTM_ATFILE");
+	this.edtSHREMPL_NUMB.set_value("");
+	
+}
+
+/*-----------+
+ |  파일 검색 |
+ +-----------*/
+this.dsTM_ATFILE_search04 = function(){
+	var sMethodName = "SEARCH04";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsTM_ATFILE=dsTM_ATFILE";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack", false);
+	
+}
+
+/*--------------------------+
+ |  파일첨부&파일삭제 클릭 시 |
+ +--------------------------*/
+this.btnFile_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	
+	if (this.fnc_Length(this.edtSHREMPL_NUMB.value) < 1 || this.dsHR_MASTRQ.getRowCount() < 1) {
+		this.fnc_Message("HRM035");
+		return;
+	}
+	
+	if ( obj.name == "btnAddFile" ) {
+		this.fnc_CallFileUplod(5, "", "fn_CallFileUplodCallback");
+		
+	} else if ( obj.name == "btnDelFile" ) {
+		if (this.fn_checkDeleteFile()) this.dsTM_ATFILE.deleteMultiRows(this.grdTM_ATFILE.getSelectedDatasetRows());
+		
+	}
+	
+}
+
+/*-------------------+
+ |  파일첨부 callback |
+ +-------------------*/
+this.fn_CallFileUplodCallback = function(robjds,form) {
+
+	var objds 		= form.dsTM_ATFILE;
+	var objmainds 	= form.dsHR_MASTRQ;
+	
+	if ( objmainds.getColumn(objmainds.rowposition, "FILE_IDXX") == "" ) {
+		objmainds.setColumn(objmainds.rowposition, "FILE_IDXX", robjds.getColumn(0, "FILE_IDXX"));
+	} else {
+		for ( var i=0; i<robjds.rowcount; i++ ) {
+			robjds.setColumn(i, "FILE_IDXX", objmainds.getColumn(objmainds.rowposition, "FILE_IDXX"));
+		}
+	}
+	
+	for(i = 0; i < robjds.rowcount; i++){
+		var iRow = objds.addRow();
+		objds.copyRow(iRow, robjds, i);
+		objds.setColumn(iRow, "FITY_CODE", "HRM001-01");
+				
+		if(objds.updatecontrol){
+		}else{
+			objds.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+		}
+	}
+	
+// 아래 주석은 동일 파일 존재 유무에 따른 로직	
+// 	var oCount  	= [];
+// 	var nCount		= [];
+// 	objds.set_enableevent(false);
+// 	robjds.set_enableevent(false);
+// 	for ( var i=0; i<objds.rowcount; i++ ) {
+// 		for ( var j=0; j<robjds.rowcount; j++){
+// 			if ( objds.getColumn(i, "LFIL_NAME") == robjds.getColumn(j, "LFIL_NAME")) {
+// 				oCount.push(i);
+// 				nCount.push(j);
+// 			}
+// 		}
+// 	}
+// 	objds.set_enableevent(true);
+// 	robjds.set_enableevent(false);
+//
+// 	if ( oCount.length > 0 ){
+// 		if ( confirm("동일한 파일이 존재합니다.기존 파일을 삭제 하시겠습니까?") ){
+// 			for ( var i = oCount.length-1; i >= 0; i--) {
+// 				objds.deleteRow(oCount[i]);
+// 				
+// 			}
+// 		} else {
+// 			for ( var i = nCount.length-1; i >= 0; i--) {
+// 				robjds.deleteRow(nCount[i]);
+// 				
+// 			}
+// 		}
+// 	}
+// 	
+// 	if ( robjds.rowcount > 0 ) {
+// 		objmainds.setColumn(objmainds.rowposition, "FILE_IDXX", robjds.getColumn(0, "FILE_IDXX"));
+// 		for ( var i=0; i<objds.rowcount; i++ ) {
+// 			objds.setColumn(i, "FILE_IDXX", robjds.getColumn(0, "FILE_IDXX"));
+// 			
+// 		}
+// 		
+// 		for(i = 0; i < robjds.rowcount; i++){
+// 			var iRow = objds.addRow();
+// 			objds.copyRow(iRow, robjds, i);
+// 			
+// 			if(objds.updatecontrol){
+// 			}else{
+// 				objds.setRowType(iRow, Dataset.ROWTYPE_INSERT);
+// 			}
+// 		}
+// 	}
+	
+}
+
+/*---------------------+
+ |  파일삭제 여부 체크  |
+ +---------------------*/
+this.fn_checkDeleteFile = function () {
+	
+	if (this.dsTM_ATFILE.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var iSelectRowCount = this.fnc_SelectRowCount(this.grdTM_ATFILE);
+	
+	if (iSelectRowCount > 1) {
+		return this.fnc_Message("TMM004", iSelectRowCount);
+	} else {
+		var sQuestionText = this.dsTM_ATFILE.getColumn(this.dsTM_ATFILE.rowposition, "LFIL_NAME");
+		return this.fnc_Message("TMM002", sQuestionText);
+	}
+	
+}
+
+/*-----------------------+
+ |  그리드 Cell 클릭 함수 |
+ +-----------------------*/
+this.grdTM_ATFILE_oncellclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+	if( obj.getCellText(e.row, e.col) == "다운로드" ) {
+		var filePath   = this.dsTM_ATFILE.getColumn(e.row,"FILE_PATH");
+		var phyFileNm  = this.dsTM_ATFILE.getColumn(e.row,"PFIL_NAME");
+		var realFileNm = this.dsTM_ATFILE.getColumn(e.row,"LFIL_NAME");
+
+		if (this.fnc_Length(filePath) > 0) {
+			this.fnc_FileDownLoad(filePath, phyFileNm, realFileNm);
+		}
+	}
+}
+]]></Script>
+  </Form>
+</FDL>

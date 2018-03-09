@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WFMA0030">
+
+<!--
+ *   프로그램명 : 경조금 신첟 등록 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.09.19
+ *   작 성 자 : 정한균
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 정한균
+	 작 성 일 : 2016.09.19
+	 내    용 : 경조금 신청 현황 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="WFMA0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT A.DOCU_IDXX,                                            /*결재문서 DOC_ID*/
+		       A.APPR_SEQN,                                                 /*결재문서번호*/
+		       A.COCO_SEQN,                                                 /*경조일련번호*/
+		       A.COCO_CODE,                                                  /*경조명코드*/
+		       A.COCO_KIND,                                                   /*경조종류*/
+		       A.FRCW_CODE,                                                   /*가족관계*/
+		       A.CCBS_BEDE,                                                /*경조기준시작일*/
+		       A.EMPL_NUMB,                                                  /*작성자사번*/
+		       A.APLT_EMNR,                                                /*신청대상자사번*/
+		       A.APPL_DATE,                                                    /*신청일*/
+		       A.COCO_DATE,                                                    /*경조일*/
+		       A.WORK_PROD,                                                   /*재직기간*/
+		       A.EXCC_AMOT,                                                   /*경조금액*/
+		       A.CCIT_CODE,                                                 /*경조용품코드*/
+		       A.COCO_RESN,                                                   /*경조사유*/
+		       A.SLIP_LINE,		 											/*전표라인번호   */
+			   A.SLIP_NUMB,                                                   /*전표번호*/
+			   A.SSPS_CODE,													 /*전표상태코드*/
+			   SF_GET_COMMNAME('SSPS_CODE', A.SSPS_CODE) AS SSPS_CODE_STR, /*전표상태명*/
+		       A.PAYX_DATE,                                                    /*지급일*/
+		       B.EMPL_NAME AS EMP_INF1,                                        /*사원명*/
+		       C.SECT_NAME AS EMP_INF2,                                        /*소속명*/
+		       C.DEPT_NAME AS EMP_INF3,                                        /*부서명*/
+		       D.COMD_CDNM AS EMP_INF4,                                        /*직급명*/
+		       E.COMD_CDNM AS EMP_INF5,                                        /*직위명*/
+		       B.ENCO_DATE,                                                    /*입사일*/
+		       X.SUBJ_NAME,                                                /*결재문서 제목*/
+		       X.APPR_STAT,                                                    /*결재상태*/
+		       SF_GET_COMMNAME('APPR_STAT', X.APPR_STAT) APPR_STAT_STR, /*결재상태*/
+		       SF_GET_COMMNAMEREF('APPR_STAT', X.APPR_STAT, '1') APPR_STAT_PROC, /*결재상태*/
+		       X.ENDX_DATE,                                                 /*결재완료일자*/
+		       A.INST_USID,                                                  /*입력작업자*/
+		       A.INST_DATE,                                                   /*입력일시*/
+		       A.UPDT_USID,                                                  /*수정작업자*/
+		       A.UPDT_DATE,                                                     /*수정일*/
+		       '0' CHK_BOX			/*체크박스*/
+		  FROM CW_COCOAP A                                                   /*경조금신청*/
+		       INNER JOIN HR_MASTXM B                                         /*인사기본*/
+		          ON A.APLT_EMNR = B.EMPL_NUMB
+		       LEFT OUTER JOIN VI_DEPTXM C ON B.DEPT_CODE = C.DEPT_CODE
+		       LEFT OUTER JOIN TM_CODEXD D                                      /*직급*/
+		          ON D.COMM_CODE = 'CPOS_CODE' AND B.CPOS_CODE = D.COMD_CODE
+		       LEFT OUTER JOIN TM_CODEXD E                                      /*직위*/
+		          ON E.COMM_CODE = 'OPOS_CODE' AND B.OPOS_CODE = E.COMD_CODE
+		       LEFT JOIN TM_APPRXH X    /*결재테이블*/
+		          ON A.DOCU_IDXX = X.DOCU_IDXX  AND A.APPR_SEQN = X.APPR_SEQN
+	]]>		
+	<dynamic prepend="WHERE">
+	<isNotEmpty prepend="AND" property="APPL_DATE1">
+	<![CDATA[
+		  A.APPL_DATE >= #APPL_DATE1#
+    ]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="APPL_DATE2">
+	<![CDATA[
+		  A.APPL_DATE <= #APPL_DATE2#
+    ]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="APPR_STAT">
+	<![CDATA[
+		  X.APPR_STAT = #APPR_STAT#
+    ]]>
+	</isNotEmpty>
+	</dynamic>
+	<![CDATA[
+		 ORDER BY A.COCO_SEQN
+	]]>
+	</select>
+
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 정한균
+     작  성  일 : 2016.10.07
+     내      용 : 전표처리된 전표번호 조회
+********************************************************************************/
+ -->
+    <select id="WFMA0030.SEARCHSLIPNUM" parameterClass="hashmap" resultClass="String">
+        <![CDATA[
+            SELECT   /* WFMA0030.SEARCHSLIPNUM 전표처리된 전표번호 조회 */
+                     SLIP_NUMB
+             FROM    CW_COCOAP A
+			WHERE    DOCU_IDXX	  = #DOCU_IDXX#		/* 결재DOC_ID *
+			  AND 	 APPR_SEQN    = #APPR_SEQN#		/* 결재일련번호 */
+			  AND    COCO_SEQN    = #COCO_SEQN#		/* 경조금신청SEQ */
+            
+        ]]>
+    </select>
+	
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 정한균
+     작  성  일 : 2016.10.07
+     내      용 : 전표대상데이터 체크 초기화
+********************************************************************************/
+ -->
+    <update id="WFMA0030.UPDATE02" parameterClass="hashmap" >
+        <![CDATA[
+        	UPDATE   CW_COCOAP    /* WFMA0030.UPDATE02 전표대상데이터 체크 초기화 */
+               SET   SLIP_NUMB    = '',
+               		 PAYX_DATE    = ''
+             WHERE   SLIP_NUMB	  = #FORM_IDXX# || #UPDT_USID#
+        ]]>
+	</update>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 정한균
+     작  성  일 : 2016.10.07
+     내      용 : 전표대상데이터 체크 UPDATE
+********************************************************************************/
+ -->
+    <update id="WFMA0030.UPDATE03" parameterClass="hashmap" >
+        <![CDATA[
+            UPDATE   CW_COCOAP    /* WFMA0030.UPDATE03 전표대상데이터 체크 UPDATE */
+               SET   SLIP_NUMB	  = #FORM_IDXX# || #UPDT_USID#,
+               		 PAYX_DATE    = #PAYX_DATE#
+             WHERE   DOCU_IDXX    = #DOCU_IDXX#    /* 결재 DOC_ID */
+               AND   APPR_SEQN    = #APPR_SEQN#    /* 결재일련번호 */
+               AND   COCO_SEQN    = #COCO_SEQN#    /* 경조금신청SEQ */
+        ]]>
+	</update>
+	
+	
+<!-- 
+/*******************************************************************************
+	    작  성  자 : 정한균
+	    작  성  일 : 2016.10.07
+	    내      용 : 경조금 전표생성
+ ********************************************************************************/
+-->
+	<insert id="WFMA0030.PROC00" parameterClass="hashmap" >
+	<![CDATA[
+		DECLARE
+    		/* WFMA0030.PROC00 경조금 전표생성 */
+    	
+			sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /* 대표적요 */
+			sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /* 전표번호 */
+			sSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /* 전표행번호 */
+			sCOND_VACD		TA_SLIPRF.COND_VACD%TYPE;   /* 관리항목 관리항목값 */
+			
+			
+	    BEGIN
+			
+			/*==================================================================
+				1. 전표마스터 저장 
+			==================================================================*/
+			PKG_FAMIFSLIP.SP_MASTER_SAVE(
+				 #SYST_LNCD#   	/* ●시스템언어코드 */
+				,#UPDT_USID#    /* ●수정작업자*/
+				,#ACCT_UNIT#    /* ●회계단위 */
+				,#ACCT_GUBN#	/* ●회계구분_사업장 */
+				,#SLIP_DATE#    /* ●전표일자(회계일자) */ 
+				,#SLIP_GUBN#    /* ●전표유형구분 */
+				,#TITL_NAME#    /* ●제목 */
+				,#EMPL_NUMB#    /* ●사원번호 */
+				,#DEPT_CODE#	/* ●부서코드 */ 						 
+				,#SOUS_LNKY#    /* ●출처연결키 */
+				,NULL
+				,NULL
+				,NULL
+				,NULL
+				,NULL
+				,sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+				
+			
+			/*==================================================================
+				2-1. 전표라인데이터 
+			==================================================================*/
+			FOR RS IN (
+				SELECT LPAD(ROWNUM, 4, '0') AS SLIP_LINE	/* 전표라인번호 */
+				      ,ROWNUM AS SORT_ORDR					/* 정렬순서 */
+				      ,B.* 
+				      FROM (
+				      		SELECT A.* 
+				      		FROM (
+					      		/* 1. 경조금 반제 - 차변 */  
+								SELECT 
+                                    C.ACCT_INTL                     /* 계정과목코드 */
+                                    ,D.DEPT_CODE AS USEX_DEPT        /* 사용부서 */
+                                    ,F.CSTC_CODE			         /* 코스트센터코드 */
+                                    ,TO_NCHAR('D') AS DRCR_GUBN        /* 차대구분 - 차변(D),대변(C) */
+                                    ,'KRW' AS CURR_GUBN              /* 통화구분 */
+                                    ,1 AS EXCH_RATE                  /* 환율 */
+                                    ,A.EXCC_AMOT AS FORI_AMNT        /* 외화금액 */
+                                    ,A.EXCC_AMOT AS SLIP_AMNT        /* 전표금액 */ 
+                                    ,TO_NCHAR('') AS OSLI_NUMB        /* 상대전표번호 */
+                                    ,TO_NCHAR('') AS OSLI_LINE        /* 상대전표순번 */
+                                    ,TO_NCHAR('') AS BUDG_GUBN         /* 예산구분 */
+                                    ,TO_NCHAR('') AS PROJ_CODE         /* 프로젝트코드 */
+                                    ,TO_NCHAR('') AS BGRQ_NUMB         /* 예산품의번호 */
+                                    ,TO_NCHAR('') AS BUDG_DEPT         /* 예산부서코드 */
+                                    ,TO_NCHAR('') AS BUDG_YYMM         /* 예산년월 */
+                                    ,TO_NCHAR('') AS BDSB_CODE         /* 예산과목코드 */
+                                    ,TO_NCHAR('') AS BDSP_CODE         /* 예산세목코드 */
+                                    ,'[' || SUBSTR(B.APPR_DATE, 1, 6) || ' 경조금 차변] - ' || SF_GET_COCONAME(A.COCO_CODE) AS REMK_NAME      /* 적요 */
+                                    ,TO_NCHAR('') AS EVID_DOCU         /* 증빙종류 */
+                                    ,TO_NCHAR('') AS PAYX_YSNO         /* 출납처리여부 */
+                                    ,TO_NCHAR('') AS PAYX_DATE         /* 지급일 */
+                                    ,TO_NCHAR('') AS LEDG_GUBN         /* 출납방법 */
+                                    ,TO_NCHAR('') AS BANK_INOU         /* 입출구분 */
+                                    ,TO_NCHAR('') AS PRIN_ORDR         /* 출력순서 */ 
+                                    ,TO_NCHAR('') AS BABR_CODE      /* 금융기관 */
+									,TO_NCHAR('') AS ACNT_NUMB      /* 계좌번호 */
+                                    ,1 AS CHKK_BANJ                    /* 반제계정여부 (업무테이블에 업데이트될 전표) */
+                                    ,A.APPR_SEQN
+                                    ,A.COCO_SEQN
+                                    ,D.EMPL_NUMB 					/* 사원번호 */
+                                 FROM CW_COCOAP A
+                                 LEFT JOIN TM_APPRXH B                /*결재테이블*/
+                                   ON A.DOCU_IDXX         = B.DOCU_IDXX
+                                  AND A.APPR_SEQN        = B.APPR_SEQN
+                                INNER JOIN TA_JUNLXM C                 /* [분개코드] */
+                                   ON C.JUNL_CODE in ('WF001-0001', 'WF001-0003')     /* 경조금 */
+                                INNER JOIN HR_MASTXM D                                         /*인사기본*/
+                                   ON A.APLT_EMNR = D.EMPL_NUMB
+                                LEFT OUTER JOIN VI_DEPTXM E ON D.DEPT_CODE = E.DEPT_CODE
+                                INNER JOIN TA_CSTCXM F				/*코스트센터*/
+								   ON D.DEPT_CODE = F.DEPT_CODE
+								  AND C.REF1_FILD = F.COST_GUBN 
+								  AND F.CSTC_CODE <> 'CC1010010'    /* 경영회 중복건 제거를 위한 차선 - 경영회 대표이사만 처리되도록 */
+                                WHERE A.SLIP_NUMB    = #FORM_IDXX# || #UPDT_USID# 
+                                AND B.APPR_STAT = 'Y'            /* 전자결재 완료 */
+                                
+								UNION ALL
+								/* 2. 경조금 대변 */
+								SELECT 
+                                    C.ACCT_INTL                     /* 계정과목코드 */
+                                    ,D.DEPT_CODE AS USEX_DEPT        /* 사용부서 */
+                                    ,TO_NCHAR('') AS CSTC_CODE         /* 코스트센터코드 */
+                                    ,TO_NCHAR('C') AS DRCR_GUBN        /* 차대구분 - 차변(D),대변(C) */
+                                    ,'KRW' AS CURR_GUBN              /* 통화구분 */
+                                    ,1 AS EXCH_RATE                  /* 환율 */
+                                    ,A.EXCC_AMOT AS FORI_AMNT        /* 외화금액 */
+                                    ,A.EXCC_AMOT AS SLIP_AMNT        /* 전표금액 */ 
+                                    ,TO_NCHAR('') AS OSLI_NUMB        /* 상대전표번호 */
+                                    ,TO_NCHAR('') AS OSLI_LINE        /* 상대전표순번 */
+                                    ,TO_NCHAR('') AS BUDG_GUBN         /* 예산구분 */
+                                    ,TO_NCHAR('') AS PROJ_CODE         /* 프로젝트코드 */
+                                    ,TO_NCHAR('') AS BGRQ_NUMB         /* 예산품의번호 */
+                                    ,TO_NCHAR('') AS BUDG_DEPT         /* 예산부서코드 */
+                                    ,TO_NCHAR('') AS BUDG_YYMM         /* 예산년월 */
+                                    ,TO_NCHAR('') AS BDSB_CODE         /* 예산과목코드 */
+                                    ,TO_NCHAR('') AS BDSP_CODE         /* 예산세목코드 */
+                                    ,'[' || SUBSTR(B.APPR_DATE, 1, 6) || ' 경조금 대변] - ' || SF_GET_COCONAME(A.COCO_CODE) AS REMK_NAME      /* 적요 */
+                                    ,TO_NCHAR('') AS EVID_DOCU         /* 증빙종류 */
+                                    ,TO_NCHAR('') AS PAYX_YSNO         /* 출납처리여부 */
+                                    ,TO_NCHAR('') AS PAYX_DATE         /* 지급일 */
+                                    ,TO_NCHAR('') AS LEDG_GUBN         /* 출납방법 */
+                                    ,TO_NCHAR('') AS BANK_INOU         /* 입출구분 */
+                                    ,TO_NCHAR('') AS PRIN_ORDR         /* 출력순서 */ 
+                                    ,TO_NCHAR('') AS BABR_CODE 		/* 금융기곤 */ 
+									,TO_NCHAR('') AS ACNT_NUMB		/* 계좌번호 */
+                                    ,0 AS CHKK_BANJ                    /* 반제계정여부 (업무테이블에 업데이트될 전표) */
+                                    ,A.APPR_SEQN
+                                    ,A.COCO_SEQN
+                                    ,D.EMPL_NUMB 					/* 사원번호 */
+                                 FROM CW_COCOAP A
+                                 LEFT JOIN TM_APPRXH B                /*결재테이블*/
+                                   ON A.DOCU_IDXX         = B.DOCU_IDXX
+                                  AND A.APPR_SEQN        = B.APPR_SEQN
+                                INNER JOIN TA_JUNLXM C                 /* [분개코드] */
+                                   ON C.JUNL_CODE = 'WF001-0002'     /* 카드사용경비 (경조금미지급비용) */
+                                INNER JOIN HR_MASTXM D                                         /*인사기본*/
+                                   ON A.APLT_EMNR = D.EMPL_NUMB
+                                LEFT OUTER JOIN VI_DEPTXM E ON D.DEPT_CODE = E.DEPT_CODE
+                                INNER JOIN TA_CSTCXM CC				/*코스트센터*/
+								   ON D.DEPT_CODE = CC.DEPT_CODE
+								   AND CC.CSTC_CODE <> 'CC1010010'    /* 경영회 중복건 제거를 위한 차선 - 경영회 대표이사만 처리되도록 */
+                                WHERE A.SLIP_NUMB      = #FORM_IDXX# || #UPDT_USID#
+                                AND B.APPR_STAT = 'Y'            /* 전자결재 완료 */
+                            
+
+							) A
+							ORDER BY A.APPR_SEQN,A.COCO_SEQN DESC
+				) B
+			)
+			LOOP
+				
+				sSLIP_LINE := RS.SLIP_LINE;		/* 전표라인번호 */
+				
+				/*==================================================================
+					2-2. 전표라인 저장 
+				==================================================================*/
+				PKG_FAMIFSLIP.SP_LINE_SAVE(
+					 #SYST_LNCD#  	 /* ●시스템언어코드*/
+					,#UPDT_USID#     /* ●수정작업자*/
+					,sSLIP_NUMB    	 /* ●전표번호 */
+					,sSLIP_LINE    	 /* ●전표라인번호 */
+					,#ACCT_UNIT#     /* ●회계단위 */
+					,#ACCT_GUBN#     /* ●회계구분_사업장 */
+					,RS.ACCT_INTL    /* ●계정과목코드 OR 분개코드 */
+					,RS.USEX_DEPT    /* ●사용부서 */
+					,RS.CSTC_CODE    /* ◎코스트센터코드 */
+					,RS.DRCR_GUBN    /* ●차대구분 */
+					,RS.CURR_GUBN    /* ●통화구분 */
+					,RS.EXCH_RATE    /* ●환율 */
+					,RS.FORI_AMNT    /* ●외화금액 */
+					,RS.SLIP_AMNT    /* ●전표금액 */
+					,RS.OSLI_NUMB    /* ◎상대전표번호 */
+					,RS.OSLI_LINE    /* ◎상대전표순번 */
+					,RS.BUDG_GUBN    /* ◎예산구분 */
+					,RS.PROJ_CODE    /* ◎프로젝트코드 */
+					,RS.BGRQ_NUMB    /* ◎예산품의번호 */
+					,RS.BUDG_DEPT    /* ◎예산부서코드 */
+					,RS.BUDG_YYMM    /* ◎예산년월 */
+					,RS.BDSB_CODE    /* ◎예산과목코드 */
+					,RS.BDSP_CODE    /* ◎예산세목코드 */
+					,RS.REMK_NAME    /* ●적요 */
+					,RS.EVID_DOCU    /* ◎증빙종류 */
+					,RS.PAYX_YSNO    /* ◎출납처리여부 */
+					,RS.PAYX_DATE    /* ◎지급일 */
+					,RS.LEDG_GUBN    /* ◎출납방법 */
+					,RS.BANK_INOU    /* ◎입출구분 */
+					,RS.PRIN_ORDR    /* ◎출력순서 */
+					,RS.SORT_ORDR    /* ◎정렬순서 */
+					,NULL     /* ◎미사용여분인수1 */
+					,NULL     /* ◎미사용여분인수2 */
+					,NULL     /* ◎미사용여분인수3 */
+					,NULL     /* ◎미사용여분인수4 */
+					,NULL     /* ◎미사용여분인수5 */
+				);
+				
+				/* ==================================================================
+					3-1. 계정별 관리항목 관리코드 조회 
+				================================================================== */
+				FOR RS_RF IN (	
+					SELECT A.COND_CODE	/* 관리항목 관리코드 */ 
+					  FROM TA_ACCTXD A	/* [계정관리항목코드] */
+					 WHERE A.ACCT_INTL = RS.ACCT_INTL		/* 계정코드 */
+					   AND (A.DRCR_YSNO IN (0, 1)								/* 0:차대변선택, 1:차대변필수 */
+						      OR A.DRCR_YSNO = DECODE(RS.DRCR_GUBN, 'D', 2, 3)	/* 2:차변필수, 3:대변필수 */ 
+						      OR A.DRCR_YSNO = DECODE(RS.DRCR_GUBN, 'D', 4, 5)	/* 4:차변선택, 5:대변선택 */
+						   )
+					 ORDER BY A.COND_CODE
+				)
+				LOOP
+					IF RS_RF.COND_CODE = '0001' THEN /* 금융기관 */
+						sCOND_VACD := RS.BABR_CODE;
+					
+					ELSIF RS_RF.COND_CODE = '0003' THEN /* 사번코드 */
+						sCOND_VACD := RS.EMPL_NUMB;
+						
+					ELSIF RS_RF.COND_CODE = '0004' THEN /* 부서코드 */
+						sCOND_VACD := RS.USEX_DEPT;
+						
+					ELSIF RS_RF.COND_CODE = '0064' THEN /* 계좌번호 */
+						sCOND_VACD := RS.ACNT_NUMB;
+	
+					END IF;
+					
+					/* ==================================================================
+						3-2. 관리항목 저장 
+					================================================================== */ 
+					PKG_FAMIFSLIP.SP_LINERF_SAVE(
+					       #SYST_LNCD# 			/* ●시스템언어코드 */
+						  ,#UPDT_USID#   		/* ●수정작업자 */
+					      ,sSLIP_NUMB      		/* ●전표번호 */
+					      ,sSLIP_LINE     		/* ●전표라인번호 */
+					      ,RS_RF.COND_CODE      /* ◎관리항목코드1 */
+					      ,sCOND_VACD      		/* ◎관리항목값1 */
+					      ,NULL      /* ◎관리항목코드2 */
+					      ,NULL      /* ◎관리항목값2 */
+					      ,NULL      /* ◎관리항목코드3 */
+					      ,NULL      /* ◎관리항목값3 */
+					      ,NULL      /* ◎관리항목코드4 */
+					      ,NULL      /* ◎관리항목값4 */
+					      ,NULL      /* ◎관리항목코드5 */
+					      ,NULL      /* ◎관리항목값5 */
+					      ,NULL      /* ◎관리항목코드6 */
+					      ,NULL      /* ◎관리항목값6 */
+					      ,NULL      /* ◎관리항목코드7 */
+					      ,NULL      /* ◎관리항목값7 */
+					      ,NULL      /* ◎관리항목코드8 */
+					      ,NULL      /* ◎관리항목값8 */
+					      ,NULL      /* ◎관리항목코드9 */
+					      ,NULL      /* ◎관리항목값9 */
+		      		);
+      			END LOOP;	/* END RS_RF 관리항목 */
+				
+				/*==================================================================
+					4. 전표번호 UPDATE
+				==================================================================*/
+	      		IF RS.CHKK_BANJ = 1 THEN	
+		            UPDATE   CW_COCOAP
+		               SET   SLIP_NUMB    = sSLIP_NUMB		/* 전표번호 */
+		               		,SLIP_LINE    = sSLIP_LINE		/* 전표라인번호 */
+		                    ,SSPS_CODE	  = '1'				/* 처리상태 */
+		                    ,PAYX_DATE    = #PAYX_DATE#		/* 지급일 */
+		                    ,UPDT_DATE    = SYSDATE    	   	/* 수정일자 */
+		                    ,UPDT_USID    = #UPDT_USID#   	/* 수정자 */
+		             WHERE   DOCU_IDXX	  = #DOCU_IDXX#		/* 결재DOC_ID */
+		               AND 	 APPR_SEQN    = RS.APPR_SEQN    /* 결재일련번호 */
+		               AND   COCO_SEQN    = RS.COCO_SEQN    /* 경조금신청SEQ */
+		               
+		               ;
+	      		END IF;
+	      		
+           	END LOOP;	/* END RS 전표라인 */
+		    
+		    /*==================================================================
+			4. 전표작성종료 
+			==================================================================*/            
+			PKG_FAMIFSLIP.SP_FINISH (
+			       #SYST_LNCD# 		/* ●시스템언어코드*/
+			      ,#UPDT_USID#      /* ●수정작업자*/
+			      ,sSLIP_NUMB      	/* ●전표번호 */
+	   		);
+	     	
+	    END;	
+	]]>
+	</insert>
+	
+	
+	<!-- 
+/*******************************************************************************
+	    작  성  자 : 정한균
+	    작  성  일 : 2016.10.07
+	    내      용 : 경조금 청구 전표삭제
+ ********************************************************************************/
+-->
+	<insert id="WFMA0030.PROC01" parameterClass="hashmap" >
+	<![CDATA[
+	BEGIN
+		/* WFMA0030.PROC01 경조금 청구 전표삭제 */
+		/*==================================================================
+			1. 전표삭제 
+		==================================================================*/
+		PKG_FAMIFSLIP.SP_DELETE (
+		 	   #SYST_LNCD#      /* ●시스템언어코드*/
+		      ,#UPDT_USID#      /* ●수정작업자*/
+		      ,#SLIP_NUMB#      /* ●전표번호 */
+		      ,#DELE_OPTN#      /* ◎삭제옵션 */
+		      
+	   	);
+	   	
+	   	/*==================================================================
+			2. 전표번호 UPDATE 
+		==================================================================*/
+        UPDATE   CW_COCOAP
+           SET   SLIP_NUMB    = ''				/* 전표번호 */
+           		,SLIP_LINE    = ''				/* 전표라인번호 */
+                ,SSPS_CODE	  = '0'				/* 처리상태 */
+                ,PAYX_DATE    = ''				/* 지급일 */
+                ,UPDT_DATE    = SYSDATE    	   	/* 수정일자 */
+                ,UPDT_USID    = #UPDT_USID#    	/* 수정자 */
+         WHERE   SLIP_NUMB    = #SLIP_NUMB#    	/* 전표번호 */
+           ;
+	END;
+	]]>
+	</insert>
+
+
+</sqlMap>

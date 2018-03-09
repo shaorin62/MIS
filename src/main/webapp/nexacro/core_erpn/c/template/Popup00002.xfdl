@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Popup00002" classname="passwordChange" left="0" top="0" width="400" height="176" titletext="상세(입력/수정)" onload="fn_FormLoadSetting">
+    <Layouts>
+      <Layout>
+        <Static id="Static02" taborder="1" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="135"/>
+        <Static id="Static06" taborder="2" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="385" top="0" width="15" height="135"/>
+        <Static id="Static108" taborder="3" text="h 15" visible="false" left="134" top="0" width="216" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="4" text="h 12" visible="false" left="286" top="164" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="5" text="h 8" visible="false" left="286" top="132" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Shape0" taborder="6" cssclass="styFormItemBoxOut" left="15" top="15" width="370" height="117"/>
+        <Button id="btnCancle" taborder="7" text="취소" onclick="fn_End" cssclass="btn_POP_CRUD" top="140" right="15" width="62" height="24" titletext="비밀번호 변경"/>
+        <Button id="btnSubmit" taborder="8" text="변경" onclick="fn_changePassword" cssclass="btn_POP_CRUD" top="140" right="80" width="62" height="24"/>
+        <Edit id="edtUSER_IDXX" taborder="9" readonly="true" cssclass="styFormItemText" left="135" top="24" right="36" height="21"/>
+        <Edit id="edtCURR_NUMB" taborder="10" password="true" cssclass="styFormItemText" left="135" top="50" right="36" height="21"/>
+        <Edit id="edtSCRT_NUMB" taborder="11" password="true" cssclass="styFormItemText" left="135" top="76" right="36" height="21"/>
+        <Edit id="edtSCRT_NUMB2" taborder="12" password="true" cssclass="styFormItemText" left="135" top="102" right="36" height="21"/>
+        <Static id="ACCT_NAME_L00" taborder="13" text="비밀번호 확인" cssclass="styFormItemCapBE" left="35" top="102" width="101" height="21"/>
+        <Static id="ACCT_NAME_L01" taborder="14" text="신규 비밀번호" cssclass="styFormItemCapBE" left="35" top="76" width="101" height="21"/>
+        <Static id="ACCT_NAME_L" taborder="15" text="현재 비밀번호" cssclass="styFormItemCapBE" left="35" top="50" width="101" height="21"/>
+        <Static id="ACCT_NAME_L02" taborder="16" text="아이디" cssclass="styFormItemCapBE" left="35" top="24" width="101" height="21"/>
+      </Layout>
+    </Layouts>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

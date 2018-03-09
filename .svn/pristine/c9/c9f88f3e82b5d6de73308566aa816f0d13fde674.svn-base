@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMB0010">
+
+<!--  
+ *   프로그램명 : 케이블&종편 개별청약
+ *   작 성 일 : 2016.10.12(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용  : 케이블&종편 개별청약 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 광고주코드, BRND_CODE : 브랜드코드, MEDX_CODE : 청구지코드, RMED_CODE : 매체코드	
+	-->
+	<select id="MDMB0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	/* MDMB0010.SEARCH00 케이블&종편 개별청약 조회 */ 
+					'0' CHEK_FILD		/*체크박스*/
+					,A.YEAR_MNTH		/*년월*/
+				    ,A.SEQX_FILD		/*일련번호*/
+				    ,A.CUST_CODE		/*광고주코드*/
+				    ,B.CUST_NAME		/*광고주명*/
+				    ,A.CTIM_CODE		/*광고주팀코드*/
+				    ,H.CUST_NAME CTIM_NAME	/*광고주팀명*/
+				    ,A.BRND_CODE		/*브랜드코드*/
+				    ,C.BRND_NAME		/*브랜드명*/
+				    ,A.MEDX_CODE	/*청구지코드*/
+				    ,D.CUST_NAME MEDX_NAME	/*청구지명*/
+				    ,A.RMED_CODE		/*매체코드*/
+				    ,E.CUST_NAME RMED_NAME	/*매체명*/
+				    ,A.MEDX_FLAG		/*매체구분*/
+				    ,F.COMM_CDNM	/*매체구분명*/
+				    ,A.INPT_PATH		/*투입경로*/
+				    ,A.PLAN_FLAG		/*계획치구분*/
+				    ,A.APLY_DATE		/*적용일자*/
+				    ,A.PRGM_NAME	/*프로그램명*/
+				    ,A.EMPL_CODE		/*사원코드*/
+				    ,SF_GET_EMPLNAME(A.EMPL_CODE) AS EMPL_NAME	/*사원명*/
+				    ,A.DEPT_CODE		/*부서코드*/
+				    ,G.DEPT_NAME		/*부서명*/
+				    ,A.HOUR_TYPE		/*시급*/
+				    ,A.BROD_MOND	/*월*/
+				    ,A.BROD_TUES		/*화*/
+				    ,A.BROD_WEDN	/*수*/
+				    ,A.BROD_THUR		/*목*/
+				    ,A.BROD_FRID		/*금*/
+				    ,A.BROD_SATU		/*토*/
+				    ,A.BROD_SUND		/*일*/
+				    ,A.MNST_DATE		/*금월광고시작일*/
+				    ,A.MNED_DATE		/*금월광고종료일*/
+				    ,A.STAR_TIME		/*방송시작시간*/
+				    ,A.ENDD_TIME		/*방송종료시간*/
+				    ,A.TTST_DATE		/*총광고시작일*/
+				    ,A.TTED_DATE		/*총광고종료일*/
+				    ,A.BROD_FLAG		/*방송구분*/
+				    ,A.ATCT_FLAG		/*자동계산*/
+				    ,A.CONT_FILD		/*회수*/
+				    ,A.PRCE_FILD		/*단가*/
+				    ,A.AMNT_FILD		/*광고비*/
+				    ,A.SECD_FILD		/*초수*/
+				    ,A.SUBS_FLAG		/*청약구분*/
+				    ,A.ADDX_FORM	/*광고형태*/
+				    ,A.CONT_FORM	/*계약형태*/
+				    ,A.ADDX_TYPE		/*광고유형*/
+				    ,A.AREA_FLAG		/*지역구분*/
+				    ,A.COMI_FILD		/*수수료*/
+				    ,A.COMI_RATE		/*수수료율*/
+				    ,A.TRTX_FLAG		/*위수탁부가세유무*/
+				    ,A.CMTX_FLAG		/*수수료부가세유무*/
+				    ,A.TRTR_NUMB		/*위수탁거래명세서번호*/
+				    ,A.TRTX_NUMB		/*위수탁세금계산서번호*/
+				    ,A.TRCH_NUMB		/*위수탁임시전표번호*/
+				    ,A.CMTR_NUMB	/*수수료거래명세서번호*/
+				    ,A.CMTX_NUMB	/*수수료세금계산서번호*/
+				    ,A.CMCH_NUMB	/*수수료임시전표번호*/
+				    ,A.SERV_CHCK		/*서비스구분*/
+				    ,A.PRMN_SEQX		/*전월 이월 순번*/
+				    ,A.MEMO_FILD		/*비고*/
+				    ,A.AORX_FLAG		/*AOR구분*/
+				    ,A.INST_USID		/*입력자*/
+				    ,SUBSTR(A.INST_DATE,1,10) INST_DATE		/*입력일*/
+				    ,A.UPDT_USID		/*수정자*/
+				    ,A.UPDT_DATE		/*수정일*/
+				FROM MD_CTMDXM A
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				LEFT JOIN MD_BRNDXM C ON A.BRND_CODE = C.BRND_CODE AND A.CUST_CODE = C.CUST_CODE
+				LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+				LEFT JOIN MD_CUSTXM E ON A.RMED_CODE = E.CUST_CODE
+				LEFT JOIN MD_CODEXM F ON A.MEDX_FLAG = F.COMM_CODE
+				LEFT JOIN TM_DEPTXM G ON TRIM(A.DEPT_CODE) = TRIM(G.DEPT_CODE)
+				LEFT JOIN MD_CUSTXM H ON A.CTIM_CODE = H.CUST_CODE
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="YEAR_MNTH">
+				A.YEAR_MNTH <![CDATA[  >=  ]]> #YEAR_MNTH#		/* 년월 */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="YEAR_MNTH00">
+				A.YEAR_MNTH <![CDATA[  <=  ]]> #YEAR_MNTH00#		/* 년월 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'		/* 광고주코드 */
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+				B.CUST_NAME LIKE '%' || #CUST_NAME# || '%'		/* 광고주명 */
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+				A.BRND_CODE LIKE '%' || #BRND_CODE# || '%'		/* 브랜드코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+				A.RMED_CODE LIKE '%' || #RMED_CODE# || '%'		/* 매체코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CODE">
+				A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'	/* 청구지코드 */
+		</isNotEmpty>	
+	</dynamic>
+	<![CDATA[
+		 ORDER BY TO_NUMBER(A.YEAR_MNTH),TO_NUMBER(A.SEQX_FILD)
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.15(표준화 완료)
+		내      용  : 광고주목록 조회
+		파라미터  : 
+	-->
+	<select id="MDMB0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT                                         /* MDMA0030.SEARCH01 광고주목록 가져오기 */
+                A.CUST_CODE								/* 광고주코드 */
+                , A.CUST_NAME                                 /* 거래처명 */
+                , A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+                , ' ' AS USEX_CODE                          /* NULL */
+                FROM TA_CUSTXM A 
+                LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUCL_CODE = 'FA260110'
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용 : 케이블&종편 개별청약 저장 처리
+	-->
+	<insert id="MDMB0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_CTMDXM (		/* MDMB0010.SAVE00 케이블&종편 개별청약 저장 */
+				YEAR_MNTH        /* 년월 */
+               ,SEQX_FILD        /* 일련번호 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,CTIM_CODE        /* 광고주팀코드 */
+               ,BRND_CODE        /* 브랜드코드 */
+               ,MEDX_CODE        /* 청구지코드 */
+               ,RMED_CODE        /* 매체코드 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,INPT_PATH        /* 투입경로 */
+               ,PLAN_FLAG        /* 계획치구분 */
+               ,APLY_DATE        /* 적용일자 */
+               ,PRGM_NAME        /* 프로그램명 */
+               ,EMPL_CODE        /* 사원코드 */
+               ,DEPT_CODE        /* 부서코드 */
+               ,HOUR_TYPE        /* 시급 */
+               ,BROD_MOND        /* 월 */
+               ,BROD_TUES        /* 화 */
+               ,BROD_WEDN        /* 수 */
+               ,BROD_THUR        /* 목 */
+               ,BROD_FRID        /* 금 */
+               ,BROD_SATU        /* 토 */
+               ,BROD_SUND        /* 일 */
+               ,STAR_TIME        /* 방송시작일 */
+               ,ENDD_TIME        /* 방송종료일 */
+               ,MNST_DATE        /* 금월광고시작일 */
+               ,MNED_DATE        /* 금월광고종료일 */
+               ,TTST_DATE        /* 총광고시작일 */
+               ,TTED_DATE        /* 총광고종료일 */
+               ,BROD_FLAG        /* 방송구분 */
+               ,ATCT_FLAG        /* 자동계산유무 */
+               ,CONT_FILD        /* 회수 */
+               ,PRCE_FILD        /* 단가 */
+               ,AMNT_FILD        /* 광고비 */
+               ,SECD_FILD        /* 초수 */
+               ,SUBS_FLAG        /* 청약구분 */
+               ,ADDX_FORM        /* 광고형태 */
+               ,CONT_FORM        /* 계약형태 */
+               ,ADDX_TYPE        /* 광고유형 */
+               ,AREA_FLAG        /* 지역구분 */
+               ,COMI_FILD        /* 수수료 */
+               ,COMI_RATE        /* 수수료율 */
+               ,TRTX_FLAG        /* 위수탁부가세유무 */
+               ,CMTX_FLAG        /* 수수료부가세유무 */
+               ,TRTR_NUMB        /* 위수탁거래명세서번호 */
+               ,TRTX_NUMB        /* 위수탁세금계산서번호 */
+               ,TRCH_NUMB        /* 위수탁임시전표번호 */
+               ,CMTR_NUMB        /* 수수료거래명세서번호 */
+               ,CMTX_NUMB        /* 수수료세금계산서번호 */
+               ,CMCH_NUMB        /* 수수료임시전표번호 */
+               ,SERV_CHCK        /* 서비스체크 */
+               ,PRMN_SEQX        /* 전월이월순번 */
+               ,MEMO_FILD        /* 비고 */
+               ,AORX_FLAG        /* AOR구분 */
+               ,INST_USID        /* 입력자 */
+               ,INST_DATE        /* 입력일 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일 */
+               ,TRAN_NUMB        /* 거래명세번호 */
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 년월 */
+              ,#SEQX_FILD#       /* 일련번호 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#CTIM_CODE#       /* 광고주팀코드 */
+              ,#BRND_CODE#       /* 브랜드코드 */
+              ,#MEDX_CODE#       /* 청구지코드 */
+              ,#RMED_CODE#       /* 매체코드 */
+              ,'A004'       /* 매체구분 */
+              ,#INPT_PATH#       /* 투입경로 */
+              ,#PLAN_FLAG#       /* 계획치구분 */
+              ,#APLY_DATE#       /* 적용일자 */
+              ,#PRGM_NAME#       /* 프로그램명 */
+              ,#EMPL_CODE#       /* 사원코드 */
+              ,#DEPT_CODE#       /* 부서코드 */
+              ,#HOUR_TYPE#       /* 시급 */
+              ,#BROD_MOND#       /* 월 */
+              ,#BROD_TUES#       /* 화 */
+              ,#BROD_WEDN#       /* 수 */
+              ,#BROD_THUR#       /* 목 */
+              ,#BROD_FRID#       /* 금 */
+              ,#BROD_SATU#       /* 토 */
+              ,#BROD_SUND#       /* 일 */
+              ,#STAR_TIME#       /* 방송시작일 */
+              ,#ENDD_TIME#       /* 방송종료일 */
+              ,#MNST_DATE#       /* 금월광고시작일 */
+              ,#MNED_DATE#       /* 금월광고종료일 */
+              ,#TTST_DATE#       /* 총광고시작일 */
+              ,#TTED_DATE#       /* 총광고종료일 */
+              ,#BROD_FLAG#       /* 방송구분 */
+              ,#ATCT_FLAG#       /* 자동계산유무 */
+              ,#CONT_FILD#       /* 회수 */
+              ,#PRCE_FILD#       /* 단가 */
+              ,#AMNT_FILD#       /* 광고비 */
+              ,#SECD_FILD#       /* 초수 */
+              ,#SUBS_FLAG#       /* 청약구분 */
+              ,#ADDX_FORM#       /* 광고형태 */
+              ,#CONT_FORM#       /* 계약형태 */
+              ,#ADDX_TYPE#       /* 광고유형 */
+              ,#AREA_FLAG#       /* 지역구분 */
+              ,TRUNC(#COMI_FILD#)       /* 수수료 */
+              ,#COMI_RATE#       /* 수수료율 */
+              ,#TRTX_FLAG#       /* 위수탁부가세유무 */
+              ,#CMTX_FLAG#       /* 수수료부가세유무 */
+              ,#TRTR_NUMB#       /* 위수탁거래명세서번호 */
+              ,#TRTX_NUMB#       /* 위수탁세금계산서번호 */
+              ,#TRCH_NUMB#       /* 위수탁임시전표번호 */
+              ,#CMTR_NUMB#       /* 수수료거래명세서번호 */
+              ,#CMTX_NUMB#       /* 수수료세금계산서번호 */
+              ,#CMCH_NUMB#       /* 수수료임시전표번호 */
+              ,#SERV_CHCK#       /* 서비스체크 */
+              ,#PRMN_SEQX#       /* 전월이월순번 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#AORX_FLAG#       /* AOR구분 */
+              ,#UPDT_USID#       /* 입력자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')	/*입력일*/
+              ,#UPDT_USID#       /* 수정자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')	/*입력일*/
+              ,#TRAN_NUMB#       /* 거래명세번호 */
+              )
+	]]>
+	</insert>
+	
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용 : 케이블&종편 개별청약 수정 처리
+	-->
+	<update id="MDMB0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_CTMDXM	/* MDMB0010.UPDATE00 케이블&종편 개별청약 수정 */
+			SET    
+					 YEAR_MNTH	=	#YEAR_MNTH#	/*년월*/
+					,CUST_CODE	=	#CUST_CODE#	/*광고주코드*/
+					,CTIM_CODE	=	#CTIM_CODE#		/*광고주팀코드*/
+					,BRND_CODE	=	#BRND_CODE#		/*브랜드코드*/
+					,MEDX_CODE	=	#MEDX_CODE#	/*청구지코드*/
+					,RMED_CODE	=	#RMED_CODE#	/*매체코드*/
+					,MEDX_FLAG	=	#MEDX_FLAG#		/*매체구분*/
+					,INPT_PATH		=	#INPT_PATH#		/*투입경로*/
+					,PLAN_FLAG		=	#PLAN_FLAG#		/*계획치구분*/
+					,APLY_DATE		=	#APLY_DATE#		/*적용일자*/
+					,PRGM_NAME	=	#PRGM_NAME#	/*프로그램명*/
+					,EMPL_CODE	=	#EMPL_CODE#		/*사원코드*/
+					,DEPT_CODE	=	#DEPT_CODE#		/*부서코드*/
+					,HOUR_TYPE	=	#HOUR_TYPE#		/*시급*/
+					,BROD_MOND	=	#BROD_MOND#	/*월*/
+					,BROD_TUES	=	#BROD_TUES#		/*화*/
+					,BROD_WEDN	=	#BROD_WEDN#	/*수*/
+					,BROD_THUR	=	#BROD_THUR#		/*목*/
+					,BROD_FRID		=	#BROD_FRID#		/*금*/
+					,BROD_SATU	=	#BROD_SATU#		/*토*/
+					,BROD_SUND	=	#BROD_SUND#		/*일*/
+					,STAR_TIME	=	#STAR_TIME#		/*방송시작시간*/
+					,ENDD_TIME	=	#ENDD_TIME#		/*방송종료시간*/
+					,MNST_DATE	=	#MNST_DATE#	/*금월광고시작일*/
+					,MNED_DATE	=	#MNED_DATE#		/*금월광고종료일*/
+					,TTST_DATE	=	#TTST_DATE#		/*총광고시작일*/
+					,TTED_DATE	=	#TTED_DATE#		/*총광고종료일*/
+					,BROD_FLAG	=	#BROD_FLAG#		/*방송구분*/
+					,ATCT_FLAG	=	#ATCT_FLAG#		/*자동계산*/
+					,CONT_FILD		=	#CONT_FILD#		/*회수*/
+					,PRCE_FILD		=	#PRCE_FILD#		/*단가*/
+					,AMNT_FILD	=	#AMNT_FILD#		/*광고비*/
+					,SECD_FILD		=	#SECD_FILD#		/*초수*/
+					,SUBS_FLAG	=	#SUBS_FLAG#		/*청약구분*/
+					,ADDX_FORM	=	#ADDX_FORM#	/*광고형태*/
+					,CONT_FORM	=	#CONT_FORM#	/*계약형태*/
+					,ADDX_TYPE	=	#ADDX_TYPE#		/*광고유형*/
+					,AREA_FLAG	=	#AREA_FLAG#		/*지역구분*/
+					,COMI_FILD		=	TRUNC(#COMI_FILD#)		/*수수료*/
+					,COMI_RATE	=	#COMI_RATE#		/*수수료율*/
+					,TRTX_FLAG	=	#TRTX_FLAG#		/*위수탁부가세*/
+					,CMTX_FLAG	=	#CMTX_FLAG#		/*수수료부가세*/
+					,TRTR_NUMB	=	#TRTR_NUMB#		/*위수탁거래명세서번호*/
+					,TRTX_NUMB	=	#TRTX_NUMB#	/*위수탁세금계산서번호*/
+					,TRCH_NUMB	=	#TRCH_NUMB#	/*위수탁임시전표번호*/
+					,CMTR_NUMB	=	#CMTR_NUMB#	/*수수료거래명세서번호*/
+					,CMTX_NUMB	=	#CMTX_NUMB#	/*수수료세금계산서번호*/
+					,CMCH_NUMB	=	#CMCH_NUMB#	/*수수료임시전표번호*/
+					,PRMN_SEQX	=	#PRMN_SEQX#	/*전월 이월 순번*/
+					,MEMO_FILD	=	#MEMO_FILD#		/*비고*/
+					,SERV_CHCK	=	#SERV_CHCK#		/*서비스구분*/
+					,AORX_FLAG	=	#AORX_FLAG#		/*AOR구분*/
+					,UPDT_USID	=	#UPDT_USID#		/*수정자*/
+					,UPDT_DATE	=	TO_CHAR(SYSDATE, 'YYYYMMDD')	/*수정일*/
+         WHERE SEQX_FILD 	= #SEQX_FILD#			/*일련번호*/
+         AND YEAR_MNTH=#YEAR_MNTH# 				/*년월*/
+         AND TRTR_NUMB IS NULL			/*위수탁거래명세서번호*/
+		AND TRTX_NUMB IS NULL			/*위수탁세금계산서번호*/
+		AND TRCH_NUMB IS NULL			/*위수탁임시전표번호*/
+		AND CMTR_NUMB IS NULL			/*수수료거래명세서번호*/
+		AND CMTX_NUMB IS NULL			/*수수료세금계산서번호*/
+		AND CMCH_NUMB IS NULL			/*수수료임시전표번호*/
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용 : 케이블&종편 개별청약 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MDMB0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_CTMDXM	/* MDMB0010.DELETE00 케이블&종편 개별청약 삭제 */
+			WHERE SEQX_FILD = #SEQX_FILD#	/* 일련번호 */
+			AND YEAR_MNTH=#YEAR_MNTH# /*년월*/
+			AND TRTR_NUMB IS NULL			/*위수탁거래명세서번호*/
+			AND TRTX_NUMB IS NULL			/*위수탁세금계산서번호*/
+			AND TRCH_NUMB IS NULL			/*위수탁임시전표번호*/
+			AND CMTR_NUMB IS NULL			/*수수료거래명세서번호*/
+			AND CMTX_NUMB IS NULL			/*수수료세금계산서번호*/
+			AND CMCH_NUMB IS NULL			/*수수료임시전표번호*/
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.12(표준화 완료)
+		내      용  : 신규 일련번호 코드 채번
+		파라미터  : 
+	-->
+	<select id="MDMB0010.NEW_SEQX_FILD" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MDMB0010.NEW_SEQX_FILD 신규 일련번호 채번  */
+						NVL(MAX(TO_NUMBER(SEQX_FILD)),0)+1	/* 신규 일련번호 */
+		FROM MD_CTMDXM
+		WHERE YEAR_MNTH=#YEAR_MNTH# /*년월*/
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.14(표준화 완료)
+		내      용  : 거래명세서가 생성되었는지 확인
+		파라미터  : 
+	-->
+	<select id="MDMB0010.COUNT00" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MDMB0010.COUNT00 거래명세서 번호채번  */
+						TRTR_NUMB		/* 신규 일련번호 */
+		FROM MD_CTMDXM
+		WHERE YEAR_MNTH	=	#YEAR_MNTH# /* 년월 */
+		AND SEQX_FILD = #SEQX_FILD#		/*일련번호*/
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.14(표준화 완료)
+		내      용  : 거래명세서가 생성되었는지 확인
+		파라미터  : 
+	-->
+	<select id="MDMB0010.COUNT01" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MDMB0010.COUNT01  세금계산서 번호채번  */
+						CMTX_NUMB		/* 신규 일련번호 */
+		FROM MD_CTMDXM
+		WHERE YEAR_MNTH	=	#YEAR_MNTH# /* 년월 */
+		AND SEQX_FILD = #SEQX_FILD#		/*일련번호*/
+	]]>
+	</select>
+
+</sqlMap>

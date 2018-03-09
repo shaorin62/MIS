@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="YEAA0080_2015">
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.28
+     내    용 : 연말정산내역 조회_근로소득지급명세
+********************************************************************************/
+-->
+	<select id="YEAA0080_2015.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+             SELECT /* YEAA0080_2015.SEARCH00.연말정산내역 조회_근로소득지급명세 */
+                    SF_GET_DEPTNAME(C.YEA_DEPT_CD) AS YEA_DEPT_NM   /*부서명*/
+                   ,A.YEA_EMP_NO       /*사원번호*/
+                   ,C.YEA_EMP_NM       /*사원명*/
+                   ,D.YEA_PAY_AOMT     /*지급금액 + 기타소득*/
+                   ,D.YEA_PAY_NUM003   /*상여금액*/
+                   ,D.YEA_PAY_NUM004   /*인정상여*/
+                   ,D.YEA_PAY_NUM005   /*주식매수선택권행사이익*/
+                   ,D.YEA_PAY_NUM006   /*우리사주조합인출금*/
+                   ,D.YEA_PAY_NUM007   /*임원 퇴직소득금액 한도초과액*/
+                   ,D.YEA_PAY_NTAX     /*비과세함계*/
+                   ,D.YEA_PAY_NUM015   /*소득세*/
+                   ,D.YEA_PAY_NUM016   /*주민세*/
+                   ,D.YEA_PAY_NUM017   /*농특세*/
+                   ,D.YEA_PAY_NUM021   /*국민연금*/
+                   ,D.YEA_PAY_NUM022   /*건강보험*/
+                   ,D.YEA_PAY_NUM023   /*고용보험*/
+                   ,E.YEA_BFW_NUM001   /*(종근무지)지급금액*/
+                   ,E.YEA_BFW_NUM002   /*(종근무지)상여금액*/
+                   ,E.YEA_BFW_NUM003   /*(종근무지)인정상여*/
+                   ,E.YEA_BFW_NUM004   /*(종근무지)주식매수선택권행사이익*/
+                   ,E.YEA_BFW_NUM005   /*(종근무지)우리사주조합인출금*/
+                   ,E.YEA_BFW_NUM006   /*(종근무지)임원 퇴직소득금액 한도초과액*/
+                   ,E.YEA_BFW_NTAX     /*(종근무지)비과세함계*/
+                   ,E.YEA_BFW_NUM010   /*(종근무지)소득세*/
+                   ,E.YEA_BFW_NUM011   /*(종근무지)주민세*/
+                   ,E.YEA_BFW_NUM012   /*(종근무지)농특세*/
+                   ,E.YEA_BFW_NUM007   /*(종근무지)국민연금*/
+                   ,E.YEA_BFW_NUM008   /*(종근무지)건강보험*/
+                   ,E.YEA_BFW_NUM009   /*(종근무지)고용보험*/
+               FROM YEA_INCDEC A
+          LEFT JOIN YEA_YEPROC B
+                 ON A.YEA_STD_YY = B.YEA_STD_YY
+                AND A.YEA_EMP_NO = B.YEA_EMP_NO
+          LEFT JOIN TABLE(SF_YEA_MASTXD(#YEA_STD_YY# || '1231')) C
+                 ON A.YEA_EMP_NO = C.YEA_EMP_NO
+          LEFT JOIN (
+                     SELECT YEA_EMP_NO
+                           ,SUM(YEA_PAY_NUM001) + SUM(YEA_PAY_NUM002) AS YEA_PAY_AOMT   /*지급금액 + 기타소득*/
+                           ,SUM(YEA_PAY_NUM003) AS YEA_PAY_NUM003                       /*상여금액*/
+                           ,SUM(YEA_PAY_NUM004) AS YEA_PAY_NUM004                       /*인정상여*/
+                           ,SUM(YEA_PAY_NUM005) AS YEA_PAY_NUM005                       /*주식매수선택권행사이익*/
+                           ,SUM(YEA_PAY_NUM006) AS YEA_PAY_NUM006                       /*우리사주조합인출금*/
+                           ,SUM(YEA_PAY_NUM007) AS YEA_PAY_NUM007                       /*임원 퇴직소득금액 한도초과액*/
+                           ,SUM(NVL(YEA_PAY_NUM010,0) + NVL(YEA_PAY_NUM011,0) + NVL(YEA_PAY_NUM012,0) + NVL(YEA_PAY_NUM013,0)) AS YEA_PAY_NTAX   /*비과세함계*/
+                           ,SUM(YEA_PAY_NUM015) AS YEA_PAY_NUM015                       /*소득세*/
+                           ,SUM(YEA_PAY_NUM016) AS YEA_PAY_NUM016                       /*주민세*/
+                           ,SUM(YEA_PAY_NUM017) AS YEA_PAY_NUM017                       /*농특세*/
+                           ,SUM(YEA_PAY_NUM021) AS YEA_PAY_NUM021                       /*국민연금*/
+                           ,SUM(YEA_PAY_NUM022) AS YEA_PAY_NUM022                       /*건강보험*/
+                           ,SUM(YEA_PAY_NUM023) AS YEA_PAY_NUM023                       /*고용보험*/
+                      FROM YEA_PAYDTL
+                     WHERE YEA_STD_YY = #YEA_STD_YY#
+                  GROUP BY YEA_EMP_NO
+                    ) D
+                 ON A.YEA_EMP_NO = D.YEA_EMP_NO
+          LEFT JOIN (
+                     SELECT A.YEA_EMP_NO
+                           ,SUM(A.YEA_BFW_NUM001) AS YEA_BFW_NUM001                      /*지급금액*/
+                           ,SUM(A.YEA_BFW_NUM002) AS YEA_BFW_NUM002                      /*상여금액*/
+                           ,SUM(A.YEA_BFW_NUM003) AS YEA_BFW_NUM003                      /*인정상여*/
+                           ,SUM(A.YEA_BFW_NUM004) AS YEA_BFW_NUM004                      /*주식매수선택권행사이익*/
+                           ,SUM(A.YEA_BFW_NUM005) AS YEA_BFW_NUM005                      /*우리사주조합인출금*/
+                           ,SUM(A.YEA_BFW_NUM006) AS YEA_BFW_NUM006                      /*임원 퇴직소득금액 한도초과액*/
+                           ,SUM(B.YEA_BFW_NTAX)   AS YEA_BFW_NTAX                        /*비과세함계*/
+                           ,SUM(A.YEA_BFW_NUM010) AS YEA_BFW_NUM010                      /*소득세*/
+                           ,SUM(A.YEA_BFW_NUM011) AS YEA_BFW_NUM011                      /*주민세*/
+                           ,SUM(A.YEA_BFW_NUM012) AS YEA_BFW_NUM012                      /*농특세*/
+                           ,SUM(A.YEA_BFW_NUM007) AS YEA_BFW_NUM007                      /*국민연금*/
+                           ,SUM(A.YEA_BFW_NUM008) AS YEA_BFW_NUM008                      /*건강보험*/
+                           ,SUM(A.YEA_BFW_NUM009) AS YEA_BFW_NUM009                      /*고용보험*/
+                       FROM YEA_BFWORK A
+                  LEFT JOIN (
+                             SELECT YEA_STD_YY
+                                   ,YEA_EMP_NO
+                                   ,YEA_BIZ_NO
+                                   ,SUM(YEA_BFN_NUM001) AS YEA_BFW_NTAX
+                               FROM YEA_BFNTAX
+                              WHERE YEA_STD_YY = #YEA_STD_YY#
+                           GROUP BY YEA_STD_YY, YEA_EMP_NO, YEA_BIZ_NO
+                             ) B
+                         ON A.YEA_STD_YY = B.YEA_STD_YY
+                        AND A.YEA_EMP_NO = B.YEA_EMP_NO
+                        AND A.YEA_BIZ_NO = B.YEA_BIZ_NO
+                      WHERE A.YEA_STD_YY = #YEA_STD_YY#
+                   GROUP BY A.YEA_EMP_NO
+                     ) E
+                 ON A.YEA_EMP_NO = E.YEA_EMP_NO
+	          LEFT JOIN VI_YEA_DEPTXM Z
+	                 ON #YEA_DEPT_CD# = Z.YEA_DEPT_CD
+              WHERE A.YEA_STD_YY = #YEA_STD_YY#
+                AND B.YEA_PRC_STR001 = '1'   /*확정여부Y*/
+                    
+	]]>
+	<isNotEmpty prepend="AND" property="YEA_DEPT_CD">	
+	<![CDATA[		 
+		        SF_GET_CONTREMK(C.YEA_DEPT_CD) LIKE Z.YEA_DEPT_FULL_CD || '%'
+	]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="YEA_EMP_NO">		
+	<![CDATA[	 
+                A.YEA_EMP_NO = #YEA_EMP_NO#
+	]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="YEA_INOFFICE_CD">	
+	<![CDATA[		 
+                 (
+                    (#YEA_INOFFICE_CD# = '1' AND C.YEA_HIRE_YMD <= #YEA_STD_YY# || '1231' AND NVL(C.YEA_QUIT_YMD, '29991231') >= #YEA_STD_YY# || '121231')
+                 OR (#YEA_INOFFICE_CD# = '2' AND NVL(C.YEA_QUIT_YMD, '29991231') <= #YEA_STD_YY# || '1231' )
+                 )
+	]]>
+	</isNotEmpty>
+	<![CDATA[
+           ORDER BY SF_GET_CONTREMK(C.YEA_DEPT_CD)
+           			, LPAD(C.YEA_POST_CD,5,'0')
+           			, C.YEA_RANK_CD
+           			, C.YEA_HIRE_YMD
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.28
+     내    용 : 연말정산내역 조회_근로소득원청징수,정산내역
+********************************************************************************/
+-->
+	<select id="YEAA0080_2015.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+             SELECT /* YEAA0080_2015.SEARCH01.연말정산내역 조회_근로소득원청징수,정산내역*/
+             		SF_GET_DEPTNAME(C.YEA_DEPT_CD) AS YEA_DEPT_NM   /*부서명*/
+                   ,A.YEA_EMP_NO       /*사원번호*/
+                   ,C.YEA_EMP_NM       /*사원명*/
+                   ,B.YEA_PRC_NUM001   /*총급여*/
+                   ,B.YEA_PRC_NUM002   /*근로소득공제*/
+                   ,B.YEA_PRC_NUM003   /*근로소득금액*/
+                   ,B.YEA_PRC_NUM004   /*기본공제_본인*/
+                   ,B.YEA_PRC_NUM005   /*기본공제_배우자*/
+                   ,B.YEA_PRC_NUM006   /*기본공제_부양가족 수*/
+                   ,B.YEA_PRC_NUM007   /*기본공제_부양가족*/
+                   ,B.YEA_PRC_NUM008   /*추가공제_경로우대 수*/
+                   ,B.YEA_PRC_NUM009   /*추가공제_경로우대*/
+                   ,B.YEA_PRC_NUM010   /*추가공제_장애인 수*/
+                   ,B.YEA_PRC_NUM011   /*추가공제_장애인*/
+                   ,B.YEA_PRC_NUM012   /*추가공제_부녀자*/
+                   ,B.YEA_PRC_NUM013   /*추가공제_한부모*/
+                   ,B.YEA_PRC_NUM014   /*국민연금보험료*/
+                   ,NVL(B.YEA_PRC_NUM015,0) + NVL(B.YEA_PRC_NUM016,0) + NVL(B.YEA_PRC_NUM017,0) + NVL(B.YEA_PRC_NUM018,0) AS YEA_PRC_SUM001   /*공무원,군인,사립학교교직원,별정우체국연금_기타연금*/
+                   ,NVL(B.YEA_PRC_NUM019,0) + NVL(B.YEA_PRC_NUM020,0) AS YEA_PRC_SUM002   /*건강/고용 보험료*/
+                   ,NVL(B.YEA_PRC_NUM021,0) + NVL(B.YEA_PRC_NUM022,0) AS YEA_PRC_SUM003   /*주택임차차입금_대출기관 + 주택임차차입금_거주자*/
+                   ,NVL(B.YEA_PRC_NUM023,0) + NVL(B.YEA_PRC_NUM024,0) + NVL(B.YEA_PRC_NUM025,0) + NVL(B.YEA_PRC_NUM026,0) + NVL(B.YEA_PRC_NUM027,0) + NVL(B.YEA_PRC_NUM104,0) + NVL(B.YEA_PRC_NUM105,0) + NVL(B.YEA_PRC_NUM106,0) + NVL(B.YEA_PRC_NUM107,0) AS YEA_PRC_SUM004   /*장기주택저당차입금 [2015귀속]장기주택차입분 추가*/
+                   ,B.YEA_PRC_NUM028   /*기부금이월분*/
+                   ,B.YEA_PRC_NUM029   /*특별소득공제 계*/
+                   ,B.YEA_PRC_NUM030   /*차감소득금액*/
+                   ,B.YEA_PRC_NUM031   /*개인연금저축*/
+                   ,B.YEA_PRC_NUM032   /*소기업·소상공인 공제부금*/
+                   ,NVL(B.YEA_PRC_NUM033,0) + NVL(B.YEA_PRC_NUM034,0) + NVL(B.YEA_PRC_NUM035,0) AS YEA_PRC_SUM005   /*청약저축+주택청약종합저축+근로자주택마련저축*/
+                   ,B.YEA_PRC_NUM036   /*투자조합출자 등*/
+                   ,B.YEA_PRC_NUM037   /*신용카드 등 사용액*/
+                   ,B.YEA_PRC_NUM038   /*우리사주조합 출연금*/
+                   ,B.YEA_PRC_NUM040   /*고용유지 중소기업 근로자*/
+                   ,B.YEA_PRC_NUM041   /*목돈안드는전세이자상환액*/
+                   ,B.YEA_PRC_NUM042   /*장기집합투자증권저축*/
+                   ,B.YEA_PRC_NUM043   /*그 박의 소득공제 계*/
+                   ,B.YEA_PRC_NUM044   /*특별공제 종합한도 초과액*/
+                   ,B.YEA_PRC_NUM045   /*종합소득 과세표준*/
+                   ,B.YEA_PRC_NUM046   /*산출세액*/
+                   ,B.YEA_PRC_NUM047   /*세액감면_소득세법*/
+                   ,B.YEA_PRC_NUM048   /*세액감면_조세특례제한법*/
+                   ,B.YEA_PRC_NUM049   /*세액감면_조세특례제한법 제30조*/
+                   ,B.YEA_PRC_NUM050   /*조세조약세액감면*/
+                   ,B.YEA_PRC_NUM051   /*세액감면 계*/
+                   ,B.YEA_PRC_NUM052   /*세액공제_근로소득*/
+                   ,B.YEA_PRC_NUM054   /*세액공제_자녀*/
+                   ,B.YEA_PRC_NUM055   /*과학기술인공제_공제대상금액*/
+                   ,B.YEA_PRC_NUM056   /*과학기술인공제_세액공제액*/
+                   ,B.YEA_PRC_NUM057   /*근로자퇴직급여보장법_공제대상금액*/
+                   ,B.YEA_PRC_NUM058   /*근로자퇴직급여보장법_세액공제액*/
+                   ,B.YEA_PRC_NUM059   /*연금저축_공제대상금액*/
+                   ,B.YEA_PRC_NUM060   /*연금저축_세액공제액*/
+                   ,B.YEA_PRC_NUM061   /*보장성보험료_공제대상금액*/
+                   ,B.YEA_PRC_NUM062   /*보장성보험료_세액공제액*/
+                   ,B.YEA_PRC_NUM063   /*의료비_공제대상금액*/
+                   ,B.YEA_PRC_NUM064   /*의료비_세액공제액*/
+                   ,B.YEA_PRC_NUM065   /*교육비_공제대상금액*/
+                   ,B.YEA_PRC_NUM066   /*교육비_세액공제액*/
+                   ,B.YEA_PRC_NUM067   /*정치자금기부금_10만원이하_공제대상금액*/
+                   ,B.YEA_PRC_NUM068   /*정치자금기부금_10만원이하_세액공제액*/
+                   ,B.YEA_PRC_NUM069   /*정치자금기부금_10만원초과_공제대상금액*/
+                   ,B.YEA_PRC_NUM070   /*정치자금기부금_10만원초과_세액공제액*/
+                   ,B.YEA_PRC_NUM071   /*법정기부금_공제대상금액*/
+                   ,B.YEA_PRC_NUM072   /*법정기부금_세액공제액*/
+                   ,B.YEA_PRC_NUM039   /*[2015귀속]_변경 우리사주조합 기부금_공제대상금액*/
+                   ,B.YEA_PRC_NUM108   /*[2015귀속]_추가 우리사주조합 기부금_세액공제액*/
+                   ,B.YEA_PRC_NUM073   /*지정기부금_공제대상금액*/
+                   ,B.YEA_PRC_NUM074   /*지정기부금_세액공제액*/
+                   ,B.YEA_PRC_NUM075   /*특별세액공제계*/
+                   ,B.YEA_PRC_NUM076   /*표준세액공제*/
+                   ,B.YEA_PRC_NUM077   /*납세조합공제*/
+                   ,B.YEA_PRC_NUM078   /*주택차입금*/
+                   ,B.YEA_PRC_NUM079   /*외국납부*/
+                   ,B.YEA_PRC_NUM080   /*월세세액공제_공제대상금액*/
+                   ,B.YEA_PRC_NUM081   /*월세세액공제_세액공제액*/
+                   ,B.YEA_PRC_NUM082   /*세액공제계*/
+                   ,B.YEA_PRC_NUM083   /*결정세액 소득세*/
+                   ,B.YEA_PRC_NUM084   /*결정세액 주민세*/
+                   ,B.YEA_PRC_NUM085   /*결정세액 농특세*/
+                   ,B.YEA_PRC_NUM086   /*종근무지소득세*/
+                   ,B.YEA_PRC_NUM087   /*종근무지주민세*/
+                   ,B.YEA_PRC_NUM088   /*종근무지농특세*/
+                   ,B.YEA_PRC_NUM089   /*주근무지소득세*/
+                   ,B.YEA_PRC_NUM090   /*주근무지주민세*/
+                   ,B.YEA_PRC_NUM091   /*주근무지농특세*/
+                   ,NVL(B.YEA_PRC_NUM086,0) + NVL(B.YEA_PRC_NUM089,0) AS YEA_PRC_SUM006  /*종근무지소득세+주근무지소득세_기납부세액*/
+                   ,NVL(B.YEA_PRC_NUM087,0) + NVL(B.YEA_PRC_NUM090,0) AS YEA_PRC_SUM007  /*종근무지주민세+주근무지주민세_기납부세액*/
+                   ,NVL(B.YEA_PRC_NUM088,0) + NVL(B.YEA_PRC_NUM091,0) AS YEA_PRC_SUM008  /*종근무지농특세+주근무지농특세_기납부세액*/
+                   ,B.YEA_PRC_NUM092   /*차감징수소득세*/
+                   ,B.YEA_PRC_NUM093   /*차감징수주민세*/
+                   ,B.YEA_PRC_NUM094   /*차감징수농특세*/
+                   ,(NVL(B.YEA_PRC_NUM092,0) + NVL(B.YEA_PRC_NUM093,0) + NVL(B.YEA_PRC_NUM094,0)) * -1 AS YEA_PRC_SUM009   /*환급세액*/
+                   ,D.YEA_PAY_NUM018   /*납부특례세액_소득세*/
+                   ,D.YEA_PAY_NUM019   /*납부특례세액_지방소득세*/
+                   ,D.YEA_PAY_NUM020   /*납부특례세액_농특세*/
+                    /* 귀속년도2014년 연말정산 재정산(소급)*/
+                   ,B.YEA_PRC_NUM099   /*6세이하*/
+                   ,B.YEA_PRC_NUM101   /*출산입양*/
+                   ,B.YEA_PRC_NUM102   /*장애인전용보험료_공제대상금액*/
+                   ,B.YEA_PRC_NUM103   /*장애인전용보험료_세액공제액*/
+                   ,B.YEA_PRC_NUM109   /**/
+                   ,B.YEA_PRC_NUM110   /**/
+               FROM YEA_INCDEC A
+          LEFT JOIN YEA_YEPROC B
+                 ON A.YEA_STD_YY = B.YEA_STD_YY
+                AND A.YEA_EMP_NO = B.YEA_EMP_NO
+          LEFT JOIN TABLE(SF_YEA_MASTXD(#YEA_STD_YY# || '1231')) C
+                 ON A.YEA_EMP_NO = C.YEA_EMP_NO
+          LEFT JOIN (
+                     SELECT SUM(YEA_PAY_NUM018) AS YEA_PAY_NUM018
+                           ,SUM(YEA_PAY_NUM019) AS YEA_PAY_NUM019
+                           ,SUM(YEA_PAY_NUM020) AS YEA_PAY_NUM020
+                           ,YEA_STD_YY
+                           ,YEA_EMP_NO
+                       FROM YEA_PAYDTL
+                      WHERE YEA_STD_YY = #YEA_STD_YY#
+                   GROUP BY YEA_STD_YY, YEA_EMP_NO
+                     ) D
+                 ON D.YEA_STD_YY = A.YEA_STD_YY
+                AND D.YEA_EMP_NO = A.YEA_EMP_NO
+          LEFT JOIN VI_YEA_DEPTXM Z
+                 ON #YEA_DEPT_CD# = Z.YEA_DEPT_CD
+              WHERE B.YEA_PRC_STR001 = '1'
+                AND A.YEA_INC_STR025 = '1'
+                AND A.YEA_STD_YY = #YEA_STD_YY#
+
+	]]>
+	<isNotEmpty prepend="AND" property="YEA_DEPT_CD">	
+	<![CDATA[		 
+		        SF_GET_CONTREMK(C.YEA_DEPT_CD) LIKE Z.YEA_DEPT_FULL_CD || '%'
+	]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="YEA_EMP_NO">		
+	<![CDATA[	 
+		        A.YEA_EMP_NO = #YEA_EMP_NO#
+	]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="YEA_INOFFICE_CD">	
+	<![CDATA[		 
+                 (
+                    (#YEA_INOFFICE_CD# = '1' AND C.YEA_HIRE_YMD <= #YEA_STD_YY# || '1231' AND NVL(C.YEA_QUIT_YMD, '29991231') >= #YEA_STD_YY# || '121231')
+                 OR (#YEA_INOFFICE_CD# = '2' AND NVL(C.YEA_QUIT_YMD, '29991231') <= #YEA_STD_YY# || '1231' )
+                 )
+	]]>
+	</isNotEmpty>
+	<![CDATA[
+           
+		      ORDER BY SF_GET_CONTREMK(C.YEA_DEPT_CD)
+		      		, C.YEA_POST_CD
+		      		, C.YEA_RANK_CD
+		      		, C.YEA_PROMOTE_YMD
+    ]]>
+    </select>	
+</sqlMap>

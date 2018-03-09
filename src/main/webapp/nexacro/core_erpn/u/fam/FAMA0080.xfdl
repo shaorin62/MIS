@@ -1,0 +1,489 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="FAMA0080" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="금융기관(지점)등록" position="absolute" scrollbars="none" onclose="fn_FormUnloadProcess" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="196" top="107" height="21" cssclass="styFormSearchInfo" taborder="7" usedecorate="true"/>
+        <Grid autoenter="TRUE" binddataset="dsTA_BANKBR" cellsizingtype="both" enable="true" id="grdTM_BANKBR" useinputpanel="false" taborder="1" tabstop="false" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" selecttype="row" autofittype="col" autofitminwidth="900" position="absolute" left="8" right="25" top="128" bottom="95" cssclass="styGrid01">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100" band="left"/>
+                <Column size="100"/>
+                <Column size="150"/>
+                <Column size="170"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="65"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="금융지점코드"/>
+                <Cell col="1" displaytype="text" text="금융기관"/>
+                <Cell col="2" displaytype="text" text="지점명"/>
+                <Cell col="3" displaytype="text" text="은행명(FULL)"/>
+                <Cell col="4" displaytype="text" text="발생일자"/>
+                <Cell col="5" displaytype="text" text="종료일자"/>
+                <Cell col="6" displaytype="text" text="사용여부"/>
+                <Cell col="7" displaytype="text" text="사업자번호"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BABR_CODE"/>
+                <Cell col="1" displaytype="combo" style="align:left;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BANK_CODE"/>
+                <Cell col="2" displaytype="text" style="align:left;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BABR_NAME"/>
+                <Cell col="3" displaytype="text" style="align:left;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BABR_ABNM"/>
+                <Cell col="4" displaytype="date" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:OPEN_DATE" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="date" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:CLOS_DATE" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="checkbox" style="background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:USEX_YSNO"/>
+                <Cell col="7" displaytype="normal" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),&quot;insert&quot;,&quot;#c3d5fdff&quot;,&quot;update&quot;,&quot;#fdd9c3ff&quot;,&quot;default&quot;), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BIZR_NUMB" mask="expr:Eco.decode(comp.parent.fnc_Length(BIZR_NUMB), 10, '###-##-#####', 13, '######-#######', '')"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox0" taborder="8" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43"/>
+        <Combo id="cmbSHRBANK_CODE" taborder="3" displayrowcount="20" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="96" top="71" width="120" height="21" type="search" autoselect="true"/>
+        <Combo id="cmbSHRUSEX_YSNO" taborder="5" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="573" top="71" width="100" height="21" autoselect="true"/>
+        <Static id="Static00" taborder="11" text="금융기관" cssclass="styFormSearchCap" left="27" top="71" width="70" height="21" style="align:left middle;"/>
+        <Static id="Static03" taborder="13" text="사용여부" cssclass="styFormSearchCap" left="505" top="71" width="70" height="21" style="align:left middle;"/>
+        <Edit id="edtSHRBABR_NAME" taborder="4" maxlength="20" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="326" top="71" width="150" height="21"/>
+        <Static id="Static09" taborder="15" text="금융지점명" cssclass="styFormSearchCap" left="245" top="71" width="80" height="21" style="align:left middle;"/>
+        <Static id="Shape01" taborder="17" cssclass="styFormItemBoxOut" left="8" right="25" bottom="15" height="65"/>
+        <Edit id="edtBABR_NAME" taborder="14" maxlength="20" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="631" bottom="50" width="140" height="21"/>
+        <Static id="Static01" taborder="25" text="지점명" cssclass="styFormItemCapBE" left="561" bottom="50" width="70" height="21"/>
+        <Edit id="edtBABR_CODE" taborder="10" maxlength="6" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="97" bottom="50" width="100" height="21" style="align:center middle;" inputtype="number"/>
+        <Edit id="edtBABR_ABNM" taborder="16" maxlength="30" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="945" bottom="50" height="21" right="46"/>
+        <Static id="Static23" taborder="26" text="지점코드" cssclass="styFormItemCapBE" left="28" bottom="50" width="70" height="21"/>
+        <Static id="Static20" taborder="27" text="은행명(FULL)" cssclass="styFormItemCapBE" left="838" bottom="50" width="115" height="21"/>
+        <Static id="Static17" taborder="28" text="금융기관" cssclass="styFormItemCapBE" left="278" bottom="50" width="70" height="21"/>
+        <Combo id="cmbBANK_CODE" taborder="12" displayrowcount="20" onsetfocus="fn_EditFocus" cssclass="styFormItemCombo" left="348" bottom="50" width="140" height="21" index="-1" type="search"/>
+        <Static id="Static46" taborder="29" text="발생일자" cssclass="styFormItemCap" left="28" bottom="24" width="70" height="21"/>
+        <MaskEdit id="medBIZR_NUMB" taborder="23" type="string" mask="###-##-#####" trimtype="both" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="945" bottom="24" width="140" height="21" style="align:center middle; :disabled {align:center;}" binddataset="dsTB_CUST"/>
+        <Static id="stREGS_NO" taborder="30" text="사업자등록번호" cssclass="styFormItemCap" left="838" bottom="24" width="115" height="21"/>
+        <CheckBox id="chkUSEX_YSNO" taborder="21" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="631" bottom="24" width="120" height="21"/>
+        <Static id="satCUST_CODE" taborder="31" text="사용여부" cssclass="styFormItemCap" left="561" bottom="24" width="70" height="21"/>
+        <Calendar id="calCLOS_DATE" taborder="20" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="348" bottom="24" width="100" height="21" value="null" innerdataset="@dsTA_BANKBR" datecolumn="CLOS_DATE"/>
+        <Static id="Static02" taborder="32" text="종료일자" cssclass="styFormItemCap" left="278" bottom="24" width="70" height="21"/>
+        <Calendar id="calOPEN_DATE" taborder="18" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="97" bottom="24" width="100" height="21"/>
+        <Static id="st_FormTitle" taborder="33" text="금융기관(지점)등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="34" text="홈 &gt; 재무관리 &gt; 기본정보 &gt; 금융기관(지점)등록" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="35" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="36" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static05" taborder="39" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="40" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="41" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="42" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static08" taborder="43" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static10" taborder="44" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="45" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="46" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="47" text="w 40" visible="false" left="216" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static11" taborder="48" text="w 40" visible="false" left="476" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="49" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static13" taborder="50" text="h 25" visible="false" left="573" top="622" width="80" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static14" taborder="51" text="w30" visible="false" left="9" top="649" width="30" height="41" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTA_BANKBR" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="BABR_CODE" size="6" prop="default" type="STRING"/>
+          <Column id="BANK_CODE" size="8" prop="default" type="STRING"/>
+          <Column id="BABR_NAME" size="20" prop="default" type="STRING"/>
+          <Column id="BABR_ABNM" size="30" prop="default" type="STRING"/>
+          <Column id="OPEN_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="CLOS_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="USEX_YSNO" size="8" prop="default" type="STRING"/>
+          <Column id="BIZR_NUMB" size="10" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="REMARK" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">BANK_CODE</Col>
+            <Col id="DSNAME">dsSHRBANK_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="REMARK">은행코드</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">USIG_YSNO</Col>
+            <Col id="DSNAME">dsSHRUSEX_YSNO</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="REMARK">사용여부</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">BANK_CODE</Col>
+            <Col id="DSNAME">dsBANK_CODE</Col>
+            <Col id="HEADFLAG">N</Col>
+            <Col id="REMARK">은행코드 - 사용코드만(입력용)</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item2" compid="cmbBANK_CODE" propid="value" datasetid="dsTA_BANKBR" columnid="BANK_CODE"/>
+      <BindItem id="item4" compid="edtBABR_ABNM" propid="value" datasetid="dsTA_BANKBR" columnid="BABR_ABNM"/>
+      <BindItem id="item5" compid="edtBABR_CODE" propid="value" datasetid="dsTA_BANKBR" columnid="BABR_CODE"/>
+      <BindItem id="item0" compid="edtBABR_NAME" propid="value" datasetid="dsTA_BANKBR" columnid="BABR_NAME"/>
+      <BindItem id="Tab0_tab0_medREGS_NO_value" compid="medBIZR_NUMB" propid="value" datasetid="dsTA_BANKBR" columnid="BIZR_NUMB"/>
+      <BindItem id="item16" compid="chkUSEX_YSNO" propid="value" datasetid="dsTA_BANKBR" columnid="USEX_YSNO"/>
+      <BindItem id="item1" compid="calCLOS_DATE" propid="value" datasetid="dsTA_BANKBR" columnid="CLOS_DATE"/>
+      <BindItem id="item15" compid="calOPEN_DATE" propid="value" datasetid="dsTA_BANKBR" columnid="OPEN_DATE"/>
+      <BindItem id="item3" compid="calCLOS_DATE" propid="datecolumn" datasetid="dsTA_BANKBR" columnid="CLOS_DATE"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:	FAMA0080 금융기관지점등록
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.26		양현덕		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망    *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+
+/************************
+ *  공통 Script Include *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/***********************
+ *  화면 변수 선언부 *
+ ***********************/
+this.sBUTTONLIST  = "TTTTTTTF"; // 종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄
+this.sPACKAGENAME = "FAMA0080";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+
+} else {
+
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*---------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +---------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.cmbSHRBANK_CODE.setFocus();
+
+}
+
+/*--------------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ---------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*--------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTA_BANKBR"); 
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTA_BANKBR=dsTA_BANKBR";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_BANKBR.setFocus();
+
+}
+
+/*--------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Input = function (obj) {
+
+	var iRow     = this.dsTA_BANKBR.addRow();
+	var sNowDate = this.fnc_GetServerDateTime("DATE");
+
+	this.dsTA_BANKBR.setColumn(iRow, "OPEN_DATE", sNowDate);
+	
+	this.dsTA_BANKBR.setColumn(iRow, "USEX_YSNO", "1");
+	this.edtBABR_CODE.setFocus();
+
+}
+
+/*--------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()) this.dsTA_BANKBR.deleteRow(this.dsTA_BANKBR.rowposition);
+	this.grdTM_BANKBR.setFocus();
+}
+
+/*--------------------------+
+ |  06.취소 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsTA_BANKBR");
+	this.grdTM_BANKBR.setFocus();
+}
+
+/*--------------------------+
+ |  07.저장 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Save = function (obj) {
+	
+	if (!this.fn_SaveItemCheck()) return;
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTA_BANKBR=dsTA_BANKBR:U";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_BANKBR.setFocus();
+
+}
+
+/*--------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this);
+}
+
+/*--------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*-----------------------------------+
+ |  10. 화면 종료時 처리 할 사항  |
+ +-----------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	
+	if(e.fromobject instanceof Div) return;	
+	
+	var sMessage = this.fnc_FormUnloadCheck("dsTA_BANKBR", this);	
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)    |
+ +-----------------------------------*/
+this.fn_HotKey = function (obj, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때   |
+ +-----------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*--------------------------+
+ |  조회 필수 조건 체크!  |
+ +--------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsTA_BANKBR")) {
+		if (this.fnc_Message("TMM023") == false) return false;	
+	}
+
+	return true;
+
+}
+
+/*---------------------+
+ |  삭제 여부 체크!  |
+ +---------------------*/
+this.fn_DeleteCheck = function () {
+	
+	if (this.dsTA_BANKBR.rowcount < 1) {
+		this.fnc_Message("TMM007");
+		return;
+	}
+
+	var sQuestionText  ="금융지점코드 : ("+ this.dsTA_BANKBR.getColumn(this.dsTA_BANKBR.rowposition, "BABR_CODE") + "), 은행명 : ("
+		sQuestionText += this.dsTA_BANKBR.getColumn(this.dsTA_BANKBR.rowposition, "BABR_ABNM")+")";
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*---------------------+
+ |  저장 여부 체크!  |
+ +---------------------*/
+this.fn_SaveItemCheck = function (){
+
+	if (!this.fnc_DatasetChangeCheck("dsTA_BANKBR")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	for (var i = 0; i < this.dsTA_BANKBR.rowcount; i++) {
+
+		if (this.dsTA_BANKBR.getRowType(i) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BABR_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "지점코드", this.dsTA_BANKBR, i, this.edtBABR_CODE, "BABR_CODE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BANK_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "금융기관", this.dsTA_BANKBR, i, this.cmbBANK_CODE, "BANK_CODE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BABR_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "지점명", this.dsTA_BANKBR, i, this.edtBABR_NAME, "BABR_NAME");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BABR_ABNM"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "은행명", this.dsTA_BANKBR, i, this.edtBABR_ABNM, "BABR_ABNM");
+		}
+
+		// 사업자번호를 입력하면 처리함
+		if (this.fnc_Length(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BIZR_NUMB"))) != 0) {
+			// 사업자등록번호 유효성 검사
+			if (!this.fnc_FormatCustNumber(this.fnc_Trim(this.dsTA_BANKBR.getColumn(i, "BIZR_NUMB")))) {
+				return this.fnc_CheckPostAction("TMM119", "사업자등록번호", this.dsTA_BANKBR, i, this.medBIZR_NUMB, "BIZR_NUMB");
+			}
+			
+		}
+
+	}
+
+	return true;
+
+}
+
+/*--------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +--------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " BANK_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRBANK_CODE.value)); //은행명
+		sReturnString += " BABR_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRBABR_NAME.value)); //계좌유형
+		sReturnString += " USEX_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRUSEX_YSNO.value)); //사용여부
+
+	} else if ( sKind == "SAVE00") {
+		sReturnString  = " pgm="    + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+	}
+
+	return sReturnString;
+}
+
+/*---------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +---------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+	
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+	    this.fnc_Information(this.stInformation, this.dsTA_BANKBR.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_BANKBR.getCaseCount("dataset.getRowLevel(currow)==0"));
+
+	} else if (sMethodName == "SAVE00") {
+
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+
+	} else if (sMethodName == "GetCommCode") {
+
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRBANK_CODE,dsSHRBANK_CODE,0";
+			arrParam[1] = "COMBO,cmbSHRUSEX_YSNO,dsSHRUSEX_YSNO,1";
+			arrParam[2] = "COMBO,cmbBANK_CODE,dsBANK_CODE,0";
+			arrParam[3] = "GRID,grdTM_BANKBR,dsBANK_CODE,BANK_CODE";	
+		this.fnc_CommonCodeInnerBind(arrParam);
+
+	}
+	
+}
+
+/*-------------------------------------+
+ |  수정 시 Key Field Disibled 처리   |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowsetChangeEventInfo) {
+
+	if (e.newrow == -1) return;
+
+	if (this.fnc_ToUpper(obj.getRowType(obj.rowposition)) == Dataset.ROWTYPE_INSERT) {
+		this.fnc_SetReadonly(this.edtBABR_CODE, !true);
+	} else {
+		this.fnc_SetReadonly(this.edtBABR_CODE, !false);
+	}
+
+}
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                *
+ **************************************************************************************************/]]></Script>
+  </Form>
+</FDL>

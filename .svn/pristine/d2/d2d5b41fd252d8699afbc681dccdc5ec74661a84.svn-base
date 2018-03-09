@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="comCalendarDiv" position="absolute" titletext="comCalendarDiv" left="0" top="0" width="745" height="30">
+    <Layouts>
+      <Layout>
+        <Static id="CALN_WEEK00" taborder="2" onclick="date_onclick" cssclass="styCalendarHeadSun" left="0%" top="0" bottom="0" width="14.6%" text="일"/>
+        <Static id="CALN_WEEK01" taborder="3" onclick="date_onclick" cssclass="styCalendarHead" left="14.2857%" top="0" bottom="0" width="14.6%" text="월"/>
+        <Static id="CALN_WEEK02" taborder="4" onclick="date_onclick" cssclass="styCalendarHead" left="28.5714%" top="0" bottom="0" width="14.6%" text="화"/>
+        <Static id="CALN_WEEK03" taborder="5" onclick="date_onclick" cssclass="styCalendarHead" left="42.8%" top="0" bottom="0" width="14.6%" text="수"/>
+        <Static id="CALN_WEEK04" taborder="6" onclick="date_onclick" cssclass="styCalendarHead" left="57.14%" top="0" bottom="0" width="14.6%" text="목"/>
+        <Static id="CALN_WEEK05" taborder="7" onclick="date_onclick" cssclass="styCalendarHead" left="71.4285%" top="0" bottom="0" width="14.6%" text="금"/>
+        <Static id="CALN_WEEK06" taborder="8" onclick="date_onclick" cssclass="styCalendarHeadSat" left="85.77%" top="0" bottom="0" width="14.23%" text="토"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Script type="xscript5.0"><![CDATA[
+this.fv_nYear;
+this.fv_nMonth;
+this.fv_nDay;
+this.fv_nFirstDay = -1;
+//함수기능은 업무화면에서 구현한다.
+
+/*  onclick  */
+this.date_onclick = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var objDiv = null;
+	if (obj instanceof Div)
+	{
+		objDiv = obj;
+	}
+	else if (obj instanceof Static)
+	{
+		objDiv = obj.parent;
+	}
+	
+	/*
+	divDate를 클릭했을 때 아래 컴포넌트중 하나에서 이벤트가 발생한다.
+	(DIV)divDate00~41
+	(Static)divDateXX.CALN_DATE
+	(Static)divDateXX.HOGB_NAME0~3
+
+	objDiv는 divDateXX가 선택 되고, 
+	divDateXX.CALN_DATE 가 visible 인지 확인한 후에 text를 가져오면 날짜를 가져올수 있다.
+	
+	*/
+	
+	//this.parent는 업무화면이다.
+	//var objParent = this.parent;
+	//objParent.fn_ondayClick(nDay);
+}
+]]></Script>
+  </Form>
+</FDL>

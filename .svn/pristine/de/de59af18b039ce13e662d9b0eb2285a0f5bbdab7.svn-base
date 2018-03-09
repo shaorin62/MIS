@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="sample_grid_multicell" classname="sample_grid_multicell" left="0" top="0" width="1024" height="768" titletext="New Form">
+    <Layouts>
+      <Layout>
+        <Grid id="Grid00" taborder="0" useinputpanel="false" left="6" top="16" width="511" height="442" binddataset="Dataset00">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="151"/>
+                <Column size="171"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell/>
+                <Cell col="1"/>
+              </Band>
+              <Band id="body">
+                <Cell rowspan="3" text="bind:COLA" tooltiptext="bind:COLA">
+                  <Cell/>
+                  <Cell row="1"/>
+                  <Cell row="2"/>
+                </Cell>
+                <Cell col="1" text="bind:COLB" tooltiptext="bind:COLB"/>
+                <Cell row="1" col="1" text="bind:COLC" tooltiptext="bind:COLC"/>
+                <Cell row="2" col="1" text="bind:COLD" tooltiptext="bind:COLD"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="Grid01" taborder="1" useinputpanel="false" left="518" top="16" width="494" height="430" binddataset="Dataset00">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="181"/>
+                <Column size="152"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell/>
+                <Cell col="1"/>
+              </Band>
+              <Band id="body">
+                <Cell rowspan="3" text="bind:COLA" tooltiptext="bind:COLA"/>
+                <Cell col="1" text="bind:COLB" tooltiptext="bind:COLB"/>
+                <Cell row="1" col="1" text="bind:COLC" tooltiptext="bind:COLC"/>
+                <Cell row="2" col="1" text="bind:COLD" tooltiptext="bind:COLD"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset00">
+        <ColumnInfo>
+          <Column id="COLA" type="STRING" size="256"/>
+          <Column id="COLB" type="STRING" size="256"/>
+          <Column id="COLC" type="STRING" size="256"/>
+          <Column id="COLD" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COLA">1</Col>
+            <Col id="COLB">2</Col>
+            <Col id="COLC">3</Col>
+            <Col id="COLD">4</Col>
+          </Row>
+          <Row>
+            <Col id="COLA">가</Col>
+            <Col id="COLB">나나</Col>
+            <Col id="COLC">다</Col>
+            <Col id="COLD">라</Col>
+          </Row>
+          <Row>
+            <Col id="COLA">a</Col>
+            <Col id="COLB">b</Col>
+            <Col id="COLC">c</Col>
+            <Col id="COLD">d</Col>
+          </Row>
+          <Row>
+            <Col id="COLA">11</Col>
+            <Col id="COLB">22</Col>
+            <Col id="COLC">33</Col>
+            <Col id="COLD">44</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

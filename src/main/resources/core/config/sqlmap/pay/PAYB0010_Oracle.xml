@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PAYB0010">
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 급여기본정보 조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYB0010.SEARCH00.급여기본정보 조회 */
+              A.EMPL_NUMB                                           /* 사원번호 */
+            , A.EMPL_NAME                                           /* 사원명 */
+            , A.RERN_NUMB                                           /* 주민등록번호 */
+            , SF_GET_COMMNAME('PYTY_CODE',A.PYTY_CODE) AS PYTY_NAME /* 급여형태 */
+            , C.SECT_NAME                                           /* 소속 */
+            , C.DEPT_NAME                                           /* 부서 */
+            , D.COMD_CDNM AS CPOS_NAME                              /* 직급 */
+            , SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+            , SF_GET_COMMNAME('DURS_CODE',A.DURS_CODE) AS DURS_NAME /* 직책 */
+            , SF_GET_COMMNAME('WRKS_CODE',A.WRKS_CODE) AS WRKS_NAME /* 근무상태 */
+            , A.PCOP_JCDT                                           /* 그룹입사일 */
+            , A.ENCO_DATE                                           /* 입사일 */
+            , A.RETR_DATE                                           /* 퇴사일 */
+            , A.ANSD_DATE                                           /* 연차기준일 */
+            , NVL(A.LBJO_YSNO, '0') AS LBJO_YSNO                    /* 노조가입여부 */
+            , A.CLSD_CODE                                           /* 직원구분코드 */
+            , NVL(B.PAWE_YSNO, '0') AS PAWE_YSNO                    /* 급여지급여부 */
+            , B.REEP_DIVC                                           /* 퇴직수당구분코드 */
+            , B.REAY_JOCD                                           /* 퇴직연금가입기관코드 */
+            , B.WABK_CODE                                           /* 급여은행코드 */
+            , SF_DECRYPT(B.WAGE_ACNO) AS WAGE_ACNO                  /* 급여계좌번호 */
+            , B.WAGE_DPST                                           /* 급여예금주 */
+            , B.IRSB_CODE                                           /* 부정기급여은행코드 */
+            , SF_DECRYPT(B.IRSA_ACNO) AS IRSA_ACNO                  /* 부정기급여계좌번호 */
+            , B.IRSA_DPST                                           /* 부정기급여예금주 */
+            , B.LFDN_CODE                                           /* 내외국인구분코드 */
+            , B.NANY_CODE                                           /* 국적코드 */
+            , B.RECL_CODE                                           /* 거주자구분코드 */
+            , B.DOMC_CODE                                           /* 거주지국코드 */
+            , B.TARA_YSNO                                           /* 단일세율적용여부 */
+            , B.HSHL_YSNO                                           /* 세대주여부 */
+            , B.RECP_DATE                                           /* 중간정산일(퇴직기산일) */
+            , B.STTD_YSNO                                           /* 표준세액공제여부 */
+            , B.PAYX_TAXR                                           /* 급여소득세적용코드 */
+            , NVL(B.PTPY_YSNO, '0') AS PTPY_YSNO                    /* 분할납부여부 */
+            , B.REAY_DATE     										/* 퇴직연금전환일 */
+         FROM HR_MASTXM A
+         LEFT OUTER JOIN PY_MASTPM B
+           ON B.EMPL_NUMB = A.EMPL_NUMB
+         LEFT OUTER JOIN VI_DEPTXM C
+           ON A.DEPT_CODE = C.DEPT_CODE
+         LEFT OUTER JOIN TM_CODEXD D
+           ON D.COMM_CODE = 'CPOS_CODE'  /*직급*/
+          AND A.CPOS_CODE = D.COMD_CODE
+    ]]>
+    <dynamic prepend="WHERE">
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                   C.DEPT_FCOD LIKE (SELECT DEPT_FCOD FROM VI_DEPTXM WHERE DEPT_CODE = #DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                   A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="CLSD_CODE">
+                   A.CLSD_CODE = #CLSD_CODE#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="WODN_CODE">
+                   A.WODN_CODE = #WODN_CODE#
+    </isNotEmpty>
+    </dynamic>
+             ORDER BY A.WODN_CODE, C.DEPT_FCOD, D.SORT_ORDR, A.PRON_DATE, A.ENCO_DATE
+
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 지급공제관리 조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYB0010.SEARCH01.지급공제관리 조회 */
+              A.EMPL_NUMB                   /* 사원번호 */
+            , A.EXPD_CODE                   /* 수당공제코드 */
+            , B.EXPD_NAME                   /* 수당공제명 */
+            , A.BGIN_DATE                   /* 시작일 */
+            , A.ENDX_DATE                   /* 종료일 */
+            , A.PADN_YSNO                   /* 지급공제여부 */
+            , A.PDGB_CODE                   /* 지급공제구분코드 */
+            , SF_GET_COMMNAME('PDGB_CODE', A.PDGB_CODE) AS PDGB_NAME   /* 지급구분 */
+            , A.EXPD_RAPY                   /* 수당공제비율금액 */
+            , A.REMK_100X                   /* 비고100 */
+         FROM PY_ALDEYN A                   /* [지급공제관리] */
+         LEFT OUTER JOIN PY_ALLDED B
+           ON A.EXPD_CODE = B.EXPD_CODE
+        WHERE A.EXPD_CODE LIKE 'A%'
+          AND A.EMPL_NUMB = #EMPL_NUMB#
+    ]]>
+    	<isNotEmpty prepend="AND" property="EXPD_CODE">
+    		  A.EXPD_CODE = #EXPD_CODE#
+    	</isNotEmpty>
+        ORDER BY NVL(ENDX_DATE,'29991231') DESC, B.SORT_ORDR
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 지급공제관리 조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYB0010.SEARCH02.지급공제관리 조회 */
+              A.EMPL_NUMB                   /* 사원번호 */
+            , A.EXPD_CODE                   /* 수당공제코드 */
+            , B.EXPD_NAME                   /* 수당공제명 */
+            , A.BGIN_DATE                   /* 시작일 */
+            , A.ENDX_DATE                   /* 종료일 */
+            , A.PADN_YSNO                   /* 지급공제여부 */
+            , A.PDGB_CODE                   /* 지급공제구분코드 */
+            , SF_GET_COMMNAME('PDGB_CODE', A.PDGB_CODE) AS PDGB_NAME   /* 공제구분 */
+            , A.EXPD_RAPY                   /* 수당공제비율금액 */
+            , A.REMK_100X                   /* 비고100 */
+         FROM PY_ALDEYN A                   /* [지급공제관리] */
+         LEFT OUTER JOIN PY_ALLDED B
+           ON A.EXPD_CODE = B.EXPD_CODE
+        WHERE A.EXPD_CODE LIKE 'D%'
+          AND A.EMPL_NUMB = #EMPL_NUMB#
+        ]]>
+    	<isNotEmpty prepend="AND" property="EXPD_CODE">
+    		  A.EXPD_CODE = #EXPD_CODE#
+    	</isNotEmpty>
+        ORDER BY NVL(ENDX_DATE,'29991231') DESC, B.SORT_ORDR
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 개인별기본급 조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYB0010.SEARCH03.개인별기본급 조회 */
+              A.EMPL_NUMB                   /* 사원번호 */
+            , A.STDS_DATE                   /* 기준일 */
+            , C.OPOS_CODE                   /* 직위코드 */
+            , SF_GET_COMMNAME('OPOS_CODE', C.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+            , A.SRAL_NUMB                   /* 일련번호 */
+            , A.BASC_ANSL                   /* 기본연봉 */
+            , A.ASL1_AMOT                   /* 연봉1금액 */
+            , A.ASL2_AMOT                   /* 연봉2금액 */
+            , A.ASL3_AMOT                   /* 연봉3금액 */
+            , A.ASL4_AMOT                   /* 연봉4금액 */
+            , A.BSLY_AMOT                   /* 기본급금액 */
+            , A.BSL1_AMOT                   /* 기본급1금액 */
+            , A.BSL2_AMOT                   /* 기본급2금액 */
+            , A.BSL3_AMOT                   /* 기본급3금액 */
+            , A.BSL4_AMOT                   /* 기본급4금액 */
+            , A.REMK_100X                   /* 비고100 */
+         FROM PY_REGSAL A                   /* [개인별기본급] */
+        INNER JOIN HR_MASTXM B
+           ON A.EMPL_NUMB = B.EMPL_NUMB
+        INNER JOIN TABLE(SF_HR_MASTXM(B.EMPL_NUMB, A.STDS_DATE)) C
+           ON A.EMPL_NUMB = C.EMPL_NUMB
+        WHERE A.EMPL_NUMB = #EMPL_NUMB#
+        ORDER BY A.STDS_DATE DESC, TO_NUMBER(A.SRAL_NUMB) DESC
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 급여조정  조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+       SELECT /* PAYB0010.SEARCH04.급여조정 조회 */
+              A.PAYX_DATE                   /* 지급일 */
+            , A.WAGE_CODE                   /* 급여코드 */
+            , B.WAGE_NAME                   /* 급여코드 */
+            , A.EMPL_NUMB                   /* 사원번호 */
+            , C.EXPD_NAME                   /* 수당공제코드 */
+            , A.EXPD_CODE                   /* 수당공제코드 */
+            , A.ADJT_RAPY                   /* 조정비율금액 */
+            , A.AJDI_CODE                   /* 조정구분코드 */
+            , SF_GET_COMMNAME('AJDI_CODE', A.AJDI_CODE) AS AJDI_NAME   /* 조정구분코드 */
+            , A.FEND_YMTH                   /* 고정종료년월 */
+            , A.REMK_100X                   /* 비고100 */
+         FROM PY_PAYSET A                   /* [급여조정] */
+         LEFT OUTER JOIN PY_PAYCOD B
+           ON A.WAGE_CODE = B.WAGE_CODE
+         LEFT OUTER JOIN PY_ALLDED C
+           ON A.EXPD_CODE = C.EXPD_CODE
+        WHERE A.EMPL_NUMB = #EMPL_NUMB#
+        ORDER BY A.PAYX_DATE DESC, A.WAGE_CODE, C.SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.03
+     내    용 : 기타소득 조회
+********************************************************************************/
+-->
+    <select id="PAYB0010.SEARCH05" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+           SELECT /* PAYB0010.SEARCH05.기타소득 조회 */
+                  A.EMPL_NUMB                            /* 사원번호 */
+                , A.INDN_DATE                            /* 기타지급일 */
+                , A.INDN_CODE                            /* 소득구분코드 */
+                , B.COMD_CDNM AS INDN_NAME               /* 소득구분 */
+                , A.TAP1_AMOT                            /* 과세1지급금액 */
+                , A.TAP2_AMOT                            /* 과세2지급금액 */
+                , A.TAP3_AMOT                            /* 과세3지급금액 */
+                , A.NTP1_AMOT                            /* 비과세1지급금액 */
+                , A.NTP2_AMOT                            /* 비과세2지급금액 */
+                , A.NTP3_AMOT                            /* 비과세3지급금액 */
+                , NVL(A.TAP1_AMOT, 0) + NVL(A.NTP1_AMOT, 0) AS PAYX_TAMT /* 지급계 */
+                , A.INCM_TAXX                            /* 소득세 */
+                , A.INHA_TAXX                            /* 주민세 */
+                , A.OTDE_AMOT                            /* 기타공제금액 */
+                , A.PAYX_DATE                            /* 지급일 */
+                , A.WAGE_CODE                            /* 급여코드 */
+                , A.ENFC_CODE                            /* 사업장코드 */
+                , A.DEPT_CODE                            /* 부서코드 */
+                , A.CLSD_CODE                            /* 직원구분코드 */
+                , A.CPOS_CODE                            /* 직급코드 */
+                , A.OPOS_CODE                            /* 직위코드 */
+                , A.REMK_400X                            /* 비고400 */
+                , SUBSTR(A.INDN_DATE, 0, 4) AS INDN_SUBD /* FILTER 때문에 추가 */
+             FROM PY_INCOME A                            /* [기타소득지급] */
+             LEFT OUTER JOIN TM_CODEXD B
+                          ON B.COMM_CODE = 'INDN_CODE'
+                         AND A.INDN_CODE = B.COMD_CODE
+            WHERE A.EMPL_NUMB = #EMPL_NUMB#
+            ORDER BY A.INDN_DATE DESC, B.SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.22
+     내    용 : 급여기본정보 수정
+********************************************************************************/
+-->
+    <update id="PAYB0010.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0010.UPDATE00.급여기본정보 수정 */
+            v_ROWCNT INTEGER;
+        BEGIN
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM PY_MASTPM
+             WHERE EMPL_NUMB = #EMPL_NUMB#
+            ;
+            IF v_ROWCNT > 0 THEN
+                UPDATE PY_MASTPM /* [급여기본정보] */
+                   SET PAWE_YSNO = #PAWE_YSNO#            /* 급여지급여부 */
+                     , LFDN_CODE = #LFDN_CODE#            /* 내외국인구분코드 */
+                     , NANY_CODE = #NANY_CODE#            /* 국적코드 */
+                     , RECL_CODE = #RECL_CODE#            /* 거주자구분코드 */
+                     , DOMC_CODE = #DOMC_CODE#            /* 거주지국코드 */
+                     , TARA_YSNO = #TARA_YSNO#            /* 단일세율적용여부 */
+                     , HSHL_YSNO = #HSHL_YSNO#            /* 세대주여부 */
+                     , WABK_CODE = #WABK_CODE#            /* 급여은행코드 */
+                     , WAGE_ACNO = #WAGE_ACNO#            /* 급여계좌번호 */
+                     , WAGE_DPST = #WAGE_DPST#            /* 급여예금주 */
+                     , IRSB_CODE = #IRSB_CODE#            /* 부정기급여은행코드 */
+                     , IRSA_ACNO = #IRSA_ACNO#            /* 부정기급여계좌번호 */
+                     , IRSA_DPST = #IRSA_DPST#            /* 부정기급여예금주 */
+                     , RECP_DATE = #RECP_DATE#            /* 중간정산일 */
+                     , REAY_DATE = #REAY_DATE#            /* DC연금가입일 */
+                     , REEP_DIVC = #REEP_DIVC#            /* 퇴직수당구분코드 */
+                     , REAY_JOCD = #REAY_JOCD#            /* 퇴직연금가입기관코드 */
+                     , STTD_YSNO = #STTD_YSNO#            /* 표준세액공제여부 */
+                     , PAYX_TAXR = #PAYX_TAXR#            /* 급여소득세적용코드 */
+                     , PTPY_YSNO = #PTPY_YSNO#            /* 분할납부여부 */
+                     , REMK_100X = #REMK_100X#            /* 비고100 */
+                     , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE                /* 수정일시 */
+                 WHERE EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+                ;
+            ELSE
+                INSERT INTO PY_MASTPM (        /* [급여기본정보] */
+                            EMPL_NUMB          /* 사원번호 */
+                          , PAWE_YSNO          /* 급여지급여부 */
+                          , LFDN_CODE          /* 내외국인구분코드 */
+                          , NANY_CODE          /* 국적코드 */
+                          , RECL_CODE          /* 거주자구분코드 */
+                          , DOMC_CODE          /* 거주지국코드 */
+                          , TARA_YSNO          /* 단일세율적용여부 */
+                          , HSHL_YSNO          /* 세대주여부 */
+                          , WABK_CODE          /* 급여은행코드 */
+                          , WAGE_ACNO          /* 급여계좌번호 */
+                          , WAGE_DPST          /* 급여예금주 */
+                          , IRSB_CODE          /* 부정기급여은행코드 */
+                          , IRSA_ACNO          /* 부정기급여계좌번호 */
+                          , IRSA_DPST          /* 부정기급여예금주 */
+                          , RECP_DATE          /* 중간정산일 */
+                          , REAY_DATE          /* DC연금가입일 */
+                          , REEP_DIVC          /* 퇴직수당구분코드 */
+                          , REAY_JOCD          /* 퇴직연금가입기관코드 */
+                          , STTD_YSNO          /* 표준세액공제여부 */
+                          , PAYX_TAXR          /* 급여소득세적용코드 */
+                          , PTPY_YSNO          /* 분할납부여부 */
+                          , REMK_100X          /* 비고100 */
+                          , INST_USID          /* 입력작업자 */
+                          , INST_DATE          /* 입력일시 */
+                          , UPDT_USID          /* 수정작업자 */
+                          , UPDT_DATE          /* 수정일시 */
+                 ) VALUES (
+                            #EMPL_NUMB#        /* 사원번호 */
+                          , #PAWE_YSNO#        /* 급여지급여부 */
+                          , #LFDN_CODE#        /* 내외국인구분코드 */
+                          , #NANY_CODE#        /* 국적코드 */
+                          , #RECL_CODE#        /* 거주자구분코드 */
+                          , #DOMC_CODE#        /* 거주지국코드 */
+                          , #TARA_YSNO#        /* 단일세율적용여부 */
+                          , #HSHL_YSNO#        /* 세대주여부 */
+                          , #WABK_CODE#        /* 급여은행코드 */
+                          , SF_ENCRYPT(#WAGE_ACNO#)        /* 급여계좌번호 */
+                          , #WAGE_DPST#        /* 급여예금주 */
+                          , #IRSB_CODE#        /* 부정기급여은행코드 */
+                          , SF_ENCRYPT(#IRSA_ACNO#)        /* 부정기급여계좌번호 */
+                          , #IRSA_DPST#        /* 부정기급여예금주 */
+                          , #RECP_DATE#        /* 중간정산일 */
+                          , #REAY_DATE#        /* DC연금가입일 */
+                          , #REEP_DIVC#        /* 퇴직수당구분코드 */
+                          , #REAY_JOCD#        /* 퇴직연금가입기관코드 */
+                          , ''                 /* 표준세액공제여부 */
+                          , #PAYX_TAXR#        /* 급여소득세적용코드 */
+                          , #PTPY_YSNO#        /* 분할납부여부 */
+                          , ''                 /* 비고100 */
+                          , #UPDT_USID#        /* 입력작업자 */
+                          , SYSDATE            /* 입력일시 */
+                          , #UPDT_USID#        /* 수정작업자 */
+                          , SYSDATE            /* 수정일시 */
+                        );
+            END IF;
+
+                /*인사기본사항 변경*/
+                UPDATE HR_MASTXM
+                   SET CLSD_CODE = #CLSD_CODE#
+                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                ;
+        END;
+
+    ]]>
+    </update>
+</sqlMap>

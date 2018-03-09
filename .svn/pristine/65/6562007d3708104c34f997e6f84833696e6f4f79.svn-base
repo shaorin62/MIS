@@ -1,0 +1,1786 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="MDMA0030" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="전파_개별청약" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadProcess" left="0" width="1187" top="0" height="717">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" taborder="107" cssclass="styFormSearchBox" left="8" top="60" right="25" height="69" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="st_FormTitle" taborder="76" text="개별청약" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Div id="div_ButtonList" taborder="77" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="78" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static01" taborder="79" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="80" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="81" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static11" taborder="82" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="st_FormLocation" taborder="83" text="매체관리 &gt; 전파광고" cssclass="styFormLocation" left="43.98%" top="0" right="2.11%" height="29"/>
+        <Static id="Static30" taborder="84" text="년월" cssclass="styFormSearchCapBe" left="27" top="71" height="21" width="37"/>
+        <Static id="Static31" taborder="85" text="광고주" cssclass="styFormSearchCap" left="290" top="71" height="21" width="51"/>
+        <Static id="Static32" taborder="86" text="청구지" cssclass="styFormSearchCap" left="290" top="97" height="21" width="51"/>
+        <Static id="Static04" taborder="87" text="방송구분" cssclass="styFormSearchCap" left="28" top="97" height="21" width="71"/>
+        <Edit id="edtSHRCUST_CODE" taborder="88" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="345" top="71" height="21" width="80"/>
+        <Static id="imgHelpSHRCUST_CODE" taborder="89" onclick="fn_HelpDialogeSHRCUST_CODE" cssclass="sytHelpPopup" left="427" top="71" height="21" width="23"/>
+        <Edit id="edtSHRCUST_NAME" taborder="90" imemode="hangul" maxlength="50" autoselect="true" cssclass="styFormSearchItem" left="450" top="71" height="21" width="140" ontextchanged="edtSHRCUST_NAME_ontextchanged" onkeyup="edtSHRCUST_NAME_onkeyup" onkeydown="fn_onkeydown"/>
+        <Edit id="edtSHRMEDX_CODE" taborder="91" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="345" top="97" height="21" width="80"/>
+        <Static id="imgHelpSHRMEDX_CODE" taborder="92" onclick="fn_HelpDialogeSHRMEDX_CODE" cssclass="sytHelpPopup" left="427" top="97" height="21" width="22"/>
+        <Edit id="edtSHRMEDX_NAME" taborder="93" imemode="hangul" maxlength="50" autoselect="true" onkillfocus="fn_HelpDialogeSHRMEDX_CODE" cssclass="styFormSearchItem" left="450" top="97" height="21" width="140" ontextchanged="edtSHRMEDX_NAME_ontextchanged"/>
+        <Static id="stInformation" taborder="94" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="7" top="133" right="916" height="21"/>
+        <Static id="Static14" taborder="95" text="h 25" visible="false" left="48.27%" top="129" right="44.99%" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static16" taborder="96" text="h 6" visible="false" left="0.67%" top="148" right="81.13%" height="6" style="background:#fb7b7b7a;"/>
+        <Grid id="grdMD_ETMDXM" taborder="97" binddataset="dsMD_ETMDXM" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" cellmovingtype="col" left="7" top="154" right="25" bottom="233" onheadclick="grdMD_ETMDXM_onheadclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="25" band="left"/>
+                <Column size="50"/>
+                <Column size="50"/>
+                <Column size="150"/>
+                <Column size="100"/>
+                <Column size="150"/>
+                <Column size="200"/>
+                <Column size="50"/>
+                <Column size="150"/>
+                <Column size="180"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="70"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="70"/>
+                <Column size="98"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="70"/>
+                <Column size="70"/>
+                <Column size="0"/>
+                <Column size="0"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="110"/>
+                <Column size="110"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="0"/>
+                <Column size="87"/>
+                <Column size="75"/>
+                <Column size="100"/>
+                <Column size="92"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="87"/>
+                <Column size="120"/>
+                <Column size="61"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="checkbox" edittype="checkbox"/>
+                <Cell col="1" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="년월"/>
+                <Cell col="2" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="일련번호"/>
+                <Cell col="3" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="광고주"/>
+                <Cell col="4" edittype="text" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="광고주팀"/>
+                <Cell col="5" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="브랜드"/>
+                <Cell col="6" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="청구지"/>
+                <Cell col="7" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="매체구분"/>
+                <Cell col="8" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="매체"/>
+                <Cell col="9" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="프로그램명"/>
+                <Cell col="10" style="background:transparent;" text="방송시작시간"/>
+                <Cell col="11" style="background:transparent;" text="방송종료시간"/>
+                <Cell col="12" style="background:transparent;" text="방송시급"/>
+                <Cell col="13" style="background:transparent;" text="방송구분"/>
+                <Cell col="14" style="background:transparent;" text="방송초수"/>
+                <Cell col="15" style="background:transparent;" text="월"/>
+                <Cell col="16" style="background:transparent;" text="화"/>
+                <Cell col="17" style="background:transparent;" text="수"/>
+                <Cell col="18" style="background:transparent;" text="목"/>
+                <Cell col="19" style="background:transparent;" text="금"/>
+                <Cell col="20" style="background:transparent;" text="토"/>
+                <Cell col="21" style="background:transparent;" text="일"/>
+                <Cell col="22" style="background:transparent;" text="방송회수"/>
+                <Cell col="23" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="단가"/>
+                <Cell col="24" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="금액"/>
+                <Cell col="25" text="수수료"/>
+                <Cell col="26" style="background:transparent;" text="지역구분"/>
+                <Cell col="27" style="background:transparent;" text="청약구분"/>
+                <Cell col="28" style="background:transparent;" text="광고형태"/>
+                <Cell col="29" style="background:transparent;" text="광고유형"/>
+                <Cell col="30" style="background:transparent;" text="계약형태"/>
+                <Cell col="31" style="background:transparent;" text="편집요일"/>
+                <Cell col="32" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="총광고시작일"/>
+                <Cell col="33" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="총광고종료일"/>
+                <Cell col="34" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="금월방송시작일"/>
+                <Cell col="35" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="금월방송종료일"/>
+                <Cell col="36" style="background:transparent;" cssclass="Cellgrd_WF_essential" text="계획치구분"/>
+                <Cell col="37" style="background:transparent;" text="비고"/>
+                <Cell col="38" style="background:transparent;" text="적용일자"/>
+                <Cell col="39" style="background:transparent;" text="연계매체"/>
+                <Cell col="40" style="background:transparent;" text="부서명"/>
+                <Cell col="41" style="background:transparent;" text="사원명"/>
+                <Cell col="42" style="background:transparent;" text="위수탁부가세"/>
+                <Cell col="43" style="background:transparent;" text="수수료부가세"/>
+                <Cell col="44" style="background:transparent;" text="위수탁번호"/>
+                <Cell col="45" style="background:transparent;" text="수수료번호"/>
+                <Cell col="46" text="위수탁계산서번호"/>
+                <Cell col="47" text="수수료계산서번호"/>
+                <Cell col="48" text="위수탁전표번호"/>
+                <Cell col="49" text="수수료전표번호"/>
+                <Cell col="50" style="background:transparent;" text="자동계산"/>
+                <Cell col="51" style="background:transparent;" text="수수료율"/>
+                <Cell col="52" style="background:transparent;" text="등록일자"/>
+                <Cell col="53" style="background:transparent;" text="등록자"/>
+                <Cell col="54" text="투입경로"/>
+                <Cell col="55" style="background:transparent;" text="코바넷편성년도"/>
+                <Cell col="56" style="background:transparent;" text="코바넷편성일련번호"/>
+                <Cell col="57" style="background:transparent;" text="코바넷청약일련번호"/>
+                <Cell col="58" style="background:transparent;" text="코바넷운행일련번호"/>
+                <Cell col="59" style="background:transparent;" text="전월이월순번"/>
+                <Cell col="60" style="background:transparent;" text="매체통신구분"/>
+                <Cell col="61" style="background:transparent;" text="AOR구분"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="checkbox" edittype="checkbox" text="bind:CHEK_FILD"/>
+                <Cell col="1" edittype="none" style="align:center;" text="bind:YEAR_MNTH" editlimit="0"/>
+                <Cell col="2" displaytype="number" edittype="none" style="align:center;" text="bind:SEQX_FILD" editlimit="0"/>
+                <Cell col="3" edittype="none" style="align:center;" text="bind:CUST_NAME" editlimit="0" expandshow="show"/>
+                <Cell col="4" edittype="none" style="align:center;" text="bind:CTIM_NAME" expandshow="show"/>
+                <Cell col="5" edittype="none" style="align:center;" text="bind:BRND_NAME" editlimit="0" expandshow="show"/>
+                <Cell col="6" edittype="none" style="align:right;" text="bind:MEDX_NAME" editlimit="0" editclipmode="includespace" expandshow="show"/>
+                <Cell col="7" displaytype="combo" edittype="none" style="align:center;" text="bind:MEDX_FLAG" combodataset="dsMEDX_FLAGCombo" combocodecol="MEDX_FLAG_CODE" combodatacol="MEDX_FLAG_NAME"/>
+                <Cell col="8" edittype="none" style="align:center;" text="bind:RMED_NAME" editlimit="0" expandshow="show"/>
+                <Cell col="9" edittype="none" style="align:center;" text="bind:PRGM_NAME" editlimit="0"/>
+                <Cell col="10" edittype="none" style="align:center;" text="bind:STAR_TIME"/>
+                <Cell col="11" edittype="none" style="align:center;" text="bind:ENDD_TIME"/>
+                <Cell col="12" displaytype="combo" edittype="none" style="align:center;" text="bind:HOUR_TYPE"/>
+                <Cell col="13" displaytype="combo" edittype="none" style="align:center;" text="bind:BROD_FLAG"/>
+                <Cell col="14" edittype="none" style="align:center;" text="bind:SECD_FILD"/>
+                <Cell col="15" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_MOND"/>
+                <Cell col="16" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_TUES"/>
+                <Cell col="17" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_WEDN"/>
+                <Cell col="18" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_THUR"/>
+                <Cell col="19" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_FRID"/>
+                <Cell col="20" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_SATU"/>
+                <Cell col="21" displaytype="checkbox" edittype="none" style="align:center;" text="bind:BROD_SUND"/>
+                <Cell col="22" edittype="none" style="align:center;" text="bind:CONT_FILD"/>
+                <Cell col="23" displaytype="number" edittype="none" style="align:right;" text="bind:PRCE_FILD" mask="#,###"/>
+                <Cell col="24" displaytype="number" edittype="none" style="align:right;" text="bind:AMNT_FILD"/>
+                <Cell col="25" text="bind:COMI_FILD"/>
+                <Cell col="26" displaytype="combo" edittype="none" text="bind:AREA_FLAG"/>
+                <Cell col="27" displaytype="combo" edittype="none" text="bind:SUBS_FLAG"/>
+                <Cell col="28" displaytype="combo" edittype="none" text="bind:ADDX_FORM"/>
+                <Cell col="29" displaytype="combo" edittype="none" text="bind:ADDX_TYPE"/>
+                <Cell col="30" displaytype="combo" edittype="none" text="bind:CONT_FORM"/>
+                <Cell col="31" displaytype="combo" edittype="none" text="bind:EDIT_WKDY"/>
+                <Cell col="32" displaytype="date" edittype="none" text="bind:TTST_DATE"/>
+                <Cell col="33" displaytype="date" edittype="none" text="bind:TTED_DATE"/>
+                <Cell col="34" displaytype="date" edittype="none" text="bind:MNST_DATE"/>
+                <Cell col="35" displaytype="date" edittype="none" text="bind:MNED_DATE"/>
+                <Cell col="36" displaytype="checkbox" edittype="none" text="bind:PLAN_FLAG"/>
+                <Cell col="37" edittype="none" text="bind:MEMO_FILD"/>
+                <Cell col="38" displaytype="date" edittype="none" text="bind:APLY_DATE"/>
+                <Cell col="39" edittype="none" text="bind:CNMD_CODE"/>
+                <Cell col="40" edittype="none" text="bind:DEPT_NAME" expandshow="show" expandsize="23"/>
+                <Cell col="41" edittype="none" text="bind:EMPL_NAME" expandshow="show" expandsize="23"/>
+                <Cell col="42" displaytype="combo" edittype="none" text="bind:TRTX_FLAG" combodataset="dsTRTX_FLAGCombo" combocodecol="TRTX_FLAG_CODE" combodatacol="TRTX_FLAG_NAME"/>
+                <Cell col="43" displaytype="combo" edittype="none" text="bind:CMTX_FLAG" combodataset="dsCMTX_FLAGCombo" combocodecol="CMTX_FLAG_CODE" combodatacol="CMTX_FLAG_NAME"/>
+                <Cell col="44" edittype="none" text="bind:TRTR_NUMB"/>
+                <Cell col="45" edittype="none" text="bind:CMTR_NUMB"/>
+                <Cell col="46" text="bind:TRTX_NUMB"/>
+                <Cell col="47" text="bind:CMTX_NUMB"/>
+                <Cell col="48" text="bind:TRCH_NUMB"/>
+                <Cell col="49" text="bind:CMCF_NUMB"/>
+                <Cell col="50" edittype="none" text="bind:ATCT_FLAG"/>
+                <Cell col="51" displaytype="number" edittype="none" text="bind:COMI_RATE"/>
+                <Cell col="52" displaytype="text" edittype="none" text="bind:INST_DATE"/>
+                <Cell col="53" edittype="none" text="bind:INST_USID"/>
+                <Cell col="54" displaytype="combo" text="bind:INPT_PATH" combodataset="dsINPT_PATHCombo" combocodecol="INPT_PATH_CODE" combodatacol="INPT_PATH_NAME"/>
+                <Cell col="55" edittype="none" text="bind:KBNT_YEAR"/>
+                <Cell col="56" edittype="none" text="bind:KBNT_OSEQ"/>
+                <Cell col="57" edittype="none" text="bind:KBNT_SSEQ"/>
+                <Cell col="58" edittype="none" text="bind:KBNT_MSEQ"/>
+                <Cell col="59" edittype="none" text="bind:PRMN_SEQX"/>
+                <Cell col="60" displaytype="combo" edittype="none" text="bind:TRNS_FLAG"/>
+                <Cell col="61" displaytype="checkbox" edittype="none" text="bind:AORX_FLAG"/>
+              </Band>
+              <Band id="summary">
+                <Cell/>
+                <Cell col="1"/>
+                <Cell col="2"/>
+                <Cell col="3"/>
+                <Cell col="4"/>
+                <Cell col="5"/>
+                <Cell col="6"/>
+                <Cell col="7"/>
+                <Cell col="8"/>
+                <Cell col="9"/>
+                <Cell col="10"/>
+                <Cell col="11"/>
+                <Cell col="12"/>
+                <Cell col="13"/>
+                <Cell col="14"/>
+                <Cell col="15"/>
+                <Cell col="16"/>
+                <Cell col="17"/>
+                <Cell col="18"/>
+                <Cell col="19"/>
+                <Cell col="20"/>
+                <Cell col="21"/>
+                <Cell col="22" text="합계"/>
+                <Cell col="23"/>
+                <Cell col="24" displaytype="number" text="expr:dataset.getSum(&quot;AMNT_FILD&quot;)"/>
+                <Cell col="25" expr="expr:dataset.getSum(&quot;COMI_FILD&quot;)"/>
+                <Cell col="26"/>
+                <Cell col="27"/>
+                <Cell col="28"/>
+                <Cell col="29"/>
+                <Cell col="30"/>
+                <Cell col="31"/>
+                <Cell col="32"/>
+                <Cell col="33"/>
+                <Cell col="34"/>
+                <Cell col="35"/>
+                <Cell col="36"/>
+                <Cell col="37"/>
+                <Cell col="38"/>
+                <Cell col="39"/>
+                <Cell col="40"/>
+                <Cell col="41"/>
+                <Cell col="42"/>
+                <Cell col="43"/>
+                <Cell col="44"/>
+                <Cell col="45"/>
+                <Cell col="46"/>
+                <Cell col="47"/>
+                <Cell col="48"/>
+                <Cell col="49"/>
+                <Cell col="50"/>
+                <Cell col="51"/>
+                <Cell col="52"/>
+                <Cell col="53"/>
+                <Cell col="54"/>
+                <Cell col="55"/>
+                <Cell col="56"/>
+                <Cell col="57"/>
+                <Cell col="58"/>
+                <Cell col="59"/>
+                <Cell col="60"/>
+                <Cell col="61"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static23" taborder="98" text="h 25" visible="false" left="628" top="516" height="25" style="background:#fb7b7b7a;" width="81"/>
+        <Static id="Static93" taborder="99" text="상세정보" cssclass="sta_WF_Subtitle" left="7" right="932" bottom="208" height="21"/>
+        <Static id="Static13" taborder="75" text="h 15" visible="false" left="14" bottom="0" height="15" style="background:#fb7b7b7a;" width="1143"/>
+        <Static id="spSearchBox03" taborder="100" cssclass="styFormItemBoxOut" left="8" right="25" bottom="15" height="193" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="stYEAR_MNTH" taborder="74" text="년월" cssclass="styFormItemCapBE" left="28" bottom="178" height="21" width="73"/>
+        <Static id="stCUST_NAME" taborder="73" text="광고주" cssclass="styFormItemCapBE" left="28" bottom="152" height="21" width="73"/>
+        <Static id="stMEDX_NAME" taborder="72" text="청구지" cssclass="styFormItemCapBE" left="28" bottom="74" height="21" width="60"/>
+        <Static id="stBROD_WEEK" taborder="71" text="방송요일" cssclass="styFormItemCap" left="388" bottom="74" height="21" width="81"/>
+        <Static id="stBROD_TIME" taborder="70" text="방송시간" cssclass="styFormItemCapBE" left="388" bottom="100" height="21" width="81" style="background:transparent;"/>
+        <Static id="stCONT_FORM" taborder="69" text="계약형태" cssclass="styFormItemCap" left="773" bottom="152" height="21" width="81"/>
+        <Static id="sbPRGM_NAME" taborder="68" text="프로그램명" cssclass="styFormItemCapBE" left="388" bottom="126" height="21" width="81" style="background:transparent URL('theme://images/sta_WF_Label_P.png') left middle;"/>
+        <Static id="stBRND_NAME" taborder="67" text="브랜드" cssclass="styFormItemCapBE" left="28" bottom="100" height="21" width="73"/>
+        <Static id="stCTIM_NAME" taborder="66" text="광고주 팀" cssclass="styFormItemCapBE" left="28" bottom="126" height="21" width="73" style="background:transparent;"/>
+        <Static id="stMEDX_FLAG" taborder="65" text="매체구분" cssclass="styFormItemCapBE" left="28" bottom="22" height="21" width="63"/>
+        <Static id="stTRTX_FLAG" taborder="64" text="위수탁부가세" cssclass="styFormItemCap" left="773" bottom="178" height="21" width="85"/>
+        <Static id="stDEPT_NAME" taborder="63" text="담당부서" cssclass="styFormItemCap" left="388" bottom="178" height="21" width="73" style="background:transparent URL('theme://images/sta_WF_Label_P.png') left middle;"/>
+        <Static id="Static59" taborder="101" text="w30" visible="false" left="9" top="510" height="199" style="background:#fb7b7b7a;" width="30"/>
+        <Button id="btn_COPYAll" taborder="102" text="전체복사" cssclass="btn_WF_Module" left="8" top="35" height="21" onclick="btn_COPYAll_onclick" width="74"/>
+        <Static id="Static25" taborder="103" text="h 6" visible="false" left="0.67%" top="29" right="84.5%" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static26" taborder="104" text="h 4" visible="false" left="0.59%" top="56" right="88.63%" height="4" style="background:#fb7b7b7a;"/>
+        <Button id="btn_CopyRow" taborder="105" text="내역복사" cssclass="btn_WF_Module" left="85" top="35" height="21" onclick="btn_CopyRow_onclick" width="74"/>
+        <MaskEdit id="edtPRCE_FILD" taborder="62" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="854" bottom="126" height="21" style="align:right middle;" binddataset="dsMD_ETMDXM" width="100" onkeyup="fn_InputPRCE_FILD"/>
+        <Static id="imgHelpCUST_CODE" taborder="2" onclick="fn_HelpDialogeCUST_CODE" cssclass="sytHelpPopup" left="183" bottom="152" height="21" width="22"/>
+        <Edit id="edtCUST_NAME" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="206" bottom="152" height="21" binddataset="dsMD_ETMDXM" width="120" ontextchanged="edtCUST_NAME_ontextchanged" onkillfocus="fn_HelpDialogeCUST_CODE" taborder="3"/>
+        <Static id="stSEQX_FILD" taborder="61" text="일련번호" cssclass="styFormItemCap" left="180" bottom="178" height="21" width="64"/>
+        <Static id="imgHelpBRND_CODE" taborder="8" onclick="fn_HelpDialogeBRND_CODE" cssclass="sytHelpPopup" left="183" bottom="100" height="21" width="22"/>
+        <Edit id="edtBRND_NAME" taborder="9" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeBRND_CODE" cssclass="styFormItemText" left="206" bottom="100" height="21" binddataset="dsMD_ETMDXM" width="120" ontextchanged="edtBRND_NAME_ontextchanged"/>
+        <Static id="imgHelpCTIM_CODE" taborder="5" onclick="fn_HelpDialogeCTIM_CODE" cssclass="sytHelpPopup" left="183" bottom="126" height="21" width="22"/>
+        <Edit id="edtCTIM_NAME" taborder="6" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeCTIM_CODE" cssclass="styFormItemText" left="206" bottom="126" height="21" binddataset="dsMD_ETMDXM" width="120" ontextchanged="edtCTIM_NAME_ontextchanged"/>
+        <Static id="imgHelpDEPT_CODE" taborder="11" onclick="fn_HelpDialogeDEPT_CODE" cssclass="sytHelpPopup" left="552" bottom="178" height="21" width="24"/>
+        <Edit id="edtDEPT_NAME" taborder="110" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeDEPT_CODE" cssclass="styFormItemText" left="576" bottom="178" height="21" binddataset="dsMD_ETMDXM" width="138" ontextchanged="edtDEPT_NAME_ontextchanged"/>
+        <Static id="imgHelpMEDX_CODE" taborder="60" onclick="fn_HelpDialogeMEDX_CODE" cssclass="sytHelpPopup" left="183" bottom="74" height="21" width="24"/>
+        <Edit id="edtYEAR_MNTH" taborder="0" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="101" bottom="178" height="21" binddataset="dsMD_ETMDXM" width="80" enableevent="true" enable="true"/>
+        <Static id="stBROD_FLAG" taborder="59" text="방송구분" cssclass="styFormItemCap" left="183" bottom="22" height="21" width="63" style="align:left;"/>
+        <Static id="stRMED_NAME" taborder="58" text="매체" cssclass="styFormItemCapBE" left="28" bottom="48" height="21" width="73"/>
+        <Static id="imgHelpRMED_CODE" taborder="13" onclick="fn_HelpDialogeRMED_CODE" cssclass="sytHelpPopup" left="183" bottom="48" height="21" width="24"/>
+        <Edit id="edtRMED_NAME" taborder="14" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeRMED_CODE" cssclass="styFormItemText" left="206" bottom="48" height="21" binddataset="dsMD_ETMDXM" width="120" ontextchanged="edtRMED_NAME_ontextchanged"/>
+        <Static id="Static29" taborder="57" text="~" cssclass="styFormSearch" left="574" height="21" width="14" bottom="100"/>
+        <Static id="stBROD_TUES" taborder="56" text="화" cssclass="styFormItemCap" left="511" bottom="74" height="21" style="align:left middle;" width="25"/>
+        <Static id="stBROD_WEDN" taborder="55" text="수" cssclass="styFormItemCap" left="545" bottom="74" height="21" style="align:left middle;" width="25"/>
+        <Static id="stBROD_THUR" taborder="54" text="목" cssclass="styFormItemCap" left="581" bottom="74" height="21" style="align:left middle;" width="24"/>
+        <Static id="stBROD_FRID" taborder="53" text="금" cssclass="styFormItemCap" left="616" bottom="74" height="21" style="align:left middle;" width="25"/>
+        <Static id="stBROD_SATU" taborder="52" text="토" cssclass="styFormItemCap" left="652" bottom="74" height="21" style="align:left middle;" width="26"/>
+        <Static id="stBROD_SUND" taborder="51" text="일" cssclass="styFormItemCap" left="688" bottom="74" height="21" style="align:left middle;" width="26"/>
+        <Static id="stADDX_TYPE" taborder="50" text="광고유형" cssclass="styFormItemCap" left="972" bottom="152" height="21" width="64"/>
+        <Static id="stAORX_FLAG" taborder="49" text="AOR" cssclass="styFormItemCap" left="1052" bottom="74" height="21" width="53"/>
+        <CheckBox id="chkAORX_FLAG" taborder="48" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="1098" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="32"/>
+        <Static id="stPRCE_FILD" taborder="47" text="단가" cssclass="styFormItemCapBE" left="773" bottom="126" height="21" width="85" style="background:transparent URL('theme://images/sta_WF_Label_P.png') left middle;"/>
+        <Static id="stAMNT_FILD" taborder="46" text="금액" cssclass="styFormItemCapBE" left="972" bottom="126" height="21" width="44"/>
+        <Static id="stMEMO_FILD00" taborder="45" text="비고" cssclass="styFormItemCap" left="773" bottom="74" height="21" width="85"/>
+        <Static id="Static24" taborder="106" text="w 20" visible="false" left="96.12%" top="510" right="2.19%" height="199" style="background:#fb7b7b7a;"/>
+        <Edit id="edtCUST_CODE" taborder="1" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="101" bottom="152" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM" width="80"/>
+        <MaskEdit id="edtAMNT_FILD" taborder="44" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1042" bottom="126" height="21" style="align:right middle;" binddataset="dsMD_ETMDXM" width="100" enableevent="true" onkeyup="fn_InputAMNT_FILD"/>
+        <Edit id="edtSEQX_FILD" taborder="15" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="249" bottom="178" height="21" binddataset="dsMD_ETMDXM" width="77" enable="false"/>
+        <Edit id="edtBRND_CODE" taborder="7" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="101" bottom="100" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM" width="80"/>
+        <Edit id="edtCTIM_CODE" taborder="4" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="101" bottom="126" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM" width="80"/>
+        <Edit id="edtDEPT_CODE" taborder="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="469" bottom="178" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM" width="80"/>
+        <Edit id="edtRMED_CODE" taborder="12" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="101" bottom="48" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM" width="80"/>
+        <Edit id="edtMEDX_CODE" taborder="43" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="101" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="80"/>
+        <Edit id="edtMEDX_NAME" taborder="42" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeMEDX_CODE" cssclass="styFormItemText" left="206" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="120" ontextchange="edtMEDX_NAME_ontextchange"/>
+        <Edit id="edtPRGM_NAME" taborder="41" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="469" bottom="126" height="21" binddataset="dsMD_ETMDXM" width="245"/>
+        <Combo id="cmbMEDX_FLAG" taborder="40" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="101" bottom="22" height="21" binddataset="dsMD_ETMDXM" width="80" innerdataset="@dsMEDX_FLAGCombo" codecolumn="MEDX_FLAG_CODE" datacolumn="MEDX_FLAG_NAME"/>
+        <Combo id="cmbBROD_FLAG" taborder="39" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="251" bottom="22" height="21" binddataset="dsMD_ETMDXM" width="75" onitemchanged="cmbBROD_FLAG_onitemchanged"/>
+        <Edit id="edtSTAR_TIME" taborder="38" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="469" bottom="100" height="21" binddataset="dsMD_ETMDXM" width="100"/>
+        <Edit id="edtENDD_TIME" taborder="37" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="589" bottom="100" height="21" binddataset="dsMD_ETMDXM" width="100"/>
+        <Combo id="cmbCONT_FORM" taborder="36" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="854" bottom="152" width="100" height="21" binddataset="dsMD_ETMDXM"/>
+        <Combo id="cmbADDX_TYPE" taborder="35" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="true" left="1042" bottom="152" width="100" height="21" binddataset="dsMD_ETMDXM"/>
+        <Edit id="edtMEMO_FILD" taborder="34" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="854" bottom="74" width="184" height="21" binddataset="dsMD_ETMDXM"/>
+        <Static id="Static05" taborder="108" text="w30" visible="false" left="9" top="61" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="109" text="h10" visible="false" left="120" top="61" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static17" taborder="111" text="h10" visible="false" left="120" top="118" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="112" text="광고주팀" cssclass="styFormSearchCap" left="619" top="71" width="63" height="21"/>
+        <Edit id="edtSHRCTIM_CODE" taborder="113" tabstop="false" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="688" top="71" width="80" height="21"/>
+        <Static id="imgHelpSHRCTIM_CODE" taborder="114" onclick="fn_HelpDialogeSHRCTIM_CODE" cssclass="sytHelpPopup" left="770" top="71" width="23" height="21"/>
+        <Edit id="edtSHRCTIM_NAME" taborder="115" imemode="hangul" maxlength="50" autoselect="true" onkillfocus="fn_HelpDialogeSHRCTIM_CODE" cssclass="styFormSearchItem" left="793" top="71" width="120" height="21" ontextchanged="edtSHRCTIM_NAME_ontextchanged"/>
+        <Static id="Static07" taborder="116" text="계약형태" cssclass="styFormSearchCap" left="619" top="97" width="63" height="21"/>
+        <Combo id="cmbSHRBROD_FLAG" taborder="117" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="96" width="100" height="21" binddataset="" index="-1" top="97" onitemchanged="fn_onItemChanged"/>
+        <Combo id="cmbSHRCONT_FORM" taborder="118" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="688" width="225" height="21" binddataset="" top="97" onitemchanged="fn_onItemChanged"/>
+        <Combo id="cmbTRTX_FLAG" taborder="33" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="885" bottom="178" width="68" height="21" binddataset="dsMD_ETMDXM" innerdataset="@dsTRTX_FLAGCombo" datacolumn="TRTX_FLAG_NAME" codecolumn="TRTX_FLAG_CODE"/>
+        <Static id="sbBROD_MOND" taborder="32" text="월" cssclass="styFormItemCap" left="474" bottom="74" height="21" style="align:left middle;" width="24"/>
+        <CheckBox id="chkBROD_TUES" taborder="31" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="505" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="25"/>
+        <CheckBox id="chkBROD_MOND" taborder="30" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="469" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="23"/>
+        <CheckBox id="chkBROD_WEDN" taborder="29" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="542" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="24"/>
+        <CheckBox id="chkBROD_THUR" taborder="28" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="576" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="23"/>
+        <CheckBox id="chkBROD_FRID" taborder="27" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="611" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="24"/>
+        <CheckBox id="chkBROD_SATU" taborder="26" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="647" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="25"/>
+        <CheckBox id="chkBROD_SUND" taborder="25" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="683" bottom="74" height="21" binddataset="dsMD_ETMDXM" width="23"/>
+        <Static id="stTTBR_DATE" taborder="24" text="총방송기간" cssclass="styFormItemCapBE" left="388" bottom="48" width="85" height="21"/>
+        <Calendar id="calTTST_DATE" taborder="23" readonly="false" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="469" bottom="48" width="100" height="21" binddataset="dsMD_ETMDXM" autoselect="false"/>
+        <Calendar id="calTTED_DATE" taborder="22" readonly="false" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="590" bottom="48" width="100" height="21" binddataset="dsMD_ETMDXM"/>
+        <Static id="stMNBR_DATE" taborder="21" text="금월기간" cssclass="styFormItemCapBE" left="388" bottom="22" width="85" height="21"/>
+        <Calendar id="calMNST_DATE" taborder="20" readonly="false" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="469" bottom="22" width="100" height="21" binddataset="dsMD_ETMDXM"/>
+        <Calendar id="calMNED_DATE" taborder="19" readonly="false" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="590" bottom="22" width="100" height="21" binddataset="dsMD_ETMDXM"/>
+        <Static id="Static37" taborder="18" text="~" cssclass="styFormSearch" left="575" bottom="48" width="14" height="21"/>
+        <Static id="Static38" taborder="17" text="~" cssclass="styFormSearch" left="575" bottom="22" width="14" height="21"/>
+        <Div id="CalSHRYEAR_MNTH" taborder="119" url="common::comMonthCalendar.xfdl" left="97" top="71" width="84" height="21"/>
+        <ListBox id="lstCUST_NAME" taborder="120" innerdataset="dsAUTO_NAME" codecolumn="CUST_CODE" datacolumn="CUST_NAME" onitemclick="lstCUST_NAME_onitemclick" onkeydown="lstCUST_NAME_onkeydown" visible="false" left="450" top="97" height="78" width="140"/>
+        <Static id="stEMPL_NAME" taborder="121" text="사원명" cssclass="styFormItemCap" left="388" bottom="152" width="85" height="21" style="background:transparent;"/>
+        <Edit id="edtEMPL_NAME" taborder="122" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialogeEMPL_CODE" cssclass="styFormItemText" left="576" bottom="152" width="138" height="21" binddataset="dsMD_ETMDXM"/>
+        <Edit id="edtEMPL_CODE" taborder="123" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="469" bottom="152" width="80" height="21" style=":disabled {align:center middle;}" binddataset="dsMD_ETMDXM"/>
+        <Static id="imgHelpEMPL_CODE" taborder="124" onclick="fn_HelpDialogeEMPL_CODE" cssclass="sytHelpPopup" left="552" bottom="151" width="21" height="22"/>
+        <Static id="stCMTX_FLAG" taborder="125" text="수수료부가세" cssclass="styFormItemCap" left="971" bottom="178" width="95" height="21"/>
+        <Combo id="cmbCMTX_FLAG" taborder="126" innerdataset="@dsTRTX_FLAGCombo" codecolumn="TRTX_FLAG_CODE" datacolumn="TRTX_FLAG_NAME" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1073" bottom="178" width="68" height="21" binddataset="dsMD_ETMDXM"/>
+        <Static id="stCOMI_RATE" taborder="127" text="수수료율" cssclass="styFormItemCap" left="772" bottom="100" width="81" height="21"/>
+        <Edit id="edtCOMI_RATE" taborder="128" lengthunit="utf8" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" ontextchanged="fn_InputCOMI_RATE" cssclass="styFormItemText" left="853" bottom="100" width="50" height="21" binddataset="dsMD_ETMDXM"/>
+        <Static id="stCOMI_FILD" taborder="129" text="수수료" cssclass="styFormItemCap" left="964" bottom="100" width="65" height="21"/>
+        <MaskEdit id="edtCOMI_FILD" taborder="130" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="1042" bottom="100" width="100" height="21" style="align:right middle;" binddataset="dsMD_ETMDXM"/>
+        <Div id="CalSHRYEAR_MNTH00" taborder="131" url="common::comMonthCalendar.xfdl" left="201" top="71" width="84" height="21"/>
+        <Static id="Static00" taborder="132" text="~" cssclass="styFormSearch" left="187" top="71" width="9" height="21"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsUserCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" type="STRING" size="256" prop="default"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COMBOID">MDM0001</Col>
+            <Col id="DSNAME">dsSHRBROD_FLAG</Col>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">방송구분_조회</Col>
+          </Row>
+          <Row>
+            <Col id="HEADFLAG">ALL</Col>
+            <Col id="DSNAME">dsSHRCONT_FORM</Col>
+            <Col id="COMBOID">MDM0002</Col>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">계약형태_조회</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsBROD_FLAG</Col>
+            <Col id="COMBOID">MDM0001</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">방송구분</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsCONT_FORM</Col>
+            <Col id="COMBOID">MDM0002</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">계약형태</Col>
+          </Row>
+          <Row>
+            <Col id="HEADFLAG"/>
+            <Col id="DSNAME">dsADDX_TYPE</Col>
+            <Col id="COMBOID">MDM0006</Col>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">광고유형</Col>
+          </Row>
+          <Row>
+            <Col id="HEADFLAG"/>
+            <Col id="DSNAME">dsHOUR_TYPE</Col>
+            <Col id="COMBOID">MDM0003</Col>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">시급</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsSUBS_FLAG</Col>
+            <Col id="COMBOID">MDM0004</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">청약구분</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsADDX_FORM</Col>
+            <Col id="COMBOID">MDM0005</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">광고형태</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsAREA_FLAG</Col>
+            <Col id="COMBOID">MDM0007</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">지역구분</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsTRNS_FLAG</Col>
+            <Col id="COMBOID">MDM0008</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">매체통신구분</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsMEDX_FLAG</Col>
+            <Col id="COMBOID">MDM0009</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+            <Col id="PARAM">매체구분</Col>
+          </Row>
+          <Row>
+            <Col id="DSNAME">dsEDIT_WKDY</Col>
+            <Col id="COMBOID">MDM0010</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="USEYSNO">1</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsMD_ETMDXM" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false" oncolumnchanged="dsMD_ETMDXM_oncolumnchanged">
+        <ColumnInfo>
+          <Column id="CHEK_FILD" type="STRING" size="256"/>
+          <Column id="YEAR_MNTH" type="STRING" size="256"/>
+          <Column id="SEQX_FILD" type="STRING" size="256"/>
+          <Column id="CUST_CODE" type="STRING" size="256"/>
+          <Column id="CUST_NAME" type="STRING" size="256"/>
+          <Column id="CTIM_CODE" type="STRING" size="256"/>
+          <Column id="CTIM_NAME" type="STRING" size="256"/>
+          <Column id="PSEQ_CODE" type="STRING" size="256"/>
+          <Column id="BRND_CODE" type="STRING" size="256"/>
+          <Column id="BRND_NAME" type="STRING" size="256"/>
+          <Column id="MEDX_CODE" type="STRING" size="256"/>
+          <Column id="MEDX_NAME" type="STRING" size="256"/>
+          <Column id="RMED_CODE" type="STRING" size="256"/>
+          <Column id="KBNT_CODE" type="STRING" size="256"/>
+          <Column id="RMED_NAME" type="STRING" size="256"/>
+          <Column id="MEDX_FLAG" type="STRING" size="256"/>
+          <Column id="COMM_CDNM" type="STRING" size="256"/>
+          <Column id="INPT_PATH" type="STRING" size="256"/>
+          <Column id="PLAN_FLAG" type="STRING" size="256"/>
+          <Column id="APLY_DATE" type="STRING" size="256"/>
+          <Column id="PRGM_NAME" type="STRING" size="256"/>
+          <Column id="EMPL_CODE" type="STRING" size="256"/>
+          <Column id="EMPL_NAME" type="STRING" size="256"/>
+          <Column id="DEPT_CODE" type="STRING" size="256"/>
+          <Column id="DEPT_NAME" type="STRING" size="256"/>
+          <Column id="HOUR_TYPE" type="STRING" size="256"/>
+          <Column id="BROD_MOND" type="STRING" size="256"/>
+          <Column id="BROD_TUES" type="STRING" size="256"/>
+          <Column id="BROD_WEDN" type="STRING" size="256"/>
+          <Column id="BROD_THUR" type="STRING" size="256"/>
+          <Column id="BROD_FRID" type="STRING" size="256"/>
+          <Column id="BROD_SATU" type="STRING" size="256"/>
+          <Column id="BROD_SUND" type="STRING" size="256"/>
+          <Column id="STAR_TIME" type="STRING" size="256"/>
+          <Column id="ENDD_TIME" type="STRING" size="256"/>
+          <Column id="TTST_DATE" type="STRING" size="256"/>
+          <Column id="TTED_DATE" type="STRING" size="256"/>
+          <Column id="MNST_DATE" type="STRING" size="256"/>
+          <Column id="MNED_DATE" type="STRING" size="256"/>
+          <Column id="BROD_FLAG" type="STRING" size="256"/>
+          <Column id="OPER_FLAG" type="STRING" size="256"/>
+          <Column id="BROD_NAME" type="STRING" size="256"/>
+          <Column id="ATCT_FLAG" type="STRING" size="256"/>
+          <Column id="CONT_FILD" type="STRING" size="256"/>
+          <Column id="PRCE_FILD" type="STRING" size="256"/>
+          <Column id="BRCE_FILD" type="STRING" size="256"/>
+          <Column id="AMNT_FILD" type="STRING" size="256"/>
+          <Column id="SECD_FILD" type="STRING" size="256"/>
+          <Column id="SUBS_FLAG" type="STRING" size="256"/>
+          <Column id="OFER_FLAG" type="STRING" size="256"/>
+          <Column id="SUBS_NAME" type="STRING" size="256"/>
+          <Column id="ADDX_FORM" type="STRING" size="256"/>
+          <Column id="ADVR_FLAG" type="STRING" size="256"/>
+          <Column id="ADVR_TYPE" type="STRING" size="256"/>
+          <Column id="CONT_FORM" type="STRING" size="256"/>
+          <Column id="RCON_FORM" type="STRING" size="256"/>
+          <Column id="ADDX_TYPE" type="STRING" size="256"/>
+          <Column id="AREA_FLAG" type="STRING" size="256"/>
+          <Column id="COMI_RATE" type="STRING" size="256"/>
+          <Column id="TRTX_FLAG" type="STRING" size="256"/>
+          <Column id="CMTX_FLAG" type="STRING" size="256"/>
+          <Column id="TRTR_NUMB" type="STRING" size="256"/>
+          <Column id="TRTX_NUMB" type="STRING" size="256"/>
+          <Column id="TRCH_NUMB" type="STRING" size="256"/>
+          <Column id="CMTR_NUMB" type="STRING" size="256"/>
+          <Column id="CMTX_NUMB" type="STRING" size="256"/>
+          <Column id="CMCH_NUMB" type="STRING" size="256"/>
+          <Column id="CNMD_CODE" type="STRING" size="256"/>
+          <Column id="PRMN_SEQX" type="STRING" size="256"/>
+          <Column id="KBNT_YEAR" type="STRING" size="256"/>
+          <Column id="KBNT_OSEQ" type="STRING" size="256"/>
+          <Column id="KBNT_SSEQ" type="STRING" size="256"/>
+          <Column id="KBNT_MSEQ" type="STRING" size="256"/>
+          <Column id="EDIT_WKDY" type="STRING" size="256"/>
+          <Column id="MEMO_FILD" type="STRING" size="256"/>
+          <Column id="BRST_DATE" type="STRING" size="256"/>
+          <Column id="BRED_DATE" type="STRING" size="256"/>
+          <Column id="KBNT_ITEM" type="STRING" size="256"/>
+          <Column id="KBNT_BRSQ" type="STRING" size="256"/>
+          <Column id="KBNT_DISQ" type="STRING" size="256"/>
+          <Column id="KBNT_ITSQ" type="STRING" size="256"/>
+          <Column id="TRNS_FLAG" type="STRING" size="256"/>
+          <Column id="AORX_FLAG" type="STRING" size="256"/>
+          <Column id="INST_USID" type="STRING" size="256"/>
+          <Column id="INST_DATE" type="STRING" size="256"/>
+          <Column id="UPDT_USID" type="STRING" size="256"/>
+          <Column id="UPDT_DATE" type="STRING" size="256"/>
+          <Column id="COMI_FILD" type="STRING" size="256"/>
+          <Column id="KBNT_GUBN" type="STRING" size="256"/>
+          <Column id="RARE_FLAG" type="STRING" size="256"/>
+          <Column id="AREA_NAME" type="STRING" size="256"/>
+          <Column id="RKBN_ITEM" type="STRING" size="256"/>
+          <Column id="RADV_FLAG" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsINPT_PATHCombo" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="INPT_PATH_CODE" type="STRING" size="256"/>
+          <Column id="INPT_PATH_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="INPT_PATH_CODE">P</Col>
+            <Col id="INPT_PATH_NAME">프로그램투입</Col>
+          </Row>
+          <Row>
+            <Col id="INPT_PATH_CODE">C</Col>
+            <Col id="INPT_PATH_NAME">KOBANET투입</Col>
+          </Row>
+          <Row>
+            <Col id="INPT_PATH_NAME">KADD투입</Col>
+            <Col id="INPT_PATH_CODE">K</Col>
+          </Row>
+          <Row>
+            <Col id="INPT_PATH_NAME">전월이월</Col>
+            <Col id="INPT_PATH_CODE">E</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsTRTX_FLAGCombo" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="TRTX_FLAG_CODE" type="STRING" size="256"/>
+          <Column id="TRTX_FLAG_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="TRTX_FLAG_CODE">T</Col>
+            <Col id="TRTX_FLAG_NAME">유</Col>
+          </Row>
+          <Row>
+            <Col id="TRTX_FLAG_CODE">F</Col>
+            <Col id="TRTX_FLAG_NAME">무</Col>
+          </Row>
+          <Row>
+            <Col id="TRTX_FLAG_NAME">영세율</Col>
+            <Col id="TRTX_FLAG_CODE">P</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCMTX_FLAGCombo" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="CMTX_FLAG_CODE" type="STRING" size="256"/>
+          <Column id="CMTX_FLAG_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CMTX_FLAG_CODE">T</Col>
+            <Col id="CMTX_FLAG_NAME">유</Col>
+          </Row>
+          <Row>
+            <Col id="CMTX_FLAG_CODE">F</Col>
+            <Col id="CMTX_FLAG_NAME">무</Col>
+          </Row>
+          <Row>
+            <Col id="CMTX_FLAG_NAME">영세율</Col>
+            <Col id="CMTX_FLAG_CODE">P</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsMEDX_FLAGCombo" firefirstcount="0" firenextcount="0" useclientlayout="false" updatecontrol="true" enableevent="true" loadkeymode="keep" loadfiltermode="keep" reversesubsum="false">
+        <ColumnInfo>
+          <Column id="MEDX_FLAG_CODE" type="STRING" size="256"/>
+          <Column id="MEDX_FLAG_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="MEDX_FLAG_CODE">A001</Col>
+            <Col id="MEDX_FLAG_NAME">TV</Col>
+          </Row>
+          <Row>
+            <Col id="MEDX_FLAG_CODE">A002</Col>
+            <Col id="MEDX_FLAG_NAME">RADIO</Col>
+          </Row>
+          <Row>
+            <Col id="MEDX_FLAG_NAME">DMB</Col>
+            <Col id="MEDX_FLAG_CODE">A003</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsAUTO_NAME" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CUST_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="CUST_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CLIENT_NAME" type="STRING" size="256"/>
+          <Column id="USEX_CODE" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item53" compid="edtEMPL_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="EMPL_NAME"/>
+      <BindItem id="item54" compid="edtEMPL_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="EMPL_NAME"/>
+      <BindItem id="item0" compid="edtPRCE_FILD" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="PRCE_FILD"/>
+      <BindItem id="item1" compid="edtPRCE_FILD" propid="value" datasetid="dsMD_ETMDXM" columnid="PRCE_FILD"/>
+      <BindItem id="edtASCL_NAME_value" compid="edtCUST_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="CUST_CODE"/>
+      <BindItem id="item2" compid="edtAMNT_FILD" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="AMNT_FILD"/>
+      <BindItem id="item3" compid="edtAMNT_FILD" propid="value" datasetid="dsMD_ETMDXM" columnid="AMNT_FILD"/>
+      <BindItem id="item4" compid="edtYEAR_MNTH" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="YEAR_MNTH"/>
+      <BindItem id="item5" compid="edtYEAR_MNTH" propid="value" datasetid="dsMD_ETMDXM" columnid="YEAR_MNTH"/>
+      <BindItem id="item6" compid="edtSEQX_FILD" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="SEQX_FILD"/>
+      <BindItem id="item7" compid="edtSEQX_FILD" propid="value" datasetid="dsMD_ETMDXM" columnid="SEQX_FILD"/>
+      <BindItem id="item8" compid="edtCUST_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CUST_CODE"/>
+      <BindItem id="item9" compid="edtCUST_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CUST_NAME"/>
+      <BindItem id="item10" compid="edtCUST_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="CUST_NAME"/>
+      <BindItem id="item11" compid="edtBRND_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="BRND_CODE"/>
+      <BindItem id="item12" compid="edtBRND_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BRND_CODE"/>
+      <BindItem id="item13" compid="edtCTIM_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="CTIM_CODE"/>
+      <BindItem id="item14" compid="edtCTIM_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CTIM_CODE"/>
+      <BindItem id="item15" compid="edtDEPT_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="DEPT_CODE"/>
+      <BindItem id="item16" compid="edtDEPT_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="DEPT_CODE"/>
+      <BindItem id="item17" compid="edtRMED_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="RMED_CODE"/>
+      <BindItem id="item18" compid="edtRMED_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="RMED_CODE"/>
+      <BindItem id="item19" compid="edtBRND_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="BRND_NAME"/>
+      <BindItem id="item20" compid="edtBRND_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BRND_NAME"/>
+      <BindItem id="item21" compid="edtCTIM_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="CTIM_NAME"/>
+      <BindItem id="item22" compid="edtCTIM_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CTIM_NAME"/>
+      <BindItem id="item23" compid="edtDEPT_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="DEPT_NAME"/>
+      <BindItem id="item24" compid="edtDEPT_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="DEPT_NAME"/>
+      <BindItem id="item25" compid="edtRMED_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="RMED_NAME"/>
+      <BindItem id="item26" compid="edtRMED_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="RMED_NAME"/>
+      <BindItem id="item27" compid="edtMEDX_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="MEDX_CODE"/>
+      <BindItem id="item28" compid="edtMEDX_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MEDX_CODE"/>
+      <BindItem id="item29" compid="edtMEDX_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MEDX_NAME"/>
+      <BindItem id="item30" compid="edtMEDX_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="MEDX_NAME"/>
+      <BindItem id="item31" compid="edtPRGM_NAME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="PRGM_NAME"/>
+      <BindItem id="item32" compid="edtPRGM_NAME" propid="value" datasetid="dsMD_ETMDXM" columnid="PRGM_NAME"/>
+      <BindItem id="item33" compid="cmbMEDX_FLAG" propid="value" datasetid="dsMD_ETMDXM" columnid="MEDX_FLAG"/>
+      <BindItem id="item34" compid="cmbMEDX_FLAG" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MEDX_FLAG"/>
+      <BindItem id="item35" compid="cmbBROD_FLAG" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_FLAG"/>
+      <BindItem id="item36" compid="cmbBROD_FLAG" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_FLAG"/>
+      <BindItem id="item37" compid="edtSTAR_TIME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="STAR_TIME"/>
+      <BindItem id="item38" compid="edtSTAR_TIME" propid="value" datasetid="dsMD_ETMDXM" columnid="STAR_TIME"/>
+      <BindItem id="item39" compid="edtENDD_TIME" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="ENDD_TIME"/>
+      <BindItem id="item40" compid="edtENDD_TIME" propid="value" datasetid="dsMD_ETMDXM" columnid="ENDD_TIME"/>
+      <BindItem id="item41" compid="chkBROD_MOND" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_MOND"/>
+      <BindItem id="item42" compid="chkBROD_MOND" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_MOND"/>
+      <BindItem id="item43" compid="chkBROD_TUES" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_TUES"/>
+      <BindItem id="item44" compid="chkBROD_TUES" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_TUES"/>
+      <BindItem id="item45" compid="cmbCONT_FORM" propid="value" datasetid="dsMD_ETMDXM" columnid="CONT_FORM"/>
+      <BindItem id="item46" compid="cmbCONT_FORM" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CONT_FORM"/>
+      <BindItem id="item47" compid="cmbADDX_TYPE" propid="value" datasetid="dsMD_ETMDXM" columnid="ADDX_TYPE"/>
+      <BindItem id="item48" compid="cmbADDX_TYPE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="ADDX_TYPE"/>
+      <BindItem id="item51" compid="chkAORX_FLAG" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="AORX_FLAG"/>
+      <BindItem id="item52" compid="chkAORX_FLAG" propid="value" datasetid="dsMD_ETMDXM" columnid="AORX_FLAG"/>
+      <BindItem id="item55" compid="edtMEMO_FILD" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MEMO_FILD"/>
+      <BindItem id="item56" compid="edtMEMO_FILD" propid="value" datasetid="dsMD_ETMDXM" columnid="MEMO_FILD"/>
+      <BindItem id="item57" compid="cmbTRTX_FLAG" propid="value" datasetid="dsMD_ETMDXM" columnid="TRTX_FLAG"/>
+      <BindItem id="item58" compid="cmbTRTX_FLAG" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="TRTX_FLAG"/>
+      <BindItem id="item59" compid="calTTST_DATE" propid="value" datasetid="dsMD_ETMDXM" columnid="TTST_DATE"/>
+      <BindItem id="item60" compid="calTTST_DATE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="TTST_DATE"/>
+      <BindItem id="item49" compid="calTTED_DATE" propid="value" datasetid="dsMD_ETMDXM" columnid="TTED_DATE"/>
+      <BindItem id="item50" compid="calTTED_DATE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="TTED_DATE"/>
+      <BindItem id="item61" compid="calMNST_DATE" propid="value" datasetid="dsMD_ETMDXM" columnid="MNST_DATE"/>
+      <BindItem id="item62" compid="calMNST_DATE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MNED_DATE"/>
+      <BindItem id="item63" compid="calMNED_DATE" propid="value" datasetid="dsMD_ETMDXM" columnid="MNED_DATE"/>
+      <BindItem id="item64" compid="calMNED_DATE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="MNED_DATE"/>
+      <BindItem id="item68" compid="chkBROD_WEDN" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_WEDN"/>
+      <BindItem id="item70" compid="chkBROD_THUR" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_THUR"/>
+      <BindItem id="item72" compid="chkBROD_FRID" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_FRID"/>
+      <BindItem id="item74" compid="chkBROD_SATU" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_SATU"/>
+      <BindItem id="item76" compid="chkBROD_SUND" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="BROD_SUND"/>
+      <BindItem id="item77" compid="chkBROD_WEDN" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_WEDN"/>
+      <BindItem id="item67" compid="chkBROD_THUR" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_THUR"/>
+      <BindItem id="item69" compid="chkBROD_FRID" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_FRID"/>
+      <BindItem id="item71" compid="chkBROD_SATU" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_SATU"/>
+      <BindItem id="item73" compid="chkBROD_SUND" propid="value" datasetid="dsMD_ETMDXM" columnid="BROD_SUND"/>
+      <BindItem id="item75" compid="edtEMPL_CODE" propid="value" datasetid="dsMD_ETMDXM" columnid="EMPL_CODE"/>
+      <BindItem id="item78" compid="edtEMPL_CODE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="EMPL_CODE"/>
+      <BindItem id="item65" compid="cmbCMTX_FLAG" propid="value" datasetid="dsMD_ETMDXM" columnid="CMTX_FLAG"/>
+      <BindItem id="item66" compid="cmbCMTX_FLAG" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="CMTX_FLAG"/>
+      <BindItem id="item79" compid="edtCOMI_RATE" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="COMI_RATE"/>
+      <BindItem id="item80" compid="edtCOMI_RATE" propid="value" datasetid="dsMD_ETMDXM" columnid="COMI_RATE"/>
+      <BindItem id="item81" compid="edtCOMI_FILD" propid="binddataset" datasetid="dsMD_ETMDXM" columnid="COMI_FILD"/>
+      <BindItem id="item82" compid="edtCOMI_FILD" propid="value" datasetid="dsMD_ETMDXM" columnid="COMI_FILD"/>
+    </Bind>
+    <InitValue>
+      <Calendar id="calTTST_DATE" binddataset="MEMO_FILD"/>
+      <Calendar id="calTTED_DATE" binddataset="MEMO_FILD"/>
+      <Calendar id="calMNST_DATE" binddataset="MEMO_FILD"/>
+      <Calendar id="calMNED_DATE" binddataset="MEMO_FILD"/>
+    </InitValue>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:	MDMA0030 개별청약
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.11		최제현		Initial Created.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망    *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST 	= "TTTTTTTF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME 	= "MDMA0030"; //해당 Form에서 사용 할 Package 명
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}	
+
+//this.aKeyValue = new Array(4);
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	
+ 	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+ 	this.fnc_GridSetting(this);
+ 	
+ 	this.fnc_GetComboDs(this.dsCombo);
+ 	this.fnc_GetUserComboDs(this.dsUserCombo);
+ 	this.CalSHRYEAR_MNTH.fn_SetMonth(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,6 ));
+ 	this.CalSHRYEAR_MNTH00.fn_SetMonth(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,6 ));
+	
+	//모든 광고주 명 가져오기
+	this.fn_GetCUST_NAME();
+	
+	this.fn_Search();
+}
+
+/*--------------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ---------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*--------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Search = function (obj) {
+	if (!this.fn_SearchItemCheck()) return;
+
+	this.fnc_DatasetClear('dsMD_ETMDXM'); // 조회 자료 초기화
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsMD_ETMDXM=dsMD_ETMDXM";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdMD_ETMDXM.setFocus(); //재 클릭 방지를 위해 Focus 이동
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	var iRow = this.dsMD_ETMDXM.addRow();
+	this.cmbTRTX_FLAG.set_value('T');
+	this.cmbCMTX_FLAG.set_value('T');
+	var date = this.fnc_GetServerDateTime("DATE");
+	//var year_mnth = date.substr(0,6);
+	this.dsMD_ETMDXM.setColumn(iRow, "INST_DATE", date);
+	this.dsMD_ETMDXM.setColumn(iRow, "YEAR_MNTH", this.CalSHRYEAR_MNTH.fn_GetMonth());
+	this.dsMD_ETMDXM.setColumn(iRow, "TRTX_FLAG",'T');
+	this.dsMD_ETMDXM.setColumn(iRow, "COMI_RATE",0.12);
+	this.dsMD_ETMDXM.setColumn(iRow, "INPT_PATH",'P');
+	var date = this.fnc_GetServerDateTime("DATE");
+	this.grdMD_ETMDXM.setFocus();
+}
+
+/*---------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +---------------------------------*/
+this.fn_Delete = function (obj) {
+	var totalNum = 0;	//체크된 개수
+	
+	for(var i=0 ; i<this.dsMD_ETMDXM.rowcount ; i++){
+		if(this.dsMD_ETMDXM.getColumn(i,"CHEK_FILD") == '1'){totalNum ++;}
+	}
+	
+	if (this.fn_DeleteCheck(totalNum)) {
+		var rowCnt = this.dsMD_ETMDXM.rowcount;
+		for(var i=(rowCnt-1); i>=0; i--){
+			if(this.dsMD_ETMDXM.getColumn(i,"CHEK_FILD") == '1'){
+				this.dsMD_ETMDXM.deleteRow(i);
+			}
+		}
+	}
+	
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+ //모든 입력이 취소되고 초기화
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsMD_ETMDXM");
+
+	this.grdMD_ETMDXM.setFocus();
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/  
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet = "dsMD_ETMDXM=dsMD_ETMDXM:U";
+	var sOutDataSet = "";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdMD_ETMDXM.setFocus();
+	
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this);
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsMD_ETMDXM, dsMD_ETMDXM",this);
+	
+	if(!this.fnc_IsEmpty(sMessage)) return;
+	
+}
+
+this.fn_FormUnloadProcess = function(obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsMD_ETMDXM")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	if (this.CalSHRYEAR_MNTH.fn_GetMonth()==''){
+		this.fnc_Message("TMM008","년월");
+		return false;
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function (totalNum) {
+	//이후이 프로세스가 진행되었는지 확인
+	for(var i=0 ; i<this.dsMD_ETMDXM.rowcount ; i++){
+
+		if(this.dsMD_ETMDXM.getColumn(i,"CHEK_FILD") == '1'){
+			if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "TRTR_NUMB"))) > 0 || this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "CMTR_NUMB"))) > 0){
+				this.fnc_Message("MCM001");
+				return false;
+			}else if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "TRTX_NUMB"))) > 0 || this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "CMTX_NUMB")))){
+				this.fnc_Message("MCM002");
+				return false;
+			}else if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "TRCH_NUMB"))) > 0 || this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "CMCH_NUMB")))){
+				this.fnc_Message("MCM003");
+				return false;
+			}
+		}
+	}
+
+	if (totalNum < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var sQuestionText  = "일련번호 : ("+this.grdMD_ETMDXM.getCellText(this.grdMD_ETMDXM.currentrow, this.grdMD_ETMDXM.getBindCellIndex( "body", "SEQX_FILD" )) + ")";
+			
+	if(totalNum > 1){
+		sQuestionText += " 외 "+ (totalNum-1) + "건"
+	}
+
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	
+	
+	if (!this.fnc_DatasetChangeCheck("dsMD_ETMDXM")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsMD_ETMDXM.getRowCount(); i++) {
+		
+		this.dsMD_ETMDXM.setColumn(i,"CHEK_FILD",0);
+		
+		if (this.fnc_ToUpper(this.dsMD_ETMDXM.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+		//이후의 프로세스가 진행되었는지 확인
+		if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"TRTR_NUMB"))) > 0 || 
+		this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"CMTR_NUMB"))) > 0){
+			this.fnc_Message("MDM007");
+			return false;
+		}else if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"TRTX_NUMB"))) > 0 || 
+		this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"CMTX_NUMB"))) > 0){
+			this.fnc_Message("MDM008");
+			return false;
+		}else if(this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"CMTR_NUMB"))) > 0 || 
+		this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i,"CMCH_NUMB"))) > 0){
+			this.fnc_Message("MDM009");
+			return false;
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "YEAR_MNTH"))) < 1) {	
+			return this.fnc_CheckPostAction("TMM072", "년월", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"YEAR_MNTH"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "CUST_NAME"))) < 1) {	
+			return this.fnc_CheckPostAction("TMM072", "광고주", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"CUST_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "BRND_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "브랜드", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"BRND_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "DEPT_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "담당부서", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"BRND_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "MEDX_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "청구지", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"MEDX_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "MEDX_FLAG"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "매체구분", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"MEDX_FLAG"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "RMED_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "매체", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"RMED_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "PRGM_NAME"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "프로그램명", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"PRGM_NAME"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "PRCE_FILD"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "단가", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"PRCE_FILD"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "AMNT_FILD"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "금액", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"AMNT_FILD"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "TTST_DATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "총광고시작일", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"TTST_DATE"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "TTED_DATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "총광고종료일", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"TTED_DATE"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "MNST_DATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "금월방송시작일", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"MNST_DATE"), '');
+		}else if (this.fnc_Length(this.fnc_Trim(this.dsMD_ETMDXM.getColumn(i, "MNED_DATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "금월방송종료일", this.dsMD_ETMDXM, i, this.dsMD_ETMDXM.getColumn(this.dsMD_ETMDXM.rowposition,"MNED_DATE"), '');
+		}
+		
+		
+		
+	}
+
+	return true;
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {
+		sReturnString = " pgm=" + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+ 		sReturnString += " YEAR_MNTH=" + this.fnc_Quote(this.fnc_Trim(this.CalSHRYEAR_MNTH.fn_GetMonth())); //년월
+		sReturnString += " YEAR_MNTH00=" + this.fnc_Quote(this.fnc_Trim(this.CalSHRYEAR_MNTH00.fn_GetMonth())); //년월
+		sReturnString += " CUST_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRCUST_CODE.value)); //광고주
+		sReturnString += " CTIM_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRCTIM_CODE.value)); //광고주팀
+		sReturnString += " BROD_FLAG=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRBROD_FLAG.value)); //방송구분
+		sReturnString += " MEDX_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRMEDX_CODE.value)); //청구지
+		sReturnString += " CONT_FORM=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRCONT_FORM.value)); //계약형태
+
+		
+	} else if (sKind == "SEARCH01") {
+		sReturnString = " pgm=" + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+	// 저장 Argument 생성
+	} else if (sKind == "SAVE00") {
+		sReturnString = " pgm=" + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsMD_ETMDXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsMD_ETMDXM.rowcount);
+	} else if (sMethodName == "SEARCH01") {
+		//자동완성 세팅
+		this.fn_AutoSetting();
+	} else if (sMethodName == "SAVE00") {
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+	} else if (sMethodName == "GetCommCode") {		
+		//this.fn_GetMEDX_FLAGCombo();
+		
+	} else if (sMethodName == "GetUserComboCode") {
+		 var arrParam = new Array();
+		 
+		 arrParam[0]  = "COMBO,cmbSHRBROD_FLAG,dsSHRBROD_FLAG,0";
+		 arrParam[1]  = "COMBO,cmbSHRCONT_FORM,dsSHRCONT_FORM,0";
+		 arrParam[2]  = "COMBO,cmbBROD_FLAG,dsBROD_FLAG,0";
+		 arrParam[3]  = "COMBO,cmbCONT_FORM,dsCONT_FORM,0";
+		 arrParam[4]  = "COMBO,cmbADDX_TYPE,dsADDX_TYPE,0";
+		 arrParam[5]  = "GRID,grdMD_ETMDXM,dsBROD_FLAG,BROD_FLAG";
+		 arrParam[6]  = "GRID,grdMD_ETMDXM,dsCONT_FORM,CONT_FORM";
+		 arrParam[7]  = "GRID,grdMD_ETMDXM,dsADDX_TYPE,ADDX_TYPE";
+		 arrParam[8]  = "GRID,grdMD_ETMDXM,dsHOUR_TYPE,HOUR_TYPE";
+		 arrParam[9] = "GRID,grdMD_ETMDXM,dsSUBS_FLAG,SUBS_FLAG";
+		 arrParam[10] = "GRID,grdMD_ETMDXM,dsADDX_FORM,ADDX_FORM";
+		 arrParam[11] = "GRID,grdMD_ETMDXM,dsAREA_FLAG,AREA_FLAG";
+		 arrParam[12] = "GRID,grdMD_ETMDXM,dsTRNS_FLAG,TRNS_FLAG";
+		 arrParam[13] = "GRID,grdMD_ETMDXM,dsEDIT_WKDY,EDIT_WKDY";
+		 
+		 this.fnc_UserComboInnerBind(arrParam);				
+	}
+}
+
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+
+}
+
+/*****************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+
+/*----------------------+
+ |  전체 선택 / 해제  |
+ +----------------------*/
+var isAllChecked = 0;
+this.grdMD_ETMDXM_onheadclick = function(obj:Grid, e:nexacro.GridClickEventInfo)
+{
+	if (e.cell == 0) {
+		var v_Colid = this.grdMD_ETMDXM.getCellProperty("body", e.cell, "text").replace("bind:", "");
+		isAllChecked = (isAllChecked ? 0 : 1);
+		
+		for (var i = 0; i < this.dsMD_ETMDXM.getRowCount(); i++) {
+			this.dsMD_ETMDXM.setColumn(i, v_Colid, isAllChecked);
+		}
+		this.grdMD_ETMDXM.setCellProperty("Head", 0, "expr", isAllChecked);
+		
+	}
+}
+	
+/*--------------+
+ |  내역복사   |
+ +--------------*/
+this.btn_CopyRow_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+
+	var nRow = this.dsMD_ETMDXM.rowposition;
+	var iRow = this.dsMD_ETMDXM.insertRow(this.dsMD_ETMDXM.rowposition + 1);
+	
+	this.dsMD_ETMDXM.setColumn(iRow, "YEAR_MNTH", this.dsMD_ETMDXM.getColumn(nRow, "YEAR_MNTH"));//년월
+	this.dsMD_ETMDXM.setColumn(iRow, "CUST_CODE", this.dsMD_ETMDXM.getColumn(nRow, "CUST_CODE"));//광고주코드
+	this.dsMD_ETMDXM.setColumn(iRow, "CUST_NAME", this.dsMD_ETMDXM.getColumn(nRow, "CUST_NAME"));//광고주명
+	this.dsMD_ETMDXM.setColumn(iRow, "CTIM_CODE", this.dsMD_ETMDXM.getColumn(nRow, "CTIM_CODE"));//광고주팀코드
+	this.dsMD_ETMDXM.setColumn(iRow, "CTIM_NAME", this.dsMD_ETMDXM.getColumn(nRow, "CTIM_NAME"));//광고주팀명
+	this.dsMD_ETMDXM.setColumn(iRow, "BRND_CODE", this.dsMD_ETMDXM.getColumn(nRow, "BRND_CODE"));//브랜드코드
+	this.dsMD_ETMDXM.setColumn(iRow, "BRND_NAME", this.dsMD_ETMDXM.getColumn(nRow, "BRND_NAME"));//브랜드명
+	this.dsMD_ETMDXM.setColumn(iRow, "MEDX_CODE", this.dsMD_ETMDXM.getColumn(nRow, "MEDX_CODE"));//청구지코드
+	this.dsMD_ETMDXM.setColumn(iRow, "MEDX_NAME", this.dsMD_ETMDXM.getColumn(nRow, "MEDX_NAME"));//청구지명
+	this.dsMD_ETMDXM.setColumn(iRow, "MEDX_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "MEDX_FLAG"));//매체구분
+	this.dsMD_ETMDXM.setColumn(iRow, "RMED_CODE", this.dsMD_ETMDXM.getColumn(nRow, "RMED_CODE"));//매체코드
+	this.dsMD_ETMDXM.setColumn(iRow, "RMED_NAME", this.dsMD_ETMDXM.getColumn(nRow, "RMED_NAME"));//매체명
+	this.dsMD_ETMDXM.setColumn(iRow, "PRGM_NAME", this.dsMD_ETMDXM.getColumn(nRow, "PRGM_NAME"));//프로그램명
+	this.dsMD_ETMDXM.setColumn(iRow, "STAR_TIME", this.dsMD_ETMDXM.getColumn(nRow, "STAR_TIME"));//방송시작일
+	this.dsMD_ETMDXM.setColumn(iRow, "ENDD_TIME", this.dsMD_ETMDXM.getColumn(nRow, "ENDD_TIME"));//방송종료일
+	this.dsMD_ETMDXM.setColumn(iRow, "HOUR_TYPE", this.dsMD_ETMDXM.getColumn(nRow, "HOUR_TYPE"));//방송시급
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "BROD_FLAG"));//방송구분
+	this.dsMD_ETMDXM.setColumn(iRow, "SECD_FILD", this.dsMD_ETMDXM.getColumn(nRow, "SECD_FILD"));//초수
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_MOND", this.dsMD_ETMDXM.getColumn(nRow, "BROD_MOND"));//월
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_TUES", this.dsMD_ETMDXM.getColumn(nRow, "BROD_TUES"));//화
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_WEDN", this.dsMD_ETMDXM.getColumn(nRow, "BROD_WEDN"));//수
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_THUR", this.dsMD_ETMDXM.getColumn(nRow, "BROD_THUR"));//목
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_FRID", this.dsMD_ETMDXM.getColumn(nRow, "BROD_FRID"));//금
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_SATU", this.dsMD_ETMDXM.getColumn(nRow, "BROD_SATU"));//토
+	this.dsMD_ETMDXM.setColumn(iRow, "BROD_SUND", this.dsMD_ETMDXM.getColumn(nRow, "BROD_SUND"));//일
+	this.dsMD_ETMDXM.setColumn(iRow, "CONT_FILD", this.dsMD_ETMDXM.getColumn(nRow, "CONT_FILD"));//회수
+	this.dsMD_ETMDXM.setColumn(iRow, "PRCE_FILD", this.dsMD_ETMDXM.getColumn(nRow, "PRCE_FILD"));//단가
+	this.dsMD_ETMDXM.setColumn(iRow, "AMNT_FILD", this.dsMD_ETMDXM.getColumn(nRow, "AMNT_FILD"));//광고비
+	this.dsMD_ETMDXM.setColumn(iRow, "AREA_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "AREA_FLAG"));//지역구분
+	this.dsMD_ETMDXM.setColumn(iRow, "SUBS_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "SUBS_FLAG"));//청약구분
+	this.dsMD_ETMDXM.setColumn(iRow, "ADDX_FORM", this.dsMD_ETMDXM.getColumn(nRow, "ADDX_FORM"));//광고형태
+	this.dsMD_ETMDXM.setColumn(iRow, "ADDX_TYPE", this.dsMD_ETMDXM.getColumn(nRow, "ADDX_TYPE"));//광고유형
+	this.dsMD_ETMDXM.setColumn(iRow, "CONT_FORM", this.dsMD_ETMDXM.getColumn(nRow, "CONT_FORM"));//계약형태
+	this.dsMD_ETMDXM.setColumn(iRow, "EDIT_WKDY", this.dsMD_ETMDXM.getColumn(nRow, "EDIT_WKDY"));//편집요일
+	this.dsMD_ETMDXM.setColumn(iRow, "TTST_DATE", this.dsMD_ETMDXM.getColumn(nRow, "TTST_DATE"));//총광고시작일
+	this.dsMD_ETMDXM.setColumn(iRow, "TTED_DATE", this.dsMD_ETMDXM.getColumn(nRow, "TTED_DATE"));//총광고종료일
+	this.dsMD_ETMDXM.setColumn(iRow, "MNST_DATE", this.dsMD_ETMDXM.getColumn(nRow, "MNST_DATE"));//금월방송시작일
+	this.dsMD_ETMDXM.setColumn(iRow, "MNED_DATE", this.dsMD_ETMDXM.getColumn(nRow, "MNED_DATE"));//금월방송종료일
+	this.dsMD_ETMDXM.setColumn(iRow, "PLAN_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "PLAN_FLAG"));//계획치구분
+	this.dsMD_ETMDXM.setColumn(iRow, "MEMO_FILD", this.dsMD_ETMDXM.getColumn(nRow, "MEMO_FILD"));//비고
+	this.dsMD_ETMDXM.setColumn(iRow, "APLY_DATE", this.dsMD_ETMDXM.getColumn(nRow, "APLY_DATE"));//적용일자
+	this.dsMD_ETMDXM.setColumn(iRow, "CNMD_CODE", this.dsMD_ETMDXM.getColumn(nRow, "CNMD_CODE"));//연계매체
+	this.dsMD_ETMDXM.setColumn(iRow, "TRTX_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "TRTX_FLAG"));//위수탁부가세
+	this.dsMD_ETMDXM.setColumn(iRow, "CMTX_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "CMTX_FLAG"));//수수료부가세
+	this.dsMD_ETMDXM.setColumn(iRow, "ATCT_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "ATCT_FLAG"));//자동계산
+	this.dsMD_ETMDXM.setColumn(iRow, "INPT_PATH", this.dsMD_ETMDXM.getColumn(nRow, "INPT_PATH"));//투입경로
+	this.dsMD_ETMDXM.setColumn(iRow, "COMI_RATE", this.dsMD_ETMDXM.getColumn(nRow, "COMI_RATE"));//수수료율
+	this.dsMD_ETMDXM.setColumn(iRow, "COMI_FILD", this.dsMD_ETMDXM.getColumn(nRow, "COMI_FILD"));//수수료금액
+	this.dsMD_ETMDXM.setColumn(iRow, "KBNT_YEAR", this.dsMD_ETMDXM.getColumn(nRow, "KBNT_YEAR"));//코바넷편성년도
+	this.dsMD_ETMDXM.setColumn(iRow, "KBNT_OSEQ", this.dsMD_ETMDXM.getColumn(nRow, "KBNT_OSEQ"));//코바넷편성일련번호
+	this.dsMD_ETMDXM.setColumn(iRow, "KBNT_SSEQ", this.dsMD_ETMDXM.getColumn(nRow, "KBNT_SSEQ"));//코바넷청약일련번호
+	this.dsMD_ETMDXM.setColumn(iRow, "KBNT_MSEQ", this.dsMD_ETMDXM.getColumn(nRow, "KBNT_MSEQ"));//코바넷운행일련번호
+	this.dsMD_ETMDXM.setColumn(iRow, "TRNS_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "TRNS_FLAG"));//매체통신구분
+	this.dsMD_ETMDXM.setColumn(iRow, "AORX_FLAG", this.dsMD_ETMDXM.getColumn(nRow, "AORX_FLAG"));//AOR구분
+	this.dsMD_ETMDXM.setColumn(iRow, "DEPT_CODE", this.dsMD_ETMDXM.getColumn(nRow, "DEPT_CODE"));//코바넷청약일련번호
+	this.dsMD_ETMDXM.setColumn(iRow, "DEPT_NAME", this.dsMD_ETMDXM.getColumn(nRow, "DEPT_NAME"));//코바넷운행일련번호
+	this.dsMD_ETMDXM.setColumn(iRow, "EMPL_CODE", this.dsMD_ETMDXM.getColumn(nRow, "EMPL_CODE"));//매체통신구분
+	this.dsMD_ETMDXM.setColumn(iRow, "EMPL_NAME", this.dsMD_ETMDXM.getColumn(nRow, "EMPL_NAME"));//AOR구분
+}
+
+
+/*-------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+ //상단 광고주 팝업
+ this.fn_HelpDialogeSHRCUST_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{	
+	var arrParam = new Array();
+	arrParam[0] = "MCM0005";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtSHRCUST_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtSHRCUST_NAME";                          
+	arrParam[5] = "edtSHRCUST_CODE,edtSHRCUST_NAME";   
+	arrParam[6] = "0,1";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+//상단광고주팀 팝업
+this.fn_HelpDialogeSHRCTIM_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+	arrParam[0] = "MCM0008";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtSHRCUST_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtSHRCTIM_NAME";                          
+	arrParam[5] = "edtSHRCTIM_CODE,edtSHRCTIM_NAME";   
+	arrParam[6] = "0,1";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+ 
+
+ //상단 청구지 팝업
+this.fn_HelpDialogeSHRMEDX_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+
+	var arrParam = new Array();
+	arrParam[0] = "MCM0009";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtSHRMEDX_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtSHRMEDX_NAME";                          
+	arrParam[5] = "edtSHRMEDX_CODE,edtSHRMEDX_NAME";   
+	arrParam[6] = "0,1";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+
+}
+
+ 
+//하단 광고주 팝업
+this.fn_HelpDialogeCUST_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{	
+	var arrParam = new Array();
+	arrParam[0] = "MCM0007";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtCUST_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtCUST_NAME";                          
+	arrParam[5] = "edtBRND_CODE,edtBRND_NAME,edtCUST_CODE,edtCUST_NAME,edtDEPT_CODE,edtDEPT_NAME";   
+	arrParam[6] = "0,1,2,3,4,5";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+//하단 광고주팀 팝업
+this.fn_HelpDialogeCTIM_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+	arrParam[0] = "MCM0008";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtCUST_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtCTIM_NAME";                          
+	arrParam[5] = "edtCTIM_CODE,edtCTIM_NAME";   
+	arrParam[6] = "0,1";                        
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+//하단 브랜드 팝업
+this.fn_HelpDialogeBRND_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+	arrParam[0] = "MCM0016";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtBRND_NAME.value);
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtBRND_NAME";                          
+	arrParam[5] = "edtBRND_CODE,edtBRND_NAME,edtCUST_CODE,edtCUST_NAME,edtDEPT_CODE,edtDEPT_NAME";   
+	arrParam[6] = "0,1,2,3,4,5";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+//하단 청구지 팝업
+this.fn_HelpDialogeMEDX_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{		
+	var arrParam = new Array();
+	arrParam[0] = "MCM0023";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtMEDX_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtMEDX_NAME";                          
+	arrParam[5] = "edtRMED_CODE,edtRMED_NAME,edtMEDX_CODE,edtMEDX_NAME";   
+	arrParam[6] = "0,1,2,3";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+
+}
+
+//하단 매체 팝업
+this.fn_HelpDialogeRMED_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+	arrParam[0] = "MCM0018";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtRMED_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtRMED_NAME";                          
+	arrParam[5] = "edtRMED_CODE,edtRMED_NAME,edtMEDX_CODE,edtMEDX_NAME";   
+	arrParam[6] = "0,1,2,3";                                     
+		
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+
+//하단 담당부서 팝업
+this.fn_HelpDialogeDEPT_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+
+	var arrParam = new Array();
+	arrParam[0] = "MDM0001";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtDEPT_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtDEPT_NAME";                          
+	arrParam[5] = "edtDEPT_CODE,edtDEPT_NAME";   
+	arrParam[6] = "0,1";                                     
+	
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+
+}
+//하단 사원팝업
+this.fn_HelpDialogeEMPL_CODE = function(obj:Static,  e:nexacro.ClickEventInfo)
+{
+	var arrParam = new Array();
+	arrParam[0] = "MDM0002";                                 
+	arrParam[1] = "";                                         
+	arrParam[2] = this.fnc_Trim(this.edtEMPL_NAME.value); 
+	arrParam[3] = "N";                                         
+	arrParam[4] = "edtEMPL_NAME";                          
+	arrParam[5] = "edtEMPL_CODE,edtEMPL_NAME";   
+	arrParam[6] = "0,1";                                     
+	
+	this.fnc_HelpDialogeAction(this, obj, arrParam); 
+}
+
+/*--------------------+
+ |     전체복사 	  |
+ +--------------------*/
+this.btn_COPYAll_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	if(this.dsMD_ETMDXM.rowcount == 0){
+		alert('복사할 데이터가 없습니다.');
+	}else{
+ 		var sName 		= "MDMA0030P01";
+ 		var sFormURL 	= "mdm::MDMA0030P01.xfdl";
+ 		var sOpenStyle  = "modeless=false";
+ 			sOpenStyle += ",autosize=true";
+ 			sOpenStyle += ",top=-1";
+ 			sOpenStyle += ",left=-1";
+ 			sOpenStyle += ",width=990";
+ 			sOpenStyle += ",height=800";
+ 			sOpenStyle += ",title=true";
+ 			sOpenStyle += ",titletext=전체복사";
+ 			sOpenStyle += ",status=false";
+ 			sOpenStyle += ",resizable=true";
+ 
+ 		var objArgument = {
+ 			 oYEAR_MNTH : this.CalSHRYEAR_MNTH.fn_GetMonth()
+ 		};
+ 
+ 		this.fnc_OpenPopup(sName, sFormURL, objArgument, sOpenStyle, "");
+	}
+
+	
+}
+
+
+
+/*----------------------+
+ |  조회조건 엔터 時  |
+ +----------------------*/
+this.fn_onKeyDown = function(obj:Edit, e:nexacro.KeyEventInfo)
+{
+	if (e.keycode == 13){
+		this.fn_Search();
+	}
+}
+
+/*-------------------------------+
+ |  조회조건 콤보 값 변경 時  |
+ +-------------------------------*/
+this.fn_onItemChanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo)
+{
+	this.fn_Search();
+}
+
+//팝업 후 내용을 가져오는 메소드
+this._ResultDisplayComp = function (sResponse, sCompList, sIndexList) {
+
+    if ((this.fnc_Length(this.fnc_Trim(sCompList)) < 1) || (this.fnc_Length(this.fnc_Trim(sIndexList)) < 1)) return;
+
+    var arrCompList  = this.fnc_Split(sCompList, ",");
+    var arrIndexList = this.fnc_Split(sIndexList, ",");
+
+    // 두개의 개수는 일치해야 함
+    if (arrCompList.length != arrIndexList.length) return;
+
+    for (var i = 0; i < arrCompList.length; i++) {
+        eval("this." + arrCompList[i]).set_value(sResponse[nexacro.toNumber(arrIndexList[i], 0)]);
+        eval("this." + arrCompList[i]).UserData = sResponse[nexacro.toNumber(arrIndexList[i], 0)];
+    }
+
+}
+
+
+/*----------------------------------------+
+ |  이름을 지우면 코드가 지워짐(상단)  |
+ +----------------------------------------*/
+
+
+//광고주팀
+this.edtSHRCTIM_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtSHRCTIM_NAME.value=='')
+	this.edtSHRCTIM_CODE.set_value('');
+}
+//청구지
+this.edtSHRMEDX_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtSHRMEDX_NAME.value=='')
+	this.edtSHRMEDX_CODE.set_value('');
+}
+/*----------------------------------------+
+ |  이름을 지우면 코드가 지워짐(하단)  |
+ +----------------------------------------*/
+//광고주
+this.edtCUST_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtCUST_NAME.value=='')
+	this.edtCUST_CODE.set_value('');
+}
+//브랜드 
+this.edtBRND_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtBRND_NAME.value=='')
+	this.edtBRND_CODE.set_value('');
+}
+//광고주팀 
+this.edtCTIM_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtCTIM_NAME.value=='')
+	this.edtCTIM_CODE.set_value('');
+}
+//담당부서 
+this.edtDEPT_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtDEPT_NAME.value=='')
+	this.edtDEPT_CODE.set_value('');
+}
+//매체 
+this.edtRMED_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	if(this.edtRMED_NAME.value=='')
+	this.edtRMED_CODE.set_value('');
+}
+//청구지 
+this.edtMEDX_NAME_ontextchange = function(obj:Edit,  e:nexacro.TextChangeEventInfo)
+{
+	if(this.edtMEDX_NAME.value=='')
+	this.edtMEDX_CODE.set_value('');
+}
+
+//------------------------------자동완성시작-----------------------------------
+
+//모든 거래처명 가져오기
+this.fn_GetCUST_NAME = function (obj) {
+
+	this.fnc_DatasetClear("dsAUTO_NAME");
+
+	var sMethodName = "SEARCH01";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsAUTO_NAME=dsAUTO_NAME";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME,sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+}
+
+
+this.fn_AutoSetting = function(){
+
+	var iCNT = this.dsAUTO_NAME.getRowCount();
+	var i;
+
+	for(i=0;i<iCNT;i++)
+	{
+		var text = this.dsAUTO_NAME.getColumn(i,"CLIENT_NAME");
+		var code = this.GetSpliceTextE(text);
+		this.dsAUTO_NAME.setColumn(i,"USEX_CODE",code);
+	}
+}
+
+
+// 한글 자소를 분리하여 리턴한다.
+var arrFirst = [12593,12594,12596,12599,12600,12601,12609,12610,12611,12613,12614,12615,12616,12617,12618,12619,12620,12621,12622];
+var arrSecond = [12623,12624,12625,12626,12627,12628,12629,12630,12631,12632,12633,12634,12635,12636,12637,12638,12639,12640,12641,12642,12643];
+var arrThird = [0,12593,12594,12595,12596,12597,12598,12599,12601,12602,12603,12604,12605,12606,12607,12608,12609,12610,12612,12613,12614,12615,12616,12618,12619,12620,12621,12622];
+
+this.GetSpliceTextK = function(strInput)
+{
+	var i;
+	var strOut = "";
+	for(i=0;i<strInput.length;i++)
+	{
+		var nCode = strInput.charCodeAt(i);
+		if(nCode>=44032 && nCode <= 55203)
+		{
+			var nFirst = Math.floor((nCode - 44032) / 588);
+			strOut += String.fromCharCode(arrFirst[nFirst]);
+			var nSecond = Math.floor(((nCode - 44032) % 588) / 28) ;
+			strOut += String.fromCharCode(arrSecond[nSecond]);
+			var nThird = Math.floor((nCode - 44032) % 28) ;
+			if(nThird > 0)
+				strOut += String.fromCharCode(arrThird[nThird]);
+		}
+		else
+			strOut += String.fromCharCode(nCode);
+	}
+	return strOut;
+}
+
+// 한글 자소를 분리하고 키보드에 매치되는 영문으로 리턴한다.
+var arrFirstE = ["r","R","s","e","E","f","a","q","Q","t","T","d","w","W","c","z","x","v","g"];
+var arrSecondE = ["k","o","i","O","j","p","u","P","h","hk","ho","hl","y","n","nj","np","nl","b","m","ml","l"];
+var arrThirdE = ["","r","R","rt","s","sw","sg","e","f","fr","fa","fq","ft","fx","fv","fg","a","q","qt","t","T","d","w","c","z","x","v","g"];
+var arrAllE = ["r","R","rt","s","sw","sg","e","E","f","fr","fa","fq","ft","fx","fv","fg","a","q","Q","qt","t","T","d","w","W","c","z","x","v","g","k","o","i","O","j","p","u","P","h","hk","ho","hl","y","n","nj","np","nl","b","m","ml","l"];
+
+this.GetSpliceTextE = function(strInput)
+{
+	var i;
+	var strOutE = "";
+	for(i=0;i<strInput.length;i++)
+	{
+		var nCode = strInput.charCodeAt(i);
+		if(nCode>=44032 && nCode <= 55203)
+		{
+			var nFirst = Math.floor((nCode - 44032) / 588);
+			strOutE += arrFirstE[nFirst];
+			var nSecond = Math.floor(((nCode - 44032) % 588) / 28) ;
+			strOutE += arrSecondE[nSecond];
+			var nThird = Math.floor((nCode - 44032) % 28) ;
+			if(nThird > 0)
+				strOutE += arrThirdE[nThird];
+		}
+		else if(nCode>=12593 && nCode <= 12643)
+		{
+			strOutE += arrAllE[nCode-12593];
+		}
+		else
+		{
+			strOutE += String.fromCharCode(nCode);
+		}
+	}
+	return strOutE;
+}
+
+this.edtSHRCUST_NAME_onkeyup = function(obj:Edit, e:nexacro.KeyEventInfo)
+{
+	if(e.keycode==40 || e.keycode == 38)
+	{
+		this.lstCUST_NAME.setFocus();
+		this.lstCUST_NAME.set_index(0);
+	}
+}
+
+
+this.lstCUST_NAME_onitemclick = function(obj:ListBox, e:nexacro.ListBoxClickEventInfo)
+{
+	this.edtSHRCUST_NAME.set_value(e.itemtext);
+	this.edtSHRCUST_CODE.set_value(e.itemvalue);
+	this.lstCUST_NAME.set_visible(false);
+}
+
+
+this.lstCUST_NAME_onkeydown = function(obj:ListBox, e:nexacro.KeyEventInfo)
+{
+	if(e.keycode == 13)
+	{
+		this.edtSHRCUST_NAME.set_value(this.lstCUST_NAME.text);
+		this.edtSHRCUST_CODE.set_value(this.lstCUST_NAME.value);
+		this.lstCUST_NAME.set_visible(false);
+		this.fn_Search();
+	}	
+}
+
+
+
+
+this.edtSHRCUST_NAME_ontextchanged = function(obj:Edit,  e:nexacro.TextChangedEventInfo)
+{
+	//명이 지워지면 코드가 지워짐
+	if(this.edtSHRCUST_NAME.value=='')
+	this.edtSHRCUST_CODE.set_value('');
+		
+	this.lstCUST_NAME.set_value("");
+	
+	var text = e.posttext;
+	if(text.length > 0)
+	{
+		var etext = this.GetSpliceTextE(text);
+
+		var sFilter = "String(USEX_CODE).toUpperCase().indexOf('" + etext.toUpperCase().replace("'","\\'") + "') >= 0";
+
+		this.dsAUTO_NAME.filter(sFilter);
+
+		this.lstCUST_NAME.set_visible(true);
+	}
+	else
+	{
+		this.dsAUTO_NAME.filter("USEX_CODE == 0");
+		this.lstCUST_NAME.set_visible(false);
+	}
+}
+
+
+
+
+this.fn_onkeydown = function(obj:Edit, e:nexacro.KeyEventInfo)
+{
+	if(e.keycode == 13)
+	{
+		this.lstCUST_NAME.set_visible(false);
+		this.fn_Search();
+	}	
+}
+
+/*-------------------------------+
+ |  단가*횟수를 자동으로 입력 |
+ +-------------------------------*/
+this.fn_InputPRCE_FILD = function(obj:MaskEdit, e:nexacro.ChangeEventInfo)
+{
+	//총금액을 넣어줌
+	this.edtAMNT_FILD.set_value(this.edtPRCE_FILD.value);
+	this.edtCOMI_FILD.set_value(this.edtCOMI_RATE.value*this.edtAMNT_FILD.value);
+}
+
+/*---------------------------------+
+ |  수수료 금액을 자동으로 입력 |
+ +---------------------------------*/
+this.fn_InputCOMI_RATE = function(obj:Edit, e:nexacro.ChangeEventInfo)
+{
+	//수수료금액을 넣어줌
+	this.edtCOMI_FILD.set_value(this.edtCOMI_RATE.value*this.edtAMNT_FILD.value);
+	if(this.edtCOMI_FILD.value=='')
+	this.edtCOMI_FILD.set_value(0);
+}
+
+this.fn_InputAMNT_FILD = function(obj:MaskEdit, e:nexacro.KeyEventInfo)
+{
+	//총금액을 넣어줌
+	this.edtCOMI_FILD.set_value(this.edtCOMI_RATE.value*this.edtAMNT_FILD.value);
+}
+]]></Script>
+  </Form>
+</FDL>

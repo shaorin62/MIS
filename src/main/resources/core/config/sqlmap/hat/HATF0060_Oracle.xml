@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATF0060">
+
+<!--
+ *   프로그램명 : 근태결재 신청내역  SQLMAP
+ *   작 성 일 : 2016.09.19
+ *   작 성 자 : 김남호
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+<!--
+	 작 성 자 : 김남호
+	 작 성 일 : 2016.09.19
+	 내    용 : 출장여비정산 목록 select
+	 파라미터 : 
+-->
+	<select id="HATF0060.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[ 
+		select  butrxm.bsrp_seq1    /*출장승인key*/
+		       ,btclxm.btcl_seq1    /*출장여비정산key*/
+		       ,to_char(butrxm.updt_date,'YYYYMMDD') updt_date   /*신청일자(저장일자)*/
+		       ,butrxm.drft_date drft_date   /*기안일자*/
+		       ,butrxm.updt_usid empl_numb   /*신청자사번*/
+		       ,SF_GET_EMPLNAME(butrxm.inst_usid) empl_name  /*신청자명*/
+		       ,butrxm.bsrp_code bsrp_code   /*출장구분코드*/
+		       ,SF_GET_BSRP_APPLCNT_INFO(butrxm.bsrp_seq1,3) bsrp_cnt /*출장자수*/
+		       ,butrxm.bsrp_plac bsrp_plac   /*출장지*/
+		       ,butrxm.bsrp_stdt bsrp_stdt   /*출장시작일*/
+		       ,butrxm.bsrp_endd bsrp_endd   /*출장종료일*/
+		       ,appr1.appr_seqn appr_seqn1  /*결재연동key*/
+		       ,appr1.APPR_STAT appr_stat1
+		       ,DECODE(appr1.APPR_STAT ,'N','임시저장', 'T','기안대기', 'P','결재진행', 'R','결재반려', 'Y','결재완료') APPR_STAT_STR1 /*결재상태1*/
+		       ,DECODE(appr1.APPR_STAT ,'P','조회', 'R','조회', 'Y','조회') APPR_STAT_PROC1 /*결재상태1*/
+		       ,appr2.appr_seqn appr_seqn2  /*결재연동key*/
+		       ,appr2.APPR_STAT appr_stat2
+		       ,DECODE(appr2.APPR_STAT ,'N','임시저장', 'T','기안대기', 'P','결재진행', 'R','결재반려', 'Y','결재완료') APPR_STAT_STR2 /*결재상태2*/
+		       ,DECODE(appr2.APPR_STAT ,'N','수정', 'T','조회', 'P','조회', 'R','조회', 'Y','조회', DECODE(appr1.APPR_STAT,'Y','작성','')) APPR_STAT_PROC2 /*결재상태2*/
+		from    at_butrxm butrxm                    /*출장승인신청*/
+		        left outer join tm_apprxh appr1     /*전자결재1*/
+		            on butrxm.appr_seqn = appr1.appr_seqn
+		        left outer join at_btclxm btclxm    /*출장여비정산*/
+		            on butrxm.bsrp_seq1 = btclxm.bsrp_seq1
+		        left outer join tm_apprxh appr2     /*전자결재2*/
+		            on btclxm.appr_seqn = appr2.appr_seqn
+		where   butrxm.bsrp_endd >= #APPR_DATE1#     /*조회일자(출장일자)에 걸리는 모든 출장승인 조회*/
+		and     butrxm.bsrp_stdt <= #APPR_DATE2#
+	]]>
+    	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+    		(   butrxm.updt_usid = #EMPL_NUMB#       /*작성자,출장자에 해당되는건만 조회*/
+    		or #EMPL_NUMB# in (select aplt_emnr from at_butrxd where butrxm.bsrp_seq1 = at_butrxd.bsrp_seq1) )
+    	</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="APPR_STAT">
+			(   appr2.appr_stat = #APPR_STAT#    )   /*출장여비정산,외근정산의 결재상태만 조회*/
+		</isNotEmpty>					 
+	<![CDATA[	
+		order by bsrp_stdt desc, bsrp_endd desc, updt_date desc, drft_date desc, empl_numb	    
+	]]>		 
+	</select>	
+
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.23
+	 내    용 : 출장신청결재 SEQ 조회 
+	 비    고 : MAX + 1로 사용. 
+	 파라미터 : 
+********************************************************************************/
+-->
+<select id="HATF0060.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+<![CDATA[ 
+	SELECT  NVL(MAX(APPR_SEQN) + 1, TO_CHAR(SYSDATE,'YYYYMMDD')||LPAD('1',5,0)) APPR_SEQN
+	  FROM  TM_APPRXH
+        WHERE  APPR_SEQN LIKE TO_CHAR(SYSDATE,'YYYYMMDD')||'%'
+]]>
+</select>	
+	
+</sqlMap>

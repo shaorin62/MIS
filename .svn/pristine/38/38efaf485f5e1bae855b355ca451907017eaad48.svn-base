@@ -1,0 +1,502 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="HRMC0070" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="학력현황" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="216" height="21" cssclass="styFormSearchInfo" top="159" taborder="21" usedecorate="true"/>
+        <Grid autoenter="TRUE" binddataset="dsHR_SCHCRR" cellsizingtype="row" enable="true" id="grdHR_SCHCRR" useinputpanel="false" selecttype="row" taborder="26" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" cssclass="styGrid01" right="25" top="180" bottom="15">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100" band="left"/>
+                <Column size="100" band="left"/>
+                <Column size="120" band="left"/>
+                <Column size="120" band="left"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="180"/>
+                <Column size="80"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="100"/>
+                <Column size="90"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="사원번호"/>
+                <Cell col="1" text="성명"/>
+                <Cell col="2" text="소속"/>
+                <Cell col="3" text="부서"/>
+                <Cell col="4" text="직위"/>
+                <Cell col="5" text="직급"/>
+                <Cell col="6" text="학력"/>
+                <Cell col="7" text="학교명"/>
+                <Cell col="8" text="계열"/>
+                <Cell col="9" text="전공"/>
+                <Cell col="10" text="부/복수전공"/>
+                <Cell col="11" text="입학년월"/>
+                <Cell col="12" text="졸업년월"/>
+                <Cell col="13" text="소재지"/>
+                <Cell col="14" text="최종학교여부"/>
+                <Cell col="15" text="입사전학력여부"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" text="bind:EMPL_NUMB"/>
+                <Cell col="1" displaytype="text" style="align:center;" text="bind:EMPL_NAME"/>
+                <Cell col="2" style="align:left;" text="bind:SECT_NAME"/>
+                <Cell col="3" displaytype="text" style="align:left;" text="bind:DEPT_NAME"/>
+                <Cell col="4" style="align:center;" text="bind:OPOS_NAME"/>
+                <Cell col="5" displaytype="text" style="align:center;" text="bind:CPOS_NAME" editimemode="native"/>
+                <Cell col="6" displaytype="text" style="align:center;" text="bind:SCDN_NAME"/>
+                <Cell col="7" displaytype="text" style="align:left;" text="bind:SCHL_CDNM" editimemode="native"/>
+                <Cell col="8" displaytype="text" style="align:left;" text="bind:MJRA_NAME"/>
+                <Cell col="9" displaytype="text" style="align:left;" text="bind:MJRA_NAME"/>
+                <Cell col="10" style="align:left;" text="bind:DBMJ_NAME"/>
+                <Cell col="11" displaytype="date" style="align:left;" text="bind:ENIS_DATE" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="12" displaytype="date" style="align:left;" text="bind:GRDT_DATE" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="13" displaytype="text" style="align:center;" text="bind:SCHL_SEAT" editimemode="native"/>
+                <Cell col="14" displaytype="checkbox" edittype="none" style="align:center;" text="bind:HISL_YSNO" editimemode="native"/>
+                <Cell col="15" displaytype="checkbox" edittype="none" style="align:center;" text="bind:ENSC_YSNO"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox1" position="absolute" left="8" top="60" height="95" cssclass="styFormSearchBox" right="25" taborder="22"/>
+        <Static id="imgSearchTitle5" text="직급" position="absolute" left="27" width="57" top="123" height="21" cssclass="styFormSearchCap" taborder="23"/>
+        <Static id="Image0" text="사원" left="302" width="57" top="71" height="21" cssclass="styFormSearchCap" taborder="24"/>
+        <Edit autoselect="true" lengthunit="ascii" enable="true" id="edtSHREMPL_NUMB" imemode="none" maxlength="10" onsetfocus="fn_EditFocus" taborder="15" position="absolute" left="344" width="80" top="71" height="21" cssclass="styFormSearchItem" tabstop="false" readonly="true"/>
+        <Static id="imgHelpSHREMPL_NUMB" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" left="426" width="21" top="71" height="21" taborder="16"/>
+        <Edit autoselect="true" lengthunit="ascii" id="edtSHREMPL_NAME" imemode="hangul" maxlength="50" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="1" position="absolute" left="449" width="100" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="imgSearchTitle3" taborder="28" text="재직구분" cssclass="styFormSearchCap" top="71" height="21" width="84" left="796" position="absolute"/>
+        <Combo id="cmbSHRWODN_CODE" taborder="3" type="dropdown" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" top="71" height="21" width="120" left="864" position="absolute"/>
+        <Static id="imgSearchTitle02" taborder="30" text="직원구분" cssclass="styFormSearchCap" left="578" top="71" width="84" height="21" position="absolute"/>
+        <Combo id="cmbSHRWRDV_CODE" taborder="2" type="dropdown" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="646" top="71" width="120" height="21" position="absolute"/>
+        <Static id="imgSearchTitle04" taborder="32" text="학력" cssclass="styFormSearchCap" left="27" top="97" width="57" height="21" position="absolute"/>
+        <Combo id="cmbSHRSCDN_CODE" taborder="4" type="search" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="69" top="97" width="205" height="21" position="absolute"/>
+        <Static id="imgSearchTitle06" taborder="34" text="직위" cssclass="styFormSearchCap" left="302" top="123" width="57" height="21" position="absolute"/>
+        <Edit id="edtSHRCPOS_NAME" taborder="9" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="69" top="123" height="21" width="80" position="absolute" onkillfocus="fn_HelpDialoge"/>
+        <Static id="imgHelpSHRCPOS_CODE" taborder="10" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="151" top="123" width="21" height="21" position="absolute"/>
+        <Edit id="edtSHROPOS_NAME" taborder="11" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="344" top="123" height="21" width="80" position="absolute" onkillfocus="fn_HelpDialoge"/>
+        <Static id="imgHelpSHROPOS_CODE" taborder="12" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="426" top="123" width="21" height="21" position="absolute"/>
+        <Static id="Image02" taborder="41" text="최종학력" cssclass="styFormSearchCap" left="796" top="97" width="84" height="21" position="absolute"/>
+        <CheckBox id="chkSHRHISL_YSNO" taborder="8" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" enable="true" left="864" top="97" width="21" height="21" binddataset="dsHR_MASTXM" position="absolute"/>
+        <Static id="Image05" taborder="13" text="부서" cssclass="styFormSearchCap" left="27" top="71" width="57" height="21" position="absolute"/>
+        <Edit id="edtSHRDEPT_CODE" taborder="17" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="69" top="71" width="80" height="21" position="absolute" tabstop="false" readonly="true"/>
+        <Static id="imgHelpSHRDEPT_CODE" taborder="14" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="151" top="71" width="21" height="21" position="absolute"/>
+        <Edit id="edtSHRDEPT_NAME" taborder="0" imemode="hangul" lengthunit="ascii" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="174" top="71" width="100" height="21" position="absolute"/>
+        <Static id="imgSearchTitle00" taborder="49" text="학교" cssclass="styFormSearchCap" left="302" top="97" width="57" height="21" position="absolute"/>
+        <Edit id="edtSHRSCHL_NAME" taborder="5" imemode="hangul" lengthunit="ascii" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="344" top="97" width="205" height="21" position="absolute"/>
+        <Static id="imgSearchTitle01" taborder="51" text="전공" cssclass="styFormSearchCap" left="578" top="97" width="57" height="21" position="absolute"/>
+        <Edit id="edtSHRMAJR_CDNM" taborder="6" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="646" top="97" height="21" width="97" position="absolute" onkillfocus="fn_HelpDialoge"/>
+        <Static id="imgHelpSHRMAJR_CODE" taborder="7" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="745" top="97" width="21" height="21" position="absolute"/>
+        <Edit id="edtSHRCPOS_CODE" taborder="54" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="646" top="123" width="68" height="21" visible="false" position="absolute"/>
+        <Edit id="edtSHROPOS_CODE" taborder="55" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" visible="false" left="717" top="123" width="68" height="21" oneditclick="edtSHRDUTY_CODE_oneditclick" position="absolute"/>
+        <Edit id="edtSHRMAJR_CODE" taborder="56" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" visible="false" left="788" top="123" width="68" height="21" position="absolute"/>
+        <Static id="st_FormTitle" taborder="57" text="학력현황" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="58" text="홈 &gt; 인사관리 &gt; 인사현황 &gt; 학력현황" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="59" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="60" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="61" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="62" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="63" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="64" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="65" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static00" taborder="66" text="h 25" visible="false" left="573" top="155" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="67" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="68" text="w30" visible="false" left="9" top="61" width="30" height="93" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="69" text="h 6" visible="false" left="8" top="174" width="216" height="6" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsHR_SCHCRR">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="SRAL_NUMB" size="5" type="BIGDECIMAL" description="일련번호"/>
+          <Column id="SCDN_CODE" size="10" type="STRING" description="학교구분코드"/>
+          <Column id="ENIS_DATE" size="8" type="STRING" description="입학일"/>
+          <Column id="GRDT_DATE" size="8" type="STRING" description="졸업일"/>
+          <Column id="SCHL_CODE" size="10" type="STRING" description="학교코드"/>
+          <Column id="MJRA_CODE" size="10" type="STRING" description="전공계열코드"/>
+          <Column id="MAJR_CODE" size="10" type="STRING" description="전공코드"/>
+          <Column id="SHGD_CODE" size="10" type="STRING" description="학년제코드"/>
+          <Column id="DNGB_CODE" size="10" type="STRING" description="주야간구분코드"/>
+          <Column id="SCGN_CODE" size="10" type="STRING" description="본교구분코드"/>
+          <Column id="SCHL_SEAT" size="200" type="STRING" description="학교소재지"/>
+          <Column id="GRDN_CODE" size="10" type="STRING" description="졸업구분코드"/>
+          <Column id="DGDN_CODE" size="10" type="STRING" description="학위구분코드"/>
+          <Column id="HISL_YSNO" size="1" type="STRING" description="최종학교여부"/>
+          <Column id="ENSC_YSNO" size="1" type="STRING" description="입사전학력여부"/>
+          <Column id="SCHL_NAME" size="50" type="STRING" description="학교명"/>
+          <Column id="MAJR_NAME" size="50" type="STRING" description="전공명"/>
+          <Column id="DBMJ_NAME" size="50" type="STRING" description="복수전공명"/>
+          <Column id="EMPL_NAME" size="50" type="STRING" description="성명"/>
+          <Column id="SECT_NAME" size="50" type="STRING" description="소속명"/>
+          <Column id="DEPT_NAME" size="50" type="STRING" description="부서명"/>
+          <Column id="OPOS_NAME" size="50" type="STRING" description="직위명"/>
+          <Column id="CPOS_CODE" size="50" type="STRING" description="직급코드"/>
+          <Column id="CPOS_NAME" size="50" type="STRING" description="직급명"/>
+          <Column id="SCDN_NAME" size="50" type="STRING" description="학력"/>
+          <Column id="SCHL_CDNM" size="50" type="STRING" description="학교명"/>
+          <Column id="MJRA_NAME" size="50" type="STRING" description="전공계열"/>
+          <Column id="MAJR_CDNM" size="50" type="STRING" description="전공명"/>
+          <Column id="DGDN_NAME" type="STRING" size="256" description="학위코드"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">WRDV_CODE</Col>
+            <Col id="DSNAME">dsSHRWRDV_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">WODN_CODE</Col>
+            <Col id="DSNAME">dsSHRWODN_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">SCDN_CODE</Col>
+            <Col id="DSNAME">dsSHRSCDN_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:   HRMC0070 학력현황
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date           Modifier    Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.08.24     황치웅     Initial Created.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTFFFFTF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "HRMC0070"; //해당 Form에서 사용 할 Package 명 
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.edtSHRDEPT_NAME.setFocus();
+	this.cmbSHRWODN_CODE.set_value(1);
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+	
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsHR_SCHCRR");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsHR_SCHCRR=dsHR_SCHCRR";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdHR_SCHCRR.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsHR_SCHCRR");
+	this.grdHR_SCHCRR.setFocus();
+	
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+	
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsHR_SCHCRR", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+	
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsHR_SCHCRR")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	return true;
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " DEPT_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value)); 
+ 		sReturnString += " EMPL_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value)); 
+ 		sReturnString += " WRDV_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRWRDV_CODE.value)); 
+ 		sReturnString += " WODN_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRWODN_CODE.value));
+ 		sReturnString += " SCDN_CODE=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHRSCDN_CODE.value));
+ 		sReturnString += " SCHL_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRSCHL_NAME.value)); 
+ 		sReturnString += " MAJR_NAME=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRMAJR_CDNM.value));
+ 		sReturnString += " HISL_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.chkSHRHISL_YSNO.value));
+ 		sReturnString += " CPOS_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRCPOS_CODE.value));
+ 		sReturnString += " OPOS_CODE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHROPOS_CODE.value));
+ 		
+	}
+
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsHR_SCHCRR.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsHR_SCHCRR.getCaseCount("dataset.getRowLevel(currow)==0"));
+	
+	} else if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRWRDV_CODE,dsSHRWRDV_CODE,0";
+			arrParam[1] = "COMBO,cmbSHRWODN_CODE,dsSHRWODN_CODE,0"; 
+			arrParam[2] = "COMBO,cmbSHRSCDN_CODE,dsSHRSCDN_CODE,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+	}
+}
+
+/*****************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ *****************************************************************************************************/
+/*-----------------------+
+ |  팝업 Setting  |
+ +------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+	var arrParam = new Array();
+
+	if ((obj.name == "imgHelpSHRDEPT_CODE") || (obj.name == "edtSHRDEPT_NAME")) { // 조회조건 - 부서정보조회(Popup)
+	
+		arrParam[0] = "TMM0004"; 								//Popup ID
+		arrParam[1] = ""; 										//조건구분에 대응되는 조회조건 값
+		arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+		arrParam[3] = "N"; 										//사용 여부 구분 포함 여부 값
+		arrParam[4] = "edtSHRDEPT_NAME"; 						//현재 포커스 Componect명
+		arrParam[5] = "edtSHRDEPT_CODE,edtSHRDEPT_NAME"; 		//초기화 및 결과 Mapping Column
+		arrParam[6] = "0,1"; 									//Mapping Column Index
+		this.fnc_HelpDialogeAction(this, obj, arrParam); 		//팝업 호출
+		
+	} else if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) { // 조회조건 - 사원정보조회(Popup)	
+	
+		arrParam[0] = "HRM0001";
+		arrParam[1] = this.edtSHRDEPT_CODE.value;
+		arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHREMPL_NAME";
+		arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+		
+	} else if ((obj.name == "imgHelpSHRMAJR_CODE") || (obj.name == "edtSHRMAJR_CDNM")) { // 조회조건 - 전공정보조회(Popup)	
+	
+		arrParam[0] = "TMM1000";
+		arrParam[1] = "MAJR_CODE";
+		arrParam[2] = this.fnc_Trim(this.edtSHRMAJR_CDNM.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRMAJR_CDNM";
+		arrParam[5] = "edtSHRMAJR_CODE,edtSHRMAJR_CDNM";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+		
+	} else if ((obj.name == "imgHelpSHRCPOS_CODE") || (obj.name == "edtSHRCPOS_NAME")) { // 조회조건 - 직급정보조회(Popup)
+	
+		arrParam[0] = "TMM1000";
+		arrParam[1] = "CPOS_CODE";
+		arrParam[2] = this.fnc_Trim(this.edtSHRCPOS_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRCPOS_NAME";
+		arrParam[5] = "edtSHRCPOS_CODE,edtSHRCPOS_NAME";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+		
+	} else if ((obj.name == "imgHelpSHROPOS_CODE") || (obj.name == "edtSHROPOS_NAME")) { // 조회조건 - 직위정보조회(Popup)
+	
+		arrParam[0] = "TMM1000";
+		arrParam[1] = "OPOS_CODE";
+		arrParam[2] = this.fnc_Trim(this.edtSHROPOS_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHROPOS_NAME";
+		arrParam[5] = "edtSHROPOS_CODE,edtSHROPOS_NAME";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+	}
+}
+]]></Script>
+  </Form>
+</FDL>

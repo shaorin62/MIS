@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMA0010">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령기초 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRMA0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+           SELECT /* HRMA0010.SEARCH00.발령기초 테이블 조회 */
+                  A.COMD_CODE AS APDN_CODE          /* 발령구분코드 */
+                , A.COMD_CDNM AS APDN_NAME          /* 발령구분명 */
+                , NVL(B.DTCH_YSNO, 0) AS DTCH_YSNO  /* 부서변경여부 */
+                , NVL(B.PYTC_YSNO, 0) AS PYTC_YSNO  /* 급여형태변경여부 */
+                , NVL(B.CLPC_YSNO, 0) AS CLPC_YSNO  /* 직급변경여부 */
+                , NVL(B.OFPC_YSNO, 0) AS OFPC_YSNO  /* 직위변경여부 */
+                , NVL(B.DURC_YSNO, 0) AS DURC_YSNO  /* 직책변경여부 */
+                , NVL(B.JOCH_YSNO, 0) AS JOCH_YSNO  /* 직무변경여부 */
+                , NVL(B.NMCG_YSNO, 0) AS NMCG_YSNO  /* 호봉변경여부 */
+                , NVL(B.AJDC_YSNO, 0) AS AJDC_YSNO  /* 겸직부서변경여부 */
+                , NVL(B.DTDC_YSNO, 0) AS DTDC_YSNO  /* 파견부서변경여부 */
+                , NVL(B.PSCH_YSNO, 0) AS PSCH_YSNO  /* 파견지변경여부 */
+                , NVL(B.EDCH_YSNO, 0) AS EDCH_YSNO  /* 종료일변경여부 */
+                , NVL(B.HDTC_YSNO, 0) AS HDTC_YSNO  /* 부서장변경여부 */
+                , NVL(B.CIBP_YSNO, 0) AS CIBP_YSNO  /* 경력직위연차변경여부 */
+                , NVL(B.RETC_YSNO, 0) AS RETC_YSNO  /* 퇴직사유변경여부 */
+            FROM TM_CODEXD A                        /* [공통코드상세] */
+            LEFT OUTER JOIN HR_APPOBS B             /* [발령기초] */
+              ON A.COMD_CODE = B.APDN_CODE
+           WHERE A.COMM_CODE = 'APDN_CODE'          /* 발령구분코드 */
+             AND A.REF2_FILD = '1'
+           ORDER BY A.SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.11
+     내    용 : 발령기초 테이블 저장
+********************************************************************************/
+-->
+    <insert id="HRMA0010.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRMA0010.SAVE00.발령기초 테이블 저장 */
+            v_ROWCNT    INTEGER;
+
+        BEGIN
+
+            SELECT COUNT(*)
+            INTO v_ROWCNT
+            FROM HR_APPOBS
+            WHERE APDN_CODE = #APDN_CODE#
+            ;
+            IF v_ROWCNT > 0 THEN
+                UPDATE HR_APPOBS /* [발령기초] */
+                   SET DTCH_YSNO = #DTCH_YSNO#            /* 부서변경여부 */
+                     , PYTC_YSNO = #PYTC_YSNO#            /* 급여형태변경여부 */
+                     , CLPC_YSNO = #CLPC_YSNO#            /* 직급변경여부 */
+                     , OFPC_YSNO = #OFPC_YSNO#            /* 직위변경여부 */
+                     , DURC_YSNO = #DURC_YSNO#            /* 직책변경여부 */
+                     , JOCH_YSNO = #JOCH_YSNO#            /* 직무변경여부 */
+                     , NMCG_YSNO = #NMCG_YSNO#            /* 호봉변경여부 */
+                     , AJDC_YSNO = #AJDC_YSNO#            /* 겸직부서변경여부 */
+                     , DTDC_YSNO = #DTDC_YSNO#            /* 파견부서변경여부 */
+                     , PSCH_YSNO = #PSCH_YSNO#            /* 파견지변경여부 */
+                     , EDCH_YSNO = #EDCH_YSNO#            /* 종료일변경여부 */
+                     , HDTC_YSNO = #HDTC_YSNO#            /* 부서장변경여부 */
+                     , CIBP_YSNO = #CIBP_YSNO#            /* 경력직위연차변경여부 */
+                     , RETC_YSNO = #RETC_YSNO#            /* 퇴직사유변경여부 */
+                     , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE                /* 수정일시 */
+                 WHERE APDN_CODE = #APDN_CODE#            /* 발령구분코드 */
+                 ;
+            ELSE
+                INSERT INTO HR_APPOBS (        /* [발령기초] */
+                            APDN_CODE          /* 발령구분코드 */
+                          , DTCH_YSNO          /* 부서변경여부 */
+                          , PYTC_YSNO          /* 급여형태변경여부 */
+                          , CLPC_YSNO          /* 직급변경여부 */
+                          , OFPC_YSNO          /* 직위변경여부 */
+                          , DURC_YSNO          /* 직책변경여부 */
+                          , JOCH_YSNO          /* 직무변경여부 */
+                          , NMCG_YSNO          /* 호봉변경여부 */
+                          , AJDC_YSNO          /* 겸직부서변경여부 */
+                          , DTDC_YSNO          /* 파견부서변경여부 */
+                          , PSCH_YSNO          /* 파견지변경여부 */
+                          , EDCH_YSNO          /* 종료일변경여부 */
+                          , HDTC_YSNO          /* 부서장변경여부 */
+                          , CIBP_YSNO          /* 경력직위연차변경여부 */
+                          , RETC_YSNO          /* 퇴직사유변경여부 */
+                          , INST_USID          /* 입력작업자 */
+                          , INST_DATE          /* 입력일시 */
+                          , UPDT_USID          /* 수정작업자 */
+                          , UPDT_DATE          /* 수정일시 */
+                 ) VALUES (
+                            #APDN_CODE#        /* 발령구분코드 */
+                          , #DTCH_YSNO#        /* 부서변경여부 */
+                          , #PYTC_YSNO#        /* 급여형태변경여부 */
+                          , #CLPC_YSNO#        /* 직급변경여부 */
+                          , #OFPC_YSNO#        /* 직위변경여부 */
+                          , #DURC_YSNO#        /* 직책변경여부 */
+                          , #JOCH_YSNO#        /* 직무변경여부 */
+                          , #NMCG_YSNO#        /* 호봉변경여부 */
+                          , #AJDC_YSNO#        /* 겸직부서변경여부 */
+                          , #DTDC_YSNO#        /* 파견부서변경여부 */
+                          , #PSCH_YSNO#        /* 파견지변경여부 */
+                          , #EDCH_YSNO#        /* 종료일변경여부 */
+                          , #HDTC_YSNO#        /* 부서장변경여부 */
+                          , #CIBP_YSNO#        /* 경력직위연차변경여부 */
+                          , #RETC_YSNO#        /* 퇴직사유변경여부 */
+                          , #UPDT_USID#        /* 입력작업자 */
+                          , SYSDATE            /* 입력일시 */
+                          , #UPDT_USID#        /* 수정작업자 */
+                          , SYSDATE            /* 수정일시 */
+                        )
+                        ;
+            END IF;
+        END;
+    ]]>
+    </insert>
+</sqlMap>

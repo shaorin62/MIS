@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="TXMC0170">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가세전자신고(인적사항)조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+                SELECT /* TXMC0170.SEARCH00.부가세전자신고(인적사항)조회 */
+                       A.BRANCH_CD    /*VAT_지점코드*/
+                     , A.BIZ_NO   	  /*VAT_사업자번호*/
+                     , A.BRANCH_NM    /*VAT_지점명*/
+                     , A.CORP_NO      /*VAT_법인번호*/
+                     , A.CORP_NM      /*VAT_법인명*/
+                     , A.CORP_TYPENM  /*VAT_업태명*/
+                     , A.CORP_LINE    /*VAT_종목명*/
+                     , A.CORP_MASTER  /*VAT_대표자명*/
+                     , A.CORP_ADDR    /*VAT_사업자주소*/
+                     , A.CORP_TEL     /*VAT_사업장전화번호*/
+                     , A.CORP_CELL    /*VAT_사업자휴대전화*/
+                     , A.TAXOFFICE_CD /*VAT_관할세무서코드*/
+                     , A.HOMETAX_ID   /*VAT_홈택스ID*/
+                     , A.CORP_POST    /*VAT_우편번호*/
+                  FROM VA_VATBRANCH A
+                 WHERE A.BRANCH_CD = #ACCT_GUBN#
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가세전자신고(1PAGE) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+              SELECT /* TXMC0170.SEARCH01.부가세전자신고(1PAGE) 조회 */
+                     BRANCH_CD          /*지점코드                            */
+                   , VAT_YYYY           /*VAT년도                             */
+                   , VAT_QUARTER        /*VAT분기                             */
+                   , VAT_SYMD           /*과세기간_시작일                     */
+                   , VAT_EYMD           /*과세기간_종료일                     */
+                   , VAT_CYMD           /*작성일자                            */
+                   , USER_ID            /*사용자아이디                        */
+                   , CORP_NO            /*법인번호                            */
+                   , CORP_CELL          /*사업자휴대전화                      */
+                   , CORP_EMAIL         /*전자메일주소                        */
+                   , CORP_NM            /*법인명                              */
+                   , CORP_MASTER        /*대표자명                            */
+                   , CORP_LOCATION      /*사업장소재지                        */
+                   , CORP_TEL           /*사업장전화번호                      */
+                   , CORP_ADDR          /*사업자주소                          */
+                   , CORP_TYPENM        /*업태명                              */
+                   , CORP_LINE          /*종목명                              */
+                   , CORP_TYPECD        /*업종코드                            */
+                   , CORP_SYMD          /*개업년월일                          */
+                   , AGENT_NM           /*세무대리인성명                      */
+                   , AGENT_NO           /*세무대리인관리번호                  */
+                   , AGENT_TEL          /*세무대리인전화번호                  */
+                   , AGENT_BIZNO        /*세무대리인사업자번호                */
+                   , REVISION_TYPECD    /*보정신고구분                        */
+                   , SH_TAXBIL_SAMT     /*과표신고과세세금계산서금액          */
+                   , SH_TAXBIL_VAMT     /*과표신고과세세금계산서세액          */
+                   , SH_PURPUB_SAMT     /*과표신고과세매입자발행금액          */
+                   , SH_PURPUB_VAMT     /*과표신고과세매입자발행세액          */
+                   , SH_CRECAS_SAMT     /*과표신고신용카드현금영수증금액      */
+                   , SH_CRECAS_VAMT     /*과표신고신용카드현금영수증세액      */
+                   , SH_TAXETC_SAMT     /*과표신고과세기타금액                */
+                   , SH_TAXETC_VAMT     /*과표신고과세기타세액                */
+                   , SH_ZERBIL_SAMT     /*과표신고영세세금계산서금액          */
+                   , SH_ZERETC_SAMT     /*과표신고영세기타금액                */
+                   , SH_WILMIS_SAMT     /*과표예정신고누락분금액              */
+                   , SH_WILMIS_VAMT     /*과표예정신고누락분세액              */
+                   , SH_DOUADD_SAMT     /*대손세액가감금액                    */
+                   , SH_DOUADD_VAMT     /*대손세액가감세액                    */
+                   , SALTOT_SAMT        /*과세표준                            */
+                   , SALTOT_VAMT        /*산출세액                            */
+                   , PH_TAXBIL_SAMT     /*매입수취일반금액                    */
+                   , PH_TAXBIL_VAMT     /*매입수취일반세액                    */
+                   , PH_ASSETS_SAMT     /*매입수취고정잔산금액                */
+                   , PH_ASSETS_VAMT     /*매입수취고정자산세액                */
+                   , PH_WILTOT_SAMT     /*매입예정신고누락금액                */
+                   , PH_WILTOT_VAMT     /*매입예정신고누락세액                */
+                   , PH_PURPUB_SAMT     /*매입매입자발행금액                  */
+                   , PH_PURPUB_VAMT     /*매입매입자발행세액                  */
+                   , PH_ETCBIL_SAMT     /*매입기타공제금액                    */
+                   , PH_ETCBIL_VAMT     /*매입기타공제세액                    */
+                   , PH_PTOTAL_SAMT     /*매입금액합계                        */
+                   , PH_PTOTAL_VAMT     /*매입세액합계                        */
+                   , PH_UNABLE_SAMT     /*매입공제받지못할금액                */
+                   , PH_UNABLE_VAMT     /*매입공제받지못할세액                */
+                   , PH_ADDMIN_SAMT     /*차감매입금액                        */
+                   , PH_ADDMIN_VAMT     /*차감매입세액                        */
+                   , SP_RETURN_VAMT     /*납부및환급세액                      */
+                   , RH_ETCMIN_VAMT     /*기타공제_경감세액                   */
+                   , RH_CREDIT_SAMT     /*금전신용공제금액                    */
+                   , RH_CREDIT_VAMT     /*금전신용공제세액                    */
+                   , RH_MINTOT_VAMT     /*경감세액계                          */
+                   , RH_WILRET_VAMT     /*예정미환급세액                      */
+                   , RH_NOTRET_VAMT     /*예정고지세액                        */
+                   , RH_PROHIB_VAMT     /*금지금매입자납부특례기납부세액      */
+                   , RH_ADDTOT_VAMT     /*가산세계                            */
+                   , VAT_REF_VAMT       /*차감납부할세액                      */
+                   , IH_EXCEPT_SAMT     /*과세수입금액제외금액                */
+                   , IH_TAXBIL_SAMT     /*과세수입금액합계                    */
+                   /* PH_EXPOST_VAMT     수출기업          */
+                FROM TA_VAT101_H1
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가세전자신고(2PAGE) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+              SELECT /* TXMC0170.SEARCH02.부가세전자신고(2PAGE) 조회 */
+                     BRANCH_CD         /*지점코드                              */
+                   , VAT_YYYY          /*VAT년도                               */
+                   , VAT_QUARTER       /*VAT분기                               */
+                   , SW_TAXBIL_SAMT    /*과표예정과세세금계산서금액            */
+                   , SW_TAXBIL_VAMT    /*과표예정과세세금계산서세액            */
+                   , SW_TAXETC_SAMT    /*과표예정과세기타금액                  */
+                   , SW_TAXETC_VAMT    /*과표예정과세기타세액                  */
+                   , SW_ZERBIL_SAMT    /*과표예정영세세금계산서금액            */
+                   , SW_ZERETC_SAMT    /*과표예정영세기타금액                  */
+                   , SW_SALTOT_SAMT    /*과표예정신고누락분금액합계            */
+                   , SW_SALTOT_VAMT    /*과표예정신고누락분세액합계            */
+                   , PW_TAXBIL_SAMT    /*예정매입세금계산서누락금액            */
+                   , PW_TAXBIL_VAMT    /*예정매입세금계산서누락세액            */
+                   , PW_ETCBIL_SAMT    /*예정매입기타공제누락세액금액          */
+                   , PW_ETCBIL_VAMT    /*예정매입기타공제누락세액세액          */
+                   , PW_PURTOT_SAMT    /*예정매입누락합계금액                  */
+                   , PW_PURTOT_VAMT    /*예정매입누락합계세액                  */
+                   , PD_CREDIT_SAMT    /*매입금전신용금액                      */
+                   , PD_CREDIT_VAMT    /*매입금전신용세액                      */
+                   , PD_AGENDA_SAMT    /*매입의제매입금액                      */
+                   , PD_AGENDA_VAMT    /*매입의제매입세액                      */
+                   , PD_RECYCL_SAMT    /*매입재활용금액                        */
+                   , PD_RECYCL_VAMT    /*매입재활용세액                        */
+                   , PD_CONVER_VAMT    /*과세사업전환매입세액                  */
+                   , PD_ALAGEN_SAMT    /*매입고금의제매입금액                  */
+                   , PD_ALAGEN_VAMT    /*매입고금의제매입세액                  */
+                   , PD_ASSETS_SAMT    /*매입신용고정자산금액                  */
+                   , PD_ASSETS_VAMT    /*매입신용고정자산세액                  */
+                   , PD_STOCKP_VAMT    /*매입재고매입세액                      */
+                   , PD_BADDEP_VAMT    /*매입변제대손세액                      */
+                   , PD_PURTOT_SAMT    /*기타공제매입금액합계                  */
+                   , PD_PURTOT_VAMT    /*기타공제매입세액합계                  */
+                   , PN_UNABLE_SAMT    /*불공제매입금액                        */
+                   , PN_UNABLE_VAMT    /*불공제매입세액                        */
+                   , PN_EXCEPT_SAMT    /*공통매입면세사업금액                  */
+                   , PN_EXCEPT_VAMT    /*공통매입면세사업세액                  */
+                   , PN_DOUADD_SAMT    /*대손처분금액                          */
+                   , PN_DOUADD_VAMT    /*대손처분세액                          */
+                   , PN_PURTOT_SAMT    /*매입공제받지못할금액합계              */
+                   , PN_PURTOT_VAMT    /*매입공제받지못할세액합계              */
+                   , RD_EBIPAY_VAMT    /*전자신고공제세액                      */
+                   , RD_EBITAX_VAMT    /*전자세금계산서발급세액공제세액        */
+                   , RD_TAXICO_VAMT    /*택시사업부가가치세경감세액            */
+                   , RD_CASBIL_VAMT    /*현금영수증사업자공제세액              */
+                   , RD_ETCBIL_VAMT    /*기타경감공제세액명세기타세액          */
+                   , AD_BIZMIS_SAMT    /*사업자등록가산금액                    */
+                   , AD_BIZMIS_VAMT    /*사업자등록가산세                      */
+                   , AD_EBIDEL_SAMT    /*세금계산서지연발급등가산금액          */
+                   , AD_EBIDEL_VAMT    /*세금계산서지연발급등가산세액          */
+                   , AD_NOTPUB_SAMT    /*세금계산서미발급등가산금액            */
+                   , AD_NOTPUB_VAMT    /*세금계산서미발급등가산세액            */
+                   , AD_EBIOVE_SAMT    /*전자세금계산서발급명세전송-지연전송금액*/
+                   , AD_EBIOVE_VAMT    /*전자세금계산서발급명세전송-지연전송세액*/
+                   , AD_EBIEXC_SAMT    /*전자세금계산서발급명세전송-미전송세액 */
+                   , AD_EBIEXC_VAMT    /*전자세금계산서발급명세전송-미전송세액 */
+                   , AD_TAXBIL_SAMT    /*세금계산서합계표 제출불성실금액       */
+                   , AD_TAXBIL_VAMT    /*세금계산서합계표 제출불성실세액       */
+                   , AD_REPORT_SAMT    /*신고불성실-합계금액                   */
+                   , AD_REPORT_VAMT    /*신고불성실-합계세액                   */
+                   , AD_NOSEND_SAMT    /*납부불성실가산금액                    */
+                   , AD_NOSEND_VAMT    /*납부불성실가산세액                    */
+                   , AD_ZERBIL_SAMT    /*영세율신고가산금액                    */
+                   , AD_ZERBIL_VAMT    /*영세율신고가산세액                    */
+                   , AD_CASNOT_SAMT    /*현금매출명세서미제출등가산금액        */
+                   , AD_CASNOT_VAMT    /*현금매출명세서미제출등가산세액        */
+                   , AD_ADDTOT_VAMT    /*가산세세액계                          */
+                   , DF_EXCEPT_SAMT    /*면세수입금액제외금액                  */
+                   , DF_TAXBIL_SAMT    /*면세수입금액합계                      */
+                   , BD_SALTOT_SAMT    /*계산서발급금액                        */
+                   , BD_PURTOT_SAMT    /*계산서수취금액                        */
+                   , REFUND_TYPECD     /*환급구분                              */
+                   , VAT_BANKCD        /*국세환급금은행코드                    */
+                   , VAT_BANKNO        /*국세환급금계좌번호                    */
+                   , VAT_TOTPAYNO      /*총괄납부승인번호                      */
+                   , VAT_BANKBRANCH    /*은행지점명                            */
+                   , CORP_EYMD         /*폐업일자                              */
+                   , CLOSING_REMARK    /*폐업사유                              */
+                   , VAT_REF_VAMT      /*실차감납부할세액                      */
+                   , VAT_NTAX_TYPECD   /*일반과세자구분                        */
+                   , VAT_EARLY_TYPECD  /*조기환급취소구분                      */
+                   , CORP_TYPENM       /*업태명                                */
+                   , CORP_LINE         /*종목명                                */
+                   , CORP_TYPECD       /*업종코드                              */
+                   , BRANCH_APPRNO     /*사업자단위과세승인번호                */
+                   , AD_TAXDEL_SAMT    /*세금계산서합계표 지연제출금액         */
+                   , AD_TAXDEL_VAMT    /*세금계산서합계표 지연제출세액         */
+                   , AD_REPOR1_SAMT    /*신고불성실-무신고(일반)금액           */
+                   , AD_REPOR1_VAMT    /*신고불성실-무신고(일반)세액           */
+                   , AD_REPOR2_SAMT    /*신고불성실-무신고(부당)금액           */
+                   , AD_REPOR2_VAMT    /*신고불성실-무신고(부당)세액           */
+                   , AD_REPOR3_SAMT    /*과소·초과환급신고(일반)금액          */
+                   , AD_REPOR3_VAMT    /*과소·초과환급신고(일반)세액          */
+                   , AD_REPOR4_SAMT    /*과소·초과환급신고(부당)금액          */
+                   , AD_REPOR4_VAMT    /*과소·초과환급신고(부당)세액          */
+                   , AD_ESTATE_SAMT    /*부동산임대공급가액명세서 불성실금액   */
+                   , AD_ESTATE_VAMT    /*부동산임대공급가액명세서 불성실세액   */
+                   , AD_EBDERV_SAMT    /*세금계산서지연수취가산금액            */
+                   , AD_EBDERV_VAMT    /*세금계산서지연수취가산세액            */
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가세전자신고(과세표준명세, 면세수입금액) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+              SELECT /* TXMC0170.SEARCH03.부가세전자신고(과세표준명세, 면세수입금액) 조회 */ /*부가가치세수입금액등(과세표준명세)*/
+                     INCOME_SEQ
+                   , BRANCH_CD
+                   , VAT_YYYY
+                   , VAT_QUARTER
+                   , INCOME_TYPECD
+                   , CORP_TYPENM
+                   , CORP_LINE
+                   , CORP_TYPECD
+                   , INCOME_SAMT
+                FROM TA_VAT101_D
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND (
+                      INCOME_TYPECD = 1
+                   OR (INCOME_TYPECD <> 1 AND INCOME_SAMT <> 0)
+                      )
+           UNION ALL
+              /*경감세액공제*/
+              SELECT TO_NCHAR('') AS INCOME_SEQ
+                   , BRANCH_CD
+                   , VAT_YYYY
+                   , VAT_QUARTER
+                   , TO_NCHAR('7') AS INCOME_TYPECD
+                   , CORP_TYPENM
+                   , CORP_LINE
+                   , CORP_TYPECD
+                   , RH_ETCMIN_VAMT
+                FROM TA_VAT101_H1
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RH_ETCMIN_VAMT <> 0
+           UNION ALL
+              /*면세 수입금액 합계*/
+              SELECT TO_NCHAR('') AS INCOME_SEQ
+                   , BRANCH_CD
+                   , VAT_YYYY
+                   , VAT_QUARTER
+                   , TO_NCHAR('8') AS INCOME_TYPECD
+                   , CORP_TYPENM
+                   , CORP_LINE
+                   , CORP_TYPECD
+                   , DF_TAXBIL_SAMT
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND DF_TAXBIL_SAMT <> 0
+           UNION ALL
+              /*면세 수입금액 제외금액*/
+              SELECT TO_NCHAR('') AS INCOME_SEQ
+                   , BRANCH_CD
+                   , VAT_YYYY
+                   , VAT_QUARTER
+                   , TO_NCHAR('E') AS INCOME_TYPECD
+                   , CORP_TYPENM
+                   , CORP_LINE
+                   , CORP_TYPECD
+                   , DF_EXCEPT_SAMT
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND DF_EXCEPT_SAMT <> 0
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가가치세 공제감면 신고서 레코드 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH_V101_D2" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+              
+              SELECT /* TXMC0170.SEARCH_V101_D2.부가가치세 공제감면 신고서 레코드 조회 *//*신용카드매출전표수취명세서제출분-일반*/
+                    '211' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , PD_CREDIT_SAMT AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_CREDIT_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2  /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_CREDIT_VAMT <> 0
+           UNION ALL
+             /*신용카드매출전표수취명세서제출분-고정자산*/
+              SELECT '212' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , PD_ASSETS_SAMT AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_ASSETS_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_ASSETS_VAMT <> 0
+           UNION ALL
+              /*의제매입세액*/
+              SELECT '230' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , PD_AGENDA_SAMT AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_AGENDA_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_AGENDA_VAMT <> 0
+           UNION ALL
+              /*재활용폐자원 등 매입세액*/
+              SELECT '270' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , PD_RECYCL_SAMT AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_RECYCL_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_RECYCL_VAMT <> 0
+           UNION ALL
+              /*과세사업전환매입세액*/
+              SELECT '291' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_CONVER_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_CONVER_VAMT <> 0
+           UNION ALL
+              /*재고매입세액*/
+              SELECT '292' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_STOCKP_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_STOCKP_VAMT <> 0
+           UNION ALL
+              /*변제대손세액*/
+              SELECT '293' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , PD_BADDEP_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_BADDEP_VAMT <> 0
+           UNION ALL
+              /*전자신고세액공제*/
+              SELECT '310' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , RD_EBIPAY_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RD_EBIPAY_VAMT <> 0
+           UNION ALL
+              /*전자세금계산서 발급세액 공제*/
+              SELECT '321' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , RD_EBITAX_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RD_EBITAX_VAMT <> 0
+           UNION ALL
+              /*택시운송사업자 경감세액*/
+              SELECT '331' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , RD_TAXICO_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RD_TAXICO_VAMT <> 0
+           UNION ALL
+              /*현금영수증 사업자 공제 세액*/
+              SELECT '351' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                    , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , RD_CASBIL_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RD_CASBIL_VAMT <> 0
+           UNION ALL
+              /*기타*/
+              SELECT '361' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '0' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , 0 AS DEDUCT_SAMT /*공제감면금액*/
+                   , RD_ETCBIL_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RD_ETCBIL_VAMT <> 0
+           UNION ALL
+              /*신용카드매출전표발행공제등*/
+              SELECT '410' AS DEDUCT_TYPECD /*공제감면코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , RH_CREDIT_SAMT AS DEDUCT_SAMT /*공제감면금액*/
+                   , RH_CREDIT_VAMT AS DEDUCT_VAMT /*공제감면세액*/
+                FROM TA_VAT101_H1   /* [부가가치세_헤더_1쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND RH_CREDIT_VAMT <> 0
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가가치세 가산세 신고서 레코드 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH_V101_D3" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+             
+              SELECT /* TXMC0170.SEARCH_V101_D3.부가가치세 가산세 신고서 레코드 조회 */ /*사업자 미등록등*/
+                     'B1100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_BIZMIS_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_BIZMIS_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_BIZMIS_VAMT <> 0
+           UNION ALL
+             /*세금계산서-지연발급등*/
+              SELECT 'B3100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_EBIDEL_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_EBIDEL_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_EBIDEL_VAMT <> 0
+           UNION ALL
+              /*세금계산서-지연수취*/
+              SELECT 'B3200' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_EBDERV_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_EBDERV_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND PD_AGENDA_VAMT <> 0
+           UNION ALL
+              /*세금계산서-미발급 등*/
+              SELECT 'B3400' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_NOTPUB_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_NOTPUB_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_NOTPUB_VAMT <> 0
+           UNION ALL
+              /*전자세금계산서발급명세전송-지연전송*/
+              SELECT 'B4300' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_EBIOVE_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_EBIOVE_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_EBIOVE_VAMT <> 0
+           UNION ALL
+              /*전자세금계산서발급명세전송-미전송*/
+              SELECT 'B4100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_EBIEXC_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_EBIEXC_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_EBIEXC_VAMT <> 0
+           UNION ALL
+              /*세금계산서합계표-제출 불성실*/
+              SELECT 'B5100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_TAXBIL_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_TAXBIL_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_TAXBIL_VAMT <> 0
+           UNION ALL
+              /*세금계산서합계표-지연제출*/
+              SELECT 'B5300' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_TAXDEL_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_TAXDEL_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_TAXDEL_VAMT <> 0
+           UNION ALL
+              /*신고불성실-무신고(일반)*/
+              SELECT 'A2110' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_REPOR1_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_REPOR1_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2   /* [부가가치세_헤더_2쪽] */
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_REPOR1_VAMT <> 0
+           UNION ALL
+              /*신고불성실-무신고(부당)*/
+              SELECT 'A2310' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_REPOR2_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_REPOR2_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_REPOR2_VAMT <> 0
+           UNION ALL
+              /*신고불성실-과소·초과환급신고(일반)*/
+              SELECT 'A3110' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_REPOR3_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_REPOR3_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_REPOR3_VAMT <> 0
+           UNION ALL
+              /*신고불성실-과소·초과환급신고(부당)*/
+              SELECT 'A3210' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_REPOR4_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_REPOR4_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_REPOR4_VAMT <> 0
+           UNION ALL
+              /*납부불성실*/
+              SELECT 'A7100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_NOSEND_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_NOSEND_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_NOSEND_VAMT <> 0
+           UNION ALL
+              /*영세율 과세표준 신고불성실*/
+              SELECT 'A4200' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_ZERBIL_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_ZERBIL_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_ZERBIL_VAMT <> 0
+           UNION ALL
+              /*현금매출명세서 불성실*/
+              SELECT 'B7100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_CASNOT_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_CASNOT_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_CASNOT_VAMT <> 0
+           UNION ALL
+              /*부동산임대공급가액명세서 불성실*/
+              SELECT 'B7200' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_ESTATE_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_ESTATE_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_ESTATE_VAMT <> 0
+            UNION ALL
+              /*매입자납부특례-거래계좌 미사용*/
+              SELECT 'B9100' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_ACCNOT_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_ACCNOT_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_CASNOT_VAMT <> 0
+           UNION ALL
+              /*매입자납부특례-거래계좌 지연입금*/
+              SELECT 'B9200' AS ADDTAX_TYPECD /*가산세코드*/
+                   , '1' AS REGIST_NO       /*등록일련번호*/
+                   , VAT_QUARTER
+                   , AD_ACCDELAY_SAMT AS ADDTAX_SAMT /*가산세금액*/
+                   , AD_ACCDELAY_VAMT AS ADDTAX_VAMT /*가산세세액*/
+                FROM TA_VAT101_H2
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND VAT_YYYY = #VAT_YYYY#
+                 AND VAT_QUARTER = #VAT_QUARTER#
+                 AND AD_ACCDELAY_VAMT <> 0  
+             
+
+    ]]>
+    </select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016.08.05
+    내       용 : 부가세전자신고(기타신고서 여부) 조회
+********************************************************************************/
+-->
+    <select id="TXMC0170.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[ 
+        SELECT /* TXMC0170.SEARCH04.부가세전자신고(기타신고서 여부) 조회 */
+               (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT101_H1 WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V101
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT104_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V104
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT105_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V105
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT106_D  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V106
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT109_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V109
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT110_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V110
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT112_D  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V112
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT117_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V117
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT141_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V141
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT149_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V149
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT153_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V153
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT164_D  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V164
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT166_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V166
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT171_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V171
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT120_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V120
+             , (SELECT CASE WHEN COUNT(0) >= 1 THEN '1' ELSE '0' END FROM TA_VAT177_H  WHERE BRANCH_CD = #ACCT_GUBN# AND VAT_YYYY = #VAT_YYYY# AND VAT_QUARTER = #VAT_QUARTER#) AS VAT_V177
+          FROM DUAL
+    ]]>
+    </select>
+</sqlMap>

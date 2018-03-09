@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                            
+                                                                                                       
+<sqlMap namespace="FAME0020">
+
+
+<!-- 전표집계 내역을 조회한다. -->
+<!-- 
+/*******************************************************************************
+	     작 성 자 : 양현덕
+	     작 성 일 : 2016.07.14
+	     내    용 : 전표집계 조회
+  ********************************************************************************/
+-->
+	<select id="FAME0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT	/* FAME0020.SEARCH00.집계조회  */	
+				'0'				AS SELE_CHEK	/* 선택*/
+				,A.ACCT_YYMM	AS ACCT_YYMM	/* 회계월*/
+				,CASE WHEN S.ACCT_YYMM IS NOT NULL THEN '1' ELSE '0' END  AS MANT_YSNO /* 집계여부*/
+				,SF_GET_USERNAME(SUBSTR(S.UPDT_DATE,21))	              AS EMPL_NUMB /* 집계자 */	
+				,SUBSTR(S.UPDT_DATE,1,20)					              AS UPDT_DATE /* 집계일자 */
+		FROM	(	
+				 SELECT	#ACCT_YEAR# || LPAD(LEVEL,2,'0') AS ACCT_YYMM
+				   FROM DUAL
+				CONNECT BY LEVEL - 1 < 12
+				) A
+				LEFT OUTER JOIN (
+					SELECT SUBSTR(S.ACCT_DATE,1,6)  AS ACCT_YYMM    /* 회계년월 */
+						 , MAX(RPAD(TO_CHAR(S.UPDT_DATE, 'YYYY.MM.DD HH24:MI:SS'), 20, ' ') || S.UPDT_USID)	AS UPDT_DATE
+					  FROM TA_MAMNTM S
+					 WHERE S.ACCT_DATE LIKE #ACCT_YEAR# || '%'   /* 회계년월 */
+					   AND S.ACCT_DATE <> #ACCT_YEAR# || '0000'
+	  				 GROUP BY SUBSTR(S.ACCT_DATE,1,6)
+				) S
+				ON A.ACCT_YYMM = S.ACCT_YYMM
+		ORDER	BY A.ACCT_YYMM
+
+	]]>
+	</select>
+<!-- 년 이월 처리를 한다. -->
+<!-- 
+/**********************************************
+       	이월 처리
+**********************************************/
+-->
+	<insert id="FAME0020.PROC00" parameterClass="hashmap" >
+	<![CDATA[
+	BEGIN
+	
+		/* FAME0020.PROC00 이월 처리*/
+		PKG_FAME0020.SP_PROC00 (
+			 #UPDT_USID#	/* 수정자*/
+			,#ACCT_YEAR#	/* 이월연도*/
+	   	);		
+	
+	END;
+
+	]]>
+	</insert>
+<!-- 
+/**********************************************
+	   작 성 자 : 전연호
+	   작 성 일 : 2014.10.15
+	   내    용 : 집계 처리
+**********************************************/
+-->
+	<insert id="FAME0020.PROC01" parameterClass="hashmap" >
+	<![CDATA[
+	BEGIN
+	
+		/* FAME0020.PROC01 집계 처리*/
+		PKG_FAME0020.SP_PROC01 (
+			 #UPDT_USID#	/* 수정자*/
+			,#ACCT_YYMM#	/* 집계연월*/
+	   	);		
+	
+	END;
+
+	]]>
+	</insert>
+
+
+
+<!-- 
+/**********************************************
+       	집계 취소
+**********************************************/
+-->    
+    <insert id="FAME0020.PROC02" parameterClass="hashmap" >
+	<![CDATA[
+	BEGIN
+	
+		/* FAME0020.PROC02 집계 취소*/
+		PKG_FAME0020.SP_PROC02 (
+			 #UPDT_USID#	/* 수정자*/
+			,#ACCT_YYMM#	/* 집계연월*/
+	   	);		
+	
+	END;
+	
+	]]>
+    </insert>
+
+
+</sqlMap>

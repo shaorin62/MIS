@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMB0060P01">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록헤더 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMB0060P01.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT   /*FSMB0060P01.SEARCH00.자산분할등록헤더 조회 처리*/
+			         A.SPLT_DATE                /*분할일*/
+                    ,A.ASST_NUMB                /*자산번호*/
+                    ,B.ASST_NAME                /*자산명*/
+                    ,A.DEPT_CODE                /*부서코드*/
+                    ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME  /*부서명*/
+                    ,C.ASCL_NAME                /*자산 분류명*/
+                    ,C.SMAL_NAME AS CLSF_NAME   /*품목분류명*/
+                    ,B.ACQS_DATE                /*취득일*/
+                    ,A.ACQU_NUMB                /*취득수량*/
+                    ,A.ACQU_PRIC                /*취득금액*/
+                    ,A.UNDP_BALE                /*미상각잔액*/
+                    ,A.ASAF_NUMB                /*분할후수량*/
+                    ,A.TOTL_SPLT                /*자산분할합계*/
+                    ,A.SPDP_TSUM                /*자산분할충당금합계*/
+                    ,A.RCGN_YSNO                /*승인여부*/
+                    ,A.APPV_DATE                /*승인일시*/
+                    ,A.APPR_EMPL                /*승인자*/
+                    ,A.DESC_REMK                /*비고(100)*/
+                    ,B.ACCT_UNIT                /*회계단위*/
+               FROM FS_ASSPXM A  INNER JOIN FS_ASSTXM     B ON A.ASST_NUMB = B.ASST_NUMB
+                                 INNER JOIN VI_ASSETCLASS C ON B.CLSF_CODE = C.SMAL_CODE
+              WHERE A.SPLT_DATE = #SPLT_DATE#
+                AND A.ASST_NUMB = #ASST_NUMB#
+                
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록디테일 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMB0060P01.SEARCH01" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT  /*FSMB0060P01.SEARCH01.자산분할등록디테일 조회 처리*/
+			         A.SPLT_DATE     /*분할일*/
+                    ,A.ASST_NUMB    /*자산번호*/
+                    ,A.SEQN_NUMB    /*일련번호*/
+                    ,A.NEWX_DEPT    /*부서코드*/
+                    ,SF_GET_DEPTNAME(A.NEWX_DEPT) AS NEWX_DPNM  /*부서명*/
+                    ,A.SPLT_ASST    /*분할자산번호*/
+                    ,A.SPLT_NAME    /*분할자산명*/
+                    ,A.SPLT_NUMB    /*분할수량*/
+                    ,A.SPLT_PRIC    /*분할금액*/
+                    ,A.SPLT_COST    /*분할단가*/
+                    ,A.DPCT_AMOT    /*충당금누계액*/
+                    ,A.UNDP_BALE    /*미상각잔액*/
+                    ,A.DESC_REMK    /*비고(100)*/
+               FROM FS_ASSPXD A     /*[자산분할이력_상세]*/
+              WHERE A.SPLT_DATE = #SPLT_DATE#
+                AND A.ASST_NUMB = #ASST_NUMB#
+              ORDER BY A.SEQN_NUMB
+                
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록헤더 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0060P01.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	       /*FSMB0060P01.SAVE00.자산분할등록헤더 저장 처리*/
+			CNT                    DECIMAL(15,0);   /*상각여부*/
+	
+	    BEGIN
+	
+	        /*자산상각 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO CNT
+              FROM FS_DPCTXM
+			 WHERE STDS_YMTH = SUBSTR(#SPLT_DATE#, 1, 6);
+			 
+	        IF (CNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#SPLT_DATE#, 1, 4) || '년 ' || SUBSTR(#SPLT_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동입력이 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 변동 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO CNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (CNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || '자산은 미확정 이력(변동,이동) 있습니다.\n\n확정(변동, 이동) 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 변경일 이후의 자료 존재 여부 체크(굳이 두번 한 이유:오류 메시지의 구분을 위해)*/
+	        SELECT COUNT(ASST_NUMB) INTO CNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND CHNG_DATE > #SPLT_DATE#;  /*분할 일 이후 변동 자료 존재 여부*/
+	
+	        IF (CNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || '자산은 변경일 이후의 변동확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO CNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (CNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || '자산은 미확정 분할내역이 있습니다.\n\n자산분할 확정 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO CNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND SPLT_DATE > #SPLT_DATE#;  /*분할일 이후의 분할 자료*/
+	
+	        IF (CNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || '자산은 변경일 이후의 분할 확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        INSERT INTO FS_ASSPXM ( /*[자산분할이력]*/
+		               SPLT_DATE        /*분할일*/
+		              ,ASST_NUMB        /*자산번호*/
+		              ,DEPT_CODE        /*부서코드*/
+		              ,ACQU_NUMB        /*취득수량*/
+		              ,ACQU_PRIC        /*취득금액*/
+		              ,UNDP_BALE        /*미상각잔액*/
+		              ,ASAF_NUMB        /*분할후수량*/
+		              ,TOTL_SPLT        /*자산분할합계*/
+		              ,SPDP_TSUM        /*자산분할충당금합계*/
+		              ,RCGN_YSNO        /*승인여부*/
+		              ,APPV_DATE        /*승인일시*/
+		              ,APPR_EMPL        /*승인자*/
+		              ,DESC_REMK        /*비고(100)*/
+		              ,INST_DATE        /*등록일시*/
+		              ,INST_USID        /*등록자*/
+		              ,UPDT_DATE        /*수정일시*/
+		              ,UPDT_USID        /*수정자*/
+		              )
+	       VALUES (
+		               #SPLT_DATE#       /*분할일*/
+		              ,#ASST_NUMB#       /*자산번호*/
+		              ,#DEPT_CODE#       /*부서코드*/
+		              ,#ACQU_NUMB#       /*취득수량*/
+		              ,#ACQU_PRIC#       /*취득금액*/
+		              ,#UNDP_BALE#       /*미상각잔액*/
+		              ,#ASAF_NUMB#       /*분할후수량*/
+		              ,#TOTL_SPLT#       /*자산분할합계*/
+		              ,#SPDP_TSUM#       /*자산분할충당금합계*/
+		              ,#RCGN_YSNO#       /*승인여부*/
+		              ,#APPV_DATE#       /*승인일시*/
+		              ,#APPR_EMPL#       /*승인자*/
+		              ,#DESC_REMK#       /*비고(100)*/
+		              ,SYSDATE       /*등록일시*/
+		              ,#INST_USID#       /*등록자*/
+		              ,SYSDATE       /*수정일시*/
+		              ,#UPDT_USID#       /*수정자*/
+	             );         
+		
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록디테일 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0060P01.SAVE01" parameterClass="hashmap" >
+		<![CDATA[
+			 INSERT INTO FS_ASSPXD ( /*FSMB0060P01.SAVE01.자산분할등록디테일 저장 처리*/
+		               SPLT_DATE        /*분할일*/
+		              ,ASST_NUMB        /*자산번호*/
+		              ,SEQN_NUMB        /*일련번호*/
+		              ,NEWX_DEPT        /*신규부서코드*/
+		              ,SPLT_ASST        /*분할자산번호*/
+		              ,SPLT_NAME        /*분할자산명*/
+		              ,SPLT_NUMB        /*분할수량*/
+		              ,SPLT_PRIC        /*분할금액*/
+		              ,SPLT_COST        /*분할단가*/
+		              ,DPCT_AMOT        /*충당금누계액*/
+		              ,UNDP_BALE        /*미상각잔액*/
+		              ,DESC_REMK        /*비고(100)*/
+		              ,INST_DATE        /*등록일시*/
+		              ,INST_USID        /*등록자*/
+		              ,UPDT_DATE        /*수정일시*/
+		              ,UPDT_USID        /*수정자*/
+		              )
+		       VALUES (
+		               #SPLT_DATE#       /*분할일*/
+		              ,#ASST_NUMB#       /*자산번호*/
+		              ,(         
+		                SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+		                  FROM FS_ASSPXD
+		                 WHERE ASST_NUMB = #ASST_NUMB#
+		                   AND SPLT_DATE = #SPLT_DATE#
+		               )                           
+		              ,#NEWX_DEPT#       /*신규부서코드*/
+		              ,#SPLT_ASST#       /*분할자산번호*/
+		              ,#SPLT_NAME#       /*분할자산명*/
+		              ,#SPLT_NUMB#       /*분할수량*/
+		              ,#SPLT_PRIC#       /*분할금액*/
+		              ,#SPLT_COST#       /*분할단가*/
+		              ,#DPCT_AMOT#       /*충당금누계액*/
+		              ,#UNDP_BALE#       /*미상각잔액*/
+		              ,#DESC_REMK#       /*비고(100)*/
+		              ,SYSDATE       /*등록일시*/
+		              ,#INST_USID#       /*등록자*/
+		              ,SYSDATE       /*수정일시*/
+		              ,#UPDT_USID#       /*수정자*/
+		              )        
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록헤더 수정 처리
+********************************************************************************/
+ -->
+	<update id="FSMB0060P01.UPDATE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	       /*FSMB0060P01.UPDATE00.자산분할등록헤더 수정 처리*/
+			sRCGN_YSNO FS_ASSPXM.RCGN_YSNO%TYPE;   /*분할이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          삭제 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+			BEGIN
+		        SELECT RCGN_YSNO INTO sRCGN_YSNO
+		          FROM FS_ASSPXM
+		         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+		           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+		           
+				EXCEPTION
+				    WHEN NO_DATA_FOUND THEN
+				        sRCGN_YSNO := NULL;	           
+			END;
+			
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, ' 자산은 이미 승인 되었습니다!\n\n' ||
+	                                           '승인 자료는 삭제가 불가 합니다!');
+	        END IF;
+	
+	        UPDATE FS_ASSPXM                /*[자산분할이력]*/
+	           SET  DEPT_CODE = #DEPT_CODE#  /*부서코드*/
+	               ,ACQU_NUMB = #ACQU_NUMB#  /*취득수량*/
+	               ,ACQU_PRIC = #ACQU_PRIC#  /*취득금액*/
+	               ,UNDP_BALE = #UNDP_BALE#  /*미상각잔액*/
+	               ,ASAF_NUMB = #ASAF_NUMB#  /*분할후수량*/
+	               ,TOTL_SPLT = #TOTL_SPLT#  /*자산분할합계*/
+	               ,SPDP_TSUM = #SPDP_TSUM#  /*자산분할충당금합계*/
+	               ,RCGN_YSNO = #RCGN_YSNO#  /*승인여부*/
+	               ,APPV_DATE = #APPV_DATE#  /*승인일시*/
+	               ,APPR_EMPL = #APPR_EMPL#  /*승인자*/
+	               ,DESC_REMK = #DESC_REMK#  /*비고(100)*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE SPLT_DATE  = #SPLT_DATE#  /*분할일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+	           ;                        
+	
+	    END;
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록디테일 수정 처리
+********************************************************************************/
+ -->
+	<update id="FSMB0060P01.UPDATE01" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	       /*FSMB0060P01.UPDATE01.자산분할등록디테일 수정 처리*/
+			sRCGN_YSNO FS_ASSPXM.RCGN_YSNO%TYPE;   /*분할이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          삭제 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASSPXM
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, ' 자산은 이미 승인 되었습니다!\n\n' ||
+	                                           '승인 자료는 수정이 불가 합니다!');
+	        END IF;
+	
+	        UPDATE FS_ASSPXD                /*[자산분할이력_상세]*/
+	           SET  NEWX_DEPT = #NEWX_DEPT#  /*신규부서코드*/
+	               ,SPLT_ASST = #SPLT_ASST#  /*분할자산번호*/
+	               ,SPLT_NAME = #SPLT_NAME#  /*분할자산명*/
+	               ,SPLT_NUMB = #SPLT_NUMB#  /*분할수량*/
+	               ,SPLT_PRIC = #SPLT_PRIC#  /*분할금액*/
+	               ,SPLT_COST = #SPLT_COST#  /*분할단가*/
+	               ,DPCT_AMOT = #DPCT_AMOT#  /*충당금누계액*/
+	               ,UNDP_BALE = #UNDP_BALE#  /*미상각잔액*/
+	               ,DESC_REMK = #DESC_REMK#  /*비고(100)*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE SPLT_DATE  = #SPLT_DATE#  /*분할일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#  /*일련번호*/
+	           ;                        
+	
+	    END;
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산분할등록디테일 삭제 처리
+********************************************************************************/
+ -->
+	<delete id="FSMB0060P01.DELETE01" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0060P01.DELETE01.자산분할등록디테일 삭제 처리*/
+			sRCGN_YSNO FS_ASSPXM.RCGN_YSNO%TYPE;   /*분할이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          삭제 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASSPXM
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#;  /*자산번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NAME# || ' 자산은 이미 승인 되었습니다!\n\n' ||
+	                                           '승인 자료는 삭제가 불가 합니다!');
+	        END IF;
+	
+	        DELETE FROM FS_ASSPXD
+	         WHERE SPLT_DATE = #SPLT_DATE#   /*분할일*/
+	           AND ASST_NUMB = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#   /*일련번호*/
+	           ;                       
+	
+	    END;
+		]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="PAYB0210" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="기타소득관리" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox01" taborder="49" cssclass="styFormSearchBox" left="8" top="60" right="25" height="69" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Grid autoenter="TRUE" binddataset="dsPY_INCOME" id="grdPY_INCOME" useinputpanel="false" autofitminwidth="200" taborder="5" usecontextmenu="true" wheelscrollrow="1" position="absolute" left="8" top="154" cssclass="styGrid01" right="25" bottom="13" onexpandup="fn_HelpDialoge" onheadclick="grdPY_INCOME_onheadclick">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="40"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="95"/>
+                <Column size="130"/>
+                <Column size="150"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="150"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="checkbox" edittype="checkbox"/>
+                <Cell col="1" displaytype="text" style="background: ;" text="사원번호"/>
+                <Cell col="2" displaytype="text" style="background: ;" cssclass="Cellgrd_WF_essential" text="성명"/>
+                <Cell col="3" cssclass="Cellgrd_WF_edit" text="재직구분"/>
+                <Cell col="4" displaytype="normal" cssclass="Cellgrd_WF_essential" text="지급일"/>
+                <Cell col="5" displaytype="normal" cssclass="Cellgrd_WF_edit" text="급여일지"/>
+                <Cell col="6" displaytype="text" style="background:transparent URL('theme://images/ico_grd_essential.png') left top;" cssclass="Cellgrd_WF_essential" text="소득구분"/>
+                <Cell col="7" style="background: ;" cssclass="Cellgrd_WF_edit" text="과세지급액"/>
+                <Cell col="8" style="background: ;" cssclass="Cellgrd_WF_edit" text="비과세지급액"/>
+                <Cell col="9" style="background: ;" text="지급계"/>
+                <Cell col="10" style="background: ;" cssclass="Cellgrd_WF_edit" text="소득세"/>
+                <Cell col="11" style="background: ;" cssclass="Cellgrd_WF_edit" text="주민세"/>
+                <Cell col="12" style="background: ;" text="공제계"/>
+                <Cell col="13" style="background: ;" text="실지급액"/>
+                <Cell col="14" displaytype="text" style="background: ;" cssclass="Cellgrd_WF_edit" text="비고"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="checkbox" edittype="checkbox" text="bind:CHK"/>
+                <Cell col="1" displaytype="text" style="align:center;" text="bind:EMPL_NUMB" editlimit="0" editlengthunit="ascii"/>
+                <Cell col="2" displaytype="text" edittype="text" style="align:center;" text="bind:EMPL_NAME" editlimit="0" editimemode="hangul" editlengthunit="ascii" expandshow="expr:dataset.getRowType(currow) == Dataset.ROWTYPE_INSERT? 'show' : 'hide'" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')"/>
+                <Cell col="3" displaytype="combo" edittype="none" style="align:center;" text="bind:WODN_CODE" combodataset="dsWODN_CODE" combocodecol="COMD_CODE" combodatacol="COMD_CDNM"/>
+                <Cell col="4" displaytype="date" edittype="date" text="bind:INDN_DATE" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="text" edittype="normal" text="bind:WORK_CNTT" expandshow="show" expandsize="20" expandimage="URL('theme://images/btn_WF_Search.png')" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="combo" edittype="combo" editfilter="none" style="align:left;background: ;" text="bind:INDN_CODE" editlimit="100" editlengthunit="ascii" combodataset="dsPY_INCOME" combocodecol="COMD_CODE" combodatacol="COMD_CDNM"/>
+                <Cell col="7" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:TAP1_AMOT" editlimit="15"/>
+                <Cell col="8" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:NTP1_AMOT" editlimit="15"/>
+                <Cell col="9" displaytype="number" edittype="none" style="align:right;" text="bind:PAYX_TAMT"/>
+                <Cell col="10" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:INCM_TAXX" editlimit="15"/>
+                <Cell col="11" displaytype="number" edittype="normal" editfilter="number" style="align:right;" text="bind:INHA_TAXX" editlimit="15"/>
+                <Cell col="12" displaytype="number" edittype="none" style="align:right;" text="bind:DEDU_TAMT"/>
+                <Cell col="13" displaytype="number" edittype="none" style="align:right;" text="bind:REAL_AMOT"/>
+                <Cell col="14" displaytype="text" edittype="text" editfilter="none" style="align:left;background: ;" text="bind:REMK_400X" editlimit="100" editlengthunit="ascii"/>
+              </Band>
+              <Band id="summary">
+                <Cell/>
+                <Cell col="1"/>
+                <Cell col="2"/>
+                <Cell col="3"/>
+                <Cell col="4"/>
+                <Cell col="5"/>
+                <Cell col="6" text="합계"/>
+                <Cell col="7" displaytype="number" text="expr:dataset.getSum(&quot;TAP1_AMOT&quot;)"/>
+                <Cell col="8" displaytype="number" text="expr:dataset.getSum(&quot;NTP1_AMOT&quot;)"/>
+                <Cell col="9" displaytype="number" text="expr:dataset.getSum(&quot;PAYX_TAMT&quot;)"/>
+                <Cell col="10" displaytype="number" text="expr:dataset.getSum(&quot;INCM_TAXX&quot;)"/>
+                <Cell col="11" displaytype="number" text="expr:dataset.getSum(&quot;INHA_TAXX&quot;)"/>
+                <Cell col="12" displaytype="number" text="expr:dataset.getSum(&quot;DEDU_TAMT&quot;)"/>
+                <Cell col="13" displaytype="number" text="expr:dataset.getSum(&quot;REAL_AMOT&quot;)"/>
+                <Cell col="14"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <MPFileDialog id="fdPY_ANDTXM" taborder="11" position="absolute" left="469" width="24" top="8" height="24"/>
+        <MPFile id="flPY_ANDTXM" taborder="12" position="absolute" left="496" width="24" top="8" height="24"/>
+        <Edit autoselect="true" enable="true" id="edtSHREMPL_NUMB" imemode="native" onsetfocus="fn_EditFocus" taborder="17" top="71" height="21" cssclass="edt_WF_Readonly" left="588" width="80" position="absolute" tabstop="false" readonly="true" style="align:center;"/>
+        <Static id="imgHelpSHREMPL_NUMB" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" top="71" height="21" taborder="10" width="22" left="670"/>
+        <Edit autoselect="true" id="edtSHREMPL_NAME" imemode="hangul" maxlength="20" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="2" position="absolute" top="71" height="21" cssclass="styFormSearchItem" width="100" left="693"/>
+        <Edit autoselect="true" lengthunit="ascii" enable="true" id="edtSHRDEPT_CODE" onsetfocus="fn_EditFocus" taborder="16" left="313" width="80" top="71" height="21" cssclass="edt_WF_Readonly" readonly="true" tabstop="false" style="align:center;"/>
+        <Static id="imgHelpSHRDEPT_CODE" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" left="395" width="22" top="71" height="21" taborder="13"/>
+        <Edit autoselect="true" lengthunit="ascii" id="edtSHRDEPT_NAME" imemode="hangul" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="1" position="absolute" left="418" width="100" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="imgSearchTitle0" text="부서" position="absolute" style="align:left;" left="245" width="49" top="71" height="21" cssclass="styFormSearchCap" taborder="9"/>
+        <Div id="divButtonList" taborder="6" tabstop="false" text="" scrollbars="none" left="8" width="401" top="35" height="21">
+          <Layouts>
+            <Layout>
+              <Button id="btnFormDown" taborder="0" onclick="fn_ExcelFileDown" cssclass="btn_WF_Module" left="0" top="0" width="98" height="21" text="양식다운로드"/>
+              <Button id="btnFormUp" taborder="1" onclick="fn_ExcelUpload" cssclass="btn_WF_Module" left="101" top="0" width="86" height="21" text="엑셀업로드"/>
+              <Button id="btn_DATA_COPY" taborder="2" text="이전자료복사" onclick="fn_DataCodeCopy" cssclass="btn_WF_Module" left="190" top="0" width="95" height="21"/>
+              <Button id="btn_PROC" taborder="3" text="급여일지선택" cssclass="btn_WF_Module" left="288" top="0" width="95" height="21" onclick="divButtonList_btn_PROC_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="Image0" text="사원" position="absolute" style="align:left;" left="546" width="49" top="71" height="21" cssclass="styFormSearchCap" taborder="15"/>
+        <Static id="imgSearchTitle7" taborder="18" text="지급년월" cssclass="styFormSearchCapBe" left="28" top="71" width="76" height="21" style="align:left;" position="absolute"/>
+        <Static id="st_FormTitle" taborder="24" text="기타소득관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="25" text="홈 &gt; 급여관리 &gt; 급여관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="26" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="27" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="28" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="29" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="30" text="h 4" visible="false" left="677" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="31" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="33" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="34" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="35" text="h 25" visible="false" left="613" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="36" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="37" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="38" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="39" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="40" text="w 40" visible="false" left="217" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="41" text="w 40" visible="false" left="518" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Div id="divSHRINDN_DATE" taborder="0" url="common::comMonthCalendar.xfdl" left="96" top="71" width="121" height="21"/>
+        <Static id="Static12" taborder="51" text="소득구분" cssclass="styFormSearchCap" left="28" top="97" width="70" height="21"/>
+        <Combo id="cmbSHRINDN_CODE" taborder="3" left="96" top="97" width="121" height="21"/>
+        <Static id="stInformation" taborder="53" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="133" width="262" height="21"/>
+        <Static id="Static10" taborder="54" text="직원구분" cssclass="styFormSearchCap" left="245" top="97" width="70" height="21"/>
+        <Combo id="cmbSHRCLSD_CODE" taborder="4" left="313" top="97" width="103" height="21"/>
+        <PopupDiv id="popINSERT1" left="1260" top="288" width="323" height="90" scrollbars="none" cssclass="pdiv_WF_insert">
+          <Layouts>
+            <Layout>
+              <Static id="Shape0" taborder="38" cssclass="styFormItemBoxOut" left="9" top="9" width="305" height="39"/>
+              <Static id="Static68" taborder="39" text="지급일" cssclass="styFormItemCapBE" left="29" top="18" width="75" height="21"/>
+              <Button id="btnClose" taborder="40" text="닫기" onclick="btnClose_onclick" cssclass="btn_POP_CRUD" left="252" top="56" width="62" height="24"/>
+              <Button id="btnPayAply" taborder="41" text="급여매핑" onclick="popINSERT_btnPay_onclick" cssclass="btn_POP_CRUD" left="175" top="56" width="74" height="24"/>
+              <Static id="imgHelpSHRPAYX_DATE" taborder="42" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="166" top="18" width="21" height="21"/>
+              <Edit id="edtSHRWAGE_NAME" taborder="43" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" left="189" top="18" width="100" height="21"/>
+              <MaskEdit id="medSHRPAYX_DATE" taborder="44" type="string" mask="####-##-##" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="83" top="18" width="80" height="21" style=":disabled {align:center middle;}"/>
+              <Edit id="edtSHRWAGE_CODE" taborder="45" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" visible="false" left="16" top="56" width="60" height="22"/>
+              <Edit id="edtSHRWAGP_CODE" taborder="46" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" visible="false" left="86" top="56" width="50" height="22"/>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+        <Static id="Static11" taborder="55" text="h8" cssclass="sta_GID_box" visible="false" left="1230" top="289" width="182" height="8"/>
+        <Static id="Static13" taborder="56" text="h8" cssclass="sta_GID_box" visible="false" left="1230" top="368" width="350" height="8"/>
+        <Static id="Static14" taborder="57" text="w8" cssclass="sta_GID_box" visible="false" left="1261" top="308" width="8" height="96"/>
+        <Static id="Static15" taborder="58" text="w8" cssclass="sta_GID_box" visible="false" left="1574" top="308" width="8" height="96"/>
+        <PopupDiv id="popINSERT" left="1237" top="398" width="344" height="118" scrollbars="none" cssclass="pdiv_WF_insert">
+          <Layouts>
+            <Layout>
+              <Static id="Shape00" taborder="15" cssclass="styFormItemBoxOut" left="9" top="9" width="326" height="67"/>
+              <Button id="btnClose" taborder="16" text="취소" onclick="fn_Popup_close" cssclass="btn_POP_CRUD" left="273" top="84" width="62" height="24"/>
+              <Button id="btnINSERT" taborder="17" text="확인" onclick="popINSERT_btnINSERT_OnClick" cssclass="btn_POP_CRUD" left="208" top="84" width="62" height="24"/>
+              <Static id="stInformation01" taborder="18" text="으로 복사합니다." cssclass="styFormSearchInfo" left="215" top="44" width="120" height="21" style="align:left middle;"/>
+              <Static id="stInformation00" taborder="19" text="의 기타소득 데이터를" cssclass="styFormSearchInfo" left="215" top="18" width="120" height="21" style="align:left middle;"/>
+              <Static id="imgSearchTitle_TO" taborder="26" text="대상지급일" cssclass="styFormSearchCapBe" left="29" top="44" width="87" height="21" style="align:left;"/>
+              <Static id="imgSearchTitle_FROM" taborder="27" text="기준지급일" cssclass="styFormSearchCapBe" left="29" top="18" width="87" height="21" style="align:left;"/>
+              <Div id="medSHRPAYX_DATE_FROM" taborder="28" url="common::comMonthCalendar.xfdl" left="108" top="18" width="100" height="21"/>
+              <Div id="medSHRPAYX_DATE_TO" taborder="29" url="common::comMonthCalendar.xfdl" left="108" top="44" width="100" height="21"/>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+        <Static id="Static16" taborder="59" text="h8" cssclass="sta_GID_box" visible="false" left="1207" top="399" width="182" height="8"/>
+        <Static id="Static17" taborder="60" text="h8" cssclass="sta_GID_box" visible="false" left="1207" top="474" width="294" height="8"/>
+        <Static id="Static22" taborder="61" text="w8" cssclass="sta_GID_box" visible="false" left="1238" top="418" width="8" height="96"/>
+        <Static id="Static23" taborder="62" text="w8" cssclass="sta_GID_box" visible="false" left="1572" top="418" width="8" height="96"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">INDN_CODE</Col>
+            <Col id="DSNAME">dsINDN_CODE</Col>
+            <Col id="HEADFLAG">SELECT</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">INDN_CODE</Col>
+            <Col id="DSNAME">dsSHRINDN_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">CLSD_CODE</Col>
+            <Col id="DSNAME">dsSHRCLSD_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">WODN_CODE</Col>
+            <Col id="DSNAME">dsWODN_CODE</Col>
+            <Col id="HEADFLAG"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsPY_INCOME" oncolumnchanged="dsPY_INCOME_oncolumnchanged" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CHK" size="1" type="STRING" description="체크박스"/>
+          <Column id="EMPL_NUMB" size="10" type="STRING" description="사원번호"/>
+          <Column id="INDN_DATE" size="8" type="STRING" description="기타지급일"/>
+          <Column id="INDN_CODE" size="6" type="STRING" description="소득구분코드"/>
+          <Column id="TAP1_AMOT" size="15" type="BIGDECIMAL" description="과세1지급금액"/>
+          <Column id="TAP2_AMOT" size="15" type="BIGDECIMAL" description="과세2지급금액"/>
+          <Column id="TAP3_AMOT" size="15" type="BIGDECIMAL" description="과세3지급금액"/>
+          <Column id="NTP1_AMOT" size="15" type="BIGDECIMAL" description="비과세1지급금액"/>
+          <Column id="NTP2_AMOT" size="15" type="BIGDECIMAL" description="비과세2지급금액"/>
+          <Column id="NTP3_AMOT" size="15" type="BIGDECIMAL" description="비과세3지급금액"/>
+          <Column id="INCM_TAXX" size="15" type="BIGDECIMAL" description="소득세"/>
+          <Column id="INHA_TAXX" size="15" type="BIGDECIMAL" description="주민세"/>
+          <Column id="OTDE_AMOT" size="15" type="BIGDECIMAL" description="기타공제금액"/>
+          <Column id="PAYX_DATE" size="8" type="STRING" description="지급일"/>
+          <Column id="WAGE_CODE" size="4" type="STRING" description="급여코드"/>
+          <Column id="ENFC_CODE" size="10" type="STRING" description="사업장코드"/>
+          <Column id="DEPT_CODE" size="10" type="STRING" description="부서코드"/>
+          <Column id="CLSD_CODE" size="6" type="STRING" description="직원구분코드"/>
+          <Column id="WODN_CODE" size="10" type="STRING" description="재직구분코드"/>
+          <Column id="CPOS_CODE" size="6" type="STRING" description="직급코드"/>
+          <Column id="OPOS_CODE" size="6" type="STRING" description="직위코드"/>
+          <Column id="REMK_400X" size="400" type="STRING" description="비고400"/>
+          <Column id="EMPL_NAME" size="256" type="STRING" description="성명"/>
+          <Column id="INDN_NAME" size="256" type="STRING" description="소득구분명"/>
+          <Column id="PAYX_TAMT" size="256" type="BIGDECIMAL" description="지급계"/>
+          <Column id="DEDU_TAMT" size="256" type="BIGDECIMAL" description="공제계"/>
+          <Column id="REAL_AMOT" size="256" type="BIGDECIMAL" description="실지급액"/>
+          <Column id="WORK_CNTT" size="256" type="STRING" description="작업내용"/>
+          <Column id="CPOS_NAME" size="256" type="STRING" description="직급명"/>
+          <Column id="WABK_CODE" size="256" type="STRING" description="은행코드"/>
+          <Column id="WAGE_ACNO" size="256" type="STRING" description="계좌번호"/>
+          <Column id="REF1_FILD" type="STRING" size="256" description="보조필드"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	PAYB0210 기타소득관리
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.25		고민주		Initial Created.
+ *   2016.10.12		황치웅		수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+/***************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                      *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                       *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리               *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망     *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                 *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF";
+this.sPACKAGENAME = "PAYB0210";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+	
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+	
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	var month = this.fnc_Trim(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,6));
+	this.divSHRINDN_DATE.fn_SetMonth(month);
+	this.divSHRINDN_DATE.setFocus();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	this.fnc_GridCheckClear("grdPY_INCOME","0");
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsPY_INCOME");
+	this.popINSERT1.medSHRPAYX_DATE.set_value("");
+	this.popINSERT1.edtSHRWAGE_CODE.set_value("");
+	this.popINSERT1.edtSHRWAGE_NAME.set_value("");
+	this.popINSERT1.edtSHRWAGP_CODE.set_value("");
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsPY_INCOME=dsPY_INCOME";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	var iRow = this.dsPY_INCOME.insertRow(this.dsPY_INCOME.rowposition + 1);
+	this.dsPY_INCOME.setColumn(iRow, "INDN_DATE", this.fnc_GetServerDateTime("DATE"));
+	this.dsPY_INCOME.setColumn(iRow, "INDN_CODE", "01");
+	this.dsPY_INCOME.setColumn(iRow, "TAP1_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "TAP2_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "TAP3_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "NTP1_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "NTP2_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "NTP3_AMOT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "INCM_TAXX", "0");
+	this.dsPY_INCOME.setColumn(iRow, "INHA_TAXX", "0");
+	this.dsPY_INCOME.setColumn(iRow, "DEDU_TAMT", "0");
+	this.dsPY_INCOME.setColumn(iRow, "REAL_AMOT", "0");
+	this.fnc_GridSetCellFocus(this.grdPY_INCOME, "EMPL_NAME");
+
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+
+	if (this.fn_DeleteCheck()) {
+		for (var i = this.dsPY_INCOME.getRowCount() - 1 ; i >= 0 ; i-- ){
+			if(this.dsPY_INCOME.getColumn(i,"CHK") == "1"){
+				this.dsPY_INCOME.deleteRow(i);
+			}
+		}
+		this.grdPY_INCOME.setFocus();
+	}
+
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsPY_INCOME");
+	this.grdPY_INCOME.setFocus();
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsPY_INCOME=dsPY_INCOME:U";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdPY_INCOME.setFocus();
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsPY_INCOME", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsPY_INCOME")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	if (this.fnc_Length(this.fnc_Trim(this.divSHRINDN_DATE.fn_GetMonth())) < 6) {
+		return this.fnc_SearchCheckPostAction("TMM072", "지급년월", this.divSHRINDN_DATE);
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+
+	if (this.dsPY_INCOME.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return false;
+	}
+	
+	var iSelectRowCount = this.dsPY_INCOME.getCaseCount("CHK == '1'");
+	
+	if (iSelectRowCount == 0) {
+		return this.fnc_Message("TMM020");
+		
+	} else if (iSelectRowCount == 1){
+		var sQuestionText = "성명:" + this.fnc_Trim(this.dsPY_INCOME.getColumn(this.dsPY_INCOME.rowposition, "EMPL_NAME"))
+				     	+ ",지급일:" + this.fnc_Trim(this.dsPY_INCOME.getColumn(this.dsPY_INCOME.rowposition, "INDN_DATE"))
+		return this.fnc_Message("TMM002", sQuestionText);
+		
+	} else {
+		return this.fnc_Message("TMM004", iSelectRowCount);
+		
+	}
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsPY_INCOME")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+	
+	for (var i = 0; i < this.dsPY_INCOME.getRowCount(); i++) {
+
+		if (this.fnc_ToUpper(this.dsPY_INCOME.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_INCOME.getColumn(i, "EMPL_NUMB"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "사원번호", this.dsPY_INCOME, i, this.grdPY_INCOME, "EMPL_NAME");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_INCOME.getColumn(i, "INDN_DATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "지급일", this.dsPY_INCOME, i, this.grdPY_INCOME, "INDN_DATE");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsPY_INCOME.getColumn(i, "INDN_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "소득구분", this.dsPY_INCOME, i, this.grdPY_INCOME, "INDN_CODE");
+		}
+		
+// 		if (this.fnc_Length(this.fnc_Trim(this.dsPY_INCOME.getColumn(i, "REF1_FILD"))) < 1) {  //정산예외여부
+// 			if (this.fnc_Length(this.fnc_Trim(this.dsPY_INCOME.getColumn(i, "PAYX_DATE"))) < 1) {
+// 				return this.fnc_CheckPostAction("PAY072", this.dsPY_INCOME.getColumn(i, "EMPL_NAME"), this.dsPY_INCOME, i, this.grdPY_INCOME, "WORK_CNTT");
+// 			}
+// 		}
+	}
+	
+	return true;
+
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm="       		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    		+ this.fnc_Quote(sKind);
+		sReturnString += " INDN_DATE=" 		+ this.fnc_Quote(this.fnc_Trim(this.divSHRINDN_DATE.fn_GetMonth()));
+		sReturnString += " EMPL_NUMB=" 		+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		sReturnString += " DEPT_CODE=" 		+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value));
+		sReturnString += " INDN_CODE=" 		+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRINDN_CODE.value)); // 소득구분
+		sReturnString += " CLSD_CODE=" 		+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRCLSD_CODE.value)); // 직원구분
+
+	} else if (sKind == "SAVE00") {
+		sReturnString  = " pgm="       		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    		+ this.fnc_Quote(sKind);
+
+	} else if (sKind == "PROC00") {
+		sReturnString  = " pgm="          	+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="       	+ this.fnc_Quote(sKind);
+		sReturnString += " PAYX_DATE_FROM=" + this.fnc_Quote(this.popINSERT.medSHRPAYX_DATE_FROM.fn_GetMonth());
+		sReturnString += " PAYX_DATE_TO=" 	+ this.fnc_Quote(this.popINSERT.medSHRPAYX_DATE_TO.fn_GetMonth());
+		
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsPY_INCOME.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsPY_INCOME.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.grdPY_INCOME.setFocus();
+		this.fn_KeyFieldDisible(this.dsPY_INCOME);
+
+	} else if (sMethodName == "SAVE00") {
+		this.fn_KeyFieldDisible(this.dsPY_INCOME);
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+	
+	} else if (sMethodName == "PROC00") {
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM073", this.dsPY_INCOME.getCaseCount("dataset.getRowLevel(currow)==0"));
+	
+	} else if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+			arrParam[0] = "GRID,grdPY_INCOME,dsINDN_CODE,INDN_CODE";
+			arrParam[1] = "COMBO,cmbSHRINDN_CODE,dsSHRINDN_CODE,0";
+			arrParam[2] = "COMBO,cmbSHRCLSD_CODE,dsSHRCLSD_CODE,0";
+			arrParam[3] = "GRID,grdPY_INCOME,dsWODN_CODE,WODN_CODE";
+		this.fnc_CommonCodeInnerBind(arrParam);
+		
+		//this.dsINDN_CODE.filter("WAST_DATE==''"); // 폐기일자 없는 데이터만
+	}
+
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+
+	if (this.fnc_ToUpper(obj.getRowType(obj.rowposition)) == Dataset.ROWTYPE_INSERT) {
+		this.grdPY_INCOME.setCellProperty("Body", this.fnc_GridColumnIndex(this.grdPY_INCOME, "EMPL_NAME"), "edittype", "normal");
+		this.grdPY_INCOME.setCellProperty("Body", this.fnc_GridColumnIndex(this.grdPY_INCOME, "INDN_DATE"), "edittype", "date");
+
+	} else {
+		this.grdPY_INCOME.setCellProperty("Body", this.fnc_GridColumnIndex(this.grdPY_INCOME, "EMPL_NAME"), "edittype", "none");
+		this.grdPY_INCOME.setCellProperty("Body", this.fnc_GridColumnIndex(this.grdPY_INCOME, "INDN_DATE"), "edittype", "none");
+		
+	}
+
+}
+
+/*****************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ *****************************************************************************************************/
+/*-----------------------+
+ |  팝업 Setting  |
+ +------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue) {
+
+	var arrParam = new Array();
+	
+	if ((obj.name == "imgHelpSHRDEPT_CODE") || (obj.name == "edtSHRDEPT_NAME")) { // 조회조건 - 부서정보조회(Popup)
+		arrParam[0] = "TMM0004"; 								
+		arrParam[1] = ""; 										
+		arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value);
+		arrParam[3] = "N"; 										
+		arrParam[4] = "edtSHRDEPT_NAME"; 						
+		arrParam[5] = "edtSHRDEPT_CODE,edtSHRDEPT_NAME"; 		
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) { // 조회조건 - 사원정보조회(Popup)	
+		arrParam[0] = "HRM0001";
+		arrParam[1] = this.edtSHRDEPT_CODE.value;
+		arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHREMPL_NAME";
+		arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if (obj.name == "grdPY_INCOME") {
+		if (this.fnc_getGridHelpColName(obj, sFromDs) == "EMPL_NAME") {
+			arrParam[0] = "HRM0002";
+			arrParam[1] = this.edtSHRDEPT_CODE.value;
+			arrParam[2] = "EMPL_NAME";
+			arrParam[3] = "N";
+			arrParam[4] = "grdPY_INCOME";
+			arrParam[5] = "EMPL_NUMB,EMPL_NAME";
+			arrParam[6] = "0,1";
+			arrParam[7] = sFromDs;
+			arrParam[8] = sOldValue;
+			
+		} else if (this.fnc_getGridHelpColName(obj, sFromDs) == "WORK_CNTT") {
+			arrParam[0] = "PAY0001";
+			arrParam[1] = "0";
+			arrParam[2] = "WORK_CNTT";
+			arrParam[3] = "N";
+			arrParam[4] = "grdPY_INCOME";
+			arrParam[5] = "PAYX_DATE,WAGE_CODE,WORK_CNTT";
+			arrParam[6] = "0,1,2";
+			arrParam[7] = sFromDs;
+			arrParam[8] = sOldValue;
+		
+		}
+	} else if ((obj.name == "imgHelpSHRPAYX_DATE") || (obj.name == "edtSHRWAGE_NAME")) {
+		arrParam[0] = "PAY0001";
+		arrParam[1] = "0";
+		arrParam[2] = this.fnc_Trim(this.popINSERT1.edtSHRWAGE_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "popINSERT1.edtSHRWAGE_NAME";
+		arrParam[5] = "popINSERT1.medSHRPAYX_DATE,popINSERT1.edtSHRWAGE_CODE,popINSERT1.edtSHRWAGE_NAME,popINSERT1.edtSHRWAGP_CODE";
+		arrParam[6] = "0,1,2,5";
+		arrParam[9] = "fn_CommPopupPost";
+
+	}
+	
+	if ( arrParam != '' || this.fnc_Length(arrParam) != 0 ) this.fnc_HelpDialogeAction(this, obj, arrParam);
+}
+
+this.fn_CommPopupPost = function(sResponse) {
+	this.divButtonList_btn_PROC_onclick();
+	var sArrRtn = this.fnc_Split(sResponse, ",");
+	this.popINSERT1.medSHRPAYX_DATE.set_value(sArrRtn[0]);
+	this.popINSERT1.edtSHRWAGE_CODE.set_value(sArrRtn[1]);
+	this.popINSERT1.edtSHRWAGE_NAME.set_value(sArrRtn[2]);
+	this.popINSERT1.edtSHRWAGP_CODE.set_value(sArrRtn[3]);
+	
+
+}
+
+this.dsPY_INCOME_oncolumnchanged = function(obj:Dataset, e:nexacro.DSColChangeEventInfo) {
+	if (e.columnid == "EMPL_NAME") this.fn_HelpDialoge(this.grdPY_INCOME, "YES" ,e.oldvalue, e.columnid);
+	if (e.columnid == "WORK_CNTT") this.fn_HelpDialoge(this.grdPY_INCOME, "YES" ,e.oldvalue, e.columnid);
+	
+	var sPAYX_TAMT = this.dsPY_INCOME.getColumn(e.row, "TAP1_AMOT") + this.dsPY_INCOME.getColumn(e.row, "NTP1_AMOT");
+	var sDEDU_TAMT = this.dsPY_INCOME.getColumn(e.row, "INCM_TAXX") + this.dsPY_INCOME.getColumn(e.row, "INHA_TAXX");
+	var sREAL_AMOT = nexacro.toNumber(sPAYX_TAMT) - nexacro.toNumber(sDEDU_TAMT);
+	if ( e.columnid == "TAP1_AMOT" || e.columnid == "NTP1_AMOT" ) {
+		this.dsPY_INCOME.setColumn(e.row, "PAYX_TAMT", sPAYX_TAMT); // 지급계
+		this.dsPY_INCOME.setColumn(e.row, "REAL_AMOT", sREAL_AMOT); // 실지급액
+		
+	} else if ( e.columnid == "INCM_TAXX" || e.columnid == "INHA_TAXX" ) {	
+		this.dsPY_INCOME.setColumn(e.row, "DEDU_TAMT", sDEDU_TAMT); // 공제계
+		this.dsPY_INCOME.setColumn(e.row, "REAL_AMOT", sREAL_AMOT); // 실지급액
+		
+	} else if ( e.columnid == "INDN_CODE" ){
+		this.dsPY_INCOME.setColumn(e.row, "REF1_FILD", this.dsINDN_CODE.getColumn(this.dsINDN_CODE.findRow( "COMD_CODE", this.dsPY_INCOME.getColumn(e.row, "INDN_CODE")), "REF1_FILD"));
+		
+	}
+	
+}
+
+/*-----------------+
+ |  팝업 열기  |
+ +-----------------*/
+this.fn_DataCodeCopy = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	
+	this.popINSERT.medSHRPAYX_DATE_TO.fn_SetMonth(this.divSHRINDN_DATE.fn_GetMonth());
+	
+	var nX 	= system.clientToScreenX(this.divButtonList.btn_DATA_COPY, 0);;
+		nX -= system.clientToScreenX(application.mainframe,0);
+	var nY 	= system.clientToScreenY(this.divButtonList.btn_DATA_COPY, this.divButtonList.btn_DATA_COPY.getOffsetHeight());
+		nY -= system.clientToScreenY(application.mainframe,0);
+	
+	this.popINSERT.trackPopup(nX, nY - 2);
+	
+}
+
+/*-----------------+
+ |  팝업 자료생성  |
+ +-----------------*/
+this.popINSERT_btnINSERT_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo){
+	
+	if (this.fnc_Length(this.fnc_Trim(this.popINSERT.medSHRPAYX_DATE_TO.fn_GetMonth())) != 6) {
+		return this.fnc_SearchCheckPostAction("TMM072", "기준지급일", this.popINSERT.medSHRPAYX_DATE_TO);
+	}
+	
+	if (this.fnc_Length(this.fnc_Trim(this.popINSERT.medSHRPAYX_DATE_FROM.fn_GetMonth())) != 6) {
+		return this.fnc_SearchCheckPostAction("TMM072", "대상지급일", this.popINSERT.medSHRPAYX_DATE_FROM);
+	}
+
+	var sFROM_MESS 	= this.fnc_SubStr(this.popINSERT.medSHRPAYX_DATE_FROM.fn_GetMonth(), 0, 4)+"-"+this.fnc_SubStr(this.popINSERT.medSHRPAYX_DATE_FROM.fn_GetMonth(), 4, 2);
+	var sTO_MESS 	= this.fnc_SubStr(this.popINSERT.medSHRPAYX_DATE_TO.fn_GetMonth(), 0, 4)+"-"+this.fnc_SubStr(this.popINSERT.medSHRPAYX_DATE_TO.fn_GetMonth(), 4, 2);
+	if (this.fnc_Message("PAY011", sTO_MESS, sFROM_MESS, sTO_MESS )){
+		this.fnc_DatasetClear("dsPY_INCOME");
+		
+		var sMethodName = "PROC00";
+		var sInDataSet  = "";
+		var sOutDataSet = "dsPY_INCOME=dsPY_INCOME";
+		var sArgument 	= this.fn_CreateArgument(sMethodName);	
+		this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");	
+		this.fn_Popup_close();
+	}
+		
+}
+
+/*---------------+
+ | 입력 팝업 닫기 |
+ +----------------*/
+this.fn_Popup_close = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	this.popINSERT.closePopup();
+	
+}
+
+this.grdPY_INCOME_onheadclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+	var sCol = "CHK";
+	if (obj.getBindCellIndex("body", sCol) == e.cell) this.fnc_GridAllCheck(obj, sCol);
+}
+
+
+/*-----------------------------+
+ |  양식파일 다운로드 클릭 時  |
+ +-----------------------------*/
+this.fn_ExcelFileDown = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	this.fnc_FileDownLoad("", "", "", this.sPACKAGENAME);
+
+}
+
+
+/*--------------------------+
+ |  양식파일 업로드 클릭 時  |
+ +---------------------------*/
+this.fn_ExcelUpload = function (obj:Button, e:ClickEventInfo) {
+
+	if (this.fnc_DatasetChangeCheck("dsPY_INCOME")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	this.fnc_DatasetClear("dsPY_INCOME");
+	this.fnc_ExcelUpload("dsPY_INCOME", "Sheet1", "A2", "fn_ExcelSuccess");
+
+}
+
+this.fn_ExcelSuccess = function (obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+	
+	this.setWaitCursor(false);
+	this.dsPY_INCOME.set_enableevent(false);
+	this.dsPY_INCOME.set_updatecontrol(false);
+
+	if (this.objDsImportTemp.getRowCount() < 1) {
+		this.fnc_Message("TMM125", "Upload 할 엑셀 자료가 없습니다.");
+		return false;
+	}
+	
+	for (var i = 0; i< this.objDsImportTemp.getRowCount(); i++){
+		
+		var iRow = this.dsPY_INCOME.addRow();
+		this.dsPY_INCOME.setRowType(i, Dataset.ROWTYPE_INSERT);
+		var sINDN_DATE = this.fnc_Replace(this.objDsImportTemp.getColumn(i, 2), "-", "");
+		
+		this.dsPY_INCOME.setColumn(iRow, "EMPL_NUMB", this.objDsImportTemp.getColumn(i, 0)); 
+		this.dsPY_INCOME.setColumn(iRow, "EMPL_NAME", this.objDsImportTemp.getColumn(i, 1));
+		this.dsPY_INCOME.setColumn(iRow, "INDN_DATE", sINDN_DATE);
+		this.dsPY_INCOME.setColumn(iRow, "INDN_CODE", this.objDsImportTemp.getColumn(i, 3)); 
+		this.dsPY_INCOME.setColumn(iRow, "TAP1_AMOT", this.objDsImportTemp.getColumn(i, 5)); 
+		this.dsPY_INCOME.setColumn(iRow, "NTP1_AMOT", this.objDsImportTemp.getColumn(i, 6)); 
+		this.dsPY_INCOME.setColumn(iRow, "INCM_TAXX", this.objDsImportTemp.getColumn(i, 7)); 
+		this.dsPY_INCOME.setColumn(iRow, "INHA_TAXX", this.objDsImportTemp.getColumn(i, 8)); 
+		this.dsPY_INCOME.setColumn(iRow, "REMK_400X", this.objDsImportTemp.getColumn(i, 9)); 
+		if ( this.objDsImportTemp.getColumn(i, 3) == "10" )	this.dsPY_INCOME.setColumn(iRow, "REF1_FILD", "1");
+		
+	}
+	
+	this.objDsImportTemp.clear();
+	this.dsPY_INCOME.set_updatecontrol(true);
+	this.dsPY_INCOME.set_enableevent(true);
+
+	this.dsPY_INCOME.set_rowposition(0);
+	this.grdPY_INCOME.setFocus();
+
+}
+
+/*--------------------------+
+ |  급여일지반영 버튼 클릭 시 |
+ +--------------------------*/
+this.divButtonList_btn_PROC_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	var nX 	= system.clientToScreenX(this.divButtonList.btn_PROC, 0);;
+		nX -= system.clientToScreenX(application.mainframe,0);
+	var nY 	= system.clientToScreenY(this.divButtonList.btn_PROC, this.divButtonList.btn_PROC.getOffsetHeight());
+		nY -= system.clientToScreenY(application.mainframe,0);
+
+	this.popINSERT1.trackPopup(nX, nY - 2);
+	
+}
+
+
+/*----------------+
+ |  닫기 버튼 클릭 |
+ +----------------*/
+this.btnClose_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	this.popINSERT1.closePopup();
+
+}
+
+this.popINSERT_btnPay_onclick = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	if ( this.dsPY_INCOME.getCaseCount("CHK==1") == 0 ) return this.fnc_Message("MDM002");
+	
+	if ( this.fnc_Length(this.popINSERT1.medSHRPAYX_DATE.value) == 0 ){
+		return this.fnc_SearchCheckPostAction("TMM072", "지급일", this.popINSERT1.edtSHRWAGE_NAME);
+	}
+
+	this.dsPY_INCOME.set_enableevent(false);
+	for ( var i=0; i<this.dsPY_INCOME.getRowCount(); i++ ) {
+		if ( this.dsPY_INCOME.getColumn(i, "CHK") == "1" ) {
+			this.dsPY_INCOME.setColumn(i, "PAYX_DATE", this.popINSERT1.medSHRPAYX_DATE.value);
+			this.dsPY_INCOME.setColumn(i, "WAGE_CODE", this.popINSERT1.edtSHRWAGE_CODE.value);
+			this.dsPY_INCOME.setColumn(i, "WORK_CNTT", this.popINSERT1.edtSHRWAGE_NAME.value);
+
+		}
+	}
+	this.dsPY_INCOME.set_enableevent(true);
+	
+	this.popINSERT1.closePopup();
+	
+}]]></Script>
+  </Form>
+</FDL>

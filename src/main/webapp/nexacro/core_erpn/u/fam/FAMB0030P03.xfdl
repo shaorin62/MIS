@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="FAMC0017" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="미결정산전표내역조회" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadCheckProcess" left="0" width="1000" top="0" height="400" onclose="fn_FormUnloadProcess">
+    <Layouts>
+      <Layout>
+        <Grid binddataset="dsTA_SLIPNT" cellsizingtype="both" enable="true" id="grdTA_SLIPNT" useinputpanel="false" selecttype="row" oncelldblclick="grdTA_SLIPNT_oncelldblclick" taborder="4" tabstop="false" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="15" right="15" top="103" bottom="15" cssclass="styGrid01" autoenter="select">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="140" band="left"/>
+                <Column size="96" band="left"/>
+                <Column size="95" band="left"/>
+                <Column size="95" band="left"/>
+                <Column size="200"/>
+                <Column size="150"/>
+                <Column size="0"/>
+                <Column size="80"/>
+                <Column size="95"/>
+                <Column size="61"/>
+                <Column size="100"/>
+                <Column size="150"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" text="미결정산번호"/>
+                <Cell col="1" displaytype="text" text="미결정산회계일"/>
+                <Cell col="2" displaytype="text" text="미결정산금액"/>
+                <Cell col="3" displaytype="text" text="잔액"/>
+                <Cell col="4" displaytype="text" text="미결정산적요"/>
+                <Cell col="5" displaytype="text" text="발생번호"/>
+                <Cell col="6" displaytype="text" text="작성일"/>
+                <Cell col="7" displaytype="text" text="회계일"/>
+                <Cell col="8" displaytype="text" text="발생금액"/>
+                <Cell col="9" text="관리항목"/>
+                <Cell col="10" displaytype="text" style="selectline:가;" text="관리항목값"/>
+                <Cell col="11" displaytype="text" text="적요"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;" text="bind:BANJ_DISP"/>
+                <Cell col="1" displaytype="date" style="align:center;" text="bind:BANJ_ACDT" suppress="0" calendardisplaynulltype="none"/>
+                <Cell col="2" displaytype="number" style="align:right;" text="bind:BANJ_AMNT"/>
+                <Cell col="3" displaytype="number" style="align:right;" text="bind:BALA_AMNT"/>
+                <Cell col="4" displaytype="text" style="align: left;" text="bind:BANJ_REMK"/>
+                <Cell col="5" displaytype="text" style="align:center;" text="bind:DISP_NUMB" suppress="0"/>
+                <Cell col="6" displaytype="date" style="align:center;" text="bind:SLIP_DATE" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="date" style="align:center;" text="bind:ACCT_DATE" suppress="0" calendardisplaynulltype="none"/>
+                <Cell col="8" displaytype="number" style="align:right;" text="bind:SLIP_AMNT" suppress="0"/>
+                <Cell col="9" text="bind:COND_NAME" suppress="0"/>
+                <Cell col="10" displaytype="text" style="align: left;" text="bind:COND_VANM" suppress="0"/>
+                <Cell col="11" displaytype="text" style="align: left;" text="bind:REMK_NAME" suppress="0"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:center;" text="합    계"/>
+                <Cell col="1"/>
+                <Cell col="2" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;BANJ_AMNT&quot;)"/>
+                <Cell col="3" displaytype="number" style="align:right;"/>
+                <Cell col="4"/>
+                <Cell col="5" colspan="3" displaytype="text" style="align: center;"/>
+                <Cell col="8" displaytype="number" style="align:right;"/>
+                <Cell col="9"/>
+                <Cell col="10"/>
+                <Cell col="11"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="15" width="304" top="82" height="21" cssclass="styFormSearchInfo" taborder="1" usedecorate="true"/>
+        <Static id="spSearchBox0" taborder="5" cssclass="styFormSearchBox" left="15" top="35" right="15" height="43"/>
+        <Edit id="edtSHRSLIP_LINE" taborder="8" inputtype="number" maxlength="20" autoselect="true" cssclass="edt_WF_Readonly" enable="true" left="262" top="46" height="21" style="align:center middle; :disabled {align:center;}" width="60" readonly="true"/>
+        <Static id="Static2" taborder="9" text="발생번호" cssclass="styFormSearchCap" left="35" top="46" height="21" width="73"/>
+        <Static id="Static11" taborder="10" text="-" top="46" height="21" width="21" left="249"/>
+        <MaskEdit id="edtSHRSLIP_NUMB" taborder="11" type="string" onsetfocus="fn_EditFocus" cssclass="msk_WF_Readonly" enable="true" left="103" top="46" height="21" style=":disabled {background:#f4f4f4ff;}" binddataset="dsTA_SLIPXM" width="140" readonly="true"/>
+        <Div id="div_ButtonList" taborder="13" tabstop="false" url="common::comButtonType01.xfdl" top="8" right="15" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Static id="Static17" taborder="14" text="h4" visible="false" left="568" top="31" width="110" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="15" text="h8" visible="false" left="541" top="0" width="110" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="16" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" width="15" height="461" bottom="0"/>
+        <Static id="Static15" taborder="17" text="w30" visible="false" left="16" top="38" width="30" height="31" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="18" text="h 25" visible="false" left="573" top="78" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="19" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" width="15" height="461" right="0" bottom="0"/>
+        <Static id="Static03" taborder="20" text="h15" visible="false" left="439" width="110" height="15" style="background:#fb7b7b7a;" bottom="0"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTA_SLIPNT" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DISP_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="ACCT_INTL" size="256" prop="default" type="STRING"/>
+          <Column id="ACCT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_LINE" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="ACCT_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="SLIP_AMNT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="COND_NAME" type="STRING" size="256"/>
+          <Column id="COND_VACD" size="256" prop="default" type="STRING"/>
+          <Column id="COND_VANM" size="256" prop="default" type="STRING"/>
+          <Column id="REMK_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="BANJ_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="BANJ_LINE" size="256" prop="default" type="STRING"/>
+          <Column id="BANJ_DISP" size="256" prop="default" type="STRING"/>
+          <Column id="BANJ_ACDT" size="256" prop="default" type="STRING"/>
+          <Column id="BANJ_REMK" size="256" prop="default" type="STRING"/>
+          <Column id="BALA_AMNT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="BANJ_AMNT" size="22" prop="default" type="BIGDECIMAL"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="medSLIP_PGBN_value" compid="edtSHRSLIP_NUMB" propid="value" datasetid="dsTA_SLIPXM" columnid="SLIP_NUMB"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ *   Form Common Script                                                                            *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                     *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                      *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리              *
+ *                                                                                                 *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망   *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+
+/**************************
+ *  공통 Script Include  *
+ **************************/
+include "script::lib_script_common.xjs"
+
+/***********************
+ *  화면 변수 선언부 *
+ ***********************/
+this.sBUTTONLIST  = "TTFFFFTF"; // 종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄
+this.sPACKAGENAME = "FAMB0030P03";
+this.edtSHRSLIP_NUMB.set_value(this.parent.sSHRDISP_NUMB);
+this.edtSHRSLIP_LINE.set_value(this.parent.sSLIP_LINE);
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+	 
+} else {
+
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+	 
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                  *
+ ***************************************************************************************************/
+ /*---------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +---------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	
+	//전표 MASK
+	this.fnc_FormatSlipNumber(this.edtSHRSLIP_NUMB);
+	this.fnc_FormatSlipNumber(this.grdTA_SLIPNT,"DISP_NUMB", "Y");	//행번호포함
+	this.fnc_FormatSlipNumber(this.grdTA_SLIPNT,"BANJ_DISP", "Y");	//행번호포함
+	
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	
+	this.fn_Search();
+	
+}
+
+/*--------------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ---------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*--------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTA_SLIPNT"); 
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsTA_SLIPNT=dsTA_SLIPNT";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTA_SLIPNT.setFocus();
+	
+}
+
+/*---------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +---------------------------------*/
+this.fn_Input = function (obj) {
+	//기능없음
+}
+
+/*--------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Delete = function (obj) {
+	//기능없음
+}
+
+/*--------------------------+
+ |  06.취소 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Cancel = function (obj) {
+	//기능없음	
+}
+
+/*--------------------------+
+ |  07.저장 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Save = function (obj) {
+	//기능없음
+}
+
+/*--------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*--------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Print = function (obj) {
+	//기능없음
+}
+
+/*-----------------------------------+
+ |  10. 화면 종료時 처리 할 사항  |
+ +-----------------------------------*/
+this.fn_FormUnloadCheckProcess =  function(obj:Form, e:nexacro.CloseEventInfo) {
+	
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTA_SLIPNT", this);
+		
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+	
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo){
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-------------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +-------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {	
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*--------------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +--------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-------------------+
+ /  조회 여부 체크!   /
+ +--------------------*/
+this.fn_SearchItemCheck = function () {
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	return true;
+}
+
+/*---------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!   |
+ +---------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME); 
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " SLIP_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRSLIP_NUMB.value));
+		sReturnString += " SLIP_LINE=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRSLIP_LINE.value));
+
+	} 
+	
+	return sReturnString;
+	
+}
+
+/*---------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +---------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+}
+
+/*--------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +--------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == "SEARCH00") {
+		
+		this.fnc_Information(this.stInformation, this.dsTA_SLIPNT.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTA_SLIPNT.getCaseCount("dataset.getRowLevel(currow)==0"));
+	
+	}
+	
+}
+
+/**************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/*-----------------------------------------------+
+ |  그리드에서 더블 클릭 시 선택과 동일한 작업 !  |
+ +------------------------------------------------*/
+this.grdTA_SLIPNT_oncelldblclick = function(obj:Grid, e:nexacro.GridClickEventInfo) {
+		
+	//this.fn_Confirm();	//종료
+	var sColumnName = this.fnc_getColId(obj, e.cell);
+	if (sColumnName == "BANJ_DISP") {
+		var sSlip_Numb = this.dsTA_SLIPNT.getColumn(this.dsTA_SLIPNT.rowposition, "BANJ_NUMB");
+		var sSlip_Line = this.dsTA_SLIPNT.getColumn(this.dsTA_SLIPNT.rowposition, "BANJ_LINE");
+		this.fnc_ViewSlipForm(sSlip_Numb, "SHR", this.sUSERLAVEL, "", sSlip_Line); //NEW:직접입력, REV:수정, SHR:조회, SEM:반자동전표
+	}
+	
+}
+
+/*--------------+
+ |  확인 처리 !  |
+ +---------------*/
+this.fn_Confirm = function (){
+	
+	var sReturn = this.dsTA_SLIPNT.getColumn(this.dsTA_SLIPNT.rowposition, "DISP_NUMB");
+	this.close(sReturn);
+	
+}
+
+]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="TXMC0120">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.09.01
+     내      용 : 인적사항 조회[사업자단위과세별부가세과세표준및납부세액]
+********************************************************************************/
+-->
+	<select id="TXMC0120.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+            SELECT /* TXMC0050.SEARCH00.인적사항 조회[사업자단위과세별부가세과세표준및납부세액]*/
+                   BRANCH_CD        /* 지점코드 */
+                 , BRANCH_NM        /* 지점명  */
+                 , BIZ_NO           /* 사업자 번호 */
+                 , CORP_NM          /* 상호(법인명)*/
+                 , CORP_MASTER      /* 대표자 */
+                 , CORP_ADDR        /* 사업자 소재지 */
+                 , CORP_TYPENM      /* 업태 */
+                 , CORP_LINE        /* 업종 */
+              FROM VA_VATBRANCH     /* [부가세용 사업장 정보 VIEW] */
+             WHERE BRANCH_CD = #ACCT_GUBN#
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(헤더)조회
+********************************************************************************/
+-->
+	<select id="TXMC0120.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMC0120.SEARCH01.사업자단위과세별부가세과세표준및납부세액 */ 
+			           A.BRANCH_CD   /*VAT_지점코드*/                  
+                     , A.VAT_YYYY   /*VAT_VAT년도*/                    
+                     , A.VAT_QUARTER   /*VAT_VAT분기*/                 
+                     , A.BRANCH_APPRNO   /*VAT_사업자단위과세승인번호*/
+                  FROM TA_VAT166_H A
+                 WHERE A.BRANCH_CD = #ACCT_GUBN#
+                   AND A.VAT_YYYY = #VAT_YYYY#
+                   AND A.VAT_QUARTER = #VAT_QUARTER#
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(세부)조회
+********************************************************************************/
+-->
+	<select id="TXMC0120.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMC0120.SEARCH02.사업자단위과세별부가세표준및납부세액(세부)조회 */
+			         A.BRANCH_CD
+                   , A.VAT_YYYY
+                   , A.VAT_QUARTER
+                   , A.UNITBRA_SEQ                    /*단위사업장적용번호*/
+                   , A.UNITBRA_CD                     /*대상지점코드*/
+                   , B.BRANCH_NM AS UNITBRA_NM        /*단위사업장상호*/
+                   , B.CORP_ADDR AS UNITBRA_ADDR      /*단위사업장주소*/
+                   , A.SALBIL_SAMT                    /*매출과세세금계산서과표*/
+                   , A.SALBIL_VAMT                    /*매출과세세금계산서세액*/
+                   , A.SALETC_SAMT                    /*매출과세기타과표*/
+                   , A.SALETC_VAMT                    /*매출과세기타세액*/
+                   , A.ZERBIL_SAMT                    /*매출영세세금계산서과표*/
+                   , A.ZERETC_SAMT                    /*매출영세기타과표*/
+                   , A.SALTOT_SAMT                    /*과세표준*/
+                   , A.PURBIL_SAMT                    /*매입과세표준*/
+                   , A.PURBIL_VAMT                    /*매입과세액*/
+                   , A.AGENDA_SAMT                    /*매입의제표준*/
+                   , A.PD_AGENDA_VAMT                 /*매입의제매입세액*/
+                   , A.ADDTOT_VAMT                    /*가산세*/
+                   , A.ETCBIL_VAMT                    /*공제세액*/
+                   , A.RETURN_VAMT                    /*차감납부할세액*/
+                FROM TA_VAT166_D A
+     LEFT OUTER JOIN VA_VATBRANCH B
+                  ON A.UNITBRA_CD = B.BRANCH_CD
+               WHERE A.BRANCH_CD = #ACCT_GUBN#
+                 AND A.VAT_YYYY = #VAT_YYYY#
+                 AND A.VAT_QUARTER = #VAT_QUARTER#
+                 AND A.UNITBRA_SEQ = '0000'   /*주사업장*/
+           UNION ALL
+              SELECT A.BRANCH_CD
+                   , A.VAT_YYYY
+                   , A.VAT_QUARTER
+                   , A.UNITBRA_SEQ       /*단위사업장적용번호*/
+                   , A.UNITBRA_CD        /*대상지점코드*/
+                   , B.UNITBRA_NM        /*단위사업장상호*/
+                   , B.UNITBRA_ADDR      /*단위사업장주소*/
+                   , A.SALBIL_SAMT       /*매출과세세금계산서과표*/
+                   , A.SALBIL_VAMT       /*매출과세세금계산서세액*/
+                   , A.SALETC_SAMT       /*매출과세기타과표*/
+                   , A.SALETC_VAMT       /*매출과세기타세액*/
+                   , A.ZERBIL_SAMT       /*매출영세세금계산서과표*/
+                   , A.ZERETC_SAMT       /*매출영세기타과표*/
+                   , A.SALTOT_SAMT       /*과세표준*/
+                   , A.PURBIL_SAMT       /*매입과세표준*/
+                   , A.PURBIL_VAMT       /*매입과세액*/
+                   , A.AGENDA_SAMT       /*매입의제표준*/
+                   , A.PD_AGENDA_VAMT    /*매입의제매입세액*/
+                   , A.ADDTOT_VAMT       /*가산세*/
+                   , A.ETCBIL_VAMT       /*공제세액*/
+                   , A.RETURN_VAMT       /*차감납부할세액*/
+                FROM TA_VAT166_D A
+     LEFT OUTER JOIN VA_VATCUST B
+                  ON A.UNITBRA_CD = B.CUST_CD
+               WHERE BRANCH_CD = #ACCT_GUBN#
+                 AND A.VAT_YYYY = #VAT_YYYY#
+                 AND A.VAT_QUARTER = #VAT_QUARTER#
+                 AND A.UNITBRA_SEQ <> '0000'  /*주사업장 예외*/
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(헤더)처리
+********************************************************************************/
+-->
+	<select id="TXMC0120.PROC00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[ 
+			SELECT /* TXMC0120.PROC00.사업자단위과세별부가세표준및납부세액(헤더)처리 */
+			         #ACCT_GUBN# AS BRANCH_CD
+                   , #VAT_YYYY# AS VAT_YYYY
+                   , #VAT_QUARTER# AS VAT_QUARTER
+                   , A.VAT_UNITTAXNO AS BRANCH_APPRNO  /*사업자단위과세승인번호*/
+                FROM VA_VATBRANCH A
+               WHERE A.BRANCH_CD = #ACCT_GUBN#
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(세부)처리
+********************************************************************************/
+-->
+	<select id="TXMC0120.PROC01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMC0120.PROC01.사업자단위과세별부가세표준및납부세액(세부)처리 */
+			            MAIN.BRANCH_CD
+	                  , MAIN.VAT_YYYY
+	                  , MAIN.VAT_QUARTER
+	                  , MAIN.UNITBRA_SEQ
+	                  , MAIN.UNITBRA_CD
+	                  , MAIN.UNITBRA_NM
+	                  , MAIN.UNITBRA_ADDR
+	                  , NVL(SUM(SALBIL_SAMT), 0) AS SALBIL_SAMT              /*매출과세세금계산서과표*/
+	                  , NVL(SUM(SALBIL_VAMT), 0) AS SALBIL_VAMT              /*매출과세세금계산서세액*/
+	                  , NVL(SUM(SALETC_SAMT), 0) AS SALETC_SAMT              /*매출과세기타과표*/
+	                  , NVL(SUM(SALETC_VAMT), 0) AS SALETC_VAMT              /*매출과세기타세액*/
+	                  , NVL(SUM(ZERBIL_SAMT), 0) AS ZERBIL_SAMT              /*매출영세세금계산서과표*/
+	                  , NVL(SUM(ZERETC_SAMT), 0) AS ZERETC_SAMT              /*매출영세기타과표*/
+	                  , NVL(SUM(SALTOT_SAMT), 0) AS SALTOT_SAMT              /*과세표준*/
+	                  , NVL(SUM(PURBIL_SAMT), 0) AS PURBIL_SAMT              /*매입과세표준*/
+	                  , NVL(SUM(PURBIL_VAMT), 0) AS PURBIL_VAMT              /*매입과세액*/
+	                  , NVL(SUM(AGENDA_SAMT), 0) AS AGENDA_SAMT              /*매입의제표준*/
+	                  , NVL(SUM(PD_AGENDA_VAMT), 0) AS PD_AGENDA_VAMT        /*매입의제매입세액*/
+	                  , NVL(SUM(ADDTOT_VAMT), 0) AS ADDTOT_VAMT              /*가산세*/
+	                  , NVL(SUM(ETCBIL_VAMT), 0) AS ETCBIL_VAMT              /*공제세액*/
+	                  , NVL(SUM(SALBIL_VAMT)+SUM(SALETC_VAMT)-SUM(PURBIL_VAMT)+SUM(ADDTOT_VAMT)-SUM(ETCBIL_VAMT), 0) AS RETURN_VAMT              /*차감납부할세액*/
+	               FROM (
+	                     SELECT A.BRANCH_CD
+	                          , A.VAT_YYYY
+	                          , A.VAT_QUARTER
+	                          , TO_NCHAR('0000') AS UNITBRA_SEQ
+	                          , C.BRANCH_CD AS UNITBRA_CD
+	                          , C.BRANCH_NM AS UNITBRA_NM
+	                          , C.CORP_ADDR AS UNITBRA_ADDR
+	                          , 0 AS SALBIL_SAMT       /*매출과세세금계산서과표*/
+	                          , 0 AS SALBIL_VAMT       /*매출과세세금계산서세액*/
+	                          , 0 AS SALETC_SAMT       /*매출과세기타과표*/
+	                          , 0 AS SALETC_VAMT       /*매출과세기타세액*/
+                              , A.SH_ZERBIL_SAMT AS ZERBIL_SAMT       /*매출영세세금계산서과표*/
+                              , 0 AS ZERETC_SAMT       /*매출영세기타과표*/
+                              , 0 AS SALTOT_SAMT       /*과세표준*/
+	                          , A.PH_ADDMIN_SAMT - ( B.PD_PURTOT_SAMT - B.PD_CREDIT_SAMT - B.PD_ASSETS_SAMT ) AS PURBIL_SAMT       /*매입과세표준*/
+	                          , A.PH_ADDMIN_VAMT - ( B.PD_PURTOT_VAMT - B.PD_CREDIT_VAMT - B.PD_ASSETS_VAMT ) AS PURBIL_VAMT       /*매입과세액*/
+	                          , B.PD_PURTOT_SAMT - B.PD_CREDIT_SAMT - B.PD_ASSETS_SAMT AS AGENDA_SAMT                              /*매입의제표준*/
+	                          , B.PD_PURTOT_VAMT - B.PD_CREDIT_VAMT - B.PD_ASSETS_VAMT AS PD_AGENDA_VAMT                           /*매입의제매입세액*/
+	                          , B.AD_ADDTOT_VAMT AS ADDTOT_VAMT                                                                    /*가산세*/
+	                          , A.RH_MINTOT_VAMT + A.RH_WILRET_VAMT + A.RH_NOTRET_VAMT + A.RH_PROHIB_VAMT AS ETCBIL_VAMT           /*공제세액*/
+	                          , B.VAT_REF_VAMT AS RETURN_VAMT    /*차감납부할세액*/
+	                       FROM TA_VAT101_H1 A
+	            LEFT OUTER JOIN TA_VAT101_H2 B
+	                         ON A.BRANCH_CD = B.BRANCH_CD
+	                        AND A.VAT_YYYY = B.VAT_YYYY
+	                        AND A.VAT_QUARTER = B.VAT_QUARTER
+	            LEFT OUTER JOIN VA_VATBRANCH C
+	                         ON A.BRANCH_CD = C.BRANCH_CD
+	                      WHERE A.BRANCH_CD = #ACCT_GUBN#
+	                        AND A.VAT_YYYY = #VAT_YYYY#
+	                        AND A.VAT_QUARTER = #VAT_QUARTER#
+	
+	                  UNION ALL
+	                      /*주사업장 매출*/
+	                     SELECT A.BRANCH_CD
+	                          , A.VAT_YYYY
+	                          , A.VAT_QUARTER
+	                          , TO_NCHAR('0000') AS UNITBRA_SEQ
+	                          , D.BRANCH_CD AS UNITBRA_CD
+	                          , D.BRANCH_NM AS UNITBRA_NM
+	                          , D.CORP_ADDR AS UNITBRA_ADDR
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A01' THEN A.VAT_SAMT END) AS SALBIL_SAMT              /*매출과세세금계산서과표*/
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A01' THEN A.VAT_VAMT END) AS SALBIL_VAMT              /*매출과세세금계산서세액*/
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A02' THEN A.VAT_SAMT END) AS SALETC_SAMT              /*매출과세기타과표*/
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A02' THEN A.VAT_VAMT END) AS SALETC_VAMT              /*매출과세기타세액*/
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A03' THEN A.VAT_SAMT END) AS ZERBIL_SAMT              /*매출영세세금계산서과표*/
+	                          , SUM(CASE WHEN C.APPL_V166 = 'A04' THEN A.VAT_SAMT END) AS ZERETC_SAMT              /*매출영세기타과표*/
+	                          , SUM(CASE WHEN SUBSTR(C.APPL_V166, 1, 1) = 'A' THEN A.VAT_SAMT END) AS SALTOT_SAMT  /*과세표준*/
+	                          , 0 AS PURBIL_SAMT               /*매입과세표준*/
+	                          , 0 AS PURBIL_VAMT               /*매입과세액*/
+	                          , 0 AS AGENDA_SAMT               /*매입의제표준*/
+	                          , 0 AS PD_AGENDA_VAMT            /*매입의제매입세액*/
+	                          , 0 AS ADDTOT_VAMT               /*가산세*/
+	                          , 0 AS ETCBIL_VAMT               /*공제세액*/
+	                          , 0 AS RETURN_VAMT               /*차감납부할세액*/
+	                       FROM TA_VATRAW A
+	            LEFT OUTER JOIN TA_VATCDH B
+	                         ON A.VATH_TYPECD = B.VATH_TYPECD
+	            LEFT OUTER JOIN TA_VATCDD C
+	                         ON A.VATH_TYPECD = C.VATH_TYPECD
+	                        AND A.VATD_TYPECD = C.VATD_TYPECD
+	            LEFT OUTER JOIN VA_VATBRANCH D
+	                         ON A.BRANCH_CD = D.BRANCH_CD
+	                      WHERE A.BRANCH_CD = #ACCT_GUBN#
+	                        AND A.VAT_YYYY = #VAT_YYYY#
+	                        AND A.VAT_QUARTER = #VAT_QUARTER#
+	                        AND NVL(C.APPL_V166, '0') <> '0'
+	                        AND NVL(A.REF_KEY5,(SELECT BSNS_NUMB FROM VI_TM_OFFICE WHERE ACCT_GUBN = 1000)) = (SELECT BSNS_NUMB FROM VI_TM_OFFICE WHERE ACCT_GUBN = 1000)
+	                        /*AND LENGTH(A.REF_KEY5) <> 4*/
+	                        /*AND A.REF_KEY5 = '0000'*/
+	                   GROUP BY A.BRANCH_CD
+	                          , A.VAT_YYYY
+	                          , A.VAT_QUARTER
+	                          , A.REF_KEY5
+	                          , D.BRANCH_CD
+	                          , D.BRANCH_NM
+	                          , D.CORP_ADDR
+	                      ) MAIN
+	           GROUP BY MAIN.BRANCH_CD
+	                  , MAIN.VAT_YYYY
+	                  , MAIN.VAT_QUARTER
+	                  , MAIN.UNITBRA_SEQ
+	                  , MAIN.UNITBRA_CD
+	                  , MAIN.UNITBRA_NM
+	                  , MAIN.UNITBRA_ADDR
+	
+	           UNION ALL
+	              /*종사업장*/
+	              SELECT A.BRANCH_CD
+	                   , A.VAT_YYYY
+	                   , A.VAT_QUARTER
+	                   , A.REF_KEY5                     /*단위사업장적용번호*/
+	                   , D.CUST_CD AS UNITBRA_CD        /*대상지점코드*/
+	                   , D.UNITBRA_NM                   /*단위사업장상호*/
+	                   , D.UNITBRA_ADDR                 /*단위사업장주소*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A01' THEN A.VAT_SAMT END) AS SALBIL_SAMT              /*매출과세세금계산서과표*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A01' THEN A.VAT_VAMT END) AS SALBIL_VAMT              /*매출과세세금계산서세액*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A02' THEN A.VAT_SAMT END) AS SALETC_SAMT              /*매출과세기타과표*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A02' THEN A.VAT_VAMT END) AS SALETC_VAMT              /*매출과세기타세액*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A03' THEN A.VAT_SAMT END) AS ZERBIL_SAMT              /*매출영세세금계산서과표*/
+	                   , SUM(CASE WHEN C.APPL_V166 = 'A04' THEN A.VAT_SAMT END) AS ZERETC_SAMT              /*매출영세기타과표*/
+	                   , SUM(CASE WHEN SUBSTR(C.APPL_V166, 1, 1) = 'A' THEN A.VAT_SAMT END) AS SALTOT_SAMT  /*과세표준*/
+	                   , 0 AS PURBIL_SAMT               /*매입과세표준*/
+	                   , 0 AS PURBIL_VAMT               /*매입과세액*/
+	                   , 0 AS AGENDA_SAMT               /*매입의제표준*/
+	                   , 0 AS PD_AGENDA_VAMT            /*매입의제매입세액*/
+	                   , 0 AS ADDTOT_VAMT               /*가산세*/
+	                   , 0 AS ETCBIL_VAMT               /*공제세액*/
+	                   , NVL(SUM(CASE WHEN C.APPL_V166 = 'A01' THEN A.VAT_VAMT END),0)
+	                    + NVL(SUM(CASE WHEN C.APPL_V166 = 'A02' THEN A.VAT_VAMT END),0) AS RETURN_VAMT               /*차감납부할세액*/
+	                FROM TA_VATRAW A
+	     LEFT OUTER JOIN TA_VATCDH B
+	                  ON A.VATH_TYPECD = B.VATH_TYPECD
+	     LEFT OUTER JOIN TA_VATCDD C
+	                  ON A.VATH_TYPECD = C.VATH_TYPECD
+	                 AND A.VATD_TYPECD = C.VATD_TYPECD
+	     LEFT OUTER JOIN VA_VATCUST D
+	                  ON A.CUST_CD = D.CUST_CD
+	               WHERE A.BRANCH_CD = #ACCT_GUBN#
+	                 AND A.VAT_YYYY = #VAT_YYYY#
+	                 AND A.VAT_QUARTER = #VAT_QUARTER#
+	                 AND NVL(C.APPL_V166, '0') <> '0'
+	                 AND LENGTH(A.REF_KEY5) = '4'
+	                 AND A.REF_KEY5 <> '0000'
+	            GROUP BY A.BRANCH_CD
+	                   , A.VAT_YYYY
+	                   , A.VAT_QUARTER
+	                   , A.REF_KEY5
+	                   , D.CUST_CD
+	                   , D.UNITBRA_NM
+	                   , D.UNITBRA_ADDR
+	            ORDER BY UNITBRA_SEQ
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(헤더) 저장
+********************************************************************************/
+-->
+<insert id="TXMC0120.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        
+	   DECLARE        /* TXMC0120.SAVE00.사업자단위과세별부가세표준및납부세액(헤더) 저장 */
+			v_ROWCNT INT;
+	   BEGIN
+	        SELECT COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT101_H1
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#;
+	
+	        IF v_ROWCNT = 0 THEN
+	          INSERT INTO
+	                 TA_VAT101_H1 (
+	                               BRANCH_CD
+	                             , VAT_YYYY
+	                             , VAT_QUARTER
+	                               )
+	                       VALUES (
+	                               #BRANCH_CD#
+	                             , #VAT_YYYY#
+	                             , #VAT_QUARTER#
+	                               );
+	        END IF;
+	
+	        SELECT COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT166_H
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#;
+	
+	        IF v_ROWCNT = 0 THEN
+	          	INSERT INTO TA_VAT166_H (                                  
+                            BRANCH_CD    /*VAT_지점코드*/                  
+                          , VAT_YYYY    /*VAT_VAT년도*/                    
+                          , VAT_QUARTER    /*VAT_VAT분기*/                 
+                          , BRANCH_APPRNO    /*VAT_사업자단위과세승인번호*/
+                          , INST_USID    /*입력작업자*/                    
+                          , INST_DATE    /*입력일시*/                      
+                          , UPDT_USID    /*수정작업자*/                    
+                          , UPDT_DATE    /*수정일시*/                      
+                  ) VALUES (                                               
+                            #BRANCH_CD#  /*VAT_지점코드*/                  
+                          , #VAT_YYYY#  /*VAT_VAT년도*/                    
+                          , #VAT_QUARTER#  /*VAT_VAT분기*/                 
+                          , #BRANCH_APPRNO#  /*VAT_사업자단위과세승인번호*/
+                          , #UPDT_USID#  /*입력작업자*/                    
+                          , SYSDATE      /*입력일시*/                      
+                          , #UPDT_USID#  /*수정작업자*/                    
+                          , SYSDATE      /*수정일시*/                      
+                          );
+	        ELSE
+	          	UPDATE TA_VAT166_H                                                     
+                   SET BRANCH_APPRNO = #BRANCH_APPRNO#   /*VAT_사업자단위과세승인번호*/
+                     , UPDT_USID = #UPDT_USID#   /*수정작업자*/                        
+                     , UPDT_DATE = SYSDATE       /*수정일시*/                          
+                 WHERE BRANCH_CD = #BRANCH_CD#   /*VAT_지점코드*/                      
+                   AND VAT_YYYY = #VAT_YYYY#   /*VAT_VAT년도*/                         
+                   AND VAT_QUARTER = #VAT_QUARTER#   /*VAT_VAT분기*/ ;
+	        END IF;
+	
+	   EXCEPTION
+	         WHEN OTHERS THEN
+	            RAISE;
+	   END;		  
+
+	]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016.08.04
+     내      용 : 사업자단위과세별부가세표준및납부세액(세부) 저장
+********************************************************************************/
+-->
+	<insert id="TXMC0120.SAVE01" parameterClass="hashmap">
+	<![CDATA[	
+	   DECLARE         /* TXMC0120.SAVE01.사업자단위과세별부가세표준및납부세액(세부) 저장 */
+			v_ROWCNT INT;
+	   BEGIN
+	        SELECT COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT101_H1
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#;
+	
+	        IF v_ROWCNT = 0 THEN
+	          INSERT INTO
+	                 TA_VAT101_H1 (
+	                               BRANCH_CD
+	                             , VAT_YYYY
+	                             , VAT_QUARTER
+	                               )
+	                       VALUES (
+	                               #BRANCH_CD#
+	                             , #VAT_YYYY#
+	                             , #VAT_QUARTER#
+	                               );
+	        END IF;
+	
+	        SELECT COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT166_D
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#
+	           AND UNITBRA_SEQ = #UNITBRA_SEQ#;
+	
+	        IF v_ROWCNT = 0 THEN
+	          	INSERT INTO TA_VAT166_D (                                
+                            BRANCH_CD    /*VAT_지점코드*/                
+                          , VAT_YYYY    /*VAT_VAT년도*/                  
+                          , VAT_QUARTER    /*VAT_VAT분기*/               
+                          , UNITBRA_SEQ    /*VAT_단위사업장적용번호*/    
+                          , UNITBRA_CD    /*VAT_대상지점코드*/           
+                          , SALBIL_SAMT    /*VAT_매출과세세금계산서과표*/
+                          , SALBIL_VAMT    /*VAT_매출과세세금계산서세액*/
+                          , SALETC_SAMT    /*VAT_매출과세기타과표*/      
+                          , SALETC_VAMT    /*VAT_매출과세기타세액*/      
+                          , ZERBIL_SAMT    /*VAT_매출영세세금계산서과표*/
+                          , ZERETC_SAMT    /*VAT_매출영세기타과표*/      
+                          , SALTOT_SAMT    /*VAT_과세표준*/              
+                          , PURBIL_SAMT    /*VAT_매입과세표준*/          
+                          , PURBIL_VAMT    /*VAT_매입과세액*/            
+                          , AGENDA_SAMT    /*VAT_매입의제표준*/          
+                          , PD_AGENDA_VAMT    /*VAT_매입의제매입세액*/   
+                          , ADDTOT_VAMT    /*VAT_가산세*/                
+                          , ETCBIL_VAMT    /*VAT_공제세액*/              
+                          , RETURN_VAMT    /*VAT_차감납부할세액*/        
+                          , INST_USID    /*입력작업자*/                  
+                          , INST_DATE    /*입력일시*/                    
+                          , UPDT_USID    /*수정작업자*/                  
+                          , UPDT_DATE    /*수정일시*/                    
+                  ) VALUES (                                             
+                            #BRANCH_CD#  /*VAT_지점코드*/                
+                          , #VAT_YYYY#  /*VAT_VAT년도*/                  
+                          , #VAT_QUARTER#  /*VAT_VAT분기*/               
+                          , #UNITBRA_SEQ#  /*VAT_단위사업장적용번호*/    
+                          , #UNITBRA_CD#  /*VAT_대상지점코드*/           
+                          , #SALBIL_SAMT#  /*VAT_매출과세세금계산서과표*/
+                          , #SALBIL_VAMT#  /*VAT_매출과세세금계산서세액*/
+                          , #SALETC_SAMT#  /*VAT_매출과세기타과표*/      
+                          , #SALETC_VAMT#  /*VAT_매출과세기타세액*/      
+                          , #ZERBIL_SAMT#  /*VAT_매출영세세금계산서과표*/
+                          , #ZERETC_SAMT#  /*VAT_매출영세기타과표*/      
+                          , #SALTOT_SAMT#  /*VAT_과세표준*/              
+                          , #PURBIL_SAMT#  /*VAT_매입과세표준*/          
+                          , #PURBIL_VAMT#  /*VAT_매입과세액*/            
+                          , #AGENDA_SAMT#  /*VAT_매입의제표준*/          
+                          , #PD_AGENDA_VAMT#  /*VAT_매입의제매입세액*/   
+                          , #ADDTOT_VAMT#  /*VAT_가산세*/                
+                          , #ETCBIL_VAMT#  /*VAT_공제세액*/              
+                          , #RETURN_VAMT#  /*VAT_차감납부할세액*/        
+                          , #UPDT_USID#  /*입력작업자*/                  
+                          , SYSDATE      /*입력일시*/                    
+                          , #UPDT_USID#  /*수정작업자*/                  
+                          , SYSDATE      /*수정일시*/                    
+                          );
+	        ELSE
+	          	UPDATE TA_VAT166_D                                                 
+                   SET UNITBRA_CD = #UNITBRA_CD#   /*VAT_대상지점코드*/            
+                     , SALBIL_SAMT = #SALBIL_SAMT#   /*VAT_매출과세세금계산서과표*/
+                     , SALBIL_VAMT = #SALBIL_VAMT#   /*VAT_매출과세세금계산서세액*/
+                     , SALETC_SAMT = #SALETC_SAMT#   /*VAT_매출과세기타과표*/      
+                     , SALETC_VAMT = #SALETC_VAMT#   /*VAT_매출과세기타세액*/      
+                     , ZERBIL_SAMT = #ZERBIL_SAMT#   /*VAT_매출영세세금계산서과표*/
+                     , ZERETC_SAMT = #ZERETC_SAMT#   /*VAT_매출영세기타과표*/      
+                     , SALTOT_SAMT = #SALTOT_SAMT#   /*VAT_과세표준*/              
+                     , PURBIL_SAMT = #PURBIL_SAMT#   /*VAT_매입과세표준*/          
+                     , PURBIL_VAMT = #PURBIL_VAMT#   /*VAT_매입과세액*/            
+                     , AGENDA_SAMT = #AGENDA_SAMT#   /*VAT_매입의제표준*/          
+                     , PD_AGENDA_VAMT = #PD_AGENDA_VAMT#   /*VAT_매입의제매입세액*/
+                     , ADDTOT_VAMT = #ADDTOT_VAMT#   /*VAT_가산세*/                
+                     , ETCBIL_VAMT = #ETCBIL_VAMT#   /*VAT_공제세액*/              
+                     , RETURN_VAMT = #RETURN_VAMT#   /*VAT_차감납부할세액*/        
+                     , UPDT_USID = #UPDT_USID#   /*수정작업자*/                    
+                     , UPDT_DATE = SYSDATE       /*수정일시*/                      
+                 WHERE BRANCH_CD = #BRANCH_CD#   /*VAT_지점코드*/                  
+                   AND VAT_YYYY = #VAT_YYYY#   /*VAT_VAT년도*/                     
+                   AND VAT_QUARTER = #VAT_QUARTER#   /*VAT_VAT분기*/               
+                   AND UNITBRA_SEQ = #UNITBRA_SEQ#   /*VAT_단위사업장적용번호*/;
+	        END IF;
+	
+	   EXCEPTION
+	         WHEN OTHERS THEN
+	            RAISE;
+	   END;
+				
+        
+	]]>
+	</insert>
+</sqlMap>

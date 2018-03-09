@@ -1,0 +1,1314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="FSMB0040" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" titletext="자산이동관리" position="absolute" scrollbars="none" onbeforeclose="fn_FormUnloadCheckProcess" left="0" width="1187" top="0" height="717" onclose="fn_FormUnloadProcess">
+    <Layouts>
+      <Layout>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="262" top="133" height="25" cssclass="styFormSearchInfo" taborder="33" usedecorate="true"/>
+        <Grid autoenter="none" binddataset="dsFS_ASCHXM" cellsizingtype="both" enable="true" id="grdFS_ASCHXM" useinputpanel="false" taborder="7" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" selecttype="row" oncelldblclick="fn_OpenSlip" position="absolute" left="8" right="25" top="154" cssclass="styGrid01" autofittype="none" bottom="199" fillareatype="none">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="40" band="left"/>
+                <Column size="73" band="left"/>
+                <Column size="90" band="left"/>
+                <Column size="110" band="left"/>
+                <Column size="100" band="left"/>
+                <Column size="200" band="left"/>
+                <Column size="73"/>
+                <Column size="94"/>
+                <Column size="170"/>
+                <Column size="90"/>
+                <Column size="65"/>
+                <Column size="170"/>
+                <Column size="90"/>
+                <Column size="65"/>
+                <Column size="60"/>
+                <Column size="75"/>
+                <Column size="75"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell rowspan="2" text="선택"/>
+                <Cell col="1" rowspan="2" displaytype="text" text="이동일자"/>
+                <Cell col="2" rowspan="2" displaytype="text" text="자산분류"/>
+                <Cell col="3" rowspan="2" displaytype="text" text="품목분류"/>
+                <Cell col="4" rowspan="2" text="자산번호"/>
+                <Cell col="5" rowspan="2" displaytype="text" text="자산명"/>
+                <Cell col="6" rowspan="2" displaytype="text" text="취득일자"/>
+                <Cell col="7" rowspan="2" displaytype="text" text="취득금액"/>
+                <Cell col="8" colspan="3" text="변경 전"/>
+                <Cell col="11" colspan="3" text="변경 후"/>
+                <Cell col="14" rowspan="2" text="확정여부"/>
+                <Cell col="15" rowspan="2" text="확정일자"/>
+                <Cell col="16" rowspan="2" text="확정자"/>
+                <Cell col="17" rowspan="2" text="전표번호"/>
+                <Cell row="1" col="8" text="사업장"/>
+                <Cell row="1" col="9" displaytype="text" text="부서명"/>
+                <Cell row="1" col="10" displaytype="text" text="사원명"/>
+                <Cell row="1" col="11" text="사업장"/>
+                <Cell row="1" col="12" displaytype="text" text="부서명"/>
+                <Cell row="1" col="13" displaytype="text" text="사원명"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="expr:(CHEK_YSNO == '0') ? 'checkbox' : 'checkbox'" edittype="expr:(CHEK_YSNO == '0' || CHEK_YSNO == '1') ? 'checkbox' : 'none'" text="bind:CHEK_YSNO"/>
+                <Cell col="1" displaytype="date" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:CHNG_DATE"/>
+                <Cell col="2" displaytype="text" style="align: left;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ASCL_NAME"/>
+                <Cell col="3" displaytype="text" style="align: left;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:CLSF_NAME"/>
+                <Cell col="4" displaytype="text" text="bind:ASST_NUMB" mask="expr:ASST_NUMB.toString().length == 0 ? &quot;&quot; : &quot;####-####-####&quot;"/>
+                <Cell col="5" displaytype="text" style="align: left;background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ASST_NAME"/>
+                <Cell col="6" displaytype="date" style="align:center middle;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ACQS_DATE"/>
+                <Cell col="7" displaytype="number" style="align:right middle;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:ACQU_PRIC"/>
+                <Cell col="8" style="align:left;" text="bind:BFDE_ACCT"/>
+                <Cell col="9" displaytype="text" style="background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align: left;" text="bind:BFDE_NAME"/>
+                <Cell col="10" displaytype="text" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:BFEM_NAME"/>
+                <Cell col="11" style="align:left;" text="bind:DEPT_ACCT"/>
+                <Cell col="12" displaytype="text" style="background: EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align: left;" text="bind:DEPT_NAME"/>
+                <Cell col="13" displaytype="text" style="align:center;background:EXPR(gfn_Decode(getRowLevel(currow), 0, gfn_Decode(expr_GetRowType(),'insert','#c3d5fdff','update','#fdd9c3ff','default'), 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));" text="bind:EMPL_NAME"/>
+                <Cell col="14" displaytype="checkbox" text="bind:RCGN_YSNO"/>
+                <Cell col="15" displaytype="date" text="bind:APPV_DATE" calendardisplaynulltype="none"/>
+                <Cell col="16" text="bind:APPV_EMNM"/>
+                <Cell col="17" displaytype="text" edittype="none" text="bind:SLIP_NUMB" mask="expr:SLIP_NUMB.toString().length == 0 ? &quot;&quot; : &quot;##-########-####&quot;"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <MPFileDialog id="fdFileDialog" taborder="79" position="absolute" left="472" width="24" top="48" height="24"/>
+        <Div id="Div0" taborder="41" style="color:black;" scrollbars="none" position="absolute" left="8" width="370" top="35" height="21">
+          <Layouts>
+            <Layout>
+              <Button id="btnAPPL" taborder="4" text="이동확정" onclick="fn_AschEvent" position="absolute" left="190" width="74" top="0" height="21" cssclass="btn_WF_Module"/>
+              <Button id="btnCANC" taborder="5" text="확정취소" onclick="fn_AschEvent" position="absolute" left="267" width="74" top="0" height="21" cssclass="btn_WF_Module"/>
+              <Button id="btnExcelFormDown" taborder="6" onclick="fn_ExcelFileDown" cssclass="btn_WF_Module" left="0" top="0" height="21" width="98" text="양식다운로드"/>
+              <Button id="btnExcelUpload" taborder="7" onclick="fn_ExcelUpLoad" cssclass="btn_WF_Module" left="101" top="0" height="21" width="86" text="엑셀업로드"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Button id="btnSaveSlipNumb" taborder="45" text="전표처리" onclick="fn_SaveSlipNumb" position="absolute" right="25" width="74" bottom="168" height="21" cssclass="styTextButtonBizProc" visible="false"/>
+        <Static id="spSearchBox0" taborder="28" cssclass="styFormSearchBox" left="8" top="60" right="25" height="69"/>
+        <Calendar id="calSHRCHNG_DAT1" taborder="0" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="96" top="71" height="21" width="100"/>
+        <Static id="Static64" taborder="53" text="~" cssclass="styFormSearch" left="199" top="71" height="21" style="align: center middle;" width="14"/>
+        <Calendar id="calSHRCHNG_DAT2" taborder="1" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="216" top="71" height="21" width="100"/>
+        <Combo id="cmbSHRRCGN_YSNO" taborder="2" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" left="413" top="71" height="21" width="220" index="-1"/>
+        <Edit id="edtSHRCLSF_CODE" taborder="56" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="96" top="97" height="21" width="80"/>
+        <Edit id="edtSHRCLSF_NAME" taborder="4" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="201" top="97" height="21" width="115"/>
+        <Edit id="edtSHRASST_NAME" taborder="3" imemode="hangul" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="850" top="71" height="21" width="157"/>
+        <Edit id="edtSHREMPL_NUMB" taborder="61" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="727" top="97" height="21" width="74"/>
+        <Edit id="edtSHREMPL_NAME" taborder="6" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="826" top="97" height="21" width="181"/>
+        <Edit id="edtSHRDEPT_CODE" taborder="64" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="413" top="97" height="21" width="80"/>
+        <Edit id="edtSHRDEPT_NAME" taborder="5" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="518" top="97" height="21" width="115"/>
+        <Static id="title01" taborder="67" text="조회기간" cssclass="styFormSearchCapBe" left="28" top="71" height="21" width="76"/>
+        <Static id="Static05" taborder="68" text="품목분류" cssclass="styFormSearchCap" left="28" top="97" height="21" width="76"/>
+        <Static id="Static00" taborder="69" text="승인여부" cssclass="styFormSearchCap" left="345" top="71" height="21" width="76"/>
+        <Static id="Static01" taborder="70" text="부서" cssclass="styFormSearchCap" left="345" top="97" height="21" width="76"/>
+        <Static id="Static06" taborder="71" text="이동사원" cssclass="styFormSearchCap" left="662" top="97" height="21" width="76"/>
+        <Static id="Static04" taborder="72" text="자산번호" cssclass="styFormSearchCap" left="662" top="71" height="21" width="76"/>
+        <MaskEdit id="edtSHRASST_NUMB" taborder="73" type="string" mask="####-####-####" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="727" top="71" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASSTXM" width="98"/>
+        <Static id="Shape0" taborder="74" cssclass="styFormItemBoxOut" left="8" right="25" bottom="21" height="143"/>
+        <Static id="Static58" taborder="83" text="비고" cssclass="styFormItemCap" left="28" bottom="30" height="21" width="185"/>
+        <Static id="Static40" taborder="86" text="취득금액" cssclass="styFormItemCap" left="915" bottom="108" height="21" width="85"/>
+        <Static id="Static36" taborder="88" text="취득일자" cssclass="styFormItemCap" left="539" height="21" width="108" bottom="108"/>
+        <Static id="Static26" taborder="90" text="품목분류" cssclass="styFormItemCap" left="227" bottom="108" height="21" width="84"/>
+        <Static id="Static24" taborder="92" text="자산분류" cssclass="styFormItemCap" left="28" bottom="108" height="21" width="185"/>
+        <Static id="Static2" taborder="94" text="자산번호" cssclass="styFormItemCapBE" left="539" bottom="134" height="21" width="84"/>
+        <Static id="Static19" taborder="96" text="이동일자" cssclass="styFormItemCapBE" left="28" bottom="134" height="21" width="185"/>
+        <Static id="Static8" taborder="97" text="부서" cssclass="styFormSubCap" left="98" bottom="82" height="21" width="49"/>
+        <Static id="Static11" taborder="98" text="사원" cssclass="styFormSubCap" left="98" bottom="56" height="21" width="49"/>
+        <Static id="Static42" taborder="99" text="부서" cssclass="styFormSubCapBe" left="608" height="21" width="108" bottom="82"/>
+        <Static id="Static44" taborder="100" text="사원" cssclass="styFormSubCap" left="608" bottom="56" height="21" width="108"/>
+        <Calendar id="calCHNG_DATE" taborder="8" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="98" bottom="134" height="21" binddataset="dsFS_ASCHXM" width="100"/>
+        <Edit id="edtASCL_NAME" taborder="11" autoselect="true" cssclass="styFormItemText" enable="false" left="98" bottom="108" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASCHXM" width="100" oneditclick="edtASCL_NAME_oneditclick"/>
+        <Edit id="edtCLSF_NAME" taborder="12" autoselect="true" cssclass="styFormItemText" enable="false" left="295" bottom="108" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASCHXM" width="154"/>
+        <MaskEdit id="mskACQS_DATE" taborder="13" type="string" mask="####-##-##" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="608" bottom="108" height="21" style=":disabled {align:center middle;}" binddataset="dsFS_ASCHXM" width="104"/>
+        <MaskEdit id="mskACQU_PRIC" taborder="14" mask="#,###" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="983" right="54" bottom="108" height="21" style=":disabled {align:right middle;}" binddataset="dsFS_ASCHXM"/>
+        <Edit id="edtCHBF_DEPT" taborder="15" autoselect="true" cssclass="styFormItemText" enable="false" left="136" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="77"/>
+        <Edit id="edtBFDE_ACCT" taborder="16" autoselect="true" cssclass="styFormItemText" enable="false" left="214" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="156"/>
+        <Edit id="edtDESC_REMK" taborder="26" imemode="hangul" lengthunit="utf8" maxlength="100" autoselect="true" cssclass="styFormItemText" left="98" bottom="30" height="21" binddataset="dsFS_ASCHXM" width="765"/>
+        <Edit id="edtDEPT_CODE" taborder="18" autoselect="true" cssclass="styFormItemText" enable="false" left="646" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="74"/>
+        <Edit id="edtDEPT_NAME" taborder="21" imemode="hangul" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="888" right="54" bottom="82" height="21" binddataset="dsFS_ASCHXM"/>
+        <Edit id="edtEMPL_NUMB" taborder="24" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="646" bottom="56" height="21" binddataset="dsFS_ASCHXM" width="217"/>
+        <Edit id="edtEMPL_NAME" taborder="25" imemode="hangul" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="888" right="54" bottom="56" height="21" binddataset="dsFS_ASCHXM"/>
+        <Edit id="edtCHBF_EMPL" taborder="22" autoselect="true" cssclass="styFormItemText" enable="false" left="136" bottom="56" height="21" binddataset="dsFS_ASCHXM" width="131"/>
+        <Edit id="edtBFEM_NAME" taborder="23" autoselect="true" cssclass="styFormItemText" enable="false" left="268" bottom="56" height="21" binddataset="dsFS_ASCHXM" width="239"/>
+        <Static id="Static1" taborder="122" text="자산부서" cssclass="styFormItemCap" left="227" bottom="134" height="21" width="84"/>
+        <Edit id="edtCURR_DEPT" taborder="123" autoselect="true" cssclass="styFormItemText" enable="false" left="295" bottom="134" height="21" width="80"/>
+        <Edit id="edtCURR_NAME" taborder="9" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="400" bottom="134" height="21" width="107"/>
+        <Edit id="edtACCT_UNIT" taborder="126" autoselect="true" cssclass="styFormItemText" enable="false" visible="false" left="646" right="375" bottom="134" height="21" style="align: center;"/>
+        <Edit id="edtBFDE_NAME" taborder="17" autoselect="true" cssclass="styFormItemText" enable="false" left="371" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="136"/>
+        <Edit id="edtDEPT_ACCT" taborder="19" autoselect="true" cssclass="styFormItemText" enable="false" left="722" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="141"/>
+        <Edit id="edtBFDE_ACCN" taborder="129" autoselect="true" cssclass="styFormItemText" enable="false" visible="false" left="303" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="57"/>
+        <Edit id="edtDEPT_ACCN" taborder="20" autoselect="true" cssclass="styFormItemText" enable="false" visible="false" left="777" bottom="82" height="21" binddataset="dsFS_ASCHXM" width="39"/>
+        <MaskEdit id="mskSLIP_LINE" taborder="131" type="string" mask="####" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" visible="false" left="1069" right="54" bottom="28" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASSTXM"/>
+        <MaskEdit id="mskSLIP_NUMB" taborder="27" type="string" mask="##-########-####" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="983" right="54" bottom="28" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASSTXM"/>
+        <Static id="Static17" taborder="133" text="전표번호" cssclass="styFormItemCap" left="915" bottom="29" height="21" width="90"/>
+        <MaskEdit id="edtASST_NUMB" taborder="134" type="string" mask="####-####-####" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormItemText" enable="false" left="608" bottom="134" height="21" style=":disabled {align:center;}" binddataset="dsFS_ASSTXM" width="104"/>
+        <Static id="imgHelpSHRCLSF_CODE" taborder="30" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="178" top="97" width="21" height="21"/>
+        <Static id="imgHelpSHRDEPT_CODE" taborder="31" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="495" top="97" height="21" width="21"/>
+        <Static id="imgHelpSHRASST_NUMB" taborder="29" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="827" top="71" height="21" width="21"/>
+        <Static id="imgHelpSHREMPL_NUMB" taborder="32" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="803" top="97" height="21" width="21"/>
+        <Static id="imgHelpCURR_DEPT" taborder="139" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="377" width="22" bottom="133" height="22"/>
+        <Static id="imgHelpASST_NUMB" taborder="140" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="714" bottom="133" height="22" width="22"/>
+        <Static id="imgHelpDEPT_CODE" taborder="141" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="865" bottom="81" height="22" width="22"/>
+        <Static id="imgHelpEMPL_NUMB" taborder="142" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="865" bottom="55" height="22" width="22"/>
+        <Static id="Static03" taborder="143" text="변경전" cssclass="styFormItemCap" bottom="82" height="21" width="60" left="28"/>
+        <Static id="Static07" taborder="144" text="변경후" cssclass="styFormItemCap" bottom="85" height="21" width="74" left="539"/>
+        <Grid id="Grid00" taborder="145" useinputpanel="false" left="26.03%" top="244" right="9.27%" height="130" binddataset="dsFS_ASCHXL_TEMP" autofittype="col" visible="false">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="CHNG_DATE"/>
+                <Cell col="1" text="ASST_NUMB"/>
+                <Cell col="2" text="ASST_NAME"/>
+                <Cell col="3" text="CHBF_DEPT"/>
+                <Cell col="4" text="BFDE_NAME"/>
+                <Cell col="5" text="DEPT_CODE"/>
+                <Cell col="6" text="DEPT_NAME"/>
+                <Cell col="7" text="DESC_REMK"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:CHNG_DATE"/>
+                <Cell col="1" text="bind:ASST_NUMB"/>
+                <Cell col="2" text="bind:ASST_NAME"/>
+                <Cell col="3" text="bind:CHBF_DEPT"/>
+                <Cell col="4" text="bind:BFDE_NAME"/>
+                <Cell col="5" text="bind:DEPT_CODE"/>
+                <Cell col="6" text="bind:DEPT_NAME"/>
+                <Cell col="7" text="bind:DESC_REMK"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="Grid01" taborder="146" binddataset="dsFS_ASCHXL" useinputpanel="false" autofittype="col" left="26.62%" top="337" right="8.68%" height="130" visible="false">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="CHNG_DATE"/>
+                <Cell col="1" text="ASST_NUMB"/>
+                <Cell col="2" text="ASST_NAME"/>
+                <Cell col="3" text="CHBF_DEPT"/>
+                <Cell col="4" text="BFDE_NAME"/>
+                <Cell col="5" text="DEPT_CODE"/>
+                <Cell col="6" text="DEPT_NAME"/>
+                <Cell col="7" text="DESC_REMK"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:CHNG_DATE"/>
+                <Cell col="1" text="bind:ASST_NUMB"/>
+                <Cell col="2" text="bind:ASST_NAME"/>
+                <Cell col="3" text="bind:CHBF_DEPT"/>
+                <Cell col="4" text="bind:BFDE_NAME"/>
+                <Cell col="5" text="bind:DEPT_CODE"/>
+                <Cell col="6" text="bind:DEPT_NAME"/>
+                <Cell col="7" text="bind:DESC_REMK"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="st_FormTitle" taborder="147" text="자산이동관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="148" text="홈 &gt; 자산관리 &gt; 자산이동관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="149" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="150" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static09" taborder="152" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static10" taborder="153" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static12" taborder="154" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static13" taborder="155" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="156" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static14" taborder="157" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static02" taborder="158" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static15" taborder="159" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static16" taborder="160" text="h10" visible="false" left="291" top="118" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static28" taborder="161" text="h5" visible="false" left="291" top="92" width="102" height="5" style="background:#fb7b7b7a;"/>
+        <Static id="Static18" taborder="162" text="h10" visible="false" left="288" top="61" width="38" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static20" taborder="163" text="w30" visible="false" left="9" top="61" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Static id="Static21" taborder="164" text="h 6" visible="false" left="8" top="148" width="216" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static22" taborder="165" text="w30" visible="false" left="9" top="597" width="30" height="67" style="background:#fb7b7b7a;"/>
+        <Edit id="edtASST_NAME" taborder="10" imemode="hangul" maxlength="100" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="737" right="54" bottom="134" height="21" binddataset="dsFS_ASCHXM"/>
+        <Static id="Static23" taborder="166" text="H35" visible="false" left="591" top="518" width="48" height="35" style="background:#fb7b7b7a;"/>
+        <Static id="Static25" taborder="167" text="H35" visible="false" left="591" top="129" width="48" height="25" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsFS_ASCHXM" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CHNG_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ASST_NUMB" size="15" prop="default" type="STRING"/>
+          <Column id="ASST_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="SEQN_NUMB" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ASCH_GUBN" size="4" prop="default" type="STRING"/>
+          <Column id="ASST_STAT" size="4" prop="default" type="STRING"/>
+          <Column id="CHBF_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="BFDE_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CHBF_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="BFEM_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DEPT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="EMPL_NUMB" size="10" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="ACQU_ENDX" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DPCT_ENDX" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="UNDP_BALE" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="CHNG_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DSPS_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DSPS_GILS" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ACCT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="CUST_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="RCGN_YSNO" size="1" prop="default" type="STRING"/>
+          <Column id="APPV_DATE" size="14" prop="default" type="STRING"/>
+          <Column id="APPR_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="DESC_REMK" size="100" prop="default" type="STRING"/>
+          <Column id="ASCL_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CLSF_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="ACQS_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ACQU_PRIC" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ACCT_UNIT" type="STRING" size="4" prop="default"/>
+          <Column id="APPV_EMNM" type="STRING" size="100" prop="default"/>
+          <Column id="CHEK_YSNO" type="STRING" size="1" prop="default"/>
+          <Column id="BFDE_ACCT" type="STRING" size="100"/>
+          <Column id="BFDE_ACCN" type="STRING" size="100"/>
+          <Column id="DEPT_ACCT" type="STRING" size="100"/>
+          <Column id="DEPT_ACCN" type="STRING" size="100"/>
+          <Column id="SLIP_LINE" type="STRING" size="4"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsFS_ASCHXL" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CHNG_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ASST_NUMB" size="15" prop="default" type="STRING"/>
+          <Column id="ASST_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CHBF_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="BFDE_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DEPT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DESC_REMK" size="100" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">USIG_YSNO</Col>
+            <Col id="DSNAME">dsSHRRCGN_YSNO</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="DS_EXCEL" useclientlayout="true"/>
+      <Dataset id="dsFS_ASCHXL_TEMP" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CHNG_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ASST_NUMB" size="15" prop="default" type="STRING"/>
+          <Column id="ASST_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CHBF_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="BFDE_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DEPT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DESC_REMK" size="100" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsFS_ASCHXM_SLIP" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="CHNG_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ASST_NUMB" size="15" prop="default" type="STRING"/>
+          <Column id="ASST_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="SEQN_NUMB" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ASCH_GUBN" size="4" prop="default" type="STRING"/>
+          <Column id="ASST_STAT" size="4" prop="default" type="STRING"/>
+          <Column id="CHBF_DEPT" size="10" prop="default" type="STRING"/>
+          <Column id="BFDE_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CHBF_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="BFEM_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="DEPT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="EMPL_NUMB" size="10" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="ACQU_ENDX" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DPCT_ENDX" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="UNDP_BALE" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="CHNG_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DSPS_AMOT" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DSPS_GILS" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ACCT_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="CUST_CODE" size="10" prop="default" type="STRING"/>
+          <Column id="RCGN_YSNO" size="1" prop="default" type="STRING"/>
+          <Column id="APPV_DATE" size="14" prop="default" type="STRING"/>
+          <Column id="APPR_EMPL" size="10" prop="default" type="STRING"/>
+          <Column id="SLIP_NUMB" size="20" prop="default" type="STRING"/>
+          <Column id="DESC_REMK" size="100" prop="default" type="STRING"/>
+          <Column id="ASCL_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="CLSF_NAME" size="100" prop="default" type="STRING"/>
+          <Column id="ACQS_DATE" size="8" prop="default" type="STRING"/>
+          <Column id="ACQU_PRIC" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="ACCT_UNIT" type="STRING" size="4" prop="default"/>
+          <Column id="APPV_EMNM" type="STRING" size="100" prop="default"/>
+          <Column id="CHEK_YSNO" type="STRING" size="1" prop="default"/>
+          <Column id="BFDE_ACCT" type="STRING" size="100"/>
+          <Column id="BFDE_ACCN" type="STRING" size="100"/>
+          <Column id="DEPT_ACCT" type="STRING" size="100"/>
+          <Column id="DEPT_ACCN" type="STRING" size="100"/>
+          <Column id="SLIP_LINE" type="STRING" size="4"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="calCHNG_DATE_value" compid="calCHNG_DATE" propid="value" datasetid="dsFS_ASCHXM" columnid="CHNG_DATE"/>
+      <BindItem id="edtASCL_NAME_value" compid="edtASCL_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="ASCL_NAME"/>
+      <BindItem id="edtCLSF_NAME_value" compid="edtCLSF_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="CLSF_NAME"/>
+      <BindItem id="mskACQS_DATE_value" compid="mskACQS_DATE" propid="value" datasetid="dsFS_ASCHXM" columnid="ACQS_DATE"/>
+      <BindItem id="mskACQU_PRIC_value" compid="mskACQU_PRIC" propid="value" datasetid="dsFS_ASCHXM" columnid="ACQU_PRIC"/>
+      <BindItem id="edtASST_NAME_value" compid="edtASST_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="ASST_NAME"/>
+      <BindItem id="edtCHBF_DEPT_value" compid="edtCHBF_DEPT" propid="value" datasetid="dsFS_ASCHXM" columnid="CHBF_DEPT"/>
+      <BindItem id="edtBFDE_NAME_value" compid="edtBFDE_ACCT" propid="value" datasetid="dsFS_ASCHXM" columnid="BFDE_ACCT"/>
+      <BindItem id="edtDESC_REMK_value" compid="edtDESC_REMK" propid="value" datasetid="dsFS_ASCHXM" columnid="DESC_REMK"/>
+      <BindItem id="edtDEPT_CODE_value" compid="edtDEPT_CODE" propid="value" datasetid="dsFS_ASCHXM" columnid="DEPT_CODE"/>
+      <BindItem id="edtDEPT_NAME_value" compid="edtDEPT_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="DEPT_NAME"/>
+      <BindItem id="edtEMPL_NUMB_value" compid="edtEMPL_NUMB" propid="value" datasetid="dsFS_ASCHXM" columnid="EMPL_NUMB"/>
+      <BindItem id="edtEMPL_NAME_value" compid="edtEMPL_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="EMPL_NAME"/>
+      <BindItem id="edtCHBF_EMPL_value" compid="edtCHBF_EMPL" propid="value" datasetid="dsFS_ASCHXM" columnid="CHBF_EMPL"/>
+      <BindItem id="edtBFEM_NAME_value" compid="edtBFEM_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="BFEM_NAME"/>
+      <BindItem id="item0" compid="edtACCT_UNIT" propid="value" datasetid="dsFS_ASCHXM" columnid="ACCT_UNIT"/>
+      <BindItem id="item1" compid="edtBFDE_NAME" propid="value" datasetid="dsFS_ASCHXM" columnid="BFDE_NAME"/>
+      <BindItem id="item2" compid="edtDEPT_ACCT" propid="value" datasetid="dsFS_ASCHXM" columnid="DEPT_ACCT"/>
+      <BindItem id="item3" compid="edtBFDE_ACCN" propid="value" datasetid="dsFS_ASCHXM" columnid="BFDE_ACCN"/>
+      <BindItem id="item4" compid="edtDEPT_ACCN" propid="value" datasetid="dsFS_ASCHXM" columnid="DEPT_ACCN"/>
+      <BindItem id="item20" compid="mskSLIP_LINE" propid="value" datasetid="dsFS_ASCHXM" columnid="SLIP_LINE"/>
+      <BindItem id="item19" compid="mskSLIP_NUMB" propid="value" datasetid="dsFS_ASCHXM" columnid="SLIP_NUMB"/>
+      <BindItem id="item21" compid="edtASST_NUMB" propid="value" datasetid="dsFS_ASCHXM" columnid="ASST_NUMB"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/* MiPlatform API와 Component 속성, 메소드를 대체하는 공통함수 */
+// include "import::lib_XConvert.xjs";
+/***************************************************************************************************
+ *   Form Common Script                                                                             *
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.                                           *
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.                                            *
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리                       *
+ *                                                                                                  *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망             *
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                                      *
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ***************************************************************************************************/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST 	= "TTTTTTTF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME 	= "FSMB0040"; //해당 Form에서 사용 할 Package 명
+this.arrKeyValue 	= new Array(4);
+this.sSLIPGUBN 		= ""; //전표처리 후 재 조회시 예외처리
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 //Quick View 실행 시 설정
+	 this.sUSERAUTH     = "";   //사용자별 프로그램 사용 권한
+	 this.sFORMCAPTION  = "";   //Form의 Title 정보
+	 this.sFORMLOCATION = "";   //Form의 Location 정보
+	 this.sUSERLAVEL    = "";   //Form의 Location 정보
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}	
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo){
+	
+	//전표 MASK
+	this.fnc_FormatSlipNumber(this.grdFS_ASCHXM, "SLIP_NUMB");
+	this.fnc_FormatSlipNumber(this.mskSLIP_NUMB);
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.calSHRCHNG_DAT1.set_value((this.fnc_Left(this.fnc_GetServerDateTime("DATE"), 4) + "0101"));
+	this.calSHRCHNG_DAT2.set_value(this.fnc_GetServerDateTime("DATE"));
+	this.calSHRCHNG_DAT1.setFocus();
+
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+
+	this.fnc_DatasetClear("dsFS_ASCHXM"); //기 조회 자료 초기화
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsFS_ASCHXM=dsFS_ASCHXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdFS_ASCHXM.setFocus(); //재 클릭 방지를 위해 Focus 이동
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+
+	var iRow = this.dsFS_ASCHXM.addRow();
+
+/*
+	if (this.sUSERLAVEL != "5") {
+		this.edtCURR_DEPT.set_value(application.GBL_DEPTCD);
+		this.edtCURR_NAME.set_value(application.GBL_DEPTNM);
+		this.edtCURR_NAME.UserData = application.GBL_DEPTNM;
+	}
+	*/
+    this.dsFS_ASCHXM.setColumn(iRow, "RCGN_YSNO", "0"); //dsFS_ASCHXM.setColumn(dsFS_ASCHXM.rowposition,'RCGN_YSNO','0');
+	this.dsFS_ASCHXM.setColumn(iRow, "CHNG_DATE", this.fnc_GetServerDateTime("DATE")); //이동일자
+	this.dsFS_ASCHXM.setColumn(iRow, "ACQS_DATE", this.fnc_GetServerDateTime("DATE")); //취득일자	
+	this.dsFS_ASCHXM.setColumn(iRow, "RCGN_YSNO", "0"); //dsFS_ASCHXM.setColumn(dsFS_ASCHXM.rowposition,'RCGN_YSNO','0');
+
+	this.calCHNG_DATE.setFocus();
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+
+	if (this.fn_DeleteCheck()) {
+		this.dsFS_ASCHXM.deleteRow(this.dsFS_ASCHXM.rowposition);
+	}
+	this.grdFS_ASCHXM.setFocus();
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsFS_ASCHXM");
+	this.grdFS_ASCHXM.setFocus();
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+
+	this.arrKeyValue[0] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "ASST_NUMB");
+	this.arrKeyValue[1] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "CHNG_DATE");
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SEQN_NUMB"))) > 0) {
+		this.arrKeyValue[2] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SEQN_NUMB"); //조회시 가져옴.
+	} else {
+		this.arrKeyValue[2] = 1; //신규생성은 1. PKG에서 생성함.
+	}
+	//trace("-----arrKeyValue[0] : [" + this.arrKeyValue[0] + "] arrKeyValue[1] : [" + this.arrKeyValue[1] + "] arrKeyValue[2] : [" + this.arrKeyValue[2] + "]");
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet 	= "dsFS_ASCHXM=dsFS_ASCHXM:U";
+	var sOutDataSet = "dsFS_ASCHXM=dsFS_ASCHXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdFS_ASCHXM.setFocus();
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsFS_ASCHXM, dsFS_ASCHXL, dsFS_ASCHXM_SLIP, dsFS_ASCHXL_TEMP",this);
+	
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+	
+}
+
+this.fn_FormUnloadProcess = function(obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	//trace("--------sSLIPGUBN: " + this.sSLIPGUBN);
+	if (this.sSLIPGUBN != "SLIP") {
+		if (this.fnc_DatasetChangeCheck("dsFS_ASCHXM")) {
+			if (this.fnc_Message("TMM023") == false) return false;
+		}
+	}
+
+	if (!this.fnc_IsDate(this.calSHRCHNG_DAT1.value)) {
+		return this.fnc_SearchCheckPostAction("TMM072", "조회기간(시작일)", this.calSHRCHNG_DAT1);
+	}
+
+	if (!this.fnc_IsDate(this.calSHRCHNG_DAT2.value)) {
+		return this.fnc_SearchCheckPostAction("TMM072", "조회기간(종료일)", this.calSHRCHNG_DAT2);
+	}
+
+	if (this.fnc_Trim(this.calSHRCHNG_DAT1.value) > this.fnc_Trim(this.calSHRCHNG_DAT2.value)) {
+		return this.fnc_SearchCheckPostAction("TMM042", "시작일,종료일", this.calSHRCHNG_DAT2);
+	}
+
+	return true;
+}
+
+/*------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+
+	if (this.dsFS_ASCHXM.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return;
+	}
+
+	if (this.fnc_Trim(this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "RCGN_YSNO")) == "1") {
+		this.fnc_Message("TMM107", "이동확정여부", "이동확정");
+		return;
+	}
+
+	// 전표처리
+	if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SLIP_NUMB"))) == 14) {
+		this.fnc_Message("TMM125", "전표처리 확정자료는 삭제 할 수 없습니다!");
+		return;
+	}
+
+	var sQuestionText = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "ASST_NUMB") + " ";
+	sQuestionText += this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "ASST_NAME") + "의 이동";
+	return this.fnc_Message("TMM002", sQuestionText);
+}
+
+/*------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	var CHBF_DEPT = "";
+	var DEPT_CODE = "";
+	var CHBF_EMPL = "";
+	var EMPL_NUMB = "";
+
+	if (!this.fnc_DatasetChangeCheck("dsFS_ASCHXM")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsFS_ASCHXM.getRowCount(); i++) {
+		if (this.fnc_ToUpper(this.dsFS_ASCHXM.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (!this.fnc_IsDate(this.dsFS_ASCHXM.getColumn(i, "CHNG_DATE"))) {
+			return this.fnc_CheckPostAction("TMM072", "이동일자", this.dsFS_ASCHXM, i, this.calCHNG_DATE, '');
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "ASST_NUMB"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "자산번호", this.dsFS_ASCHXM, i, this.edtASST_NAME, '');
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "DEPT_CODE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM072", "관리부서(변경후)", this.dsFS_ASCHXM, i, this.edtDEPT_NAME, '');
+		}
+
+		//trace("CHBF_DEPT: " + this.dsFS_ASCHXM.getColumn(i, "CHBF_DEPT"));
+		//trace("DEPT_CODE: " + this.dsFS_ASCHXM.getColumn(i, "DEPT_CODE"));
+		//trace("CHBF_EMPL: " + this.dsFS_ASCHXM.getColumn(i, "CHBF_EMPL"));
+		//trace("EMPL_NUMB: " + this.dsFS_ASCHXM.getColumn(i, "EMPL_NUMB"));
+
+		// undefined는 if구문으로 확인안됨 trim, length로 비교처리 요망
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "CHBF_DEPT"))) < 1) {
+			CHBF_DEPT = "same";
+		} else {
+			CHBF_DEPT = this.dsFS_ASCHXM.getColumn(i, "CHBF_DEPT");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "DEPT_CODE"))) < 1) {
+			DEPT_CODE = "same";
+		} else {
+			DEPT_CODE = this.dsFS_ASCHXM.getColumn(i, "DEPT_CODE");
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "CHBF_EMPL"))) < 1) {
+			CHBF_EMPL = "same";
+		} else {
+			CHBF_EMPL = this.dsFS_ASCHXM.getColumn(i, "CHBF_EMPL");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(i, "EMPL_NUMB"))) < 1) {
+			EMPL_NUMB = "same";
+		} else {
+			EMPL_NUMB = this.dsFS_ASCHXM.getColumn(i, "EMPL_NUMB");
+		}
+
+		//trace("r_CHBF_DEPT: " + CHBF_DEPT);
+		//trace("r_DEPT_CODE: " + DEPT_CODE);
+		//trace("r_CHBF_EMPL: " + CHBF_EMPL);
+		//trace("r_EMPL_NUMB: " + EMPL_NUMB);
+		/*
+		if ((CHBF_DEPT == DEPT_CODE) && (CHBF_EMPL == EMPL_NUMB)) {
+			return this.fnc_CheckPostAction("TMM125", "변경 전후의 부서 및 사원이 동일합니다.", this.dsFS_ASCHXM, i, this.edtDEPT_NAME, '');
+		}
+		*/
+	}
+
+	return true;
+}
+
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " CHNG_DAT1=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT1.value)); //조회기간1
+		sReturnString += " CHNG_DAT2=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT2.value)); //조회기간2
+		sReturnString += " RCGN_YSNO=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRRCGN_YSNO.value)); //이동확정여부
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRASST_NUMB.value)); //자산번호
+		sReturnString += " CLSF_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCLSF_CODE.value)); //품목분류
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value)); //이동사원
+		sReturnString += " CHBF_DEPT=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value)); //부서코드
+
+		// 저장 Argument 생성
+	} else if (sKind == "SAVE00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " CHNG_DAT1=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT1.value));
+		sReturnString += " CHNG_DAT2=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT2.value));
+		sReturnString += " RCGN_YSNO=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRRCGN_YSNO.value));
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRASST_NUMB.value));
+		sReturnString += " CLSF_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCLSF_CODE.value));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value));
+
+		// 저장 Argument 생성 - 엑셀 저장처리
+	} else if (sKind == "SAVE01") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " CHNG_DAT1=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT1.value));
+		sReturnString += " CHNG_DAT2=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT2.value));
+		sReturnString += " RCGN_YSNO=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRRCGN_YSNO.value));
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRASST_NUMB.value));
+		sReturnString += " CLSF_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCLSF_CODE.value));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value));
+
+		// 확정 처리
+	} else if (sKind == "APPL00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " CHNG_DAT1=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT1.value));
+		sReturnString += " CHNG_DAT2=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT2.value));
+		sReturnString += " RCGN_YSNO=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRRCGN_YSNO.value));
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRASST_NUMB.value));
+		sReturnString += " CLSF_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCLSF_CODE.value));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		
+	} else if (sKind == "CANC00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " CHNG_DAT1=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT1.value));
+		sReturnString += " CHNG_DAT2=" 	+ this.fnc_Quote(this.fnc_Trim(this.calSHRCHNG_DAT2.value));
+		sReturnString += " RCGN_YSNO=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRRCGN_YSNO.value));
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRASST_NUMB.value));
+		sReturnString += " CLSF_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCLSF_CODE.value));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+
+		// 전표 생성
+	} else if (sKind == "PROC00") {
+	
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " ACCT_UNIT=" 	+ this.fnc_Quote(this.fnc_Trim(this.dsFS_ASCHXM_SLIP.getColumn(this.dsFS_ASCHXM_SLIP.rowposition, "ACCT_UNIT"))); //회계단위
+		sReturnString += " ASST_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.dsFS_ASCHXM_SLIP.getColumn(this.dsFS_ASCHXM_SLIP.rowposition, "ASST_NUMB"))); //자산번호
+		sReturnString += " CHNG_DATE=" 	+ this.fnc_Quote(this.fnc_Trim(this.dsFS_ASCHXM_SLIP.getColumn(this.dsFS_ASCHXM_SLIP.rowposition, "CHNG_DATE"))); //이동일자
+		sReturnString += " SLIP_GUBN=" 	+ this.fnc_Quote(this.fnc_Trim('FS003')); // 전표유형구분
+		sReturnString += " SOUS_LNKY=" 	+ this.fnc_Quote(this.fnc_Trim('FSMB0040')); // 출처연결키
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsFS_ASCHXM.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsFS_ASCHXM.rowcount);
+
+		if (this.fnc_Length(this.fnc_Trim(this.arrKeyValue[0])) > 0) {
+			var iRow = this.dsFS_ASCHXM.findRowExpr("ASST_NUMB=='" + this.arrKeyValue[0] + "' && CHNG_DATE=='" + this.arrKeyValue[1] + "' && SEQN_NUMB=='" + this.arrKeyValue[2] + "'");
+
+			this.grdFS_ASCHXM.clearSelect();
+			this.grdFS_ASCHXM.selectRow(iRow);
+			this.dsFS_ASCHXM.set_rowposition(iRow);
+
+			this.arrKeyValue[0] = "";
+			this.arrKeyValue[1] = "";
+			this.arrKeyValue[2] = "";
+		}
+	} else if (sMethodName == "APPL00") {
+		this.fnc_Message("TMM125", "이동확정이 완료되었습니다.");
+		this.sSLIPGUBN = "";
+		this.fn_Search();
+	} else if (sMethodName == "CANC00") {
+		this.fnc_Message("TMM125", "이동확정 취소가 완료되었습니다.");
+		this.sSLIPGUBN = "";
+		this.fn_Search();
+	} else if (sMethodName == "SAVE00") {
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.sSLIPGUBN = "";
+		this.fn_Search();
+	} else if (sMethodName == "SAVE01") {
+		// fn_KeyFieldDisible(dsFS_ASCHXM, 0, dsFS_ASCHXM.rowposition);
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.sSLIPGUBN = "";
+		this.fn_Search();
+	} else if (sMethodName == "PROC00") {
+		this.fnc_Message("TMM130", "자산이동관리 전표생성");
+		this.sSLIPGUBN = "SLIP";
+		this.fn_Search();
+	} else if (sMethodName == "GetCommCode") {
+
+		var arrParam = new Array();
+		arrParam[0] = "COMBO,cmbSHRRCGN_YSNO,dsSHRRCGN_YSNO,0";
+
+		this.fnc_CommonCodeInnerBind(arrParam);	    		
+	}
+
+}
+
+/*------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset, e:nexacro.DSRowPosChangeEventInfo) {
+	// 전표번호에 따른 버튼 권한
+	if (this.fnc_Length(this.fnc_Trim(obj.getColumn(e.newrow, "SLIP_NUMB"))) != 14 && // 전표처리 하지 않은것
+		this.fnc_Trim(obj.getColumn(e.newrow, "RCGN_YSNO")) > 0 && // 확정인 것만
+		this.fnc_Trim(obj.getColumn(e.newrow, "BFDE_ACCN")) != this.fnc_Trim(obj.getColumn(e.newrow, "DEPT_ACCN"))) 
+{
+		this.btnSaveSlipNumb.set_enable(true);
+	} else {
+		this.btnSaveSlipNumb.set_enable(false);
+	}
+
+	if (this.fnc_ToUpper(obj.getRowType(e.newrow)) == Dataset.ROWTYPE_INSERT) {
+		this.calCHNG_DATE.set_enable(true);
+		this.edtASST_NAME.set_enable(true);
+		this.edtDEPT_NAME.set_enable(true); //변경후 관리부서
+		this.edtEMPL_NAME.set_enable(true); //변경후 관리사원
+		this.edtDESC_REMK.set_enable(true); //적요
+	} else {
+		this.calCHNG_DATE.set_enable(false);
+		this.edtASST_NAME.set_enable(false);
+
+		if (this.fnc_Trim(obj.getColumn(e.newrow, "RCGN_YSNO")) == "1") {
+			this.edtDEPT_NAME.set_enable(false); //변경후 관리부서
+			this.edtEMPL_NAME.set_enable(false); //변경후 관리사원
+			this.edtDESC_REMK.set_enable(false); //적요
+		} else {
+			this.edtDEPT_NAME.set_enable(true); //변경후 관리부서
+			this.edtEMPL_NAME.set_enable(true); //변경후 관리사원
+			this.edtDESC_REMK.set_enable(true); //적요
+		}
+	}
+}
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+
+/*------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue, sColumnID) {
+
+    var arrParam = new Array();
+
+    if ((obj.name == "imgHelpSHRASST_NUMB") || (obj.name == "edtSHRASST_NAME")) {
+    
+        arrParam[0] = "FSM0011";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtSHRASST_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtSHRASST_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtSHRASST_NUMB,edtSHRASST_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+        
+    } else if ((obj.name == "imgHelpSHRCLSF_CODE") || (obj.name == "edtSHRCLSF_NAME")) {
+    
+        arrParam[0] = "FSM0001";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtSHRCLSF_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtSHRCLSF_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtSHRCLSF_CODE,edtSHRCLSF_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "10,0";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+            
+    } else if ((obj.name == "imgHelpSHRDEPT_CODE") || (obj.name == "edtSHRDEPT_NAME")) {
+    
+        arrParam[0] = "FAM0001";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtSHRDEPT_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtSHRDEPT_CODE,edtSHRDEPT_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+                       
+    } else if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) {
+    
+        //arrParam[0] = "FAM0012";                                  //Popup ID
+        arrParam[0] = "FAM0011";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtSHREMPL_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+                                 
+    } else if ((obj.name == "imgHelpCURR_DEPT") || (obj.name == "edtCURR_NAME")) {
+    
+		if (this.edtCURR_NAME.enable == false || this.dsFS_ASCHXM.rowcount < 1) return;
+    
+        arrParam[0] = "FAM0001";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtCURR_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtCURR_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtCURR_DEPT,edtCURR_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+                                             
+    } else if ((obj.name == "imgHelpASST_NUMB") || (obj.name == "edtASST_NAME")) {
+    
+		if (this.edtASST_NAME.enable == false || this.dsFS_ASCHXM.rowcount < 1) return;
+    
+        arrParam[0] = "FSM0015";                                  //Popup ID
+        //arrParam[1] = "";                                         //조건구분에 대응되는 조회조건 값
+        arrParam[1] = this.fnc_Trim(this.edtCURR_DEPT.value);     // 자료 제한해주도록 기능 보완 
+        arrParam[2] = this.fnc_Trim(this.edtASST_NAME.value);    //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtASST_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtASST_NUMB,edtASST_NAME,edtASCL_NAME,edtCLSF_NAME,mskACQS_DATE,mskACQU_PRIC,edtCHBF_DEPT,edtBFDE_NAME,edtDEPT_CODE,edtDEPT_NAME,edtCHBF_EMPL,edtBFEM_NAME,edtEMPL_NUMB,edtEMPL_NAME,edtACCT_UNIT,edtBFDE_ACCN,edtBFDE_ACCT,edtDEPT_ACCN,edtDEPT_ACCT";
+        arrParam[6] = "0,1,2,3,4,6,12,8,12,8,13,9,13,9,18,10,11,10,11";                                      //Mapping Column Index
+        
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출  
+                                                             
+    } else if ((obj.name == "imgHelpDEPT_CODE") || (obj.name == "edtDEPT_NAME")) {
+		//if (this.edtDEPT_NAME.enable == false || this.dsFS_ASCHXM.rowcount < 1) return;
+		
+        arrParam[0] = "FAM0002";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtDEPT_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtDEPT_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtDEPT_CODE,edtDEPT_NAME,edtDEPT_ACCN,edtDEPT_ACCT";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1,2,3";                                      //Mapping Column Index
+
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출
+                                                                     
+    } else if ((obj.name == "imgHelpEMPL_NUMB") || (obj.name == "edtEMPL_NAME")) {
+
+        arrParam[0] = "FAM0012";                                  //Popup ID
+        arrParam[1] = "";                                          //조건구분에 대응되는 조회조건 값
+        arrParam[2] = this.fnc_Trim(this.edtEMPL_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+        arrParam[3] = "N";                                          //사용 여부 구분 포함 여부 값
+        arrParam[4] = "edtEMPL_NAME";                          //현재 포커스 Componect명
+        arrParam[5] = "edtEMPL_NUMB,edtEMPL_NAME";          //초기화 및 결과 Mapping Column
+        arrParam[6] = "0,1";                                      //Mapping Column Index
+ 
+        this.fnc_HelpDialogeAction(this, obj, arrParam); //팝업 호출                                                                        
+
+	}
+}
+
+/*-----------------------------+
+ |  양식파일 다운로드 클릭 時|
+ +------------------------------*/
+this.fn_ExcelFileDown = function (obj:Button, e:nexacro.ClickEventInfo) {
+	
+	this.fnc_FileDownLoad("", "", "", this.sPACKAGENAME);
+	
+}
+
+/*---------------------------+
+ |  양식파일 업로드 클릭 時   |
+ +----------------------------*/
+this.fn_ExcelUpLoad = function (obj:Button, e:nexacro.ClickEventInfo) {
+	
+	this.fnc_DatasetClear("dsFS_ASCHXL_TEMP");
+	this.fnc_ExcelUpload("dsFS_ASCHXL_TEMP", "Sheet1", "A2", "fn_ExcelSuccess");
+	
+}
+
+this.fn_ExcelSuccess = function (obj:ExcelImportObject,  e:nexacro.ExcelImportEventInfo) {
+
+	this.setWaitCursor(false);
+	this.dsFS_ASCHXL_TEMP.set_enableevent(false);
+	this.dsFS_ASCHXL_TEMP.appendData(this.objDsImportTemp);
+	this.objDsImportTemp.clear();
+	this.dsFS_ASCHXL_TEMP.set_enableevent(true);
+	
+	// TEMP DataSet에서 복사.
+	this.dsFS_ASCHXL.copyData(this.dsFS_ASCHXL_TEMP);
+
+	// 복사해온 Row Status는 Insert Type.
+	this.dsFS_ASCHXL.set_updatecontrol(false);
+	for (var i = 0; i < this.dsFS_ASCHXL.getRowCount(); i++) {
+		this.dsFS_ASCHXL.setRowType(i, Dataset.ROWTYPE_INSERT);
+		
+	}
+	this.dsFS_ASCHXL.set_updatecontrol(true);
+	this.dsFS_ASCHXL.set_rowposition(1);
+	this.grdFS_ASCHXM.setFocus();
+
+
+	/* 엑셀 업로드 체크처리 후 저장 */
+	if (!this.fn_ExcelUploadCheck()) return;
+
+	var sMethodName = "SAVE01";
+	var sInDataSet 	= "dsFS_ASCHXL=dsFS_ASCHXL:A";
+	var sOutDataSet = "dsFS_ASCHXM=dsFS_ASCHXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdFS_ASCHXM.setFocus();
+	
+}
+
+/*-----------------------+
+ |  엑셀 업로드 전 처리 ! |
+ +------------------------*/
+this.fn_ExcelUploadCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsFS_ASCHXL")) {
+		this.fnc_Message("TMM125", "Upload 할 엑셀 자료가 없습니다.");
+		return false;
+	}
+
+	if (this.dsFS_ASCHXL.getRowCount() < 1) {
+		this.fnc_Message("TMM125", "Upload 할 엑셀 자료가 없습니다.");
+		return false;
+	}
+
+	// 필수 입력 항목 체크
+	for (var i = 0; i < this.dsFS_ASCHXL.getRowCount(); i++) {
+		if (this.fnc_ToUpper(this.dsFS_ASCHXL.getRowType(i)) == Dataset.ROWTYPE_NORMAL) continue;
+
+		if (!this.fnc_IsDate(this.dsFS_ASCHXL.getColumn(i, "CHNG_DATE"))) {
+			this.fnc_Message("TMM125", "엑셀파일의 " + (i + 1) + "번째 Row의 이동일자가 잘못되었습니다.");
+			return false;
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXL.getColumn(i, "ASST_NUMB"))) < 1) {
+			this.fnc_Message("TMM125", "엑셀파일의 " + (i + 1) + "번째 Row의 자산번호가 없습니다.");
+			return false;
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXL.getColumn(i, "CHBF_DEPT"))) < 1) {
+			this.fnc_Message("TMM125", "엑셀파일의 " + (i + 1) + "번째 Row의 변경 전 부서코드가 없습니다.");
+			return false;
+		}
+
+		if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXL.getColumn(i, "DEPT_CODE"))) < 1) {
+			this.fnc_Message("TMM125", "엑셀파일의 " + (i + 1) + "번째 Row의 이동 할 부서코드가 없습니다.");
+			return false;
+		}
+/*
+		if ((this.dsFS_ASCHXL.getColumn(i, "CHBF_DEPT") == this.dsFS_ASCHXL.getColumn(i, "DEPT_CODE"))) {
+			this.fnc_Message("TMM125", "엑셀파일의 " + (i + 1) + "번째 Row의 변경 전후의 부서가 동일합니다.");
+			return false;
+		}
+*/		
+	}
+
+	return true;
+	
+}
+
+
+/*------------------------------+
+ |      다중 전표 생성          |
+ +-------------------------------*/
+this.fn_SaveSlipNumb = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	if (this.dsFS_ASCHXM.rowcount < 1) return;
+
+	this.dsFS_ASCHXM_SLIP.clearData();
+
+	if (this.dsFS_ASCHXM.getCaseCount("CHEK_YSNO=='1'") < 1) {
+		this.fnc_Message("TMM125", "선택 체크 후 사용하세요");
+		return;
+	}
+
+	// 선택한 대상만 복사
+	this.dsFS_ASCHXM.set_enableevent(false);
+	this.dsFS_ASCHXM.filter("CHEK_YSNO=='1'");
+	this.dsFS_ASCHXM_SLIP.copyData(this.dsFS_ASCHXM, true);
+	this.dsFS_ASCHXM.filter("");
+	this.dsFS_ASCHXM.set_enableevent(true);
+
+	// 필수값 체크
+	if (!this.fn_CreateSlipItemCheck()) return;
+
+	if (!this.fnc_Message("TMM145", "자산이동 전표 생성")) return;
+
+	// 저장후 마지막 nRow 설정
+	this.arrKeyValue[0] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "ASST_NUMB");
+	this.arrKeyValue[1] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "CHNG_DATE");
+	this.arrKeyValue[2] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SEQN_NUMB");
+	//trace("-----arrKeyValue[0] : " + this.arrKeyValue[0] + " arrKeyValue[1] : " + this.arrKeyValue[1]);
+
+	var sMethodName = "PROC00";
+	var sInDataSet 	= "dsFS_ASCHXM_SLIP=dsFS_ASCHXM_SLIP:A";
+	var sOutDataSet = "dsFS_ASCHXM=dsFS_ASCHXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+
+	//trace(this.dsFS_ASCHXM_SLIP.saveXML());
+	// return;
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+}
+
+
+/*---------------------------+
+ |  전표생성 필수 입력 체크!  |
+ +----------------------------*/
+this.fn_CreateSlipItemCheck = function () {
+	// -----0)확정인 경우만 가능
+	for (var i = 0; i < this.dsFS_ASCHXM_SLIP.getRowCount(); i++) {
+		if (this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "RCGN_YSNO") <= 0) {
+			this.fnc_Message("TMM125", "자산이동 확정처리 후 전표처리 사용가능 합니다");
+			return false;
+		}
+	}
+
+	// -----1)사업장이 다른경우
+	for (var i = 0; i < this.dsFS_ASCHXM_SLIP.getRowCount(); i++) {
+		if (this.fnc_Trim(this.dsFS_ASCHXM_SLIP.getColumn(i, "BFDE_ACCN")) == this.fnc_Trim(this.dsFS_ASCHXM_SLIP.getColumn(i, "DEPT_ACCN"))) {
+			this.fnc_Message("TMM125", "사업장이 다른경우만 전표처리 사용가능 합니다.");
+			return false;
+		}
+	}
+
+	// -----2)취득일자 다른경우
+	for (var i = 0; i < this.dsFS_ASCHXM_SLIP.getRowCount(); i++) {
+		for (var j = 0; j < this.dsFS_ASCHXM_SLIP.getRowCount(); j++) {
+			if (this.dsFS_ASCHXM_SLIP.getColumn(j, "CHNG_DATE") != this.dsFS_ASCHXM_SLIP.getColumn(i, "CHNG_DATE")) {
+				this.fnc_Message("TMM125", "자산이동일자는 같아야 전표생성 가능합니다");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
+/*-----------------------+
+ |  이동확정, 확정취소!!  |
+ +-----------------------*/
+this.fn_AschEvent = function (obj:Button, e:nexacro.ClickEventInfo) {
+
+	if (!this.fn_AppCanCheck(obj)) return;
+
+
+	this.arrKeyValue[0] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "ASST_NUMB");
+	this.arrKeyValue[1] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "CHNG_DATE");
+
+	if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SEQN_NUMB"))) > 0) {
+		this.arrKeyValue[2] = this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SEQN_NUMB"); //조회시 가져옴.
+	} else {
+		this.arrKeyValue[2] = 1; //신규생성은 1. PKG에서 생성함.
+	}
+	
+	//trace("-----arrKeyValue[0] : " + this.arrKeyValue[0] + " arrKeyValue[1] : " + this.arrKeyValue[1] + " arrKeyValue[2] : " + this.arrKeyValue[2]);
+
+	var sMethodName = this.fnc_Replace(obj.name, "btn", "") + "00";
+	var sInDataSet 	= "dsFS_ASCHXM=dsFS_ASCHXM:U";
+	var sOutDataSet = "dsFS_ASCHXM=dsFS_ASCHXM";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdFS_ASCHXM.setFocus();
+}
+
+
+/*-----------------------------------------+
+ |  이동확정 및 취소시 중복 체크 방지 처리  |
+ ------------------------------------------*/
+this.fn_AppCanCheck = function (obj) {
+
+	if (this.dsFS_ASCHXM.getCaseCount("CHEK_YSNO=='1'") == 0) {
+		this.fnc_Message("TMM010");
+		return;
+	}
+
+	// 전표처리
+	if (this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(this.dsFS_ASCHXM.rowposition, "SLIP_NUMB"))) == 14) {
+		this.fnc_Message("TMM125", "전표처리 확정자료는 이동관리 할 수 없습니다!");
+		return;
+	}
+
+	var iCaseCount;
+
+	if (obj.name == "btnAPPL") {
+		iCaseCount = this.dsFS_ASCHXM.getCaseCount("CHEK_YSNO == '1' && RCGN_YSNO == '1' ");
+		//trace("-----PERMIT iCaseCount:" + iCaseCount);
+
+		if (iCaseCount > 0) {
+			this.fnc_Message("TMM125", "이미 이동확정하신 자료가 체크 되었습니다.");
+			return;
+		}
+	} else {
+		iCaseCount = this.dsFS_ASCHXM.getCaseCount("CHEK_YSNO == '1' && RCGN_YSNO == '0' ");
+
+		if (iCaseCount > 0) {
+			this.fnc_Message("TMM125", "미이동확정된 자료가 체크 되었습니다.");
+			return;
+		}
+	}
+
+	return true;
+}
+
+
+/*----------------+
+ |  전표조회 팝업  |
+ +-----------------*/
+this.fn_OpenSlip = function (obj:Grid, e:nexacro.GridClickEventInfo) {
+	// 전표번호 셀을 더블클릭 했을때만 전표조회 처리
+	if (this.fnc_GridColumnIndex(this.grdFS_ASCHXM, "SLIP_NUMB") == e.cell
+		 && this.fnc_Length(this.fnc_Trim(this.dsFS_ASCHXM.getColumn(e.row, "SLIP_NUMB"))) > 0) {
+
+		var sSLIP_NUMB = this.fnc_Trim(this.dsFS_ASCHXM.getColumn(e.row, "SLIP_NUMB"));
+
+		//trace("sSLIP_NUMB: " + sSLIP_NUMB);
+
+		var sResponse = thisgfn_PopSlipForm(sSLIP_NUMB, "REV", this.sUSERLAVEL, "");
+		this.fn_Search();
+
+	}
+}
+
+this.edtASCL_NAME_oneditclick = function(obj:Edit,  e:nexacro.EditClickEventInfo)
+{
+	
+}
+]]></Script>
+  </Form>
+</FDL>

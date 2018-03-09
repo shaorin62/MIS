@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MCMA0050">
+
+<!--  
+ *   프로그램명 : 광고주관리
+ *   작 성 일 : 2016.10.10(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용  : 코바넷매체코드 목록 조회
+		파라미터  : CUST_CODE : 매체코드	
+	-->
+	<select id="MCMA0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  /*  dao.SEARCH00 코바넷매체코드 조회  */
+					  DECODE(A.USEX_YSNO,'1',1,2) AS SEQ
+					  , DECODE(A.UPDT_DATE,null,'0',A.UPDT_DATE) SEQ2
+					  ,	'0' CHEK_FILD								     /* 체크박스 */
+                      , A.KBNT_CODE									 /* 코바넷코드 */
+                      , A.HIGH_CODE									 /* 청구지코드 */
+                      , A.CUST_CODE									 /* 매체코드 */
+                      , B.CUST_NAME  								 /* 매체명 */
+                      , A.BROD_CODE									 /* 방송국코드 */
+                      , A.BROD_CDNM       						 	 /* 방송국명 */
+                      , A.MDIM_CODE									 /* 코바넷매체코드 */
+                      , A.MDIM_CDNM  							     /* 코바넷매체명 */
+                      , A.OFIC_CODE    								 /* 본지사코드 */
+                      , A.OFIC_CDNM 									 /* 본지사명 */
+                      , A.GUBN_FLAG									 /* SBS구분*/
+                      , A.USEX_YSNO 								     /* 사용구분 */
+                FROM MD_RMEDXM A
+                LEFT JOIN MD_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+                WHERE A.GUBN_FLAG = 'A'
+	]]>
+			<isNotEmpty prepend="AND" property="MDIM_CODE">
+				A.KBNT_CODE LIKE '%' || #MDIM_CODE# || '%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="CUST_NAME">
+				UPPER(B.CUST_NAME) LIKE '%' || UPPER(#CUST_NAME#) || '%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BROD_CDNM">
+				UPPER(A.BROD_CDNM) LIKE '%' || UPPER(#BROD_CDNM#) || '%' 
+			</isNotEmpty>
+			ORDER BY SEQ, SEQ2 DESC
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용  : SBS매체코드 목록 조회
+		파라미터  : CUST_CODE : 매체코드	
+	-->
+	<select id="MCMA0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  /*  dao.SEARCH01 SBS매체코드 조회  */
+		 				DECODE(A.USEX_YSNO,'1',1,2) AS SEQ
+		 			  , DECODE(A.UPDT_DATE,null,'0',A.UPDT_DATE) SEQ2
+					  , '0' CHEK_FILD								     /* 체크박스 */
+                      , A.KBNT_CODE									 /* 코바넷코드 */
+                      , A.HIGH_CODE									 /* 청구지코드 */
+                      , A.CUST_CODE									 /* 매체코드 */
+                      , B.CUST_NAME  								 /* 매체명 */
+                      , A.BROD_CODE									 /* 방송국코드 */
+                      , A.BROD_CDNM       						 	 /* 방송국명 */
+                      , A.MDIM_CODE									 /* 코바넷매체코드 */
+                      , A.MDIM_CDNM  							     /* 코바넷매체명 */
+                      , A.OFIC_CODE    								 /* 본지사코드 */
+                      , A.OFIC_CDNM 									 /* 본지사명 */
+                      , A.USEX_YSNO 								     /* 사용구분 */
+                FROM MD_RMEDXM A
+                LEFT JOIN MD_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+                WHERE A.GUBN_FLAG = 'B'
+	]]>
+			<isNotEmpty prepend="AND" property="MDIM_CODE">
+				A.KBNT_CODE LIKE '%' || #MDIM_CODE# || '%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="CUST_NAME">
+				UPPER(B.CUST_NAME) LIKE '%' || UPPER(#CUST_NAME#) || '%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BROD_CDNM">
+				UPPER(A.BROD_CDNM) LIKE '%' || UPPER(#BROD_CDNM#) || '%' 
+			</isNotEmpty>
+			ORDER BY SEQ, SEQ2 DESC
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용  : 코바넷매체코드 목록(FOR 바인딩) 조회
+		파라미터  :	
+	-->
+	<select id="MCMA0050.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  /*  dao.SEARCH02 코바넷매체코드 조회  */
+                       A.KBNT_CODE									 /* 코바넷코드 */
+                      , LPAD(A.BROD_CODE,3,'0')	AS BROD_CODE								 /* 방송국코드 */
+                      , A.BROD_CDNM       						 	 /* 방송국명 */
+                      , LPAD(A.MDIM_CODE,2,'0')	AS MDIM_CODE								 /* 코바넷매체코드 */
+                      , A.MDIM_CDNM  							     /* 코바넷매체명 */
+                      ,LPAD(A.OFIC_CODE,3,'0')   AS OFIC_CODE								 /* 본지사코드 */
+                      , A.OFIC_CDNM 									 /* 본지사명 */
+                      , A.USEX_YSNO 								     /* 사용구분 */
+                FROM MD_RMEDXM A
+     ]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용 : 코바넷매체코드 저장 처리
+	-->
+	<insert id="MCMA0050.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_RMEDXM(
+					 KBNT_CODE	/*코바넷코드*/
+					,CUST_CODE	/*매체코드*/
+					,HIGH_CODE	/* 청구지코드 */
+					,BROD_CODE	/*방송사코드*/
+					,BROD_CDNM	/*방송국명*/
+					,MDIM_CODE	/*코바넷매체코드*/
+					,MDIM_CDNM	/*코바넷매체명*/
+					,OFIC_CODE	/*본지사코드*/
+					,OFIC_CDNM	/*본지사명*/
+					,GUBN_FLAG	/*SBS구분*/
+					,USEX_YSNO	/*사용구분*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+		)VALUES(
+					  LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')  /*코바넷코드*/
+					 ,#CUST_CODE#	/*매체코드*/
+					 ,#HIGH_CODE#	/* 청구지코드 */
+					 ,LPAD(#BROD_CODE#,3,'0')	/*방송사코드*/
+					 ,#BROD_CDNM#	/*방송국명*/
+					 ,LPAD(#MDIM_CODE#,2,'0')	/*코바넷매체코드*/
+					 ,#MDIM_CDNM#	/*코바넷매체명*/
+					 ,LPAD(#OFIC_CODE#,3,'0')	/*본지사코드*/
+					 ,#OFIC_CDNM#	/*본지사명*/
+					 ,'A'	/*SBS구분*/
+					 ,#USEX_YSNO#	/*사용구분*/
+					 ,#INST_USID#	/*입력자*/
+					 ,TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')	/*입력일*/
+					 ,#UPDT_USID#	/*수정자*/
+					 ,TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')	/*수정일*/
+		)
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용 : SBS매체코드 저장 처리
+	-->
+	<insert id="MCMA0050.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_RMEDXM(
+					 KBNT_CODE	/*코바넷코드*/
+					,CUST_CODE	/*매체코드*/
+					,HIGH_CODE	/* 청구지코드 */
+					,BROD_CODE	/*방송사코드*/
+					,BROD_CDNM	/*방송국명*/
+					,MDIM_CODE	/*코바넷매체코드*/
+					,MDIM_CDNM	/*코바넷매체명*/
+					,OFIC_CODE	/*본지사코드*/
+					,OFIC_CDNM	/*본지사명*/
+					,GUBN_FLAG	/*SBS구분*/
+					,USEX_YSNO	/*사용구분*/
+					,INST_USID		/*입력자*/
+					,INST_DATE		/*입력일*/
+					,UPDT_USID	/*수정자*/
+					,UPDT_DATE	/*수정일*/
+		)VALUES(
+					  LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')	/*코바넷코드*/
+					 ,#CUST_CODE#	/*매체코드*/
+					 ,#HIGH_CODE#	/* 청구지코드 */
+					 ,LPAD(#BROD_CODE#,3,'0')	/*방송사코드*/
+					 ,#BROD_CDNM#	/*방송국명*/
+					 ,LPAD(#MDIM_CODE#,2,'0')	/*코바넷매체코드*/
+					 ,#MDIM_CDNM#	/*코바넷매체명*/
+					 ,LPAD(#OFIC_CODE#,3,'0')	/*본지사코드*/
+					 ,#OFIC_CDNM#	/*본지사명*/
+					 ,'B'	/*SBS구분*/
+					 ,#USEX_YSNO#	/*사용구분*/
+					 ,#INST_USID#	/*입력자*/
+					 ,TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')	/*입력일*/
+					 ,#UPDT_USID#	/*수정자*/
+					 ,TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')	/*수정일*/
+		)
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.09.10(표준화 완료)
+		내      용 : 매체테이블에 코바넷 코드를 넣는다.
+	-->
+	<update id="MCMA0050.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_CUSTXM
+			SET  KBNT_CODE = LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')
+		WHERE CUST_CODE = #CUST_CODE#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.09.10(표준화 완료)
+		내      용 : 매체테이블에 코바넷 코드를 넣는다.
+	-->
+	<update id="MCMA0050.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_CUSTXM
+			SET  KBNT_CODE = LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')
+		WHERE CUST_CODE = #CUST_CODE#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용 : 코바넷매체 테이블수정
+	-->
+	<update id="MCMA0050.UPDATE02" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_RMEDXM    /* MCMA0050.UPDATE02 코바넷매체 테이블수정 */
+           SET CUST_CODE = #CUST_CODE#  /* 매체코드 */
+             , BROD_CODE = #BROD_CODE#  /* 방송사코드 */
+             , BROD_CDNM = #BROD_CDNM#  /* 방송국명 */
+             , MDIM_CODE = #MDIM_CODE#  /* 코바넷매체코드 */
+             , MDIM_CDNM = #MDIM_CDNM#  /* 코바넷매체명 */
+             , OFIC_CODE = #OFIC_CODE#  /* 본지사코드 */
+             , OFIC_CDNM = #OFIC_CDNM#  /* 본지사명 */
+             , GUBN_FLAG = 'A'  /* SBS 구분 */
+             , KBNT_CODE = LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')  /*코바넷코드*/ 
+             , USEX_YSNO = #USEX_YSNO#  /* 사용구분 */
+             , HIGH_CODE = #HIGH_CODE#  /* 청구지코드 */
+             , UPDT_USID = #UPDT_USID#  /* 수정자 */
+             , UPDT_DATE = TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')  /* 수정일 */
+         WHERE KBNT_CODE = #KBNT_CODE#  /* 코바넷코드 */
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용 : 코바넷매체 테이블수정
+	-->
+	<update id="MCMA0050.UPDATE03" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_RMEDXM    /* MCMA0050.UPDATE02 코바넷매체 테이블수정 */
+           SET CUST_CODE = #CUST_CODE#  /* 매체코드 */
+             , BROD_CODE = #BROD_CODE#  /* 방송사코드 */
+             , BROD_CDNM = #BROD_CDNM#  /* 방송국명 */
+             , MDIM_CODE = #MDIM_CODE#  /* 코바넷매체코드 */
+             , MDIM_CDNM = #MDIM_CDNM#  /* 코바넷매체명 */
+             , OFIC_CODE = #OFIC_CODE#  /* 본지사코드 */
+             , OFIC_CDNM = #OFIC_CDNM#  /* 본지사명 */
+             , GUBN_FLAG = 'B'  /* SBS 구분 */
+             , KBNT_CODE = LPAD(#BROD_CODE#,3,'0')||LPAD(#MDIM_CODE#,2,'0')||LPAD(#OFIC_CODE#,3,'0')  /*코바넷코드*/ 
+             , USEX_YSNO = #USEX_YSNO#  /* 사용구분 */
+             , HIGH_CODE = #HIGH_CODE#  /* 청구지코드 */
+             , UPDT_USID = #UPDT_USID#  /* 수정자 */
+             , UPDT_DATE = TO_CHAR(SYSDATE, 'YYYYMMDDAMHHMISS')  /* 수정일 */
+         WHERE KBNT_CODE = #KBNT_CODE#  /* 코바넷코드 */
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.10(표준화 완료)
+		내      용 : SBS매체코드 삭제 처리
+	-->
+	<update id="MCMA0050.UPDATE04" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_CUSTXM
+			SET  KBNT_CODE = ''
+		WHERE CUST_CODE = #CUST_CODE#
+	]]>
+	</update>
+	
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.29(표준화 완료)
+		내      용 : 코바넷 매체 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MCMA0050.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_RMEDXM	/* MCMA0050.DELETE00 코바넷 매체 삭제 */
+			WHERE KBNT_CODE = #KBNT_CODE#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.29(표준화 완료)
+		내      용 : SBS 매체 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MCMA0050.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_RMEDXM	/* MCMA0050.DELETE00 코바넷 매체 삭제 */
+			WHERE KBNT_CODE = #KBNT_CODE#
+	]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="COMWORKCALENDAR">
+
+<!--
+ *   프로그램명 : 메인 달력
+ *   작 성 일 : 2016.11.16
+ *   작 성 자 : 김기환
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	 
+    <!--
+     작 성 자 : 김기환
+     작 성 일 : 2016.11.16
+     내    용 : 월별 달력 일정조회
+    -->
+    <select id="COMWORKCALENDAR.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+		SELECT	/* COMWORKCALENDAR.SEARCH00 일정관리 조회 */
+				A.SCHD_DATE
+	    FROM	TM_SCHDXM A
+		WHERE   A.SCHD_EMNR 			= #GBL_EMPLNO#
+		AND		SUBSTR(A.SCHD_DATE,1,6) = #SCHD_YYMM#
+		ORDER
+		BY		A.SCHD_DATE
+    ]]>
+    </select>
+    
+</sqlMap>

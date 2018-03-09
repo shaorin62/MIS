@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMB0110">                   
+
+	<!-- 
+    제  목 : 시스템 로그인 현황 조회
+    작성자 : 임선빈
+    작성일 : 2014.10.17
+	-->
+	<select id="TMMB0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /*TMMB0110.SEARCH00.사용자 로그인 현황*/
+       	       A.USER_IDXX
+             , A.EMPL_NUMB
+             , A.LGIN_IPAR
+             , TO_CHAR(A.LGIN_DATE, 'YYYYMMDDHH24MISS') AS LGIN_DATE
+             , TO_CHAR(A.LGOT_DATE, 'YYYYMMDDHH24MISS') AS LGOT_DATE
+             , B.DEPT_CODE
+             , B.USER_NAME
+             , SF_GET_DEPTNAME(B.DEPT_CODE) AS DEPT_NAME
+          FROM TM_LOGINX A
+               LEFT JOIN TM_USERXM B
+                      ON A.USER_IDXX = B.USER_IDXX
+		WHERE A.LGIN_DATE >= TO_DATE(#OPER_STDT#,'YYYYMMDD') 
+		  AND A.LGIN_DATE <  TO_DATE(#OPER_ENDT#,'YYYYMMDD') + 1
+      ]]>        
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">	  
+		A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>               
+	<![CDATA[        
+		ORDER BY A.LGOT_DATE DESC, A.LGIN_DATE DESC
+	]]>
+	</select>
+</sqlMap>

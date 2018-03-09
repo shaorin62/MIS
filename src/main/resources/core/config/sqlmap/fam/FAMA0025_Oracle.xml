@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMA0025">
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 황치웅
+	 작  성  일 : 2016.08.12
+	 내       용 : 코스트센터관리 조회
+********************************************************************************/
+-->
+	<select id="FAMA0025.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+            SELECT /* FAMA0025.SEARCH00.코스트센터관리 조회 */
+                   A.CSTC_CODE     /* 코스트센터코드 */
+                 , A.BGIN_DATE     /* 시작일 */
+                 , A.ENDX_DATE     /* 종료일 */
+                 , A.CSTC_NAME     /* 코스트센터명 */
+                 , A.CSTG_CODE     /* 코스트센터그룹코드 */
+                 , B.CSTG_NAME     /* 코스트센터그룹명 */
+                 , A.COST_GUBN     /* 원가구분 */
+                 , SF_GET_COMMNAME('COST_GUBN',A.COST_GUBN) AS COST_NAME /* 원가구분명 */
+                 , A.DEPT_CODE     /* 부서코드 */
+                 , C.DEPT_NAME     /* 부서명 */
+                 , C.USEX_YSNO AS USEX_DEPT /* 사용부서 */
+                 , A.AAGR_CODE	   /* 계정권한그룹 */
+                 , A.DESC_REMK     /* 설명비고 */
+              FROM TA_CSTCXM A     /* [코스트센터정보] */
+              LEFT OUTER JOIN TA_CSTGXM B ON B.CSTG_CODE = A.CSTG_CODE
+              LEFT OUTER JOIN VI_DEPTXM C ON C.DEPT_CODE = A.DEPT_CODE
+             WHERE 1=1
+            ]]>
+
+            <isEqual prepend="AND" property="USEX_YSNO" compareValue="1">
+                #STDX_DATE# BETWEEN A.BGIN_DATE AND A.ENDX_DATE
+            </isEqual>
+            
+            <isEqual prepend="AND" property="USEX_YSNO" compareValue="0">
+                NOT EXISTS (SELECT 'Y' FROM TA_CSTCXM WHERE #STDX_DATE# BETWEEN A.BGIN_DATE AND A.ENDX_DATE )
+            </isEqual>
+                         
+            <isNotEmpty prepend="AND" property="CSTG_CODE">
+                A.CSTG_CODE = #CSTG_CODE#
+            </isNotEmpty>
+            
+            <isNotEmpty prepend="AND" property="CSTC_CODE">
+                A.CSTC_CODE || A.CSTC_NAME LIKE '%'|| #CSTC_CODE# || '%'
+            </isNotEmpty>
+            
+            ORDER BY A.CSTC_CODE, A.BGIN_DATE
+
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터관리 저장
+********************************************************************************/
+-->
+	<insert id="FAMA0025.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		    /* FAMA0025.SAVE00.코스트센터관리 저장 */
+	        iCHK               DECIMAL(15,0); /* 상태체크 */
+	        
+		BEGIN
+		  
+		    /* 코스트센터코드,시작일 중복인지 체크 */
+		    SELECT COUNT(CSTC_CODE) INTO iCHK
+		      FROM TA_CSTCXM
+		     WHERE CSTC_CODE = #CSTC_CODE#
+		       AND (#BGIN_DATE# 	BETWEEN BGIN_DATE 	AND ENDX_DATE
+		        	OR #ENDX_DATE# 	BETWEEN BGIN_DATE 	AND ENDX_DATE
+		        	OR BGIN_DATE 	BETWEEN #BGIN_DATE# AND #ENDX_DATE#
+		        	OR ENDX_DATE 	BETWEEN #BGIN_DATE# AND #ENDX_DATE#
+		       );
+		       
+		    IF iCHK > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, '코스트센터코드: ' || #CSTC_CODE# || ' 의 시작일, 종료일이 중첩되는 데이터가 존재합니다!');
+		    END IF;
+		
+		    INSERT INTO TA_CSTCXM ( /* FAMA0025.SAVE00.코스트센터관리 저장 *//*[코스트센터정보]*/
+	               CSTC_CODE        /* 코스트센터코드 */
+	              ,BGIN_DATE        /* 시작일 */
+	              ,ENDX_DATE        /* 종료일 */
+	              ,CSTC_NAME        /* 코스트센터명 */
+	              ,CSTG_CODE        /* 코스트센터그룹코드 */
+	              ,COST_GUBN        /* 원가구분 */
+	              ,DEPT_CODE        /* 부서코드 */
+	              ,AAGR_CODE	    /* 계정권한그룹 */
+	              ,DESC_REMK        /* 설명비고 */
+	              ,INST_USID        /* 입력작업자 */
+	              ,INST_DATE        /* 입력일시 */
+	              ,UPDT_USID        /* 수정작업자 */
+	              ,UPDT_DATE        /* 수정일시 */
+	              )
+	       VALUES (
+	               #CSTC_CODE#       /* 코스트센터코드 */
+	              ,#BGIN_DATE#       /* 시작일 */
+	              ,#ENDX_DATE#       /* 종료일 */
+	              ,#CSTC_NAME#       /* 코스트센터명 */
+	              ,#CSTG_CODE#       /* 코스트센터그룹코드 */
+	              ,#COST_GUBN#       /* 원가구분 */
+	              ,#DEPT_CODE#       /* 부서코드 */
+	              ,#AAGR_CODE#	     /* 계정권한그룹 */
+	              ,#DESC_REMK#       /* 설명비고 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	              );
+	       END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터관리 수정
+********************************************************************************/
+-->
+    <update id="FAMA0025.UPDATE00" parameterClass="hashmap" >
+        <![CDATA[
+        DECLARE
+            /* FAMA0025.UPDATE00.코스트센터관리 수정 */
+            iCHK               DECIMAL(15,0); /* 상태체크 */
+            
+        BEGIN
+          
+            /* 코스트센터코드,시작일 중복인지 체크 */
+            SELECT COUNT(CSTC_CODE) INTO iCHK
+              FROM TA_CSTCXM
+		     WHERE CSTC_CODE || BGIN_DATE <> #CSTC_CODE# || #BGIN_DATE#
+		       AND CSTC_CODE = #CSTC_CODE#
+		       AND (#BGIN_DATE# 	BETWEEN BGIN_DATE 	AND ENDX_DATE
+		        	OR #ENDX_DATE# 	BETWEEN BGIN_DATE 	AND ENDX_DATE
+		        	OR BGIN_DATE 	BETWEEN #BGIN_DATE# AND #ENDX_DATE#
+		        	OR ENDX_DATE 	BETWEEN #BGIN_DATE# AND #ENDX_DATE#
+		       );
+               
+            IF iCHK > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, '코스트센터코드: ' || #CSTC_CODE# || ' 의 시작일, 종료일이 중첩되는 데이터가 존재합니다!');
+            END IF;
+            		    
+	         UPDATE TA_CSTCXM      /* FAMA0025.UPDATE00.코스트센터관리 수정 *//*[코스트센터정보]*/
+	            SET ENDX_DATE = #ENDX_DATE#  /* 종료일 */
+	              , CSTC_NAME = #CSTC_NAME#  /* 코스트센터명 */
+	              , CSTG_CODE = #CSTG_CODE#  /* 코스트센터그룹코드 */
+	              , COST_GUBN = #COST_GUBN#  /* 원가구분 */
+	              , DEPT_CODE = #DEPT_CODE#  /* 부서코드 */
+	              , AAGR_CODE = #AAGR_CODE#	/* 계정권한그룹 */
+	              , DESC_REMK = #DESC_REMK#  /* 설명비고 */
+	              , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+	              , UPDT_DATE = SYSDATE      /* 수정일시 */
+	         WHERE CSTC_CODE  = #CSTC_CODE#  /* 코스트센터코드 */
+	           AND BGIN_DATE  = #BGIN_DATE#;  /* 시작일 */
+	    END;
+        ]]>
+    </update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터관리 삭제
+********************************************************************************/
+-->
+	<delete id="FAMA0025.DELETE00" parameterClass="hashmap" >
+		<![CDATA[
+			DELETE FROM TA_CSTCXM   /* FAMA0025.DELETE00.코스트센터관리 삭제 *//*[코스트센터정보]*/
+	         WHERE CSTC_CODE = #CSTC_CODE#   /* 코스트센터코드 */
+	           AND BGIN_DATE = #BGIN_DATE#   /* 시작일 */
+		]]>
+	</delete>
+
+</sqlMap>

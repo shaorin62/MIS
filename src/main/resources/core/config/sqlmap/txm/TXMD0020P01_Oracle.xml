@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TXMD0020P01">
+
+<!--
+/* ******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.08.01
+   내 용       : 소득자 조회 
+******************************************************************************* */
+ -->
+    <select id="TXMD0020P01.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TXMD0020P01.PRINT00.소득자 조회 */
+                   MAX(SUBSTR(A.PERS_YYMM, 1, 4)) 					AS PERS_YYMM /* 귀속년도 */
+                  ,SF_GET_COMMNAME('FORI_GUBN', MAX(B.FORI_GUBN)) 	AS FORI_GUBN   /* 기타_내외국인구분 */  
+                  ,CASE WHEN MAX(B.FORI_GUBN) = 'RM100001' THEN '1'
+                        WHEN MAX(B.FORI_GUBN) = 'RM100009' THEN '9' END AS FORE_GUBN   /* 일용근로용_내외국인구분 */
+                  ,SUBSTR(MAX(C.BSNS_NUMB), 1, 3) || '-' ||
+                   SUBSTR(MAX(C.BSNS_NUMB), 4, 2) || '-' ||
+                   SUBSTR(MAX(C.BSNS_NUMB), 6, 5) 		AS BSNS_NUMB 	/* 사업자등록번호 */
+                  ,MAX(C.OFFI_NAME) 					AS OFFI_NAME 	/* 법인명 */
+                  ,MAX(C.OWNR_NAME) 					AS OWNR_NAME 	/* 대표자 */
+                  ,SUBSTR(MAX(C.JURI_NUMB), 1, 6) || '-' ||
+                   SUBSTR(MAX(C.JURI_NUMB), 7, 7) 		AS JURI_NUMB 	/* 주민(법인)등록번호 */
+                  ,MAX(C.ADDR_DESC||C.ADDR_DETL) 		AS ADDR_DESC 	/* 소재지 */
+                  ,B.CUST_CODE   										/* 소득자번호 */
+                  ,NVL(B.OWNR_NAME, B.CUST_NAME)		AS CUST_NAME   		/* 기타_소득자명 */
+                  ,SUBSTR(MAX(B.BIZR_NUMB), 1, 3) || NVL2(MAX(B.BIZR_NUMB), '-', '') ||
+			       SUBSTR(MAX(B.BIZR_NUMB), 4, 2) || NVL2(MAX(B.BIZR_NUMB), '-', '') ||
+			       SUBSTR(MAX(B.BIZR_NUMB), 6, 5)         AS BIZR_NUMB     /* 기타_사업자등록번호 */
+                  ,SUBSTR(B.RERN_NUMB, 1, 6) || '-' || SUBSTR(B.RERN_NUMB, 7, 7) AS RERN_NUMB   /* 기타_주민등록번호 */
+                  ,MAX(B.ADDR_DESC || B.DTL1_ADDR || B.DTL2_ADDR) 		AS PERS_ADDR   	/* 기타_주소 */
+                  ,MAX(B.ADDR_DESC || B.DTL1_ADDR || B.DTL2_ADDR) 		AS CONP_ADDR   	/* 사업_주소 */
+                  ,MAX(SF_GET_REFXFILD('GITA_GUBN', A.GITA_GUBN, 1)) 	AS GITA_GUBN  /* 소득구분코드 */
+                  ,MAX(SF_GET_COMMNAME('GITA_GUBN', A.GITA_GUBN)) 		AS GITA_NAME  /* 소득구분명 */
+                  /*,MAX(B.CUST_NAME) 					AS CUST_NAME*/ 	/* 사업(사업자명) */
+                  ,SUBSTR(MAX(B.MPBZ_NUMB), 1, 3) || '-' ||
+                   SUBSTR(MAX(B.MPBZ_NUMB), 4, 2) || '-' ||
+                   SUBSTR(MAX(B.MPBZ_NUMB), 6, 5) 		AS MPBZ_NUMB 	/* 사업자등록번호 */
+                  ,MAX(SF_GET_REFXFILD('JOBS_GUBN', B.JOBS_GUBN, 1)) 	AS JOBS_GUBN /* 사업_직업구분 */
+                  ,MAX(SF_GET_COMMNAME('JOBS_GUBN', B.JOBS_GUBN)) 		AS JOBS_NAME /* 사업_직업구분 */
+                  ,MAX(A.GITA_RMR2) 					AS GITA_RMR2 	/* 감면근거 */
+                  ,MAX(C.TELE_NUMB) 					AS TELE_NUMB 	/* 징수의무자_전화번호 */
+                  ,MAX(B.CORP_NUMB) 					AS CORP_NUMB 	/* 소득자_전화번호 */
+                  ,#TERM_GUBN#							AS TERM_GUBN 	/* 지급분기(일용근로) */
+            FROM 	TA_INCMXM A
+		            LEFT JOIN TA_CUSTXM B
+		              ON A.CUST_CODE = B.CUST_CODE
+		            LEFT JOIN TM_OFFICE C
+		              ON C.ACCT_GUBN = #ACCT_GUBN#
+            WHERE A.PERS_YYMM BETWEEN #PERS_YYM1# AND #PERS_YYM2#
+        ]]>
+        <isNotEmpty prepend="AND" property="PRNT_GUBN">
+                  (CASE WHEN #PRNT_GUBN# = '12' AND B.INCM_TYCD = 'FA010020' AND B.RESI_GUBN = 'RM080001' THEN '12' /* (거주자)기타소득_소득자보관용 */
+                        WHEN #PRNT_GUBN# = '13' AND B.INCM_TYCD = 'FA010020' AND B.RESI_GUBN = 'RM080001' THEN '13' /* (거주자)기타소득_발행자보관용 */
+                        WHEN #PRNT_GUBN# = '10' AND B.INCM_TYCD = 'FA010010' AND B.RESI_GUBN = 'RM080001' THEN '10' /* (거주자)사업소득_소득자보관용 */
+                        WHEN #PRNT_GUBN# = '11' AND B.INCM_TYCD = 'FA010010' AND B.RESI_GUBN = 'RM080001' THEN '11' /* (거주자)사업소득_발행자보관용 */
+                        WHEN #PRNT_GUBN# = '14' AND B.INCM_TYCD IN ('FA010010','FA010020') AND B.RESI_GUBN = 'RM080002' THEN '14' /* (비거주자)기타사업소득_소득자보관용 */
+                        WHEN #PRNT_GUBN# = '15' AND B.INCM_TYCD IN ('FA010010','FA010020') AND B.RESI_GUBN = 'RM080002' THEN '15' /* (비거주자)기타사업소득_발행자보관용 */
+                        WHEN #PRNT_GUBN# = '16' AND B.INCM_TYCD = 'FA010030' THEN '16' /* 일용근로소득_소득자보관용 */
+                        WHEN #PRNT_GUBN# = '17' AND B.INCM_TYCD = 'FA010030' THEN '17' /* 일용근로소득_발행자보관용 */
+                        END) = #PRNT_GUBN#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="TERM_GUBN">
+                  (CASE WHEN #TERM_GUBN# = '1' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('01','02','03') THEN '1'
+                        WHEN #TERM_GUBN# = '2' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('04','05','06') THEN '2'
+                        WHEN #TERM_GUBN# = '3' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('07','08','09') THEN '3'
+                        WHEN #TERM_GUBN# = '4' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('10','11','12') THEN '4'
+                        END) = #TERM_GUBN#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PERS_NAME">
+              NVL(B.OWNR_NAME, B.CUST_NAME) LIKE '%' || #PERS_NAME# || '%'
+        </isNotEmpty>
+        <![CDATA[
+              AND B.CUST_CODE BETWEEN NVL(#RANG_STDT#, '00000000') AND NVL(#RANG_EDDT#, '99999999')
+            GROUP BY B.CUST_CODE, NVL(B.OWNR_NAME, B.CUST_NAME), B.RERN_NUMB
+        ]]>
+    </select>
+<!-- 
+/* ******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.08.01
+   내 용       : 소득내역등록 자료 조회
+******************************************************************************* */
+ -->
+    <select id="TXMD0020P01.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TXMD0020P01.PRINT01.소득내역등록 자료 조회 */
+                   A.CUST_CODE   /* 소득자번호 */
+                  ,A.PERS_YYMM   /* 귀속년월 */
+                  ,A.SUPP_DATE   /* 기타지급일자 */
+                  ,NVL(A.SUPP_KMAK, 0) AS SUPP_KMAK   /* 지급총액 */
+                  ,NVL(A.OUTL_KMAK, 0) AS OUTL_KMAK   /* 필요경비 */
+                  ,NVL(A.GASE_TOKM, 0) AS GASE_TOKM   /* 소득금액 */
+                  ,(NVL(A.TAXX_RATE, 0) * 100) AS TAXX_RATE  /* 세율 */ /* %로 변경요청 2012-01-25 */
+                  ,NVL(A.INCM_TAXX, 0) AS INCM_TAXX   /* 소득세 */
+                  ,NVL(A.COMP_SEKM, 0) AS COMP_SEKM   /* 법인세 */
+                  ,NVL(A.NONS_SEKM, 0) AS NONS_SEKM   /* 농특세 */
+                  ,NVL(A.INHA_TAXX, 0) AS INHA_TAXX   /* 주민세 */
+                  ,NVL(A.SEKM_TOKM, 0) AS SEKM_TOKM   /* 세금계 */
+                  ,A.WORK_DCNT   /* 근무일수(일용근로) */
+                  ,NVL(A.NTAX_INCM, 0) AS NTAX_INCM   /* 비과세소득(일용근로) */
+            FROM TA_INCMXM A
+            	 LEFT JOIN TA_CUSTXM B
+              			ON A.CUST_CODE = B.CUST_CODE
+            WHERE A.PERS_YYMM BETWEEN #PERS_YYM1# AND #PERS_YYM2#
+        ]]>
+        <isNotEmpty prepend="AND" property="PRNT_GUBN">
+               (CASE WHEN #PRNT_GUBN# = '12' AND B.INCM_TYCD = 'FA010020' AND B.RESI_GUBN = 'RM080001' THEN '12' /* (거주자)기타소득_소득자보관용 */
+                     WHEN #PRNT_GUBN# = '13' AND B.INCM_TYCD = 'FA010020' AND B.RESI_GUBN = 'RM080001' THEN '13' /* (거주자)기타소득_발행자보관용 */
+                     WHEN #PRNT_GUBN# = '10' AND B.INCM_TYCD = 'FA010010' AND B.RESI_GUBN = 'RM080001' THEN '10' /* (거주자)사업소득_소득자보관용 */
+                     WHEN #PRNT_GUBN# = '11' AND B.INCM_TYCD = 'FA010010' AND B.RESI_GUBN = 'RM080001' THEN '11' /* (거주자)사업소득_발행자보관용 */
+                     WHEN #PRNT_GUBN# = '14' AND B.INCM_TYCD IN ('FA010010','FA010020') AND B.RESI_GUBN = 'RM080002' THEN '14' /* (비거주자)기타사업소득_소득자보관용 */
+                     WHEN #PRNT_GUBN# = '15' AND B.INCM_TYCD IN ('FA010010','FA010020') AND B.RESI_GUBN = 'RM080002' THEN '15' /* (비거주자)기타사업소득_발행자보관용 */
+                     WHEN #PRNT_GUBN# = '16' AND B.INCM_TYCD = 'FA010030' THEN '16' /* 일용근로소득_소득자보관용 */
+                     WHEN #PRNT_GUBN# = '17' AND B.INCM_TYCD = 'FA010030' THEN '17' /* 일용근로소득_발행자보관용 */
+                     END) = #PRNT_GUBN#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="TERM_GUBN">
+              (CASE WHEN #TERM_GUBN# = '1' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('01','02','03') THEN '1'
+                     WHEN #TERM_GUBN# = '2' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('04','05','06') THEN '2'
+                     WHEN #TERM_GUBN# = '3' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('07','08','09') THEN '3'
+                     WHEN #TERM_GUBN# = '4' AND SUBSTR(A.PERS_YYMM, 5, 2) IN ('10','11','12') THEN '4'
+                     END) = #TERM_GUBN#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PERS_NAME">
+              NVL(B.OWNR_NAME, B.CUST_NAME) LIKE '%' || #PERS_NAME# || '%'
+        </isNotEmpty>
+        <![CDATA[
+              AND B.CUST_CODE BETWEEN NVL(#RANG_STDT#, '00000000') AND NVL(#RANG_EDDT#, '99999999')
+        ]]>
+    </select>
+    
+<!-- 
+/* ******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.08.01
+   내 용       : 이자배당 소득자 조회
+******************************************************************************* */
+ -->
+    <select id="TXMD0020P01.PRINT02" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+           SELECT /* TXMD0020P01.PRINT02.이자배당 소득자 조회 */
+                 A.CUST_CODE
+                ,CASE WHEN B.FORI_GUBN = 'RM100001' THEN '1'
+                      WHEN B.FORI_GUBN = 'RM100009' THEN '9' END AS FORI_GUBN /* 내외국인구분 */
+                ,CASE WHEN B.FORI_GUBN = 'RM100009' THEN SF_GET_COMMNAME('NATN_CODE',B.PERS_NATI)
+                      WHEN B.FORI_GUBN = 'RM100001' THEN '' END AS PERS_NANM /* 거주지국 */
+                ,CASE WHEN B.FORI_GUBN = 'RM100009' THEN C.REF1_FILD
+                      WHEN B.FORI_GUBN = 'RM100001' THEN '' END AS PERS_NATI /* 거주지국코드 */
+                ,D.OFFI_NAME
+                ,D.OWNR_NAME
+                ,SUBSTR(D.BSNS_NUMB, 1, 3) || '-' ||
+                 SUBSTR(D.BSNS_NUMB, 4, 2) || '-' ||
+                 SUBSTR(D.BSNS_NUMB, 6, 5) AS BSNS_NUMB /* 사업자등록번호 */
+                ,SUBSTR(D.JURI_NUMB, 1, 6) || '-' ||
+                 SUBSTR(D.JURI_NUMB,7,7) AS JURI_NUMB /* 주민(법인)등록번호 */
+                ,D.ADDR_DESC || ' ' || D.ADDR_DETL AS ADDR_DESC
+                ,NVL(B.OWNR_NAME, B.CUST_NAME) AS CUST_NAME
+                ,SUBSTR(B.RERN_NUMB,1,6) || '-' || SUBSTR(B.RERN_NUMB, 7, 7) AS BIZR_RGNB   /* 기타_주민등록번호 */
+                ,CASE WHEN SUBSTR(B.RERN_NUMB, 7, 1) IN ('1','2') THEN '19'
+                      WHEN SUBSTR(B.RERN_NUMB, 7, 1) IN ('3','4') THEN '20' END
+                      || SUBSTR(B.RERN_NUMB, 1, 6) AS BIRT_DATE
+                ,B.PERS_ADD1 || ' ' || PERS_ADD2 AS PERS_ADDR
+                ,CASE WHEN B.RESI_GUBN = 'RM080001' THEN '1'
+                      WHEN B.RESI_GUBN = 'RM080002' THEN '2' END AS RESI_GUBN
+                ,A.EARN_CODE /* 소득자구분코드 */
+                ,A.ACNT_NUMB
+                ,DECODE(A.REAL_GUBN, '0', '실명', '1', '비실명') AS REAL_GUBN
+                ,A.TAXX_CUTX   /* 감면근거 */
+            FROM TA_INTEXD A
+            	 LEFT JOIN TA_CUSTXM B
+              			ON A.CUST_CODE = B.CUST_CODE
+            	 LEFT JOIN TM_CODEXD C
+		              	ON B.PERS_NATI = C.COMD_CODE
+		               AND C.COMM_CODE ='NATN_CODE'
+	             LEFT JOIN TM_OFFICE D
+	              		ON D.ACCT_GUBN = #ACCT_GUBN#
+            WHERE SUBSTR(A.PERS_YYMM, 1, 4) = #PERS_YEAR#
+        ]]>
+        <isNotEmpty prepend="AND" property="PERS_NAME">
+              NVL(B.OWNR_NAME, B.CUST_NAME) LIKE '%' || #PERS_NAME# || '%'
+        </isNotEmpty>
+        <![CDATA[
+              AND B.CUST_CODE BETWEEN NVL(#RANG_STDT#, '00000000') AND NVL(#RANG_EDDT#, '99999999')
+        ]]>
+    </select>
+
+<!-- 
+/* ******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.08.01
+   내 용       : 이자배당 소득내역등록 자료 조회
+******************************************************************************* */
+ -->
+    <select id="TXMD0020P01.PRINT03" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+           SELECT /* TXMD0020P01.PRINT03.이자배당 소득내역등록 자료 조회 */
+                   A.CUST_CODE   /* 소득자번호 */
+                  ,A.SUPP_DATE   /* 지급일자 */
+                  ,CASE WHEN A.PERS_GUBN = '0' THEN '이자'
+                        WHEN A.PERS_GUBN = '1' THEN '배당' END AS PERS_GUBN   /* 소득종류 */
+                  ,A.PERS_YYMM   /* 귀속년월 */
+                  ,A.ACCT_GUBN   /* 회계단위 */
+                  ,A.EARN_CODE   /* 소득자구분코드 */
+                  ,A.ACNT_NUMB   /* 계좌번호 */
+                  ,A.REAL_GUBN   /* 실명구분 */
+                  ,A.FPRO_TYPE   /* 금융상품종류 */
+                  ,A.FPRO_CODE   /* 금융상품코드 */
+                  ,A.INTE_CODE   /* 채권이자구분코드 */
+                  ,A.STAN_CODE   /* 유가증권표준코드 */
+                  ,A.TAXX_CODE   /* 과세구분코드 */
+                  ,A.INTE_RATE   /* 이자율 */
+                  ,A.SUPP_KMAK   /* 지급액 */
+                  ,A.INTE_STDT   /* 이자지급대상시작일 */
+                  ,A.INTE_EDDT   /* 이자지급대상종료일 */
+                  /* ,A.TAXX_RATE */  /* 세율 */
+                  ,(NVL(A.TAXX_RATE, 0) * 100) AS TAXX_RATE  /* 세율 */ /* %로 변경요청 2012-01-25 */
+                  ,NVL(A.GABG_SEKM, 0) AS GABG_SEKM   /* 소득세 */
+                  ,NVL(A.COMP_SEKM, 0) AS COMP_SEKM   /* 법인세 */
+                  ,NVL(A.JUMI_SEKM, 0) AS JUMI_SEKM   /* 주민세 */
+                  ,NVL(A.NONS_SEKM, 0) AS NONS_SEKM   /* 농특세 */
+                  ,NVL(A.SEKM_TOKM, 0) AS SEKM_TOKM   /* 세금계 */
+                  ,A.TAKE_DEPT   /* 담당부서 */
+                  ,A.TAKE_USER   /* 담당자 */
+                  ,A.TAXX_CUTX   /* 감면근거 */
+            FROM TA_INTEXD A /* 이자배당등록 */
+            	 LEFT JOIN TA_CUSTXM B /* 소득자등록 */
+              			ON A.CUST_CODE = B.CUST_CODE
+            WHERE SUBSTR(A.PERS_YYMM, 1, 4) = #PERS_YEAR#
+        ]]>
+        <isNotEmpty prepend="AND" property="PERS_NAME">
+              NVL(B.OWNR_NAME, B.CUST_NAME) LIKE '%' || #PERS_NAME# || '%'
+        </isNotEmpty>
+        <![CDATA[
+              AND B.CUST_CODE BETWEEN NVL(#RANG_STDT#, '00000000') AND NVL(#RANG_EDDT#, '99999999')
+        ]]>
+    </select>        
+</sqlMap>

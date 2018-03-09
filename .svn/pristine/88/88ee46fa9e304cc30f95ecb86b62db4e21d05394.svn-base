@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="comLock" titletext="System Lock" position="absolute" scrollbars="none" left="0" width="1264" top="0" height="800" onbeforeclose="fn_FormCloseCheck">
+    <Layouts>
+      <Layout>
+        <Static id="imgLock" position="absolute" left="335" width="600" top="295" height="220" style="border:2 solid #808080ff ;"/>
+        <Edit autoselect="true" lengthunit="asciii" id="edtPASS_WORK" onkeydown="fn_CheckPassword" password="true" taborder="0" position="absolute" style="border:1 solid #aaaaaaff ;align:center;" left="566" width="214" top="385" height="21" cssclass="styFormItemText"/>
+        <Static id="Static00" taborder="1" text="시스템으로 복귀시 비밀번호 입력 후 엔터키를 누르세요." left="566" top="463" width="340" height="36"/>
+        <Static id="Static01" taborder="2" text="SYSTEM LOCK&#13;&#10;Enter you password" left="566" top="317" width="239" height="60" style="font:13 Dotum;"/>
+        <Static id="Static94" taborder="3" text="디자인 작업 예정" usedecorate="true" cssclass="sta_GID_txt" left="357" top="341" width="145" height="129" style="background:#ff0000ff;color:#ffffffff;"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.0"><![CDATA[/*******************************************************************************************
+ 2015.01.25 김석두 (최초 개발)
+ 본 화면은 공통 버튼 처리 화면 입니다.
+
+ ★ 현재 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+    현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요!
+ *******************************************************************************************/
+include "script::lib_script_common.xjs"
+this.iPWCheck = false;
+
+//비밀번호 체크 처리
+this.fn_CheckPassword = function(obj:Edit, e:nexacro.KeyEventInfo) {
+
+	if (e.keycode != 13) return false;
+
+	if (this.fnc_GetPasswordEncrypt(this.fnc_Trim(this.edtPASS_WORK.value)) == application.GBL_USERPW) {
+		this.iPWCheck = true;
+		this.close();
+	} else {
+		this.fnc_Message("TMM115");
+	}
+
+}
+
+//비밀번호 체크 처리
+this.fn_FormCloseCheck = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if (this.iPWCheck == false) {
+		this.fnc_Message("TMM115");
+		return false;
+	}
+
+}]]></Script>
+  </Form>
+</FDL>

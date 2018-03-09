@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH00 */
+        	   A.OBJECT_NAME AS TABLE_NAME
+             , B.COMMENTS    AS TABLE_COMMENTS
+          FROM USER_OBJECTS A INNER JOIN USER_TAB_COMMENTS B ON A.OBJECT_NAME = B.TABLE_NAME
+         WHERE A.OBJECT_TYPE IN ('TABLE', 'VIEW')
+           AND A.TEMPORARY = 'N'
+         ORDER BY A.OBJECT_NAME
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH01" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH01 */
+        		DECODE(ROW_NUMBER() OVER (ORDER BY DECODE(A.COLUMN_NAME,'UPDT_DATE', '-1', 'UPDT_USID', '0', A.COLUMN_ID)),
+                                                         1, '         i', '        ,i') ||
+                                                         A.COLUMN_NAME || '  IN ' || A.TABLE_NAME || '.' ||
+                                                         A.COLUMN_NAME || '%TYPE   /* ' || TRIM(B.COMMENTS) ||' */' AS CODE
+          FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                     ON A.TABLE_NAME = B.TABLE_NAME
+                                    AND A.COLUMN_NAME = B.COLUMN_NAME
+         WHERE A.TABLE_NAME = #TABLE_NAME#
+           AND A.COLUMN_NAME NOT IN ('INST_DATE','INST_USID')   /*최초 등록일 및 등록자 제외*/
+         ORDER BY DECODE(A.COLUMN_NAME, 'UPDT_DATE', -1, 'UPDT_USID', 0, A.COLUMN_ID)
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH02" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+         SELECT /* TMMD0310.SEARCH02 */ 
+         		SELECTSYN  AS CODE
+                   FROM  (SELECT 0 AS ORD , '            SELECT /* 조회주석ID수정바람 */' AS SELECTSYN
+                            FROM DUAL 
+                            UNION ALL
+                            SELECT  A.COLUMN_ID AS ORD
+                                 ,DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '                   ', '                 , ') ||
+                                 'A.' || A.COLUMN_NAME || '              /* ' || TRIM(B.COMMENTS)||' */' AS SELECTSYN
+                            FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                       ON A.TABLE_NAME = B.TABLE_NAME
+                                                      AND A.COLUMN_NAME = B.COLUMN_NAME
+                           WHERE A.TABLE_NAME = #TABLE_NAME#
+                             AND A.COLUMN_NAME NOT IN ('INST_DATE', 'INST_USID', 'UPDT_DATE', 'UPDT_USID')
+                           UNION ALL
+                          SELECT 2000 AS ORD , '              FROM ' || #TABLE_NAME# || ' A              /* [' || COMMENTS || '] */' AS SELECTSYN
+                            FROM USER_TAB_COMMENTS
+                           WHERE TABLE_NAME = #TABLE_NAME#
+                          UNION ALL
+                         SELECT 3000 AS ORD , DECODE(ROW_NUMBER() OVER (ORDER BY COLUMN_ID), 1, '             WHERE A.', '               AND A.') || A.COLUMN_NAME || ' = ##' || A.COLUMN_NAME || '##     /* ' || TRIM(B.COMMENTS)||' */' AS SELECTSYN
+                           FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                              ON A.TABLE_NAME = B.TABLE_NAME
+                                                             AND A.COLUMN_NAME = B.COLUMN_NAME
+                          WHERE A.TABLE_NAME = #TABLE_NAME#
+                            AND A.COLUMN_NAME IN (SELECT COLUMN_NAME
+                                                  FROM USER_CONS_COLUMNS
+                                                 WHERE CONSTRAINT_NAME = (SELECT CONSTRAINT_NAME
+                                                                            FROM USER_CONSTRAINTS
+                                                                           WHERE CONSTRAINT_TYPE = 'P'
+                                                                             AND TABLE_NAME =#TABLE_NAME#))
+                          ) A
+                  ORDER BY ORD 
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH03" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH03 */
+        		INSERTSYN  AS CODE
+                FROM (SELECT  0 AS ORD
+                             ,'        INSERT INTO ' || #TABLE_NAME# || ' (  /* 저장주석수정바람 *//* [' || COMMENTS || '] */' AS INSERTSYN
+                        FROM USER_TAB_COMMENTS
+                       WHERE TABLE_NAME = #TABLE_NAME#
+                       UNION ALL
+                      SELECT  A.COLUMN_ID AS ORD
+                             ,DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '                ','               ,') || A.COLUMN_NAME || '        /* ' || TRIM(B.COMMENTS)||' */' AS INSERTSYN
+                        FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                   ON A.TABLE_NAME  = B.TABLE_NAME
+                                                  AND A.COLUMN_NAME = B.COLUMN_NAME
+                       WHERE A.TABLE_NAME = #TABLE_NAME#
+                       UNION ALL
+                      SELECT  1000 AS ORD
+                             ,'              )'  AS INSERTSYN
+                        FROM DUAL
+                       UNION ALL
+                      SELECT  1001 AS ORD
+                             ,'       VALUES ('  AS INSERTSYN
+                        FROM DUAL
+                       UNION ALL
+                      SELECT  1001 + A.COLUMN_ID AS ORD
+                             ,DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '               ##','              ,##') ||
+                              DECODE(A.COLUMN_NAME, 'INST_DATE', 'UPDT_DATE', 'INST_USID', 'UPDT_USID', A.COLUMN_NAME)  || '##       /* ' || TRIM(B.COMMENTS)||' */' AS  INSERTSYN
+                        FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                   ON A.TABLE_NAME  = B.TABLE_NAME
+                                                  AND A.COLUMN_NAME = B.COLUMN_NAME
+                       WHERE A.TABLE_NAME = #TABLE_NAME#
+                       UNION ALL
+                         SELECT 10000, '              )'
+                           FROM DUAL) A
+               ORDER BY ORD
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH04" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH04 */
+        		UPDATESYN  AS CODE
+                FROM (SELECT  0 AS ORD
+                             ,'        UPDATE ' || #TABLE_NAME# || '    /* 수정주석수정바람 *//* [' || COMMENTS || '] */' AS UPDATESYN
+                        FROM USER_TAB_COMMENTS
+                       WHERE TABLE_NAME = #TABLE_NAME#
+                       UNION ALL
+                      SELECT  A.COLUMN_ID AS ORD
+                             ,DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '           SET ', '             , ') ||
+                                     A.COLUMN_NAME || ' = ##' || A.COLUMN_NAME || '##  /* ' || TRIM(B.COMMENTS)||' */' AS UPDATESYN
+                        FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                   ON A.TABLE_NAME = B.TABLE_NAME
+                                                  AND A.COLUMN_NAME = B.COLUMN_NAME
+                       WHERE A.TABLE_NAME = #TABLE_NAME#
+                         AND A.COLUMN_NAME NOT IN (SELECT COLUMN_NAME
+                                                     FROM USER_CONS_COLUMNS
+                                                    WHERE CONSTRAINT_NAME = (SELECT CONSTRAINT_NAME
+                                                                               FROM USER_CONSTRAINTS
+                                                                              WHERE  CONSTRAINT_TYPE = 'P'
+                                                                                AND TABLE_NAME =#TABLE_NAME#))
+                         AND A.COLUMN_NAME NOT IN ('INST_DATE','INST_USID')
+                       UNION ALL
+                      SELECT  1000 + COLUMN_ID
+                             ,DECODE(ROW_NUMBER() OVER (ORDER BY COLUMN_ID), 1, '         WHERE ', '           AND ') || A.COLUMN_NAME || ' = ##' || A.COLUMN_NAME || '##  /* ' || TRIM(B.COMMENTS)||' */' AS UPDATESYN
+                        FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                                   ON A.TABLE_NAME = B.TABLE_NAME
+                                                  AND A.COLUMN_NAME = B.COLUMN_NAME
+                       WHERE A.TABLE_NAME = #TABLE_NAME#
+                         AND A.COLUMN_NAME IN (SELECT COLUMN_NAME FROM USER_CONS_COLUMNS
+                                              WHERE CONSTRAINT_NAME = (SELECT CONSTRAINT_NAME
+                                                                         FROM USER_CONSTRAINTS
+                                                                        WHERE CONSTRAINT_TYPE = 'P'
+                                                                          AND TABLE_NAME =#TABLE_NAME#))
+                      ) A
+               ORDER BY ORD
+               
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH05" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+		SELECT /* TMMD0310.SEARCH05 */
+				'        DELETE FROM ' || #TABLE_NAME# || '  /* 삭제주석수정바람 *//* [' ||COMMENTS || '] */' AS CODE
+		   FROM USER_TAB_COMMENTS
+		  WHERE TABLE_NAME = #TABLE_NAME#
+		  UNION ALL
+		 SELECT DECODE(ROW_NUMBER() OVER (ORDER BY COLUMN_ID), 1, '         WHERE ', '           AND ') || A.COLUMN_NAME || ' = ##' || A.COLUMN_NAME || '##   /* ' || TRIM(B.COMMENTS)||' */'
+		   FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+		                                      ON A.TABLE_NAME = B.TABLE_NAME
+		                                     AND A.COLUMN_NAME = B.COLUMN_NAME
+		  WHERE A.TABLE_NAME = #TABLE_NAME#
+		    AND A.COLUMN_NAME IN (SELECT COLUMN_NAME
+		                          FROM USER_CONS_COLUMNS
+		                         WHERE CONSTRAINT_NAME = (SELECT CONSTRAINT_NAME
+		                                                    FROM USER_CONSTRAINTS
+		                                                   WHERE CONSTRAINT_TYPE = 'P'
+		                                                     AND TABLE_NAME =#TABLE_NAME#))
+  ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH06" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH06 */
+        		DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '             ', '            ,') || '"' || A.COLUMN_NAME || '"       /* ' || TRIM(B.COMMENTS)||' */'  AS CODE
+          FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                     ON A.TABLE_NAME = B.TABLE_NAME
+                                    AND A.COLUMN_NAME = B.COLUMN_NAME
+         WHERE A.TABLE_NAME = #TABLE_NAME#
+           AND A.COLUMN_NAME IN (SELECT COLUMN_NAME
+                                   FROM USER_CONS_COLUMNS
+                                  WHERE CONSTRAINT_NAME = (SELECT CONSTRAINT_NAME
+                                                             FROM USER_CONSTRAINTS
+                                                            WHERE constraint_type = 'P'
+                                                              AND TABLE_NAME =#TABLE_NAME#))
+         ORDER BY A.COLUMN_ID
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH07" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH07 */
+        		DECODE(ROW_NUMBER() OVER (ORDER BY A.COLUMN_ID), 1, '             ', '            ,') || '"' || A.COLUMN_NAME || '"       /* ' || TRIM(B.COMMENTS)||' */' AS CODE
+          FROM USER_TAB_COLUMNS A INNER JOIN USER_COL_COMMENTS B
+                                     ON A.TABLE_NAME = B.TABLE_NAME
+                                    AND A.COLUMN_NAME = B.COLUMN_NAME
+         WHERE A.TABLE_NAME = #TABLE_NAME#
+           AND A.COLUMN_NAME NOT IN ('INST_DATE','INST_USID', 'UPDT_DATE', 'UPDT_USID')
+         ORDER BY A.COLUMN_ID
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH08" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <![CDATA[
+        SELECT /* TMMD0310.SEARCH08 */
+        		'                    <Column id="' || column_name || '" size="' || DECODE(data_type, 'NUMBER', data_precision
+        																				, DECODE(char_used, 'B', data_length, 'C', char_length)) || '" prop="default" type="' || decode(data_type, 'NVARCHAR2', 'STRING', 'VARCHAR2', 'STRING', 'CHAR', 'STRING', 'NUMBER', 'BIGDECIMAL') || '"/>'  AS CODE
+          FROM USER_TAB_COLUMNS
+         WHERE TABLE_NAME = #TABLE_NAME#
+           AND COLUMN_NAME NOT IN ('INST_DATE','INST_USID', 'UPDT_DATE', 'UPDT_USID')
+         ORDER BY COLUMN_ID
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 임선빈
+     작 성 일 : 2014.10.16
+     내     용 : 소스코드생성관리
+********************************************************************************/
+-->
+	<select id="TMMD0310.SEARCH09" parameterClass="java.util.HashMap" resultClass="java.util.HashMap" remapResults="true">
+	<![CDATA[
+		/* TMMD0310.SEARCH09 */
+		$CQUERY$
+	]]>
+	</select>
+
+</sqlMap>

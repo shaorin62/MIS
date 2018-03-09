@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATB0050">
+
+<!--
+ *   프로그램명 : 월근태등록  SQLMAP
+ *   작 성 일 : 2016.09.13
+ *   작 성 자 : 김희정
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 월근태등록내역 조회
+********************************************************************************/
+-->
+	<select id="HATB0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT	/* HATB0050.SEARCH00.월근태등록내역 조회 */
+			    A.EMPL_NUMB				/*사원번호*/
+			   ,B.EMPL_NAME				/*성명*/
+			   ,B.DEPT_CODE				/*부서코드 */
+			   ,C.DEPT_NAME				/*부서명 */
+			   ,B.OPOS_CODE				/*직위코드 */
+			   ,SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME	 /*직위명*/
+			   ,A.ATTE_YMTH				/*근태년월*/    
+			   ,A.WORK_DAYS				/*근무일수*/
+			   ,A.WKYY_CONT				/*기준일수*/
+			   ,A.HOLI_DAYS				/*휴일일수*/
+			   ,A.HOWK_DAYS				/*휴일근무일수*/
+			   ,A.NIGH_DAYS				/*야간근무일수*/
+			   ,A.ETSN_TIME				/*연장시간*/
+			   ,A.NIGH_TIME				/*야간시간*/
+			   ,A.HOLI_WORT				/*휴일근무시간*/
+			   ,A.HOLE_ETSN				/*휴일연장*/
+			   ,A.HOLE_NIGH				/*휴일야근*/
+			   ,A.ANNU_DAYS				/*연차일수*/
+			   ,A.MONT_DAYS				/*월차일수*/
+			   ,A.NPHO_DAYS				/*무급일수*/
+			   ,A.ATNS_TIME				/*지각*/
+			   ,A.EALE_TIME				/*조퇴*/
+			   ,A.EGOE_TIME				/*조출*/
+			   ,A.ABSN_DAYS				/*결근일수*/
+			   ,A.ETCX_TIME				/*기타*/
+			   ,A.REMK_100X				/*비고100*/
+			   ,NVL(D.ENDD_YSNO,'0') AS ENDD_YSNO	/*마감여부*/
+			   ,A.INST_USID				/*입력작업자*/
+			   ,A.INST_DATE				/*입력일시*/
+			   ,A.UPDT_USID				/*수정작업자*/
+			   ,A.UPDT_DATE				/*수정일시*/
+		  FROM AT_ATTEM1 A				/*[월근태정보 ] */
+		  	LEFT JOIN HR_MASTXM B
+		  	  ON A.EMPL_NUMB	= B.EMPL_NUMB
+			LEFT OUTER JOIN VI_DEPTXM C
+			  ON B.DEPT_CODE	= C.DEPT_CODE
+			LEFT OUTER JOIN AT_ENDDXM D
+			  ON A.ATTE_YMTH	= D.ATTE_YMTH
+		 WHERE A.ATTE_YMTH BETWEEN #ATTE_YMTH1# AND #ATTE_YMTH2#
+	]]>
+		<isNotEmpty prepend="AND" property="DEPT_CODE">
+			   B.DEPT_CODE = #DEPT_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="EMPL_NUMB">
+			   A.EMPL_NUMB = #EMPL_NUMB#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="WORK_GUBN">
+			   A.WORK_GUBN = #WORK_GUBN#
+		</isNotEmpty>
+	<![CDATA[ 
+		ORDER BY A.ATTE_YMTH, B.DEPT_CODE, B.OPOS_CODE, A.EMPL_NUMB
+	]]>
+	</select>
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 월근태등록내역 저장
+********************************************************************************/
+-->
+	<insert id="HATB0050.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT
+        INTO AT_ATTEM1 ( 
+             EMPL_NUMB		/*사원번호*/
+			,ATTE_YMTH		/*근태년월*/
+			,WORK_DAYS		/*근무일수*/
+			,WKYY_CONT		/*기준일수*/
+			,HOLI_DAYS		/*휴일일수*/
+			,HOWK_DAYS		/*휴일근무일수*/
+			,NIGH_DAYS		/*야간근무일수*/
+			,ETSN_TIME		/*연장시간*/
+			,NIGH_TIME		/*야간시간*/
+			,HOLI_WORT		/*휴일근무시간*/
+			,HOLE_ETSN		/*휴일연장*/
+			,HOLE_NIGH		/*휴일야근*/
+			,ANNU_DAYS		/*연차일수*/
+			,MONT_DAYS		/*월차일수*/
+			,NPHO_DAYS		/*무급일수*/
+			,ATNS_TIME		/*지각*/
+			,EALE_TIME		/*조퇴*/
+			,EGOE_TIME		/*조출*/
+			,ABSN_DAYS		/*결근일수*/
+			,ETCX_TIME		/*기타*/
+			,REMK_100X		/*비고100*/
+			,INST_USID		/*입력작업자*/
+			,INST_DATE		/*입력일시*/
+			,UPDT_USID		/*수정작업자*/
+			,UPDT_DATE		/*수정일시*/
+            ) 
+        VALUES 
+            ( 
+             #EMPL_NUMB#		/*사원번호*/
+			,#ATTE_YMTH#		/*근태년월*/
+			,#WORK_DAYS#		/*근무일수*/
+			,#WKYY_CONT#		/*기준일수*/
+			,#HOLI_DAYS#		/*휴일일수*/
+			,#HOWK_DAYS#		/*휴일근무일수*/
+			,#NIGH_DAYS#		/*야간근무일수*/
+			,#ETSN_TIME#		/*연장시간*/
+			,#NIGH_TIME#		/*야간시간*/
+			,#HOLI_WORT#		/*휴일근무시간*/
+			,#HOLE_ETSN#		/*휴일연장*/
+			,#HOLE_NIGH#		/*휴일야근*/
+			,#ANNU_DAYS#		/*연차일수*/
+			,#MONT_DAYS#		/*월차일수*/
+			,#NPHO_DAYS#		/*무급일수*/
+			,#ATNS_TIME#		/*지각*/
+			,#EALE_TIME#		/*조퇴*/
+			,#EGOE_TIME#		/*조출*/
+			,#ABSN_DAYS#		/*결근일수*/
+			,#ETCX_TIME#		/*기타*/
+			,#REMK_100X#		/*비고100*/
+			,#UPDT_USID#		/*입력작업자*/
+			,SYSDATE			/*입력일시*/
+			,#UPDT_USID#		/*수정작업자*/
+			,SYSDATE			/*수정일시*/
+            ) 
+	
+	]]>
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 월근태등록내역 수정
+********************************************************************************/
+-->
+	<update id="HATB0050.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE
+        AT_ATTEM1
+           SET  WORK_DAYS = #WORK_DAYS#		/*근무일수*/
+			   ,WKYY_CONT = #WKYY_CONT#		/*기준일수*/
+			   ,HOLI_DAYS = #HOLI_DAYS#		/*휴일일수*/
+			   ,HOWK_DAYS = #HOWK_DAYS#		/*휴일근무일수*/
+			   ,NIGH_DAYS = #NIGH_DAYS#		/*야간근무일수*/
+			   ,ETSN_TIME = #ETSN_TIME#		/*연장시간*/
+			   ,NIGH_TIME = #NIGH_TIME#		/*야간시간*/
+			   ,HOLI_WORT = #HOLI_WORT#		/*휴일근무시간*/
+			   ,HOLE_ETSN = #HOLE_ETSN#		/*휴일연장*/
+			   ,HOLE_NIGH = #HOLE_NIGH#		/*휴일야근*/
+			   ,ANNU_DAYS = #ANNU_DAYS#		/*연차일수*/
+			   ,MONT_DAYS = #MONT_DAYS#		/*월차일수*/
+			   ,NPHO_DAYS = #NPHO_DAYS#		/*무급일수*/
+			   ,ATNS_TIME = #ATNS_TIME#		/*지각*/
+			   ,EALE_TIME = #EALE_TIME#		/*조퇴*/
+			   ,EGOE_TIME = #EGOE_TIME#		/*조출*/
+			   ,ABSN_DAYS = #ABSN_DAYS#		/*결근일수*/
+			   ,ETCX_TIME = #ETCX_TIME#		/*기타*/
+			   ,REMK_100X = #REMK_100X#		/*비고100*/
+			   ,UPDT_USID = #UPDT_USID#		/* 수정작업자 */
+			   ,UPDT_DATE = SYSDATE			/* 수정일시 */
+         WHERE EMPL_NUMB  = #EMPL_NUMB#		/* 사원번호 */
+           AND ATTE_YMTH  = #ATTE_YMTH#		/* 근태년월 */
+    ]]>
+	</update>
+	
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.13
+	 내    용 : 월근태등록내역 삭제
+********************************************************************************/
+-->
+	<delete id="HATB0050.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE
+        AT_ATTEM1
+         WHERE 1 = 1
+           AND EMPL_NUMB  = #EMPL_NUMB#  /* 사원번호 */
+           AND ATTE_YMTH  = #ATTE_YMTH#  /* 근태년월 */
+	]]>
+	</delete>
+
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.19
+	 내    용 : 월근태 생성
+********************************************************************************/
+-->
+	<!--  
+	<insert id="HATB0050.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT
+        INTO AT_ATTEM1 ( 
+			    EMPL_NUMB					/*사원번호*/
+			   ,ATTE_YMTH					/*근태년월*/
+			   ,WORK_DAYS					/*근무일수*/
+			   ,WKYY_CONT					/*기준일수*/
+			   ,HOLI_DAYS					/*휴일일수*/
+			   ,HOWK_DAYS					/*휴일근무일수*/
+			   ,ETSN_TIME					/*연장시간*/
+			   ,NIGH_TIME					/*야간시간*/
+			   ,HOLI_WORT					/*휴일근무시간*/
+			   ,HOLE_ETSN					/*휴일연장*/
+			   ,HOLE_NIGH					/*휴일야근*/
+			   ,ANNU_DAYS					/*연차일수*/
+			   ,MONT_DAYS					/*월차일수*/
+			   ,NPHO_DAYS					/*무급일수*/
+			   ,ATNS_TIME					/*지각*/
+			   ,EALE_TIME					/*조퇴*/
+			   ,EGOE_TIME					/*조출*/
+			   ,ABSN_DAYS					/*결근일수*/
+			   ,ETCX_TIME					/*기타*/
+			   ,REMK_100X					/*비고100*/
+			   ,INST_USID					/*입력작업자*/
+			   ,INST_DATE					/*입력일시*/
+			   ,UPDT_USID					/*수정작업자*/
+			   ,UPDT_DATE					/*수정일시*/
+            ) 
+		SELECT
+			    A.EMPL_NUMB					/*사원번호*/
+			   ,#ATTE_YMTH2# AS ATTE_YMTH	/*근태년월*/
+			   ,0 AS WORK_DAYS				/*근무일수*/
+			   ,0 AS WKYY_CONT				/*기준일수*/
+			   ,0 AS HOLI_DAYS				/*휴일일수*/
+			   ,(SELECT COUNT(ATTE_DATE) FROM AT_ATTEDY WHERE EMPL_NUMB = A.EMPL_NUMB AND WORK_GUBN = '2' AND SUBSTR(ATTE_DATE,1,6) = #ATTE_YMTH2#) AS HOWK_DAYS	/*휴일근무일수*/
+			   ,0 AS ETSN_TIME				/*연장시간*/
+			   ,SUM(DECODE(A.WORK_GUBN,'1',A.WORK_TIME,0)) AS NIGH_TIME	/*야간시간*/
+			   ,SUM(DECODE(A.WORK_GUBN,'2',A.WORK_TIME,0)) AS HOLI_WORT	/*휴일근무시간*/
+			   ,0 AS HOLE_ETSN				/*휴일연장*/
+			   ,0 AS HOLE_NIGH				/*휴일야근*/
+			   ,SUM(DECODE(A.WORK_GUBN,'4',A.WORK_TIME,0)) AS ANNU_DAYS	/*연차일수*/
+			   ,SUM(DECODE(A.WORK_GUBN,'3',A.WORK_TIME,0)) AS MONT_DAYS	/*월차일수*/
+			   ,SUM(DECODE(A.WORK_GUBN,'5',A.WORK_TIME,0)) AS NPHO_DAYS	/*무급일수*/
+			   ,0 AS ATNS_TIME				/*지각*/
+			   ,0 AS EALE_TIME				/*조퇴*/
+			   ,0 AS EGOE_TIME				/*조출*/
+			   ,0 AS ABSN_DAYS				/*결근일수*/
+			   ,'' AS ETCX_TIME				/*기타*/
+			   ,'' AS REMK_100X				/*비고100*/
+			   ,#UPDT_USID#					/*입력작업자*/
+			   ,SYSDATE						/*입력일시*/
+			   ,#UPDT_USID#					/*수정작업자*/
+			   ,SYSDATE	
+		  FROM AT_ATTEDY A
+         WHERE SUBSTR(A.ATTE_DATE,1,6) = #ATTE_YMTH2#
+         GROUP BY A.EMPL_NUMB
+	]]>
+	</insert>
+	-->
+	<insert id="HATB0050.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        INSERT
+        INTO AT_ATTEM1 ( 
+			    EMPL_NUMB					/*사원번호*/
+			   ,ATTE_YMTH					/*근태년월*/
+			   ,WORK_DAYS					/*근무일수*/
+			   ,WKYY_CONT					/*기준일수*/
+			   ,HOLI_DAYS					/*휴일일수*/
+			   ,HOWK_DAYS					/*휴일근무일수*/
+			   ,NIGH_DAYS					/*야간근무일수*/
+			   ,ETSN_TIME					/*연장시간*/
+			   ,NIGH_TIME					/*야간시간*/			   
+			   ,HOLI_WORT					/*휴일근무시간*/
+			   ,HOLE_ETSN					/*휴일연장*/
+			   ,HOLE_NIGH					/*휴일야근*/
+			   ,ANNU_DAYS					/*연차일수*/
+			   ,MONT_DAYS					/*월차일수*/
+			   ,NPHO_DAYS					/*무급일수*/
+			   ,ATNS_TIME					/*지각*/
+			   ,EALE_TIME					/*조퇴*/
+			   ,EGOE_TIME					/*조출*/
+			   ,ABSN_DAYS					/*결근일수*/
+			   ,ETCX_TIME					/*기타*/
+			   ,REMK_100X					/*비고100*/
+			   ,INST_USID					/*입력작업자*/
+			   ,INST_DATE					/*입력일시*/
+			   ,UPDT_USID					/*수정작업자*/
+			   ,UPDT_DATE					/*수정일시*/
+            ) 
+		SELECT 
+				A.EMPL_NUMB						/*사원번호*/
+				,#ATTE_YMTH2# ATTE_YMTH			/*근태년월*/
+				,0 AS WORK_DAYS					/*근무일수*/
+				,0 AS WKYY_CONT					/*기준일수*/
+				,0 AS HOLI_DAYS					/*휴일일수*/
+				,NVL(B.HOWK_DAYS, 0) HOWK_DAYS	/*휴일근무일수*/
+				,NVL(B.NIGH_DAYS, 0) NIGH_DAYS	/*야간근무일수*/
+				,0 AS ETSN_TIME					/*연장시간*/
+				,NVL(B.NIGH_TIME, 0) NIGH_TIME	/*야간시간*/				
+				,NVL(B.HOLI_WORT, 0) HOLI_WORT	/*휴일근무시간*/
+				,0 AS HOLE_ETSN					/*휴일연장*/
+				,0 AS HOLE_NIGH					/*휴일야근*/
+				,NVL(B.ANNU_DAYS, 0) ANNU_DAYS	/*연차일수*/
+				,NVL(B.MONT_DAYS, 0) MONT_DAYS	/*월차일수*/
+				,NVL(B.NPHO_DAYS, 0) NPHO_DAYS	/*무급일수*/
+				,0 AS ATNS_TIME					/*지각*/
+				,0 AS EALE_TIME					/*조퇴*/
+				,0 AS EGOE_TIME					/*조출*/
+				,0 AS ABSN_DAYS					/*결근일수*/
+				,'' AS ETCX_TIME				/*기타*/
+				,'' AS REMK_100X				/*비고100*/
+				,#UPDT_USID#
+				,SYSDATE
+				,#UPDT_USID#
+				,SYSDATE
+			FROM HR_MASTXM A
+			LEFT OUTER JOIN (
+			SELECT
+			    A.EMPL_NUMB					/*사원번호*/
+			   ,#ATTE_YMTH2# AS ATTE_YMTH	/*근태년월*/
+			   ,0 AS WORK_DAYS				/*근무일수*/
+			   ,0 AS WKYY_CONT				/*기준일수*/
+			   ,0 AS HOLI_DAYS				/*휴일일수*/
+			   ,(SELECT COUNT(ATTE_DATE) FROM AT_ATTEDY WHERE EMPL_NUMB = A.EMPL_NUMB AND WORK_GUBN = '2' AND SUBSTR(ATTE_DATE,1,6) = #ATTE_YMTH2#) AS HOWK_DAYS	/*휴일근무일수*/
+			   ,(SELECT COUNT(ATTE_DATE) FROM AT_ATTEDY WHERE EMPL_NUMB = A.EMPL_NUMB AND WORK_GUBN = '1' AND SUBSTR(ATTE_DATE,1,6) = #ATTE_YMTH2#) AS NIGH_DAYS	/*야간근무일수*/
+			   ,0 AS ETSN_TIME				/*연장시간*/
+			   ,SUM(DECODE(A.WORK_GUBN,'1',A.WORK_TIME,0)) AS NIGH_TIME	/*야간시간*/
+			   ,SUM(DECODE(A.WORK_GUBN,'2',A.WORK_TIME,0)) AS HOLI_WORT	/*휴일근무시간*/
+			   ,0 AS HOLE_ETSN				/*휴일연장*/
+			   ,0 AS HOLE_NIGH				/*휴일야근*/
+			   ,SUM(DECODE(A.WORK_GUBN,'4',A.WORK_TIME,0)) AS ANNU_DAYS	/*연차일수*/
+			   ,SUM(DECODE(A.WORK_GUBN,'3',A.WORK_TIME,0)) AS MONT_DAYS	/*월차일수*/
+			   ,SUM(DECODE(A.WORK_GUBN,'5',A.WORK_TIME,0)) AS NPHO_DAYS	/*무급일수*/
+			   ,0 AS ATNS_TIME				/*지각*/
+			   ,0 AS EALE_TIME				/*조퇴*/
+			   ,0 AS EGOE_TIME				/*조출*/
+			   ,0 AS ABSN_DAYS				/*결근일수*/
+			   ,'' AS ETCX_TIME				/*기타*/
+			   ,'' AS REMK_100X				/*비고100*/
+			   ,#UPDT_USID#					/*입력작업자*/
+			   ,SYSDATE						/*입력일시*/
+			   ,#UPDT_USID#					/*수정작업자*/
+			   ,SYSDATE	
+		  FROM AT_ATTEDY A
+	         WHERE SUBSTR(A.ATTE_DATE,1,6) = #ATTE_YMTH2#	         	
+	         GROUP BY A.EMPL_NUMB
+	         ) B
+	         ON A.EMPL_NUMB = B.EMPL_NUMB
+	         WHERE 1=1
+	         		AND A.OPOS_CODE >= 'B91'
+					AND (
+					A.ENCO_DATE <= #ATTE_YMTH2#||'31' AND (A.RETR_DATE >= #ATTE_YMTH2#||'01' OR A.RETR_DATE IS NULL )
+					)
+	]]>
+	</insert>
+<!--	
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.19
+	 내    용 : 월근태일괄삭제
+********************************************************************************/
+-->
+	<delete id="HATB0050.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		DELETE
+        AT_ATTEM1
+         WHERE 1 = 1
+           AND ATTE_YMTH  = #ATTE_YMTH2#  /* 근태년월 */
+	]]>
+	</delete>
+
+<!-- 
+/*******************************************************************************
+	 작 성 자 : 김희정
+	 작 성 일 : 2016.09.20
+	 내    용 : 근태마감여부 조회
+********************************************************************************/
+-->
+	<select id="HATB0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  /* HATB0050.SEARCH01.근태마감여부 조회 */
+			    A.ATTE_YMTH				/*근태년월*/
+		       ,NVL(A.ENDD_YSNO,'0') AS ENDD_YSNO	/*마감여부*/
+		       ,A.REMK_100X				/*비고*/
+		       ,A.INST_USID				/*입력작업자*/
+		       ,A.INST_DATE				/*입력일시*/
+		       ,A.UPDT_USID				/*수정작업자*/
+		       ,A.UPDT_DATE				/*수정일시*/
+		  FROM AT_ENDDXM A				/*[근태마감정보 ] */
+		 WHERE A.ATTE_YMTH = #ATTE_YMTH#
+	]]>
+	</select>
+</sqlMap>

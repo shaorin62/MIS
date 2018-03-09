@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATC0030">
+
+<!--
+ *   프로그램명 : 휴가신청등록  SQLMAP
+ *   작 성 일 : 2016.09.20
+ *   작 성 자 : 이창운
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.20
+	 내    용 : 휴가신청등록  헤더 조회
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX			/*결재문서 DOC_ID*/
+		       ,A.APPR_SEQN 		/*결재문서 SEQ*/
+		       ,A.APPR_DATE			/*신청일자*/
+		       ,A.EMPL_NUMB			/*신청자 사원번호*/
+		       ,A.SUBJ_NAME			/*결재문서 제목*/
+		       ,A.APPR_STAT			/*결재상태*/
+		       ,A.DEPT_CODE			/*신청자 부서*/
+		       ,A.ENDX_DATE			/*결재완료일자*/
+		       ,A.INST_USID			/*입력작업자*/
+		       ,A.INST_DATE			/*입력일시*/
+		       ,A.UPDT_USID			/*수정작업자*/
+		       ,A.UPDT_DATE			/*수정일시*/
+		  FROM TM_APPRXH A			/*결재테이블*/
+		 WHERE A.DOCU_IDXX 			= #DOCU_IDXX#
+		   AND A.APPR_SEQN			= #APPR_SEQN#			
+	]]>
+	</select>	
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.20
+	 내    용 : 휴가신청등록헤더
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX						/*	결재 DOC_ID  */ 
+	           ,A.APPR_SEQN     				/*	결재 SEQ     */
+	           ,A.APPR_DATE     				/*	신청일          	*/
+	           ,A.TRGT_EMPL     				/*	대상자         	*/
+	           ,SF_GET_EMPLNAME(A.TRGT_EMPL) TRGT_NAME 	/*	대상자 성명	*/
+	           ,A.APPR_EMPL     				/*	신청자              	*/
+	           ,SF_GET_EMPLNAME(A.APPR_EMPL) APPR_NAME 	/*	신청자 성명	*/
+	           ,A.HOLY_RESN     				/*	휴가사유        	*/
+	           ,A.STRT_DATE     				/*	휴가기간 시작일 */
+	           ,A.ENDX_DATE     				/*	휴가기간 종료일 */
+	           ,A.HOLY_DAYS     				/*	휴가기간        	*/
+	           ,A.ANNU_NUMB     				/*	연차_발생       	*/
+	           ,A.ANNU_USED     				/*	연차_사용       	*/
+	           ,A.ANNU_REMA     				/*	연차_잔여       	*/
+	           ,A.OCUR_VADC     				/*  정기_발생       	*/
+	           ,A.USEX_VADC     				/*	정기_사용       	*/
+	           ,A.USEB_VADC     				/*	정기_잔여       	*/
+	           ,A.PRMT_NUMB     				/*	연차_촉진       	*/
+	           ,A.PRMT_REMA     				/*	연차_대상       	*/
+	           ,A.CNCL_GUBN     				/*	취소구분        	*/
+	      FROM AT_HDAPXH A						/* 휴가신청 등록 헤더 테이블*/
+		 WHERE A.DOCU_IDXX			= #DOCU_IDXX#
+		   AND A.APPR_SEQN			= #APPR_SEQN#			
+	]]>
+	</select>
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.20
+	 내    용 : 휴가신청등록상세
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0030.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX						/*	결재 DOC_ID  */ 
+	           ,A.APPR_SEQN     				/*	결재 SEQ     */
+	           ,A.TRGT_EMPL     				/*	대상자         	*/
+	           ,SF_GET_EMPLNAME(A.TRGT_EMPL) TRGT_NAME 	/*	대상자 성명	*/
+	           ,A.WORK_GUBN						/*	휴가구분		*/
+	           ,SF_GET_COMMNAME('WORK_GUBN',A.WORK_GUBN) WORK_NAME /* 휴가명 */
+	           ,A.WORK_DATE     				/*	휴가날짜        	*/
+	           ,A.WORK_TIME     				/*	휴가 시간		*/
+	      FROM AT_HDAPXD A						/* 휴가신청 상세 테이블 */
+		 WHERE A.DOCU_IDXX			= #DOCU_IDXX#
+		   AND A.APPR_SEQN			= #APPR_SEQN#			
+	]]>
+	</select>
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.09.20
+	 내    용 : 휴가신청 과거내역 조회
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0030.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX						/*	결재 DOC_ID  */ 
+	           ,A.APPR_SEQN     				/*	결재 SEQ     */
+	           ,A.APPR_DATE     				/*	신청일          	*/
+	           ,A.TRGT_EMPL     				/*	대상자         	*/
+	           ,SF_GET_EMPLNAME(A.TRGT_EMPL) TRGT_NAME 	/*	대상자 성명	*/
+	           ,B.WORK_GUBN     				/*	휴가구분          	*/
+	           ,SF_GET_COMMNAME('WORK_GUBN',B.WORK_GUBN) WORK_NAME /* 휴가명 */
+	           ,A.APPR_EMPL     				/*	신청자              	*/
+	           ,SF_GET_EMPLNAME(A.APPR_EMPL) APPR_NAME 	/*	신청자 성명	*/
+	           ,B.WORK_DATE						/*  휴가일자       	*/
+	           ,B.WORK_TIME						/*  휴가시간      	*/
+	           ,A.HOLY_RESN     				/*	휴가사유        	*/
+	           ,A.STRT_DATE     				/*	휴가기간 시작일 */
+	           ,A.ENDX_DATE     				/*	휴가기간 종료일 */
+	           ,A.HOLY_DAYS     				/*	휴가기간        	*/
+	           ,A.ANNU_NUMB     				/*	연차_발생       	*/
+	           ,A.ANNU_USED     				/*	연차_사용       	*/
+	           ,A.ANNU_REMA     				/*	연차_잔여       	*/
+	           ,A.OCUR_VADC     				/*  정기_발생       	*/
+	           ,A.USEX_VADC     				/*	정기_사용       	*/
+	           ,A.USEB_VADC     				/*	정기_잔여       	*/
+	           ,A.PRMT_NUMB     				/*	연차_촉진       	*/
+	           ,A.PRMT_REMA     				/*	연차_대상       	*/
+	           ,A.CNCL_GUBN     				/*	취소구분        	*/
+	      FROM AT_HDAPXH A				/* 휴가신청 등록 헤더 테이블 */
+	    	LEFT JOIN AT_HDAPXD B		/* 휴가신청 등록 상세 테이블*/
+	    		 ON A.DOCU_IDXX = B.DOCU_IDXX 
+		     	AND A.APPR_SEQN = B.APPR_SEQN
+		     	AND A.TRGT_EMPL = B.TRGT_EMPL
+		    LEFT JOIN TM_APPRXH C		/* 결재헤더 테이블 */
+		    	 ON A.DOCU_IDXX = C.DOCU_IDXX
+		    	AND A.APPR_SEQN = C.APPR_SEQN
+		 WHERE A.TRGT_EMPL	= #TRGT_EMPL#
+		   AND A.APPR_SEQN	!= NVL(#APPR_SEQN#,'999999')
+		   AND B.WORK_DATE LIKE #STDS_YEAR#||'%'
+		   AND NVL(A.CNCL_GUBN,'N')	= 'N'
+		 ORDER BY A.STRT_DATE 
+	]]>
+	</select>
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.22
+     내        용 : 연차관리 조회
+********************************************************************************/
+-->
+    <select id="HATC0030.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* HATC0030.SEARCH04.연차조정 */
+				C.STDS_YEAR	 /*기준년도*/
+			   ,A.EMPL_NUMB  /*사원번호*/
+			   ,A.EMPL_NAME  /*사원명*/
+			   ,B.DEPT_NAME	 /*부서명*/
+			   ,SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME    /*직위 */
+			   ,A.ENCO_DATE	 /*입사일*/
+			   ,C.ANSD_DATE	 /*연차기산일*/
+			   ,NVL(C.OCUR_ANDC,0) OCUR_ANDC	 /*발생연차개수*/
+			   ,NVL(D.ADJT_ANDC,0) ADJT_ANDC	 /*조정연차개수*/
+			   ,(NVL(C.OCUR_ANDC,0) + NVL(D.ADJT_ANDC,0)) TOTL_ANDC	 /*총연차개수*/
+			   ,NVL(E.USEX_ANDC,0) USEX_ANDC 	 /*사용연차개수*/
+			   ,NVL(C.PROM_ANDC,0) PROM_ANDC	 /*촉진연차개수*/
+			   ,DECODE(SIGN(NVL(C.PROM_ANDC,0) - NVL(E.USEX_ANDC,0)),-1,0,NVL(C.PROM_ANDC,0) - NVL(E.USEX_ANDC,0)) PROM_REMA	 /*촉진연차대상*/
+			   ,NVL(C.OCUR_VADC,0) OCUR_VADC	 /*발생휴가일수*/
+			   ,NVL(E.USEX_VADC,0) USEX_VADC	 /*사용휴가일수*/
+			   ,(NVL(C.OCUR_ANDC,0) + NVL(D.ADJT_ANDC,0))- NVL(E.USEX_ANDC,0) USEB_VADC	 /*사용가능휴가일수*/
+			   ,C.ANSD_DATE	 /*연차기산일*/
+			   ,C.INST_USID	 /*등록자*/
+			   ,C.INST_DATE	 /*등록일시*/
+			   ,C.UPDT_USID	 /*수정자*/
+			   ,C.UPDT_DATE	 /*수정일시*/
+		  FROM HR_MASTXM A 						/*인사마스터 */
+            LEFT JOIN TM_DEPTXM B 				/*부서마스터*/
+                 ON A.DEPT_CODE = B.DEPT_CODE
+            LEFT JOIN AT_ANNUXM C 				/*연차관리 마스터 테이블*/
+                 ON A.EMPL_NUMB = C.EMPL_NUMB
+            LEFT OUTER JOIN ( SELECT STDS_YEAR, EMPL_NUMB, SUM(ADJT_ANDC) ADJT_ANDC
+                                FROM AT_ANNUXD	/* 연차관리 상세 테이블*/
+                               WHERE STDS_YEAR = #STDS_YEAR#
+                               GROUP BY STDS_YEAR, EMPL_NUMB
+                            )D /* 조정연차 */
+                 ON A.EMPL_NUMB = D.EMPL_NUMB
+            LEFT OUTER JOIN ( SELECT EMPL_NUMB
+                                    ,SUM(DECODE(WORK_GUBN, '4', WORK_TIME, 0)) USEX_ANDC /*연차휴가*/
+                                    ,SUM(DECODE(WORK_GUBN, '6', WORK_TIME, 0)) USEX_VADC /*정기휴가*/
+                                FROM AT_ATTEDY		/*일근태 테이블*/
+                               WHERE SUBSTR(ATTE_DATE, 1, 4) = #STDS_YEAR#
+                               GROUP BY EMPL_NUMB
+                            ) E /*일근태*/
+                 ON A.EMPL_NUMB = E.EMPL_NUMB
+          WHERE A.EMPL_NUMB = #TRGT_EMPL#
+            AND C.STDS_YEAR = #STDS_YEAR# 
+         ORDER BY A.DEPT_CODE, A.EMPL_NUMB
+    ]]>
+    </select>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 결재해더 등록
+********************************************************************************/
+-->
+	<insert id="HATC0030.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		BEGIN	/* HATC0030.SAVE00  전자결재 헤더 저장 */
+			PKG_IFGWAPPROVAL.SP_GWAP_SAVE (
+				     #UPDT_USID#    /* 작업자ID */
+				    ,#DOCU_IDXX#   	/* 결재문서양식ID */
+				    ,#APPR_SEQN#    /* 전자결재일련번호 */
+				    ,#EMPL_NUMB#    /* 사원번호(결재요청자) */
+				    ,#SUBJ_NAME#    /* 전자결재제목 */
+				    ,#DEPT_CODE#    /* 부서코드(신청자) */
+	      		);
+      	END;	               		
+    ]]>
+	</insert>		
+
+
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 헤더 등록
+********************************************************************************/
+-->
+	<insert id="HATC0030.SAVE01" parameterClass="hashmap">
+	<![CDATA[		
+		INSERT INTO AT_HDAPXH	(	/* 휴가신청등록 테이블 */
+			 DOCU_IDXX		/*	결재 DOC_ID  */                                    
+			,APPR_SEQN      /*	결재 SEQ     */                                        
+			,APPR_DATE      /*	신청일          	*/                                 
+			,TRGT_EMPL      /*	대상자         	*/                                     
+			,APPR_EMPL      /*	신청자              	*/                             
+			,HOLY_RESN      /*	휴가사유        	*/                                 
+			,STRT_DATE      /*	휴가기간 시작일 */                                     
+			,ENDX_DATE      /*	휴가기간 종료일 */                                     
+			,HOLY_DAYS      /*	휴가기간        	*/                                 
+			,ANNU_NUMB      /*	연차_발생       	*/                                 
+			,ANNU_USED      /*	연차_사용       	*/                                 
+			,ANNU_REMA      /*	연차_잔여       	*/  
+			,OCUR_VADC     	/*  정기_발생       	*/
+	        ,USEX_VADC     	/*	정기_사용       	*/
+	        ,USEB_VADC     	/*	정기_잔여       	*/                                        
+			,PRMT_NUMB      /*	연차_촉진       	*/                                 
+			,PRMT_REMA      /*	연차_대상       	*/                                 
+			,CNCL_GUBN      /*	취소구분        	*/                                 
+			,INST_USID      /*  입력작업자       */        	
+			,INST_DATE      /*  입력일시  	*/         
+			,UPDT_USID      /*  수정작업자 	*/        
+			,UPDT_DATE      /*  수정일시  	*/         
+		)
+		VALUES (
+			 #DOCU_IDXX#	/*	결재 DOC_ID  */                   
+		    ,#APPR_SEQN#    /*	결재 SEQ     */                   
+		    ,TO_CHAR(SYSDATE,'YYYYMMDD') /*	신청일          	*/            
+		    ,#TRGT_EMPL#    /*	대상자         	*/                
+		    ,#APPR_EMPL#    /*	신청자              	*/        
+		    ,#HOLY_RESN#    /*	휴가사유        	*/            
+		    ,#STRT_DATE#    /*	휴가기간 시작일 */                
+		    ,#ENDX_DATE#    /*	휴가기간 종료일 */                
+		    ,#HOLY_DAYS#    /*	휴가기간        	*/            
+		    ,#ANNU_NUMB#    /*	연차_발생       	*/            
+		    ,#ANNU_USED#    /*	연차_사용       	*/            
+		    ,#ANNU_REMA#    /*	연차_잔여       	*/     
+		    ,#OCUR_VADC#   	/*  정기_발생       	*/
+	        ,#USEX_VADC#   	/*	정기_사용       	*/
+	        ,#USEB_VADC#   	/*	정기_잔여       	*/            
+		    ,#PRMT_NUMB#    /*	연차_촉진       	*/            
+		    ,#PRMT_REMA#    /*	연차_대상       	*/            
+		    ,#CNCL_GUBN#    /*	취소구분        	*/            
+		    ,#UPDT_USID#    /*  입력작업자 	*/        	          
+		    ,SYSDATE        /*  입력일시  	*/                       
+		    ,#UPDT_USID#    /*  수정작업자 	*/                      
+		    ,SYSDATE        /*  수정일시 	 	*/        
+		)  
+    ]]>
+	</insert>	
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 상세 등록
+********************************************************************************/
+-->
+	<insert id="HATC0030.SAVE02" parameterClass="hashmap">
+	<![CDATA[		
+		INSERT INTO AT_HDAPXD	(	/* 휴가신청등록 테이블 */
+			 DOCU_IDXX		/*	결재 DOC_ID  */                                    
+			,APPR_SEQN      /*	결재 SEQ     */                                        
+			,TRGT_EMPL      /*	대상자         	*/                                     
+			,WORK_GUBN      /*	휴가구분           	*/                             
+			,WORK_DATE      /*	휴가일자        	*/                                 
+			,WORK_TIME      /*	휴가시간		*/                               
+			,INST_USID      /*  입력작업자       */        	
+			,INST_DATE      /*  입력일시  	*/         
+			,UPDT_USID      /*  수정작업자 	*/        
+			,UPDT_DATE      /*  수정일시  	*/         
+		)
+		VALUES (
+			 #DOCU_IDXX#	/*	결재 DOC_ID  */                   
+		    ,#APPR_SEQN#    /*	결재 SEQ     */                   
+		    ,#TRGT_EMPL#    /*	대상자         	*/                
+		    ,#WORK_GUBN#    /*	휴가구분           	*/                             
+			,#WORK_DATE#    /*	휴가일자        	*/                                 
+			,#WORK_TIME#    /*	휴가시간		*/      
+		    ,#UPDT_USID#    /*  입력작업자 	*/        	          
+		    ,SYSDATE        /*  입력일시  	*/                       
+		    ,#UPDT_USID#    /*  수정작업자 	*/                      
+		    ,SYSDATE        /*  수정일시 	 	*/        
+		)  
+    ]]>
+	</insert>		
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 결재해더 수정
+********************************************************************************/
+-->
+	<update id="HATC0030.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		 UPDATE TM_APPRXH   /* HATC0030.SAVE00. 결재해더 테이블 수정 */
+	        SET  EMPL_NUMB  = #EMPL_NUMB#    				/* 사번              */            
+				,APPR_DATE	= TO_CHAR(SYSDATE,'YYYYMMDD')   /* 신청일자*/
+				,SUBJ_NAME	= #SUBJ_NAME#	   				/* 제목              */    
+				,APPR_STAT	= 'N'		       				/* 결재상태    */          
+				,DEPT_CODE  = #DEPT_CODE#   				/* 신청자부서코드    */
+				,INST_USID  = #UPDT_USID#       			/* 입력작업자 */      
+				,INST_DATE  = SYSDATE            			/* 입력일시  */        
+				,UPDT_USID  = #UPDT_USID#        			/* 수정작업자 */       
+				,UPDT_DATE  = SYSDATE            			/* 수정일시  */        
+		  WHERE	 DOCU_IDXX  = #DOCU_IDXX#					/* 결재 DOC_ID*/
+	        AND	 APPR_SEQN  = #APPR_SEQN#    				/* 결재 SEQ  */    		               		
+    ]]>
+	</update>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 헤더 수정
+********************************************************************************/
+-->
+	<insert id="HATC0030.UPDATE01" parameterClass="hashmap">
+	<![CDATA[		
+		UPDATE AT_HDAPXH	 	/* 휴가신청등록 헤더 테이블 */
+		   SET  APPR_DATE  = #APPR_DATE#    /* 신청일          	*/                                                   
+			   ,TRGT_EMPL  = #TRGT_EMPL#    /* 대상자         	*/                                           
+			   ,APPR_EMPL  = #APPR_EMPL#    /* 신청자              	*/                                   
+			   ,HOLY_RESN  = #HOLY_RESN#    /* 휴가사유        	*/                                       
+			   ,STRT_DATE  = #STRT_DATE#    /* 휴가기간 시작일 */                                           
+			   ,ENDX_DATE  = #ENDX_DATE#    /* 휴가기간 종료일 */                                           
+			   ,HOLY_DAYS  = #HOLY_DAYS#    /* 휴가기간        	*/                                       
+			   ,ANNU_NUMB  = #ANNU_NUMB#    /* 연차_발생       	*/                                       
+			   ,ANNU_USED  = #ANNU_USED#    /* 연차_사용       	*/                                       
+			   ,ANNU_REMA  = #ANNU_REMA#    /* 연차_잔여       	*/     
+			   ,OCUR_VADC  = #OCUR_VADC#    /* 정기_발생       	*/                                       
+			   ,USEX_VADC  = #USEX_VADC#    /* 정기_사용       	*/                                       
+			   ,USEB_VADC  = #USEB_VADC#    /* 정기_잔여       	*/                                  
+			   ,PRMT_NUMB  = #PRMT_NUMB#    /* 연차_촉진       	*/                                       
+			   ,PRMT_REMA  = #PRMT_REMA#    /* 연차_대상       	*/                                       
+			   ,CNCL_GUBN  = #CNCL_GUBN#    /* 취소구분        	*/                                       
+			   ,INST_USID  = #UPDT_USID#    /* 입력작업자 	*/        	             
+			   ,INST_DATE  = SYSDATE        /* 입력일시  		*/                       
+			   ,UPDT_USID  = #UPDT_USID#    /* 수정작업자 	*/                       
+			   ,UPDT_DATE  = SYSDATE        /* 수정일시 		*/
+		 WHERE  DOCU_IDXX  = #DOCU_IDXX#	/* 결재 DOC_ID	*/
+	       AND  APPR_SEQN  = #APPR_SEQN#    /* 결재 SEQ  	*/    	
+				  
+    ]]>
+	</insert>		
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청 상세 수정
+********************************************************************************/
+-->
+	<insert id="HATC0030.UPDATE02" parameterClass="hashmap">
+	<![CDATA[		
+		UPDATE AT_HDAPXD		/* 휴가신청등록 상세 테이블 */
+		   SET  TRGT_EMPL  = #TRGT_EMPL#    /* 대상자         	*/                                           
+			   ,WORK_GUBN  = #WORK_GUBN#    /* 휴가구분          	*/                                       
+			   ,WORK_DATE  = #WORK_DATE#    /* 휴가날자       	*/                                       
+			   ,WORK_TIME  = #WORK_TIME#    /* 휴가시간        	*/                                       
+			   ,INST_USID  = #UPDT_USID#    /* 입력작업자 	*/        	             
+			   ,INST_DATE  = SYSDATE        /* 입력일시  		*/                       
+			   ,UPDT_USID  = #UPDT_USID#    /* 수정작업자 	*/                       
+			   ,UPDT_DATE  = SYSDATE        /* 수정일시 		*/
+		 WHERE  DOCU_IDXX  = #DOCU_IDXX#	/* 결재 DOC_ID	*/
+	       AND  APPR_SEQN  = #APPR_SEQN#    /* 결재 SEQ  	*/    	
+				  
+    ]]>
+	</insert>	
+
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청서 결재헤더  삭제
+********************************************************************************/
+-->
+	<delete id="HATC0030.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		BEGIN
+	    	/* HATC0030.DELETE00 결재헤더 테이블 */
+	    	PKG_IFGWAPPROVAL.SP_GWAP_DELETE (
+	    		 #UPDT_USID#	/* 작업자ID*/
+		        ,#DOCU_IDXX#    /* 결재문서양식ID */
+		        ,#APPR_SEQN#    /* 전자결재일련번호 */
+	    	);
+    	END;
+    ]]>
+	</delete>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청서 헤더 내용 삭제
+********************************************************************************/
+-->
+	<delete id="HATC0030.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		DELETE	AT_HDAPXH	/* 휴가사용신청 테이블 */
+		WHERE	DOCU_IDXX 	= #DOCU_IDXX#
+		AND		APPR_SEQN	= #APPR_SEQN#
+    ]]>
+	</delete>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 이창운
+     작  성  일 : 2016.09.20
+     내         용 : 휴가사용신청서 상세 내용 삭제
+********************************************************************************/
+-->
+	<delete id="HATC0030.DELETE02" parameterClass="hashmap">
+	<![CDATA[
+		DELETE	AT_HDAPXD	/* 휴가사용신청 상세 테이블*/
+		WHERE	DOCU_IDXX 	= #DOCU_IDXX#
+		AND		APPR_SEQN	= #APPR_SEQN#
+    ]]>
+	</delete>
+
+<!--
+/*******************************************************************************
+	 작 성 자 : 이창운
+	 작 성 일 : 2016.10.25
+	 내    용 : 월근태 마감여부 조회
+	 비    고 : 
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATC0030.SEARCH05" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT 	/* 월근태 마감 여부 조회 */ 
+    			SF_GET_ENDDXM_YSNO (#ATTE_YMTH#) AS ENDD_YSNO
+    	  FROM 	DUAL
+	]]>
+	</select>
+
+</sqlMap>

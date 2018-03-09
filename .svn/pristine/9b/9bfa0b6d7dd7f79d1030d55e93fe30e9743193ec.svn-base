@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Guide_static" classname="guide02_new" left="0" top="0" width="990" height="986" titletext="Static, 주석,PopupDiv">
+    <Layouts>
+      <Layout>
+        <Static id="Static00" taborder="2" text="농심기획" left="30" top="82" width="120" height="21"/>
+        <Static id="Static03" taborder="4" text="농심기획" enable="false" left="230" top="82" width="120" height="21"/>
+        <Static id="Static28" taborder="58" text="enabled" left="30" top="56" width="62" height="18" cssclass="sta_GID_txt02"/>
+        <Static id="Static29" taborder="59" text="disabled" left="230" top="56" width="65" height="18" cssclass="sta_GID_txt02"/>
+        <TextArea id="TextArea03" taborder="71" value="fs 글자의 크기(fontsize)를 지정합니다.  ex)&lt;fs v='12'&gt;&lt;/fs&gt;&#13;&#10;fc 글자의 색상(fontcolor)를 지정합니다.  ex)&lt;fc v='red'&gt;&lt;/fc&gt;&lt;fc v='#FF00FF'&gt;&lt;/fc&gt;&#13;&#10;ff 글자의 종류(fontface)를 지정합니다.  ex)&lt;ff v='굴림'&gt;&lt;/ff&gt;&#13;&#10;b 굵은글씨를(bold)를 지정합니다. ex)&lt;b v='true'&gt;&lt;/b&gt;&#13;&#10;i 이텔릭체를 (italic)를 지정합니다.  ex)&lt;i v='true'&gt;&lt;/i&gt;&#13;&#10;u 언더라인을(underline)를 지정합니다.  ex)&lt;u v='true'&gt;&lt;/u&gt;&#13;&#10;s 취소선(strike)를 지정합니다.  ex)&lt;s v='true'&gt;&lt;/s&gt;" readonly="true" linespace="3" oneditclick="TextArea03_oneditclick" visible="false" left="425" top="72" width="503" height="113" style="compositecolor:#444444ff;"/>
+        <Static id="Static62" taborder="72" text="usedecorate =&quot;&lt;b v='true'&gt;true&lt;/b&gt;&quot;" usedecorate="true" visible="false" left="425" top="48" width="265" height="21" class="sta_WF_Info_Orange" cssclass="sta_WFSA_Label"/>
+        <Static id="Static60" taborder="102" cssclass="sta_GID_Title" left="0" top="0" height="30" text="Static" right="0"/>
+        <Static id="Static38" taborder="215" text="서브타이틀(01)" cssclass="sta_WF_Subtitle" left="35" top="133" width="116" height="21"/>
+        <Static id="Static10" taborder="216" text="class : &lt;b v='true'&gt;sta_WF_Subtitle&lt;/b&gt;" usedecorate="true" cssclass="sta_GID_txt" left="158" top="133" width="183" height="21"/>
+        <Static id="Static39" taborder="222" text="서브타이틀(02)" cssclass="sta_WF_Subtitle02" left="35" top="161" width="116" height="21"/>
+        <Static id="Static40" taborder="223" text="class : &lt;b v='true'&gt;sta_WF_Subtitle02&lt;/b&gt;" usedecorate="true" cssclass="sta_GID_txt" left="158" top="161" width="183" height="21"/>
+        <Static id="Static42" taborder="224" text="도로명주소가 검색되지 않는 경우 &lt;b v='true'&gt;&lt;fc v='#ed6c44'&gt;도로명주소안내시스템&lt;/b&gt;&lt;/fc&gt;에서 확인하시기 바랍니다." cssclass="sta_WF_Desc01" left="0" top="355" width="528" height="21" usedecorate="true"/>
+        <Static id="Static43" taborder="225" text="지번/도로명/건물명으로 주소 검색 후 선택 주소를 클릭해 주시기 바랍니다." cssclass="sta_WF_Desc01" left="0" top="336" width="528" height="21"/>
+        <Static id="Static44" taborder="226" text="도로명 주소는 도로명과 건물번호로 이루어진 새로운 주소체계입니다." cssclass="sta_WF_Desc01" left="0" top="317" width="528" height="21"/>
+        <Static id="Static45" taborder="227" text="전화번호와 휴대폰번호 중 하나는 필수 입력" cssclass="sta_WF_Info" top="420" right="729" width="261" height="20"/>
+        <Static id="Static36" taborder="231" text="class : sta_WF_Desc01" usedecorate="true" onclick="Static46_onclick" cssclass="sta_GID_txt" left="0" top="293" width="221" height="18" style="font:bold 9 Dotum;"/>
+        <Static id="Static37" taborder="232" text="class : sta_WF_Info" usedecorate="true" onclick="Static46_onclick" cssclass="sta_GID_txt" left="0" top="396" width="221" height="18" style="font:bold 9 Dotum;"/>
+        <Static id="Static01" taborder="233" text="이월가능량 : [영 제 21조]에 의거 다음연도 배출허용총량은 해당연도의 배출허용총량 초과 불가" cssclass="sta_WF_Desc01" left="0" top="482" width="972" height="21"/>
+        <Static id="Static02" taborder="234" text="이월연도 : 다음연도(예..이행연도가 2013년이면 이월연도는 다음연도인 2014년을 의미합니다.  &lt;fc v='#ed6c44'&gt;class : sta_WF_Desc01&lt;/fc&gt;" cssclass="sta_WF_Desc01" left="0" top="463" width="972" height="21" usedecorate="true"/>
+        <Static id="Static04" taborder="235" text="A : 사용가능 배출허용총량(사업장),  B : 전체배출허용총량(차년도),  C : 사용가능배출허용총량(전체)  &lt;fc v='#ed6c44'&gt;class : sta_WF_Desc02&lt;/fc&gt;&#13;&#10;- 사용가능 배출허용총량 : 다른 총량관리사업자에게 이전할 수 있는 배출허용총량 중 당해연도 미사용 배출허용총량" cssclass="sta_WF_Desc02" left="0" top="591" width="972" height="31" usedecorate="true"/>
+        <Static id="Static05" taborder="236" text="이월가능량 직접계산(빈 칸에 해당되는 값을 입력하시면 공식에 맞추어 결과가 계산됩니다.) &lt;fc v='#ed6c44'&gt;class : sta_WF_Desc02&lt;/fc&gt;&#13;&#10;※ 이월할 수 있는 양은 다음연도 배출허용총량이 이행연도의 배출허용총량을 초과하지 못합니다." cssclass="sta_WF_Desc02" left="0" top="556" width="972" height="30" usedecorate="true"/>
+        <Static id="Static06" taborder="237" text="h10" cssclass="sta_GID_box" visible="false" left="304" top="618" width="668" height="10"/>
+        <Static id="Static07" taborder="238" text="h8" cssclass="sta_GID_box" visible="false" left="16" top="478" width="214" height="8"/>
+        <Static id="Static08" taborder="239" text="h10" cssclass="sta_GID_box" visible="false" left="16" top="457" width="214" height="10"/>
+        <Static id="Static11" taborder="240" text="&lt;b v='true'&gt;이월가능량&lt;/b&gt; &lt;fc v='#ed6c44'&gt;class : sta_WF_Desc02&lt;/fc&gt;&#13;&#10;- 질소산화물 : 전체 총량관리 사업자의 이전 가능량 중 미사용량의 합계가 다음연도 전체 총량사업자의 배출허용총량 합계의 10% 이상이므로 이월산정식은 A X 0.1 X (B/C)&#13;&#10;- 황산화물 : 전체 총량관리 사업자의 이전 가능량 중 미사용량의 합계가 다음연도 전체 총량사업자의 배출허용총량 합계의 10% 이상이므로 이월산정식은 A X 0.1 X (B/C)" usedecorate="true" cssclass="sta_WF_Desc02" left="0" top="505" width="972" height="47"/>
+        <Static id="Static12" taborder="241" text="h8" cssclass="sta_GID_box" visible="false" left="16" top="497" width="214" height="8"/>
+        <Static id="Static13" taborder="242" text="h8" cssclass="sta_GID_box" visible="false" left="16" top="548" width="214" height="8"/>
+        <Static id="Static14" taborder="243" text="h8" cssclass="sta_GID_box" visible="false" left="16" top="583" width="214" height="8"/>
+        <Static id="Static09" taborder="245" text="[ 주석 ]" usedecorate="true" onclick="Static46_onclick" cssclass="sta_GID_txt" left="0" top="267" width="221" height="18" style="font:bold 9 Dotum;"/>
+        <Static id="Static15" taborder="246" text="h21" cssclass="sta_GID_box" visible="false" left="16" top="618" width="102" height="21"/>
+        <Static id="Static16" taborder="247" text="h8" cssclass="sta_GID_box" visible="false" left="0" top="332" width="198" height="8"/>
+        <Static id="Static17" taborder="248" text="h8" cssclass="sta_GID_box" visible="false" left="0" top="351" width="198" height="8"/>
+        <PopupDiv id="popINSERT" left="598" top="704" width="278" height="90" scrollbars="none" cssclass="pdiv_WF_insert" visible="true">
+          <Layouts>
+            <Layout>
+              <Static id="Shape0" taborder="20" cssclass="styFormItemBoxOut" left="9" top="9" width="260" height="39"/>
+              <Static id="Static68" taborder="21" text="기준년도" cssclass="styFormItemCapBE" left="29" top="18" width="75" height="21"/>
+              <MaskEdit id="medSTDS_YEAR" taborder="22" type="string" mask="####" onsetfocus="fn_EditFocus" cssclass="styFormItemText" left="98" top="18" width="66" height="21" style="align:center;"/>
+              <Button id="btnINSERT" taborder="23" text="자료생성" onclick="popINSERT_btnINSERT_OnClick" left="166" top="18" width="63" height="21"/>
+              <Button id="Button0" taborder="24" text="닫기" onclick="popINSERT_Button0_OnClick" cssclass="btn_POP_CRUD" left="207" top="56" width="62" height="24"/>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+        <Static id="Static18" taborder="250" text="h8" cssclass="sta_GID_box" visible="false" left="568" top="705" width="182" height="8"/>
+        <Static id="Static19" taborder="251" text="h8" cssclass="sta_GID_box" visible="false" left="568" top="784" width="294" height="8"/>
+        <Static id="Static20" taborder="252" text="w8" cssclass="sta_GID_box" visible="false" left="599" top="724" width="8" height="96"/>
+        <Static id="Static21" taborder="253" text="w8" cssclass="sta_GID_box" visible="false" left="867" top="724" width="8" height="96"/>
+        <Static id="Static22" taborder="254" text="[ PopupDiv 가이드 ]" usedecorate="true" onclick="Static46_onclick" cssclass="sta_GID_txt" left="598" top="678" width="221" height="18" style="font:bold 9 Dotum;"/>
+        <Div id="divFile" taborder="255" left="77" top="704" width="407" height="229" cssclass="divFile" visible="false">
+          <Layouts>
+            <Layout>
+              <Grid id="grdTM_ATFILE" cssclass="styGrid01" taborder="5" binddataset="dsTM_ATFILE" wheelscrollrow="1" autoenter="select" useinputpanel="false" selecttype="multirow" cellsizingtype="both" autofittype="col" oncellclick="grd_oncellclick" left="15" top="48" width="375" height="135" tooltiptype="inplace">
+                <Formats>
+                  <Format id="Default">
+                    <Columns>
+                      <Column size="218"/>
+                      <Column size="120"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="29" band="head"/>
+                      <Row size="26"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell displaytype="text" text="파일명"/>
+                      <Cell col="1" text="다운로드"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell displaytype="text" edittype="none" style=", 1, '#d7f1eeff', 2, '#d9f9aeff',3,'#e6e6e6ff'));align:left;" text="bind:LFIL_NAME"/>
+                      <Cell col="1" displaytype="image" style="cursor:hand;" text="expr:PFIL_NAME == &quot;&quot; ? &quot;&quot; : &quot;theme://imagesNex/button_fileupload/fileDown.gif&quot;"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Static id="imgFormTitle" taborder="6" text="첨부파일" cssclass="styFileTitle" left="0" top="0" right="0" height="33"/>
+              <Button id="btnCancel" taborder="7" text="닫기" onclick="divFile_btnCancel_onclick" cssclass="btn_POP_CRUD" top="191" right="14" width="62" height="24"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="Static23" taborder="256" text="[ Div 팝업 가이드 ]" usedecorate="true" onclick="Static46_onclick" cssclass="sta_GID_txt" left="77" top="678" width="221" height="18" style="font:bold 9 Dotum;"/>
+        <Static id="Static24" taborder="257" text="15" cssclass="sta_GID_box" visible="false" left="78" top="768" width="15" height="96"/>
+        <Static id="Static25" taborder="258" text="15" cssclass="sta_GID_box" visible="false" left="468" top="768" width="15" height="96"/>
+        <Static id="Static26" taborder="259" text="h 12" visible="false" left="404" top="920" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Static id="Static27" taborder="260" text="h 8" visible="false" left="404" top="888" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static30" taborder="261" text="h 15" visible="false" left="230" top="738" width="64" height="15" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

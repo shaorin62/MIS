@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="TXMA0040">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : TXMA0040(매출세금계산서합계표)의 사업장 콤보 정보 조회
+********************************************************************************/
+-->
+	<select id="TXMA0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* TXMA0040.SEARCH00.TXMA0040(매출세금계산서합계표)의 사업장 콤보 정보 조회 */
+               A.SLIP_NUMB   /*전표번호*/
+             , A.SLIP_LINE   /*전표순번*/
+             , A.VATX_SEQN   /*부가세일련번호*/
+             , A.ACCT_GUBN   /*회계단위*/
+             , A.TRNS_DATE   /*발행일자*/
+             , A.EVID_DOCU   /*증빙종류*/
+             , A.SLIP_INPU   /*전표등록구분*/
+             , A.VATX_GUBN   /*매입매출구분*/
+             , A.VATX_TYPE   /*부가세종류*/
+             , A.BULG_GUBN   /*불공제구분*/
+             , A.PURC_GUBN   /*매입구분*/
+             , A.EBIL_GUBN   /*전자발행여부*/
+             , A.CUST_CODE   /*거래처코드*/
+             , SF_GET_CUSTNAME(A.CUST_CODE) AS CUST_NAME /*거래처명*/
+             , A.BSNS_NUMB   /*사업자번호*/
+             , D.MPBZ_NUMB AS SHOPVAT_NM
+           		/* ,Decode(A.BSNS_NUMB, '1188117174', E.OFFI_NAME, D.SHOPVAT_NM) AS SHOPVAT_NM */
+             , A.CARD_NUMB   /*카드번호*/
+             , A.ITEM_NAME   /*품목*/
+             , A.SUPP_AMNT   /*공급가액*/
+             , A.VATX_AMNT   /*세액*/
+             , B.USEX_DEPT   /*귀속부서*/
+             , SF_GET_DEPTNAME(B.USEX_DEPT) AS DEPT_NAME /* 귀속부서명*/
+             , B.REMK_NAME   /*적요*/
+             , C.SLIP_DATE   /*기표일자*/
+             , A.SLIP_NUMB || A.SLIP_LINE AS DISP_NUMB
+             , (SELECT BIZR_NUMB FROM TA_CUSTXM WHERE CUST_CODE = A.CUST_CODE) AS REGS_NO /*거래처사업차번호*/
+             , A.CARD_APPR     /* 카드승인번호 */
+			 , A.ETIS_YSNO     /* 타사이트발행여부 */
+			 , A.DEET_YSNO     /* 신고제외여부 */
+          FROM TA_VATXXM A
+               LEFT JOIN TA_SLIPNT B 
+                      ON A.SLIP_NUMB = B.SLIP_NUMB 
+                     AND A.SLIP_LINE = B.SLIP_LINE
+               LEFT JOIN TA_SLIPXM C 
+                      ON B.SLIP_NUMB = C.SLIP_NUMB
+               LEFT JOIN TA_CUSTXM D 
+                      ON A.CUST_CODE = D.CUST_CODE
+	]]>
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="TRNS_DATE1">
+				<isNotEmpty prepend="AND" property="TRNS_DATE2" >
+					A.TRNS_DATE BETWEEN #TRNS_DATE1# AND #TRNS_DATE2#
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="ACCT_GUBN">
+				A.ACCT_GUBN = #ACCT_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="EVID_DOCU">
+				A.EVID_DOCU = #EVID_DOCU#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="EBIL_GUBN">
+				A.EBIL_GUBN = #EBIL_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="VATX_GUBN">
+				A.VATX_GUBN = #VATX_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="VATX_TYPE">
+				A.VATX_TYPE = #VATX_TYPE#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="PURC_GUBN">
+				A.PURC_GUBN = #PURC_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="BULG_GUBN">
+				A.BULG_GUBN = #BULG_GUBN#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE = #CUST_CODE#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY A.TRNS_DATE,C.SLIP_DATE,A.SLIP_NUMB,A.SLIP_LINE
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.03
+     내      용 : FAMG0180(매출세금계산서합계표(인적사항)조회)
+********************************************************************************/
+-->
+	<select id="TXMA0040.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+            SELECT /* TXMA0040.SEARCH01.FAMG0180(매출세금계산서합계표(인적사항)조회) */
+                   '2' AS ORDE_SEQX
+                 , TO_CHAR(MPBZ_NUMB) AS COMD_CODE
+                 , TO_CHAR(TXAP_CUNM) AS COMD_NAME
+              FROM TA_CUSTXM
+         UNION ALL
+            SELECT '1' AS ORDE_SEQX
+                 , '' AS COMD_CODE
+                 , '전체' AS COMD_CDNM
+              FROM DUAL
+             ORDER BY ORDE_SEQX, COMD_CDNM
+	]]>
+	</select>
+	
+</sqlMap>

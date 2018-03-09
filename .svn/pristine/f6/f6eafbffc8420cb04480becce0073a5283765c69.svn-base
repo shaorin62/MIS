@@ -1,0 +1,797 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="EVMB0010" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" position="absolute" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess" titletext="목표설정서등록">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" taborder="30" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="Static02" taborder="7" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="8" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="st_FormTitle" taborder="9" text="목표설정서등록" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="10" text="홈 &gt; 인사관리 &gt; 업적평가" top="0" right="25" width="640" height="29" cssclass="styFormLocation"/>
+        <Div id="div_ButtonList" taborder="11" tabstop="false" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList" url="common::comButtonType01.xfdl"/>
+        <Button id="btn_favorite" taborder="12" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Button id="btn_PROC" taborder="29" text="제출" onclick="btn_PROC_OnClick" cssclass="btn_WF_Module" left="8" top="35" width="62" height="21" enable="false"/>
+        <Static id="Static03" taborder="46" text="h 6" visible="false" left="8" top="29" width="176" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="47" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="48" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="49" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="50" text="h 4" visible="false" left="8" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Grid id="grdEV_TAEGXD" taborder="1" binddataset="dsEV_TAEGXD" wheelscrollrow="1" useinputpanel="false" selecttype="row" cellsizingtype="both" cellmovingtype="col" autofittype="none" left="8" top="128" right="25" bottom="156" fillareatype="none" autosizingtype="row" extendsizetype="row">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="45"/>
+                <Column size="289"/>
+                <Column size="511"/>
+                <Column size="197"/>
+                <Column size="84"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="순번"/>
+                <Cell col="1" text="핵심과제"/>
+                <Cell col="2" text="추진방법및일정"/>
+                <Cell col="3" text="평가지표"/>
+                <Cell col="4" text="비중도(%)"/>
+              </Band>
+              <Band id="body">
+                <Cell style="align:center;" text="bind:SEQN_NUMB"/>
+                <Cell col="1" style="align:left;" text="bind:PRWK_CNTT" wordwrap="char"/>
+                <Cell col="2" style="align:left;" text="bind:PROB_CNTT" wordwrap="char" autosizerow="limitmin"/>
+                <Cell col="3" style="align:left;" text="bind:EVBS_CNTT" wordwrap="char"/>
+                <Cell col="4" style="align:right;" text="bind:TAIP_RATE" mask="##0" maskchar="_"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="4" style="align:center;" text="합계"/>
+                <Cell col="4" style="align:right;" expr="expr:dataset.getSum('TAIP_RATE')"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static30" taborder="127" text="평가종류" cssclass="styFormSearchCapBe" left="28" top="71" width="70" height="21"/>
+        <Combo id="cmbSHREVAL_NAME" taborder="0" autoselect="true" displayrowcount="20" ontextchanged="fn_clearData" left="96" top="71" width="180" height="21" cssclass="styFormSearchCombo" onitemchanged="cmbSHREVAL_NAME_onitemchanged"/>
+        <Static id="Static31" taborder="129" text="사원번호" cssclass="styFormSearchCapBe" left="305" top="71" width="68" height="21"/>
+        <Edit id="edtSHREMPL_NUMB" taborder="130" enable="true" left="374" top="71" width="80" height="21" cssclass="styFormSearchItem" tabstop="false" readonly="true"/>
+        <Static id="imgHelpSHREMPL_NUMB" taborder="131" cssclass="sytHelpPopup" left="456" top="71" width="21" height="21" enable="false"/>
+        <Edit id="edtSHREMPL_NAME" taborder="132" left="479" top="71" width="100" height="21" cssclass="styFormSearchItem" enable="true" readonly="true" tabstop="false"/>
+        <Button id="btn_PROC00" taborder="133" text="제출취소" onclick="btn_PROC00_OnClick" cssclass="btn_WF_Module" left="73" top="35" width="74" height="21" enable="false"/>
+        <Static id="stInformation" taborder="134" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="107" width="169" height="21"/>
+        <Static id="Static09" taborder="135" text="h 7" visible="false" left="8" top="122" width="48" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="spSearchBox01" taborder="139" cssclass="styFormItemBoxOut" left="8" right="25" bottom="15" height="126" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="Static10" taborder="140" text="순번" cssclass="styFormSearchCapBe" left="28" bottom="111" width="88" height="21"/>
+        <Static id="Static11" taborder="141" text="비중도(%)" cssclass="styFormSearchCapBe" left="316" bottom="111" width="83" height="21"/>
+        <Static id="Static14" taborder="143" text="핵심과제" cssclass="styFormSearchCapBe" left="28" bottom="85" width="88" height="21"/>
+        <Edit id="edtPRWK_CNTT" taborder="5" left="145" bottom="85" height="21" imemode="hangul" maxlength="200" autoselect="true" right="54"/>
+        <Static id="Static20" taborder="162" text="추진방법 및 일정" cssclass="styFormSearchCapBe" left="28" bottom="59" width="120" height="21"/>
+        <TextArea id="txtPROB_CNTT" taborder="6" left="145" bottom="24" height="56" imemode="hangul" maxlength="400" autoselect="true" right="54" wordwrap="char"/>
+        <Static id="Static00" taborder="164" text="평가지표" cssclass="styFormSearchCapBe" left="557" bottom="111" width="83" height="21"/>
+        <Edit id="edtEVBS_CNTT" taborder="4" left="625" bottom="111" height="21" imemode="hangul" maxlength="40" autoselect="true" right="54"/>
+        <MaskEdit id="medTAIP_RATE" taborder="3" mask="###" left="396" width="100" height="21" bottom="111" autoskip="false" autoselect="true" limitbymask="integer"/>
+        <Edit id="edtSEQN_NUMB" taborder="2" left="145" height="21" bottom="111" inputtype="number" style="align:right middle;" maxlength="5" autoselect="true" width="110"/>
+        <Static id="Static01" taborder="165" text="상태" left="633" top="71" width="43" height="21" cssclass="styFormSearchCap"/>
+        <Static id="stInformation1" taborder="167" usedecorate="true" left="678" top="71" width="302" height="21" style="background:#f7f7f7ff;border:1 solid #c9c9c9ff ;font:9 Dotum;" cssclass="styFormSearchCap"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEDFLAG" type="STRING" size="1"/>
+          <Column id="REMK" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsUserCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="COMBOID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+          <Column id="USEYSNO" size="256" prop="default" type="STRING"/>
+          <Column id="PARAM" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="COMBOID">EVM0020</Col>
+            <Col id="DSNAME">dsSHREVAL_NAME</Col>
+            <Col id="HEADFLAG"/>
+            <Col id="PARAM"/>
+            <Col id="USEYSNO">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsEV_TAEGXD">
+        <ColumnInfo>
+          <Column id="SYNT_EACD" size="8" prop="default" type="STRING"/>
+          <Column id="EMPL_NUMB" size="10" prop="default" type="STRING"/>
+          <Column id="SRAL_NUMB" size="5" prop="default" type="BIGDECIMAL"/>
+          <Column id="SEQN_NUMB" size="15" prop="default" type="BIGDECIMAL"/>
+          <Column id="PRWK_CNTT" size="500" prop="default" type="STRING"/>
+          <Column id="PROB_CNTT" size="1000" prop="default" type="STRING"/>
+          <Column id="EVBS_CNTT" size="100" prop="default" type="STRING"/>
+          <Column id="TAIP_RATE" size="3" prop="default" type="BIGDECIMAL"/>
+          <Column id="GLRS_CNTT" size="1000" prop="default" type="STRING"/>
+          <Column id="WRGD_EVSC" size="10" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsEV_WGETXM">
+        <ColumnInfo>
+          <Column id="SYNT_EACD" size="8" prop="default" type="STRING" description="인사평가코드"/>
+          <Column id="EMPL_NUMB" size="10" prop="default" type="STRING" description="사원번호"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING" description="성명"/>
+          <Column id="OPOS_NAME" size="256" prop="default" type="STRING" description="직위명"/>
+          <Column id="SECT_NAME" size="256" prop="default" type="STRING" description="소속명"/>
+          <Column id="DEPT_NAME" size="256" prop="default" type="STRING" description="부서명"/>
+          <Column id="WES1_EMNR" size="256" prop="default" type="STRING" description="업적평가상사1차사원번호"/>
+          <Column id="WES1_EMNM" size="256" prop="default" type="STRING" description="업적평가상사1차사원성명"/>
+          <Column id="WES1_OPOS" size="256" prop="default" type="STRING" description="업적평가상사1차사원직위명"/>
+          <Column id="WES1_SECT" size="256" prop="default" type="STRING" description="업적평가상사1차사원소속명"/>
+          <Column id="WES1_DEPT" size="256" prop="default" type="STRING" description="업적평가상사1차사원부서명"/>
+          <Column id="WES2_EMNR" size="256" prop="default" type="STRING" description="업적평가상사2차사원번호"/>
+          <Column id="WES2_EMNM" size="256" prop="default" type="STRING" description="업적평가상사2차사원성명"/>
+          <Column id="WES2_OPOS" size="256" prop="default" type="STRING" description="업적평가상사2차사원직위명"/>
+          <Column id="WES2_SECT" size="256" prop="default" type="STRING" description="업적평가상사2차사원소속명"/>
+          <Column id="WES2_DEPT" size="256" prop="default" type="STRING" description="업적평가상사2차사원부서명"/>
+          <Column id="EVTT_YSNO" size="1" prop="default" type="STRING" description="피평가자대상여부"/>
+          <Column id="EVRT_YSNO" size="1" prop="default" type="STRING" description="평가자대상여부"/>
+          <Column id="GLRS_YSNO" size="1" prop="default" type="STRING" description="목표설정제출여부"/>
+          <Column id="GLR1_CODE" size="1" prop="default" type="STRING" description="목표설정1차승인코드"/>
+          <Column id="GLR2_CODE" size="1" prop="default" type="STRING" description="목표설정2차승인코드"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edtSEQN_NUMB" propid="value" datasetid="dsEV_TAEGXD" columnid="SEQN_NUMB"/>
+      <BindItem id="item1" compid="medTAIP_RATE" propid="value" datasetid="dsEV_TAEGXD" columnid="TAIP_RATE"/>
+      <BindItem id="item2" compid="edtEVBS_CNTT" propid="value" datasetid="dsEV_TAEGXD" columnid="EVBS_CNTT"/>
+      <BindItem id="item3" compid="edtPRWK_CNTT" propid="value" datasetid="dsEV_TAEGXD" columnid="PRWK_CNTT"/>
+      <BindItem id="item4" compid="txtPROB_CNTT" propid="value" datasetid="dsEV_TAEGXD" columnid="PROB_CNTT"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	EVMB0010 목표설정서등록
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.10.12		김석영		Initial Created.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/ 
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+include "script::lib_script_ubireport.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTT"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "EVMB0010"; 
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) { 
+	 this.sUSERAUTH     = "";   
+	 this.sFORMCAPTION  = "";   
+	 this.sFORMLOCATION = "";   
+	 this.sUSERLAVEL    = "";   
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.fn_GetUserCombo("cmbSHREVAL_NAME");
+	
+	this.edtSHREMPL_NUMB.set_value(application.GBL_EMPLNO);
+	this.edtSHREMPL_NAME.set_value(application.GBL_USERNM);	
+
+	this.div_ButtonList.btnInput.set_enable(false);
+	this.div_ButtonList.btnDelete.set_enable(false);
+	this.div_ButtonList.btnSave.set_enable(false);
+	
+	this.edtSEQN_NUMB.set_readonly(true);
+	this.medTAIP_RATE.set_readonly(true);
+	this.edtEVBS_CNTT.set_readonly(true);
+	this.edtPRWK_CNTT.set_readonly(true);
+	this.txtPROB_CNTT.set_readonly(true);
+	
+	this.btn_PROC.set_enable(false);
+	this.btn_PROC00.set_enable(false);
+
+	this.cmbSHREVAL_NAME.set_index(0);
+	this.cmbSHREVAL_NAME.setFocus();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	if (!this.fn_SearchItemCheck()) return;
+	
+	this.fnc_DatasetClear("dsEV_TAEGXD,dsEV_WGETXM");
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsEV_TAEGXD=dsEV_TAEGXD dsEV_WGETXM=dsEV_WGETXM";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+    var iXMRow     = this.cmbSHREVAL_NAME.index;
+    var sCOMB_CODE = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "COMB_CODE"));
+    var iRow       = this.dsEV_TAEGXD.addRow();
+    
+	this.dsEV_TAEGXD.setColumn(iRow, "SEQN_NUMB", iRow + 1);
+	this.dsEV_TAEGXD.setColumn(iRow, "SYNT_EACD", sCOMB_CODE); //인사평가코드
+	this.dsEV_TAEGXD.setColumn(iRow, "EMPL_NUMB", this.edtSHREMPL_NUMB.value); //사원번호
+	this.dsEV_TAEGXD.set_rowposition(iRow); 
+	this.edtSEQN_NUMB.setFocus();
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	if (this.fn_DeleteCheck()) this.dsEV_TAEGXD.deleteRow(this.dsEV_TAEGXD.rowposition);
+	this.grdEV_TAEGXD.setFocus();
+}
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {	
+	this.fnc_DataSetCancel("dsEV_TAEGXD");
+	this.grdEV_TAEGXD.setFocus();
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	if (!this.fn_SaveItemCheck()) return;
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsEV_TAEGXD=dsEV_TAEGXD:U";
+	var sOutDataSet = "";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdEV_TAEGXD.setFocus();
+
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+
+	var reportfile = "/evm/EVMB0010R01.jrf";
+	
+	var iXMRow = this.cmbSHREVAL_NAME.index;
+	var params  =  "STDS_YEAR#"   + this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "STDS_YEAR"));
+
+	var dataref = new Array();
+	
+	dataref[0] = new Object();
+	dataref[0].type = "TRAN";
+	dataref[0].svcUrl = "/core/erp/evm/EVMB0010_SEARCH00.do";
+	dataref[0].inDataset = ""
+	dataref[0].outDataset = "dsEV_WGETXM=dsEV_WGETXM dsEV_TAEGXD=dsEV_TAEGXD"
+	dataref[0].arg = this.fn_CreateArgument("REPORT00");
+	
+	this.fn_UbiReport(reportfile, params, dataref);
+	
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsEV_TAEGXD", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsEV_TAEGXD")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	this.stInformation1.set_text("");
+	
+	if (this.fnc_Length(this.fnc_Trim(this.cmbSHREVAL_NAME.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "평가명", this.cmbSHREVAL_NAME);
+	}
+	return true;
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	if (this.dsEV_TAEGXD.getRowCount() < 1) {
+		this.fnc_Message("TMM007");
+		return;
+	}
+	
+	var sQuestionText = this.grdEV_TAEGXD.getCellText(this.grdEV_TAEGXD.currentrow, this.grdEV_TAEGXD.getBindCellIndex( "body", "SEQN_NUMB"));
+	return this.fnc_Message("TMM002", "순번 " + sQuestionText);
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	if (!this.fnc_DatasetChangeCheck("dsEV_TAEGXD")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	var nTAIP_RATE_TOT = 0;
+	for (var i = 0; i < this.dsEV_TAEGXD.getRowCount(); i++) {
+		if (this.fnc_Length(this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "SEQN_NUMB"))) < 1) {
+			return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 순번이", this.dsEV_TAEGXD, i, this.edtSEQN_NUMB, "SEQN_NUMB");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "TAIP_RATE"))) < 1) {
+			return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 비중도가", this.dsEV_TAEGXD, i, this.medTAIP_RATE, "TAIP_RATE");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "EVBS_CNTT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 평가지표가", this.dsEV_TAEGXD, i, this.edtEVBS_CNTT, "EVBS_CNTT");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "PRWK_CNTT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 핵심과제가", this.dsEV_TAEGXD, i, this.edtPRWK_CNTT, "PRWK_CNTT");
+		}
+		
+		if (this.fnc_Length(this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "PROB_CNTT"))) < 1) {
+			return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 추진방법 및 일정이", this.dsEV_TAEGXD, i, this.txtPROB_CNTT, "PROB_CNTT");
+		}	
+
+		nTAIP_RATE_TOT += parseInt(this.dsEV_TAEGXD.getColumn(i, "TAIP_RATE"));
+		
+		var sSEQN_NUMB = this.fnc_Trim(this.dsEV_TAEGXD.getColumn(i, "SEQN_NUMB"));
+		for (var j = 0; j < this.dsEV_TAEGXD.getRowCount(); j++) {
+			if(i != j){
+				if(sSEQN_NUMB == this.fnc_Trim(this.dsEV_TAEGXD.getColumn(j, "SEQN_NUMB"))){
+					return this.fnc_CheckPostAction("TMM114", (i+1) + "번째 Row에 동일한 순번", this.dsEV_TAEGXD, j, this.edtSEQN_NUMB, "SEQN_NUMB");
+				}
+			}
+		}		
+	}
+	
+	if(nTAIP_RATE_TOT > 100){
+		this.fnc_Message("EVM008");
+		this.medTAIP_RATE.setFocus();
+		return false;
+	}
+				
+	return true;
+	
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+	
+	// 조회 Argument 생성
+	if (sKind == "SEARCH00") {	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " SYNT_EACD=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHREVAL_NAME.value));
+		sReturnString += " EMPL_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		
+	// 저장 Argument 생성
+	} else if (sKind == "SAVE00") {	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		
+	} else if (sKind == "REPORT00") {	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " SYNT_EACD=" + this.fnc_Quote(this.fnc_Trim(this.cmbSHREVAL_NAME.value));
+		sReturnString += " EMPL_NUMB=" + this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		
+	}
+
+	return sReturnString;
+	
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsEV_TAEGXD.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsEV_TAEGXD.getCaseCount("dataset.getRowLevel(currow)==0"));
+	
+		var iRow = this.dsEV_WGETXM.getRowCount();
+		var iXMRow = this.cmbSHREVAL_NAME.index;
+		var sEVTT_YSNO = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "EVTT_YSNO")); // 피평가자대상여부
+        var sCLSE_YSNO = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "CLSE_YSNO")); // 마감여부
+		var sBUOE_YSNO = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "BUOE_YSNO")); // 목표입력여부
+		
+		this.stInformation1.set_text(" 미제출 상태 입니다.");
+		
+	    if(iRow == 0 || sCLSE_YSNO == '1' || sBUOE_YSNO == '0' || sEVTT_YSNO == '0'){
+			this.div_ButtonList.btnInput.set_enable(false);
+			this.div_ButtonList.btnDelete.set_enable(false);
+			this.div_ButtonList.btnSave.set_enable(false);
+			
+			this.edtSEQN_NUMB.set_readonly(true);
+			this.medTAIP_RATE.set_readonly(true);
+			this.edtEVBS_CNTT.set_readonly(true);
+			this.edtPRWK_CNTT.set_readonly(true);
+			this.txtPROB_CNTT.set_readonly(true);
+			
+			this.btn_PROC.set_enable(false);
+			this.btn_PROC00.set_enable(false);
+		
+			if(sCLSE_YSNO == '1'){
+				this.stInformation1.set_text(" 마감되어 변경할 수 없습니다.");
+			} else if(sBUOE_YSNO == '0'){
+				this.stInformation1.set_text(" 목표입력 기간이 아닙니다.");
+			}			
+			
+			if(sCLSE_YSNO != '1' && sBUOE_YSNO == '1'){
+			    this.stInformation1.set_text(" 피평가자가 아니므로 사용할 수 없습니다.");
+				this.fnc_Message("EVM009");
+			}
+			
+			if(sEVTT_YSNO == '0'){
+			    this.stInformation1.set_text(" 피평가자가 아니므로 사용할 수 없습니다.");
+				this.fnc_Message("EVM009");
+			}
+		} else {
+			var sGLRS_YSNO = this.fnc_Trim(this.dsEV_WGETXM.getColumn(0, "GLRS_YSNO"));	//목표설정제출여부 
+			var sGLR1_CODE = this.fnc_Trim(this.dsEV_WGETXM.getColumn(0, "GLR1_CODE"));	//목표설정1차승인코드
+			var sGLR2_CODE = this.fnc_Trim(this.dsEV_WGETXM.getColumn(0, "GLR2_CODE"));	//목표설정2차승인코드
+			
+			if(sGLRS_YSNO == '0'){
+				this.div_ButtonList.btnInput.set_enable(true);
+				this.div_ButtonList.btnDelete.set_enable(true);
+				this.div_ButtonList.btnSave.set_enable(true);
+			
+				this.edtSEQN_NUMB.set_readonly(false);
+				this.medTAIP_RATE.set_readonly(false);
+				this.edtEVBS_CNTT.set_readonly(false);
+				this.edtPRWK_CNTT.set_readonly(false);
+				this.txtPROB_CNTT.set_readonly(false);
+				
+				this.btn_PROC.set_enable(true);
+				this.btn_PROC00.set_enable(false);
+			} else {
+				if(sGLR1_CODE == '2' || sGLR2_CODE == '2')
+				{
+					this.div_ButtonList.btnInput.set_enable(true);
+					this.div_ButtonList.btnDelete.set_enable(true);
+					this.div_ButtonList.btnSave.set_enable(true);
+				
+					this.edtSEQN_NUMB.set_readonly(false);
+					this.medTAIP_RATE.set_readonly(false);
+					this.edtEVBS_CNTT.set_readonly(false);
+					this.edtPRWK_CNTT.set_readonly(false);
+					this.txtPROB_CNTT.set_readonly(false);
+				
+					this.btn_PROC.set_enable(true);
+					this.btn_PROC00.set_enable(false);
+					
+					if(sGLR1_CODE == '2'){
+						this.stInformation1.set_text(" 1차 평가자가 반려 했습니다.");
+					} else {
+						this.stInformation1.set_text(" 2차 평가자가 반려 했습니다.");
+					}
+				} else {
+					this.div_ButtonList.btnInput.set_enable(false);
+					this.div_ButtonList.btnDelete.set_enable(false);
+					this.div_ButtonList.btnSave.set_enable(false);
+					
+					this.edtSEQN_NUMB.set_readonly(true);
+					this.medTAIP_RATE.set_readonly(true);
+					this.edtEVBS_CNTT.set_readonly(true);
+					this.edtPRWK_CNTT.set_readonly(true);
+					this.txtPROB_CNTT.set_readonly(true);
+					
+					this.btn_PROC.set_enable(false);
+					
+					this.stInformation1.set_text(" 제출 상태 입니다.");
+					
+					if(sGLR1_CODE == '1'){
+					    this.stInformation1.set_text(" 1차 평가자가 승인 했습니다.");
+						this.btn_PROC00.set_enable(false);
+					} else if(sGLR2_CODE == '1'){
+					    this.stInformation1.set_text(" 2차 평가자가 승인 했습니다.");
+						this.btn_PROC00.set_enable(false);
+					} else {
+					    this.btn_PROC00.set_enable(true);
+					}
+				}				
+			}						
+		}	
+				
+	} else if (sMethodName == "SAVE00") {
+		this.fnc_Information(this.stInformation, 0, "SAVE");
+		this.fnc_Message("TMM103");
+		this.fn_Search();
+		
+	} else if (sMethodName == "REPORT00") {
+		
+	} else if (sMethodName == "PROC00") {
+		this.fnc_Message("EVM003");
+		this.fn_Search();
+		
+	} else if (sMethodName == "PROC01") {
+		this.fnc_Message("EVM003");
+		this.fn_Search();
+		
+	} else if (sMethodName == "GetCommCode") {
+		
+	} else if (sMethodName == "GetUserComboCode") {
+		var arrParam = new Array();
+		
+		arrParam[0] = "COMBO,cmbSHREVAL_NAME,dsSHREVAL_NAME,0";
+		this.fnc_UserComboInnerBind(arrParam);
+	}
+
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+
+}
+
+
+/***************************************************************************************************
+ *                                     사용자 정의 Function 처리 부분                           *
+ ***************************************************************************************************/
+/*-------------------------------+
+ | 조회조건 평가명 콤보|
+ +------------------------------*/
+this.fn_GetUserCombo = function (oComboId) {
+	var arrParam  = new Array();
+	var arrParam2 = new Array();
+	
+	arrParam[0] = this.dsUserCombo.getColumn(0, "DSNAME");
+	arrParam[1] = this.dsUserCombo.getColumn(0, "COMBOID");
+	arrParam[2] = this.dsUserCombo.getColumn(0, "HEADFLAG");
+	arrParam[3] = this.dsUserCombo.getColumn(0, "USEYSNO");
+	arrParam[4] = this.dsUserCombo.getColumn(0, "PARAM");
+	    	    	        
+    arrParam2[0] = "COMBO,cmbSHREVAL_NAME,dsSHREVAL_NAME,0";
+			
+	this.fnc_GetUserComboSingle(arrParam, arrParam2);
+	
+}
+
+this.cmbSHREVAL_NAME_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo)
+{
+	if (this.fnc_DatasetChangeCheck("dsEV_TAEGXD")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	
+	this.fnc_DatasetClear("dsEV_TAEGXD");
+	
+	var iXMRow = this.cmbSHREVAL_NAME.index;
+    var sCLSE_YSNO = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "CLSE_YSNO")); // 마감여부
+    var sBUOE_YSNO = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "BUOE_YSNO")); // 목표입력여부
+		
+	if(sCLSE_YSNO == '1' || sBUOE_YSNO == '0'){
+		this.div_ButtonList.btnInput.set_enable(false);
+		this.div_ButtonList.btnDelete.set_enable(false);
+		this.div_ButtonList.btnSave.set_enable(false);
+		
+		this.edtSEQN_NUMB.set_readonly(true);
+		this.medTAIP_RATE.set_readonly(true);
+		this.edtEVBS_CNTT.set_readonly(true);
+		this.edtPRWK_CNTT.set_readonly(true);
+		this.txtPROB_CNTT.set_readonly(true);
+		
+		this.btn_PROC.set_enable(false);
+		this.btn_PROC00.set_enable(false);
+				
+		if(sCLSE_YSNO == '1'){
+		    this.stInformation1.set_text(" 마감되어 변경할 수 없습니다.");
+			this.fnc_Message("EVM010");
+		} else if(sBUOE_YSNO == '0'){
+		    this.stInformation1.set_text(" 목표입력 기간이 아닙니다.");
+			this.fnc_Message("EVM015");
+		}
+		
+	} else {
+	    this.div_ButtonList.btnInput.set_enable(true);
+		this.div_ButtonList.btnDelete.set_enable(true);
+		this.div_ButtonList.btnSave.set_enable(true);
+		
+		this.edtSEQN_NUMB.set_readonly(false);
+		this.medTAIP_RATE.set_readonly(false);
+		this.edtEVBS_CNTT.set_readonly(false);
+		this.edtPRWK_CNTT.set_readonly(false);
+		this.txtPROB_CNTT.set_readonly(false);
+		
+		this.btn_PROC.set_enable(true);
+		this.btn_PROC00.set_enable(true);
+		
+	}
+	
+	this.fn_Search();
+}
+
+/*-------------------------------+
+ | 제출 처리                    |
+ +------------------------------*/
+this.btn_PROC_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	if (this.fnc_DatasetChangeCheck("dsEV_TAEGXD")) {
+		if (this.fnc_Message("EVM022") == false) return false;
+	}
+	
+	if (!this.fn_EVAL_OnCheck("PROC00")) return;
+	
+	this.fnc_DatasetClear("dsEV_TAEGXD");
+
+	var sInDataSet 	= "";
+	var sMethodName = "PROC00";
+	var sOutDataSet = "";
+	var sArgument   = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sArgument  += " action="	+ this.fnc_Quote(sMethodName);
+		sArgument  += " SYNT_EACD=" + this.fnc_Quote(this.cmbSHREVAL_NAME.value);
+		sArgument  += " EMPL_NUMB=" + this.fnc_Quote(this.edtSHREMPL_NUMB.value);
+	
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+/*-------------------------------+
+ | 제출취소 처리               |
+ +------------------------------*/
+this.btn_PROC00_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	if (!this.fn_EVAL_OnCheck("PROC01")) return;
+	
+	this.fnc_DatasetClear("dsEV_TAEGXD");
+
+	var sInDataSet 	= "";
+	var sMethodName = "PROC01";
+	var sOutDataSet = "";
+	var sArgument   = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sArgument  += " action="	+ this.fnc_Quote(sMethodName);
+		sArgument  += " SYNT_EACD=" + this.fnc_Quote(this.cmbSHREVAL_NAME.value);
+		sArgument  += " EMPL_NUMB=" + this.fnc_Quote(this.edtSHREMPL_NUMB.value);
+	
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	
+}
+
+this.fn_EVAL_OnCheck = function(sMethodName){
+	if (this.fnc_Length(this.fnc_Trim(this.cmbSHREVAL_NAME.value)) < 1) {
+		return this.fnc_SearchCheckPostAction("TMM072", "평가명", this.cmbSHREVAL_NAME);
+	}
+	
+	var iXMRow = this.cmbSHREVAL_NAME.index;
+    var sCOMB_NAME = this.fnc_Trim(this.dsSHREVAL_NAME.getColumn(iXMRow, "COMB_NAME"));
+	
+	if (sMethodName == "PROC00") {
+		var nTAIP_RATE_TOT = 0;
+		for (var i = 0; i < this.dsEV_TAEGXD.getRowCount(); i++) {
+			nTAIP_RATE_TOT += parseInt(this.dsEV_TAEGXD.getColumn(i, "TAIP_RATE"));
+			
+		}
+		
+		if(nTAIP_RATE_TOT != 100){
+			this.fnc_Message("EVM008");
+			return false;
+		}
+		
+		if (this.fnc_Message("EVM011", sCOMB_NAME) == false) return false;
+		
+	} else if (sMethodName == "PROC01") {
+		if (this.fnc_Message("EVM012", sCOMB_NAME) == false) return false;
+		
+	}
+	
+	return true;
+}]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,539 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="HRME0040" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="발령현황조회" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Edit id="edtSHRCPOS_CODE" taborder="35" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="101" top="97" width="180" height="21" visible="false"/>
+        <Edit id="edtSHROPOS_CODE" taborder="36" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="347" top="97" width="156" height="21" visible="false"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="200" height="21" cssclass="styFormSearchInfo" top="133" taborder="17" usedecorate="true"/>
+        <Grid autoenter="TRUE" binddataset="dsHR_APPOXD" cellsizingtype="row" enable="true" id="grdHR_APPOXD" useinputpanel="false" selecttype="row" taborder="24" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" cssclass="styGrid01" right="25" top="154" bottom="15">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="60"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="80"/>
+                <Column size="120"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="200"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="발령구분"/>
+                <Cell col="1" text="발령일"/>
+                <Cell col="2" text="사원번호"/>
+                <Cell col="3" text="성명"/>
+                <Cell col="4" text="소속"/>
+                <Cell col="5" text="부서"/>
+                <Cell col="6" text="발령종료일"/>
+                <Cell col="7" text="발령순번"/>
+                <Cell col="8" text="직급"/>
+                <Cell col="9" text="직위"/>
+                <Cell col="10" text="경력직위년차"/>
+                <Cell col="11" text="직책"/>
+                <Cell col="12" text="직무"/>
+                <Cell col="13" text="퇴직사유"/>
+                <Cell col="14" text="근무상태"/>
+                <Cell col="15" displaytype="text" text="겸직부서"/>
+                <Cell col="16" text="겸직직책"/>
+                <Cell col="17" text="파견부서"/>
+                <Cell col="18" displaytype="text" text="파견지"/>
+                <Cell col="19" text="부서장여부"/>
+                <Cell col="20" text="비고"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:APDN_NAME" calendardisplaynulltype="none"/>
+                <Cell col="1" displaytype="date" text="bind:APNT_DATE" calendardisplaynulltype="none"/>
+                <Cell col="2" displaytype="text" text="bind:EMPL_NUMB"/>
+                <Cell col="3" displaytype="text" text="bind:EMPL_NAME"/>
+                <Cell col="4" displaytype="text" style="align:left;" text="bind:SECT_NAME"/>
+                <Cell col="5" displaytype="text" style="align:left;" text="bind:DEPT_NAME"/>
+                <Cell col="6" displaytype="date" text="bind:APNT_ENDD" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="text" style="align: ;" text="bind:APNT_SEQN"/>
+                <Cell col="8" displaytype="text" style="align:left;" text="bind:CPOS_NAME"/>
+                <Cell col="9" displaytype="text" style="align:left;" text="bind:OPOS_NAME"/>
+                <Cell col="10" displaytype="text" style="align:left;" text="bind:CIBP_ANNU"/>
+                <Cell col="11" displaytype="text" style="align:left;" text="bind:DURS_NAME"/>
+                <Cell col="12" displaytype="text" style="align:left;" text="bind:DUTY_NAME"/>
+                <Cell col="13" displaytype="text" style="align:left;" text="bind:RTTY_NAME"/>
+                <Cell col="14" displaytype="text" style="align:left;" text="bind:WRKS_CODE"/>
+                <Cell col="15" displaytype="text" style="align:left;" text="bind:ADJN_NAME"/>
+                <Cell col="16" displaytype="text" style="align:left;" text="bind:ADDT_NAME"/>
+                <Cell col="17" displaytype="text" style="align:left;" text="bind:DSPT_NAME"/>
+                <Cell col="18" displaytype="text" style="align:left;" text="bind:EXTR_PLDH"/>
+                <Cell col="19" displaytype="checkbox" text="bind:DTMN_YSNO"/>
+                <Cell col="20" displaytype="text" text="bind:REMK_200X"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="spSearchBox1" position="absolute" left="8" top="60" height="69" cssclass="styFormSearchBox" right="25" taborder="18"/>
+        <Static id="imgSearchTitle5" text="직원구분" position="absolute" style="align:left;" left="911" width="70" top="71" height="21" cssclass="styFormSearchCap" taborder="19"/>
+        <Combo id="cmbSHRWRDV_CODE" onsetfocus="fn_EditFocus" taborder="4" position="absolute" left="979" width="100" top="71" height="21" cssclass="styFormSearchCombo" index="-1" displayrowcount="15"/>
+        <Static id="Image0" text="발령기간" position="absolute" style="align:left;" left="28" width="70" top="71" height="21" cssclass="styFormSearchCapBe" taborder="20"/>
+        <Static id="Image1" text="부서" position="absolute" style="align:left;" left="344" width="52" top="71" height="21" cssclass="styFormSearchCap" taborder="21"/>
+        <Static id="Image3" text="직위" position="absolute" style="align:left;" left="344" width="52" top="97" height="21" cssclass="styFormSearchCap" taborder="22"/>
+        <Edit autoselect="true" lengthunit="ascii" enable="false" id="edtSHRDEPT_CODE" maxlength="10" onsetfocus="fn_EditFocus" taborder="9" position="absolute" left="386" width="80" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="imgHelpSHRDEPT_CODE" cssclass="sytHelpPopup" onclick="fn_HelpDialoge" transparenthittest="false" position="absolute" left="468" width="22" top="71" height="21" taborder="10"/>
+        <Edit autoselect="true" lengthunit="ascii" id="edtSHRDEPT_NAME" imemode="hangul" maxlength="50" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" taborder="2" position="absolute" left="491" width="100" top="71" height="21" cssclass="styFormSearchItem"/>
+        <Static id="imgSearchTitle3" taborder="27" text="사원" cssclass="styFormSearchCap" top="71" height="21" style="align:left;" width="70" left="618"/>
+        <Static id="Image02" taborder="28" text="발령구분" cssclass="styFormSearchCap" left="618" top="97" width="70" height="21" style="align:left;"/>
+        <Combo id="cmbSHRAPDN_CODE" taborder="7" type="search" displayrowcount="15" onsetfocus="fn_EditFocus" cssclass="styFormSearchCombo" left="686" top="97" width="103" height="21" index="-1"/>
+        <Calendar id="calSHRDISP_STDT" taborder="0" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="96" top="71" width="100" height="21"/>
+        <Static id="Static15" taborder="29" text="~" left="201" top="71" width="14" height="21"/>
+        <Calendar id="calSHRDISP_ENDT" taborder="1" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="216" top="71" width="100" height="21"/>
+        <Edit id="edtSHREMPL_NUMB" taborder="11" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="686" top="71" width="80" height="21"/>
+        <Edit id="edtSHREMPL_NAME" taborder="3" imemode="hangul" lengthunit="ascii" maxlength="50" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="791" top="71" width="92" height="21"/>
+        <Static id="imgHelpSHREMPL_NUMB" taborder="12" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="768" top="71" width="22" height="21"/>
+        <Static id="Image05" taborder="30" text="직급" cssclass="styFormSearchCap" left="28" top="97" width="70" height="21" style="align:left;"/>
+        <Edit id="edtSHRCPOS_NAME" taborder="5" lengthunit="ascii" maxlength="10" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="96" top="97" width="100" height="21" onkillfocus="fn_HelpDialoge"/>
+        <Static id="imgHelpSHRCPOS_CODE" taborder="13" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="198" top="97" width="22" height="21"/>
+        <Edit id="edtSHROPOS_NAME" taborder="6" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="true" left="386" top="97" width="181" height="21" onkillfocus="fn_HelpDialoge"/>
+        <Static id="imgHelpSHROPOS_CODE" taborder="14" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="569" top="97" width="22" height="21"/>
+        <Static id="st_FormTitle" taborder="37" text="발령현황조회" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="38" text="홈 &gt; 인사관리 &gt; 발령관리 &gt; 인사발령현황" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="39" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="40" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="41" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="42" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="43" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="44" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="45" text="h 25" visible="false" left="573" top="129" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="46" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="47" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="48" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="49" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="50" text="w 40" visible="false" left="316" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="51" text="h 6" visible="false" left="8" top="148" width="216" height="6" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">APDN_CODE</Col>
+            <Col id="DSNAME">dsAPDN_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+          <Row>
+            <Col id="CODEID">WRDV_CODE</Col>
+            <Col id="DSNAME">dsWRDV_CODE</Col>
+            <Col id="HEADFLAG">ALL</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsHR_APPOXD">
+        <ColumnInfo>
+          <Column id="EMPL_NUMB" size="256" prop="default" type="STRING"/>
+          <Column id="EMPL_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="APNT_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="APDN_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DEPT_CODE" size="256" prop="default" type="STRING"/>
+          <Column id="SECT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DEPT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="CPOS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="PSTP_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DURS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DRTY_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="JBGP_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DUTY_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DTLV_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="OPOS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="PYTY_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="WRKS_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="DTMN_YSNO" size="256" prop="default" type="STRING"/>
+          <Column id="DSPT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="EXTR_PLDH" size="256" prop="default" type="STRING"/>
+          <Column id="ADJN_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="ADDT_NAME" size="256" prop="default" type="STRING"/>
+          <Column id="APNT_INNM" size="256" prop="default" type="STRING"/>
+          <Column id="APNT_ENDD" size="256" prop="default" type="STRING"/>
+          <Column id="REMK_200X" size="256" prop="default" type="STRING"/>
+          <Column id="PROC_DATE" size="256" prop="default" type="STRING"/>
+          <Column id="PROC_EMPL" size="256" prop="default" type="STRING"/>
+          <Column id="APNT_SEQN" size="256" prop="default" type="STRING"/>
+          <Column id="CIBP_ANNU" size="256" prop="default" type="STRING"/>
+          <Column id="RTTY_NAME" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program:   HRME0040 발령현황조회
+ *
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date           Modifier    Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.07.14		고민주		Initial Created.
+ *   2016.10.13		안윤준		수정.
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다.
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTFFFFTF";
+this.sPACKAGENAME = "HRME0040";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	this.sUSERAUTH     = "";
+	this.sFORMCAPTION  = "";
+	this.sFORMLOCATION = "";
+	this.sUSERLAVEL    = "";
+
+} else {
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	this.fnc_GetComboDs(this.dsCombo);
+	this.calSHRDISP_STDT.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"),0,4)+ "0101");
+	this.calSHRDISP_ENDT.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE")));
+	
+	switch(this.sUSERLAVEL) {
+		case "1":	//관리자
+			break;
+
+		case "2":	//소속
+
+			break;
+
+		case "3":  	//
+			break;
+
+		case "4":	//부서
+			this.edtSHRDEPT_NAME.set_readonly(true);
+			this.imgHelpSHRDEPT_CODE.set_enable(false);
+			this.edtSHRDEPT_CODE.set_value(application.GBL_DEPTCD);
+			this.edtSHRDEPT_NAME.set_value(application.GBL_DEPTNM);
+
+			break;
+
+		case "5":  //개인
+			this.imgHelpSHRDEPT_CODE.set_enable(false);
+			this.edtSHRDEPT_NAME.set_readonly(true);
+			this.imgHelpSHREMPL_NUMB.set_enable(false);
+			this.edtSHREMPL_NAME.set_readonly(true);
+
+			this.edtSHREMPL_NUMB.set_value(application.GBL_EMPLNO);
+			this.edtSHREMPL_NAME.set_value(application.GBL_USERNM);
+
+			break;
+
+	}
+	
+	this.calSHRDISP_STDT.setFocus();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+	this.close();
+
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsHR_APPOXD");
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet 	= "";
+	var sOutDataSet = "dsHR_APPOXD=dsHR_APPOXD";
+	var sArgument 	= this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");	
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsHR_APPOXD");
+	this.grdHR_APPOXD.setFocus();
+
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this.name);
+
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsHR_APPOXD", this);
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+	this.fnc_FormUnload(obj,e);
+
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+
+	if (this.fnc_DatasetChangeCheck("dsHR_APPOXD")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRDISP_STDT.value)) < 8) {
+		return this.fnc_SearchCheckPostAction("TMM072", "발령기간", this.calSHRDISP_STDT);
+	}
+	if (this.fnc_Length(this.fnc_Trim(this.calSHRDISP_ENDT.value)) < 8) {
+		return this.fnc_SearchCheckPostAction("TMM072", "발령기간", this.calSHRDISP_ENDT);
+	}
+	if (this.fnc_Trim(this.calSHRDISP_STDT.value) > this.fnc_Trim(this.calSHRDISP_ENDT.value)) {
+		return this.fnc_SearchCheckPostAction("TMM042", "발령시작일,발령종료일", this.calSHRDISP_STDT);
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	return true;
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+	return true;
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+		sReturnString  = " pgm=" 		+ this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" 	+ this.fnc_Quote(sKind);
+		sReturnString += " DEPT_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRDEPT_CODE.value));
+		sReturnString += " APNT_DATE1=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDISP_STDT.value));
+		sReturnString += " APNT_DATE2=" + this.fnc_Quote(this.fnc_Trim(this.calSHRDISP_ENDT.value));
+		sReturnString += " EMPL_NUMB=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHREMPL_NUMB.value));
+		sReturnString += " APDN_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRAPDN_CODE.value));
+		sReturnString += " WRDV_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.cmbSHRWRDV_CODE.value));
+		sReturnString += " CPOS_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHRCPOS_CODE.value));
+		sReturnString += " OPOS_CODE=" 	+ this.fnc_Quote(this.fnc_Trim(this.edtSHROPOS_CODE.value));
+
+	}
+
+	return sReturnString;
+
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+			
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+			
+		}
+	} else {
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+		this.fnc_Information(this.stInformation, this.dsHR_APPOXD.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsHR_APPOXD.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.grdHR_APPOXD.setFocus();
+
+	} else if (sMethodName == "GetCommCode") {
+		var arrParam = new Array();
+			arrParam[0] = "COMBO,cmbSHRWRDV_CODE,dsWRDV_CODE,0";
+			arrParam[1] = "COMBO,cmbSHRAPDN_CODE,dsAPDN_CODE,0";
+		this.fnc_CommonCodeInnerBind(arrParam);
+	}
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+}
+
+
+/***************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/*-----------------------+
+ |  팝업 Setting  |
+ +------------------------*/
+this.fn_HelpDialoge = function (obj, sFromDs, sOldValue) {
+
+	var arrParam = new Array();
+	
+	if ((obj.name == "imgHelpSHRDEPT_CODE") || (obj.name == "edtSHRDEPT_NAME")) { // 조회조건 - 부서정보조회(Popup)
+		arrParam[0] = "TMM0004";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHRDEPT_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRDEPT_NAME";
+		arrParam[5] = "edtSHRDEPT_CODE,edtSHRDEPT_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSHREMPL_NUMB") || (obj.name == "edtSHREMPL_NAME")) { // 조회조건 - 사원정보조회(Popup)
+		arrParam[0] = "HRM0001";
+		arrParam[1] = this.edtSHRDEPT_CODE.value;
+		arrParam[2] = this.fnc_Trim(this.edtSHREMPL_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHREMPL_NAME";
+		arrParam[5] = "edtSHREMPL_NUMB,edtSHREMPL_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSHRCPOS_CODE") || (obj.name == "edtSHRCPOS_NAME")) { // 조회조건 - 직급정보조회(Popup)
+		arrParam[0] = "TMM1000";
+		arrParam[1] = "CPOS_CODE";
+		arrParam[2] = this.fnc_Trim(this.edtSHRCPOS_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRCPOS_NAME";
+		arrParam[5] = "edtSHRCPOS_CODE,edtSHRCPOS_NAME";
+		arrParam[6] = "0,1";
+		
+	} else if ((obj.name == "imgHelpSHROPOS_CODE") || (obj.name == "edtSHROPOS_NAME")) { // 조회조건 - 직무정보조회(Popup)
+		arrParam[0] = "TMM1000";
+		arrParam[1] = "OPOS_CODE";
+		arrParam[2] = this.fnc_Trim(this.edtSHROPOS_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHROPOS_NAME";
+		arrParam[5] = "edtSHROPOS_CODE,edtSHROPOS_NAME";
+		arrParam[6] = "0,1";
+		
+	}
+	
+	this.fnc_HelpDialogeAction(this, obj, arrParam);
+
+}
+]]></Script>
+  </Form>
+</FDL>

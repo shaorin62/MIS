@@ -1,0 +1,2403 @@
+﻿/************************************************************/
+/***** PROJECT NAME : nexacro platform Default THEME ********/
+/***** DRAFTER : TOBESOFT DESIGN TEAM		     ********/
+/***** DISTRIBUTION DATE : 2016.03.09                ********/
+/***** AMENDER : 				     ********/
+/***** MODIIFICATION DATES : 			     ********/
+/************************************************************/
+
+/***** FRAME OBJECT GROUP START *****/
+/* MainFrame */
+MainFrame
+{
+	accessibility		: ;
+	background		: transparent;
+	border			: 0 none;
+	color			: #444444;
+	font			: ;
+	gradation		: ;
+	menubarheight		: ;
+	opacity			: ;
+	openstatuseffect	: ;
+	statusbarheight		: 33;
+	titlebarheight		: 33;
+}
+MainFrame:deactivate
+{
+	border			: 2 solid #235798;
+}
+
+/* ChildFrame */
+ChildFrame
+{
+	accessibility		: ;
+	align			: left top;
+	background		: #ffffff;
+	border			: 0 none;
+	color			: ;
+	font			: ;
+	gradation		: ;
+	opacity			: ;
+	openstatuseffect	: ;
+	statusbarheight		: ;
+	titlebarheight		: 33;
+}
+
+/* TitleBarControl */
+TitleBarControl
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: #698beb;
+	border			: 0 none #808080;
+	bordertype		: normal;
+	color			: #ffffff;
+	cursor			: ;
+	font			: bold 11 Dotum;
+	icon			: ;
+	stepalign		: ;
+	stepshowtype		: ;
+}
+
+/*The Controlbutton was fixed at W:22px H:20px */
+TitleBarControl>#minbutton
+{	
+	accessibility		: ;
+	align			: ;
+	background		: transparent;
+	border			: 0 none #808080;
+	bordertype		: normal;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: theme://images/btn_Titlebar_min.png;
+	imagealign		: ;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+TitleBarControl>#minbutton:mouseover
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_min_O.png;
+}
+TitleBarControl>#minbutton:pushed
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_min_P.png;
+}
+TitleBarControl>#maxbutton
+{
+	accessibility		: ;
+	align			: ;
+	background		: transparent;
+	border			: 0 none #808080;
+	bordertype		: normal;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: theme://images/btn_Titlebar_max.png;
+	imagealign		: ;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+TitleBarControl>#maxbutton:mouseover
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_max_O.png;
+}
+TitleBarControl>#maxbutton:pushed
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_max_P.png;
+}
+TitleBarControl>#normalbutton
+{
+	accessibility		: ;
+	align			: ;
+	background		: transparent;
+	border			: 0 none #808080;
+	bordertype		: normal;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: theme://images/btn_Titlebar_normal.png;
+	imagealign		: ;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+TitleBarControl>#normalbutton:mouseover
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_normal_O.png;
+}
+TitleBarControl>#normalbutton:pushed
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: theme://images/btn_Titlebar_normal_P.png;
+}
+TitleBarControl>#closebutton
+{
+	accessibility		: ;
+	align			: ;
+	background		: transparent;
+	border			: 0 none #808080;
+	bordertype		: normal;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: URL('theme://images/btn_Titlebar_close.png');
+	imagealign		: ;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+TitleBarControl>#closebutton:mouseover
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: URL('theme://images/btn_Titlebar_close_O.png');
+}
+TitleBarControl>#closebutton:pushed
+{
+	border			: 0 none #808080;
+	background		: transparent;
+	image			: URL('theme://images/btn_Titlebar_close_P.png');
+}
+/* StatusBarControl */
+StatusBarControl
+{
+	align			: left middle;
+	background		: #f2f2ef;
+	border			: 1 solid #a8a8a2, 0 none, 0 none, 0 none;
+	bordertype		: round 3 3 leftbottom rightbottom;
+	color			: #46463d;
+	font			: 9 Dotum;
+	gripimage		: theme://images/img_grip.png;
+	padding			: 0 0 0 12;
+	progressbargap		: 5;
+	progressbarheight	: 21;
+	progressbarwidth	: 260;
+	zoomcombogap		: 10;
+	zoomcomboheight		: 21;
+	zoomcombowidth		: 80;
+}
+StatusBarControl>#progressbar
+{
+	align			: center middle;
+	background		: transparent;
+	barcolor		: #cdcdc8;
+	bartype			: normal;
+	border			: 1 solid #a8a8a2;
+	color			: #444444;
+	direction		: forward;
+	font			: 9 Dotum;
+	padding			: 1 1 1 1;
+	smooth			: true;
+}
+StatusBarControl>#zoomcombo
+{
+	align			: left middle;
+	background		: #f2f2ef URL('theme://images/ico_zoomcombo.png') left middle;
+	border			: 1 solid #a8a8a2;
+	buttonsize		: 16;
+	color			: #5a280b;
+	font			: 9 Dotum;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itemcolor		: #6e6e63;
+	itemheight		: 20;
+	itempadding		: 0 5 0 8;
+	padding			: 1 1 1 1;
+}
+StatusBarControl>#zoomcombo:mouseover
+{
+	itembackground		: #f2f2ef;
+	itemcolor		: #5a280b;
+}
+StatusBarControl>#zoomcombo:selected
+{
+	itembackground		: #e0e0d9;
+	itemcolor		: #5a280b;
+}
+StatusBarControl>#zoomcombo>#comboedit
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	color			: #5a280b;
+	font			: 9 Dotum;
+	padding			: 0 0 0 20;	
+}
+StatusBarControl>#zoomcombo>#comboedit:mouseover, StatusbarFormControl>#zoomcombo>#comboedit:focused
+{
+	caretcolor		: #3da2df;
+	compositecolor		: #ffffff;
+	selectbackground	: #3da2df;
+	selectcolor 		: #ffffff;
+}
+StatusBarControl>#zoomcombo>#dropbutton
+{
+	background		: transparent;
+	border			: 1 solid #a8a8a2;
+	image			: theme://images/btn_drop_N.png;
+	imagealign		: center middle;
+}
+StatusBarControl>#zoomcombo>#dropbutton:mouseover
+{
+	background		: transparent;
+	image			: theme://images/btn_drop_O.png;
+}
+StatusBarControl>#zoomcombo>#dropbutton:pushed
+{
+	background		: #e1e1da;
+	image			: theme://images/btn_drop_P.png;
+}
+StatusBarControl>#zoomcombo>#combolist
+{
+	background		: #ffffff;
+	border			: 1 solid #a8a8a2;
+	align			: left middle;
+	font			: 9 Dotum;
+	color			: #6e6e63;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itemcolor		: #6e6e63;
+	itemheight		: 20;
+	itempadding		: 0 5 0 8;
+	
+}
+/***** FRAME OBJECT GROUP END *****/
+
+/***** BASIC COMPONENT START *****/
+/* FORM */
+Form
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+}
+/*** 기본스크롤바 border 박스컴퍼넌트 일때, 이중겹침으로 겹치지 않는 부분만 보더 생성함 ***/ 
+/* ScrollBar */
+/* VScrollBarControl */
+VScrollBarControl
+{
+	accessibility		: ;
+	align			: ;
+	background		: #f7f7f7;
+	barminsize		: 45;
+	baroutsize		: ;
+	border			: 0 none, 0 none, 0 none, 1 solid #c2c2c2;
+	bordertype		: normal;
+	cursor			: auto;
+	decbtnsize		: 14;
+	imgoutsize		: ;
+	incbtnsize		: 14;
+	padding			: ;
+	scrollbarsize		: 14;
+	trackbarsize		: ;
+}
+VScrollBarControl:disabled
+{
+	border			: 0 none, 0 none, 0 none, 1 solid #cfcfcf;
+}
+/***/
+VScrollBarControl>#trackbar, HScrollBarControl>#trackbar
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: #c5c6c7;
+	border			: 1 solid #ffffff;
+	bordertype		: normal;
+	imagealign		: center middle;
+	padding			: 0 0 0 0;
+}
+VScrollBarControl>#trackbar:mouseover, VScrollBarControl>#trackbar:pushed,
+HScrollBarControl>#trackbar:mouseover, HScrollBarControl>#trackbar:pushed
+{
+	background		: #b2b2b2;
+	border			: 1 solid #ffffff;
+}
+VScrollBarControl>#trackbar:disabled,
+HScrollBarControl>#trackbar:disabled
+{
+	background		: #dedede;
+	border			: 1 solid #ffffff;
+}
+/***/
+VScrollBarControl>#incbutton
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_vinc_N.png');
+	imagealign		: cetner middle;
+	padding			: 0 0 0 0;
+}
+VScrollBarControl>#incbutton:mouseover, VScrollBarControl>#incbutton:pushed
+{
+	image			: URL('theme://images/btn_vinc_O.png');
+}
+VScrollBarControl>#incbutton:disabled
+{
+	image			: URL('theme://images/btn_vinc_D.png');
+}
+VScrollBarControl>#decbutton
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_vdec_N.png');
+	imagealign		: center middle;
+	padding			: 0 0 0 0;
+}
+VScrollBarControl>#decbutton:mouseover, VScrollBarControl>#decbutton:pushed
+{
+	image			: URL('theme://images/btn_vdec_O.png');
+}
+VScrollBarControl>#decbutton:disabled
+{
+	image			: URL('theme://images/btn_vdec_D.png');
+}
+/***/
+/* HScrollBarControl */
+HScrollBarControl
+{
+	accessibility		: ;
+	align			: ;
+	background		: #f7f7f7;
+	barminsize		: 45;
+	baroutsize		: ;
+	border			: 1 solid #c2c2c2, 0 none, 0 none, 0 none;
+	bordertype		: normal;
+	cursor			: auto;
+	decbtnsize		: 14;
+	imgoutsize		: ;
+	incbtnsize		: 14;
+	padding			: ;
+	scrollbarsize		: 14;
+	trackbarsize		: ;
+}
+HScrollBarControl:disabled
+{
+	border			: 1 solid #cfcfcf, 0 none, 0 none, 0 none;
+}
+HScrollBarControl>#incbutton
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_hinc_N.png');	
+	imagealign		: center middle;
+}
+HScrollBarControl>#incbutton:mouseover, HScrollBarControl>#incbutton:pushed
+{
+	image			: URL('theme://images/btn_hinc_O.png');	
+}
+HScrollBarControl>#incbutton:disabled
+{
+	image			: URL('theme://images/btn_hinc_D.png');	
+}
+HScrollBarControl>#decbutton
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_hdec_N.png');	
+	imagealign		: center middle;	
+}
+HScrollBarControl>#decbutton:mouseover, HScrollBarControl>#decbutton:pushed
+{
+	image			: URL('theme://images/btn_hdec_O.png');		
+}
+HScrollBarControl>#decbutton:disabled
+{ 
+	image			: URL('theme://images/btn_hdec_D.png');	
+}
+/* Resizebutton */
+*>#resizebutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: ;
+	cursor			: ;
+	image			: ;
+	imagealign		: ;
+}
+
+/* Static */
+Static, Static:mouseover
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	linespace		: 3;
+	padding			: 1 0 0 0;
+}
+Static:disabled
+{
+	color			: #aeaeae ;
+}
+/* Edit*/
+Edit, Edit.styFormSearchItem, Edit.styFormItemText
+{
+	align			: left middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal 0 0;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Edit:mouseover, Edit:focused
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+}
+Edit:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Edit:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+/** TextArea 패딩 적용 시, 스크롤까지 영향이 가므로 '0'으로 처리함 **/
+/* TextArea */
+TextArea
+{
+	align			: left top;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	linespace		: 3;
+	padding			: 4 0 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+TextArea:mouseover, TextArea:focused
+{ 	
+	background		: #f1f8ff;
+	border			: 1 solid #4f91cf;
+	color			: #333333;
+}
+TextArea:disabled
+{	
+	background		: #fcfcfc;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+TextArea:readonly
+{	
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+/* MaskEdit */
+MaskEdit
+{
+	align			: right middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+MaskEdit:mouseover, MaskEdit:focused
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+}
+MaskEdit:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+MaskEdit:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+/* Button */
+Button
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: hand;
+	font			: 9 Dotum;
+	padding			: 1 0 0 0;
+}
+
+Button:mouseover
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	bordertype		: round 0 0;
+	color			: #0252a2;
+	font			: 9 Dotum;	
+}
+Button:pushed, Button:focused, Button:selected
+{
+	background		: #5f85da;
+	border			: 1 solid #3864c8;
+	bordertype		: round 0 0;
+	color			: #ffffff;
+	font			: 9 Dotum;
+}Button:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;	
+}
+/* Spin */
+Spin
+{
+	align			: right middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonalign		: right;
+	buttonsize		: 20;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+}
+Spin:mouseover, Spin:focused, Spin:pushed
+{
+	background		: #f1f8ff;
+	border			: 1 solid #4f91cf;
+	color			: #333333;
+}
+Spin:disabled
+{
+	background		: #fcfcfc;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Spin:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+Spin>#spinedit
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #46463dff;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;		
+}
+Spin>#spinedit:mouseover, Spin>#spinedit:focused
+{
+	color			: #333333;
+}
+Spin>#spinedit:disabled
+{
+	color			: #333333;	
+}
+Spin>#spinupbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spinup_N.png');
+	imagealign		: center middle;
+}
+Spin>#spinupbutton:mouseover
+{
+	image			: URL('theme://images/btn_spinup_O.png');
+}
+Spin>#spinupbutton:pushed
+{
+	image			: URL('theme://images/btn_spinup_P.png');
+}
+Spin>#spinupbutton:disabled
+{
+	image			: URL('theme://images/btn_spinup_D.png');
+}
+Spin>#spindownbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spindown_N.png');
+	imagealign		: center middle;
+}
+Spin>#spindownbutton:mouseover
+{
+	image			: theme://images/btn_spindown_O.png;
+}
+Spin>#spindownbutton:pushed
+{
+	image			: theme://images/btn_spindown_P.png;
+}
+Spin>#spindownbutton:disabled
+{
+	image			: theme://images/btn_spindown_D.png;
+}
+
+/* SpinControl */
+SpinControl
+{
+	align			: right middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonalign		: right;
+	buttonsize		: 20;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+}
+SpinControl:mouseover, SpinControl:focused, SpinControl:pushed
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	color			: #333333;
+}
+SpinControl:disabled
+{
+	background		: #fcfcfc;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+SpinControl:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+SpinControl>#spinedit
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #46463dff;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;	
+}
+SpinControl>#spinedit:mouseover, SpinControl>#spinedit:focused
+{
+	color			: #333333;
+}
+SpinControl>#spinedit:disabled
+{
+	color			: #333333;	
+}
+SpinControl>#spinupbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spinup_N.png');
+	imagealign		: center middle;
+}
+SpinControl>#spinupbutton:mouseover
+{
+	image			: URL('theme://images/btn_spinup_O.png');
+}
+SpinControl>#spinupbutton:pushed
+{
+	image			: URL('theme://images/btn_spinup_P.png');
+}
+SpinControl>#spinupbutton:disabled
+{
+	image			: URL('theme://images/btn_spinup_D.png');
+}
+SpinControl>#spindownbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spindown_N.png');
+	imagealign		: center middle;
+}
+SpinControl>#spindownbutton:mouseover
+{
+	image			: theme://images/btn_spindown_O.png;
+}
+SpinControl>#spindownbutton:pushed
+{
+	image			: theme://images/btn_spindown_P.png;
+}
+SpinControl>#spindownbutton:disabled
+{
+	image			: theme://images/btn_spindown_D.png;
+}
+
+
+
+/* ListBox */
+ListBox
+{
+	align			: left middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itemheight		: 20;
+	itempadding		: 0 5 0 5;
+}
+ListBox:mouseover
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	itembackground		: #dbeafc;
+}
+ListBox:selected, ListBox:focused
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	itembackground		: #4a95e7;
+	color			: #ffffff;
+}ListBox:disabled
+{
+	background		: #fcfcfc;
+	color			: #aeaeae;
+	border 			: 1 solid #d5d5d5;
+	itembackground		: #fcfcfc;
+}
+/* Combo */
+Combo, Combo.styFormSearchCombo, Combo.styFormItemCombo
+{
+	accessibility		: ;
+	align			: left middle;
+	padding			: 1 0 0 5;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonsize		: 20;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itemcolor		: #333333;
+	itemfont		: 9 Dotum;
+	itemheight		: 20;
+	itempadding		: 0 5 0 5;
+}
+Combo:mouseover
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	itembackground		: #dbeafc;
+}
+Combo:selected, Combo:focused
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	itembackground		: #4a95e7;
+	itemcolor		: #ffffff;
+}
+Combo:disabled
+{
+	background		: #fcfcfc;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Combo:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+Combo>#comboedit
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	font			: 9 Dotum;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Combo>#comboedit:mouseover, Combo>#comboedit:focused
+{
+	color			: #333333;
+}
+Combo>#comboedit:disabled
+{
+	color			: #aeaeae;
+}
+Combo>#dropbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cursor			: hand;
+	image			: URL('theme://images/btn_drop_N.png');
+	imagealign		: center middle;
+	padding			: 0 0 0 0;
+}
+Combo>#dropbutton:mouseover
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_O.png');
+}
+Combo>#dropbutton:pushed
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_P.png');
+}
+Combo>#dropbutton:disabled
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_D.png');
+}
+Combo>#combolist
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	bordertype		: normal;
+	align			: left middle;
+}
+
+
+
+/* Radio */
+Radio, Radio.styFormSearchRdo, Radio.styFormItemRdo
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal ;
+	buttonalign		: left center;
+	buttonbackground	: #ffffff;
+	buttonborder		: 1 solid #d6d6d6;
+	buttonimage		: URL('theme://images/btn_radio_N.png');
+	buttonsize		: 13;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	itemaccessibility	: ;
+	itembackground		: ;
+	itemborder		: ;
+	itembordertype		: ;
+	itemgradation		: ;
+	itempadding		: ;
+	padding			: 1 0 0 0;
+	textpadding		: 0 0 0 6;
+}
+
+Radio:mouseover
+{
+   buttonborder      : 1 solid #333333;
+}
+Radio:focused, Radio:selected, Radio:pushed
+{
+   buttonborder      : 1 solid #0a58b1;
+   buttonbackground   : #e4f1ff;
+}
+
+
+Radio:disabled
+{
+	color			: #aeaeae;
+	buttonimage		: URL('theme://images/btn_radio_D.png');
+	buttonborder		: 1 solid #d6d6d6;
+	buttonbackground	: #f3f3f3;	
+}
+
+/* CheckBox */
+CheckBox, CheckBox.styFormSearchChk, CheckBox.styFormItemChk
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonalign		: left center;
+	buttonbackground	: URL('theme://images/bg_check_N.png');
+	buttonborder		: 0 none;
+	buttonbordertype	: normal;
+	buttonimage		: URL('theme://images/img_check.png');
+	buttonsize		: 13;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;
+	textpadding		: 0 0 0 6;
+}
+CheckBox:mouseover, CheckBox:selected, CheckBox:focused, CheckBox:pushed
+{
+	buttonbackground	: URL('theme://images/bg_check_O.png');
+}
+CheckBox:disabled
+{
+	color			: #aeaeae;
+	buttonbackground	: URL('theme://images/bg_check_D.png');
+	buttonimage		: URL('theme://images/img_check_D.png');	
+}
+
+/* Div */
+Div
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #444444;
+	cursor			: auto;
+	font			: 9 Dotum;
+}
+/* PopupDiv */
+PopupDiv
+{
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #444444;
+	cursor			: auto;
+	font			: 9 Dotum;
+}
+/* StepControl */
+StepControl
+{
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonbackground	: @gradation;
+	buttonborder		: 1px solid #868686ff;
+	buttonbordertype	: round 7 7;
+	buttongradation		: linear 0,0 #fdfdfd 0,100 #f0f0f0;
+	buttonimage		: theme://images/btn_radio_N.png;
+	buttonpadding		: 0 5 0 5;
+	buttonsize		: 15;
+	color			: #3f3f3f;
+	cursor			: hand;
+	font			: bold 9 Dotum;
+	padding			: 5 5 5 5;
+}
+StepControl:disabled
+{
+	opacity 		: 50;
+}
+
+/* ImageViewer */
+ImageViewer	
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #bdbdbd;
+	bordertype		: normal;
+}
+ImageViewer:mouseover, ImageViewer:focused
+{
+	border 			: 1 solid #bdbdbd;
+}
+ImageViewer:disabled
+{
+	border 			: 1 solid #cfcfcf;
+}
+/* GroupBox */
+GroupBox
+{
+	background		: #ffffff;
+	border			: 1 solid #cbcbcb;
+	bordertype		: normal;
+	color			: #444444;
+	font			: 9 Dotum;
+	titleimage		: URL('theme://images/img_group.png');
+	titleimagealign		: lefttext middle;
+	titlepadding		: 0 5 0 5;
+
+}
+GroupBox:disabled
+{
+	titleimage		: URL('theme://images/img_group.png');
+	border 			: 1 solid #e1e1e1 ;
+	color			: #cacaca;
+}
+/* Calendar */
+Calendar, Calendar.styFormSearchItemCalendar, Calendar.styFormItemCalendar
+{
+	accessibility		: ;
+	align			: left middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonsize		: 23;
+	color			: #333333;
+	cursor			: auto;
+	daybackground		: #ffffff;
+	dayborder		: 1 solid #ffffff;
+	daybordertype		: normal;
+	daycolor		: #333333;
+	dayfont			: 9 Tahoma;
+	daysize			: 30 30;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;
+	popupbackground		: #ffffff;
+	popupborder		: 1 solid #666666;
+	popupbordertype		: normal;
+	popupsize		: 212 240;
+}
+Calendar:mouseover
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	daybackground		: #ece8e7;
+	dayborder		: 0 none;
+	dayfont			: 9 Tahoma;	
+	daycolor		: #333333;
+}
+Calendar:selected, Calendar:focused
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	daybackground		: #e95a59;
+	dayborder		: 0 none;
+	dayfont			: bold 9 Tahoma;	
+	daycolor		: #ffffff;
+}
+Calendar:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Calendar:readonly
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #333333;
+}
+Calendar>#calendaredit
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	font			: 9 Dotum;
+	padding			: 0 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Calendar>#calendaredit:mouseover
+{
+	color			: #333333;
+}
+Calendar>#calendaredit:selected, Calendar>#calendaredit:focused
+{
+	color			: #333333;
+}
+Calendar>#calendaredit:disabled
+{
+	color			: #aeaeae;
+}
+Calendar>#dropbutton, Calendar>#dropbutton:mouseover, Calendar>#dropbutton:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cursor			: hand;
+	image			: URL('theme://images/btn_CalDrop_N.png');
+	imagealign		: center middle;
+	padding			: 1 0 0 0;	
+}
+Calendar>#dropbutton:disabled
+{
+	image			: URL('theme://images/btn_CalDrop_D.png');
+}
+/***/
+Calendar>#spinupbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spinup_N.png');
+	imagealign		: center middle;
+}
+Calendar>#spinupbutton:mouseover
+{
+	image			: URL('theme://images/btn_spinup_O.png');
+}
+Calendar>#spinupbutton:pushed
+{
+	image			: URL('theme://images/btn_spinup_P.png');
+}
+Calendar>#spinupbutton:disabled
+{
+	image			: URL('theme://images/btn_spinup_D.png');
+}
+Calendar>#spindownbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spindown_N.png');
+	imagealign		: center middle;
+}
+Calendar>#spindownbutton:mouseover
+{
+	image			: URL('theme://images/btn_spindown_O.png');
+}
+Calendar>#spindownbutton:pushed
+{
+	image			: URL('theme://images/btn_spindown_P.png');
+}
+Calendar>#spindownbutton:disabled
+{
+	image			: URL('theme://images/btn_spindown_D.png');
+}
+
+Calendar>#popupcalendar
+{
+	background		: #ffffff;
+	border			: 1 solid #756c6b;
+	bordertype		: normal;
+	font			: 9 Tahoma;
+	color			: #333333;
+	align			: center middle;
+	cursor			: auto;
+	padding			: 0 0 0 0;
+	ncpadding		: 33 0 0 0;
+	headerformat		: yyyy.MM;
+	weekformat		: 일 월 화 수 목 금 토;
+	daysize			: 30 30;
+	daycolor		: #333333;
+	daybackground		: #ffffff;
+	dayborder		: 0 none;
+	daybordertype		: normal;
+	dayfont			: 9 Tahoma;
+	headerheight		: 33;
+	headercolor		: #ffffff;
+	headerbackground	: #666666;
+	headerborder		: 0 none;
+	headerbordertype	: normal;
+	headerfont		: bold 11 Tahoma;
+	bodybackground		: #ffffff;
+	bodyborder		: 0 none;
+	bodybordertype		: normal;
+	weekcolor		: #ffffff;
+	weekbackground		: #666666;
+	weekfont		: 8 Dotum;
+	todaycolor		: #ffffff;
+	todaybackground		: #f7ac14;
+	todayborder		: 0 none;
+	todaybordertype		: normal;
+	todayfont		: bold 9 Tahoma;
+	usetrailingday		: true;
+	trailingdaycolor	: #bebebe;	
+	saturdaybackground	: #ffffff;
+	saturdayborder		: 0 none;
+	saturdaybordertype	: normal;
+	saturdayfont		: 9 Tahoma;
+	saturdaycolor		: #5f9dde;
+	sundaybackground	: #ffffff;
+	sundayborder		: 0 none;
+	sundaybordertype	: normal;
+	sundaycolor		: #ee6b67;
+	sundayfont		: 9 Tahoma;
+}
+Calendar>#popupcalendar:mouseover
+{
+	daybackground			: #ece8e7;
+	daycolor			: #333333;
+       	saturdaybackground		: #ece8e7;
+	sundaybackground		: #ece8e7; 
+}
+Calendar>#popupcalendar:selected
+{
+	daybackground			: #ed6c44;
+	daycolor			: #ffffff;
+       	saturdaybackground		: #ed6c44;
+	sundaybackground		: #ed6c44;    
+}
+Calendar>#popupcalendar>#prevbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_prev_N.png');
+	imagealign		: center middle;
+}
+Calendar>#popupcalendar>#prevbutton:mouseover, Calendar>#popupcalendar>#prevbutton:pushed
+{
+	image			: URL('theme://images/btn_prev_O.png');
+}
+Calendar>#popupcalendar>#prevbutton:disabled
+{
+	image			: URL('theme://images/btn_prev_D.png');
+}
+Calendar>#popupcalendar>#nextbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_next_N.png');
+	imagealign		: center middle;
+}
+Calendar>#popupcalendar>#nextbutton:mouseover, Calendar>#popupcalendar>#nextbutton:pushed
+{
+	image			: URL('theme://images/btn_next_O.png');
+}
+Calendar>#popupcalendar>#nextbutton:disabled
+{
+	image			: URL('theme://images/btn_next_D.png');
+}
+Calendar>#popupcalendar>#yearspin,
+Calendar>#popupcalendar>#monthspin
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 1 solid #ffffff;
+	bordertype		: normal;
+	buttonalign		: center middle;
+	buttonsize		: 8;
+	color			: #ffffff;
+	font			: bold 11 Tahoma;
+}
+Calendar>#popupcalendar>#yearspin:mouseover, Calendar>#popupcalendar>#yearspin:focused,
+Calendar>#popupcalendar>#monthspin:mouseover, Calendar>#popupcalendar>#monthspin:focused
+{
+	background		: transparent;
+	border			: 1 solid #49a0ff;
+	color			: #ffffff;	
+}
+Calendar>#popupcalendar>#yearspin:disabled,
+Calendar>#popupcalendar>#monthspin:disabled
+{
+	background		: transparent;
+	border			: 1 solid #918b89;
+	color			: #918b89;
+}
+Calendar>#popupcalendar>#yearspin>#spinedit,
+Calendar>#popupcalendar>#monthspin>#spinedit
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #ffffff;
+	font			: bold 11 Tahoma;
+	padding			: 0 0 0 0;
+}
+Calendar>#popupcalendar>#yearspin>#spinupbutton,
+Calendar>#popupcalendar>#monthspin>#spinupbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspinup_N.png');
+	imagealign		: center middle;
+}
+Calendar>#popupcalendar>#yearspin>#spinupbutton:mouseover, Calendar>#popupcalendar>#yearspin>#spinupbutton:pushed,
+Calendar>#popupcalendar>#monthspin>#spinupbutton:mouseover, Calendar>#popupcalendar>#monthspin>#spinupbutton:pushed
+{
+	image			: URL('theme://images/btn_Calspinup_O.png');
+}
+Calendar>#popupcalendar>#yearspin>#spinupbutton:disabled,
+Calendar>#popupcalendar>#monthspin>#spinupbutton:disabled
+{
+	image			: URL('theme://images/btn_Calspinup_D.png');
+}
+Calendar>#popupcalendar>#yearspin>#spindownbutton,
+Calendar>#popupcalendar>#monthspin>#spindownbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspindown_N.png');
+	imagealign		: center middle;
+}
+Calendar>#popupcalendar>#yearspin>#spindownbutton:mouseover, Calendar>#popupcalendar>#yearspin>#spindownbutton:pushed,
+Calendar>#popupcalendar>#monthspin>#spindownbutton:mouseover, Calendar>#popupcalendar>#monthspin>#spindownbutton:pushed
+{
+	image			: URL('theme://images/btn_Calspindown_O.png');
+}
+Calendar>#popupcalendar>#yearspin>#spindownbutton:disabled,
+Calendar>#popupcalendar>#monthspin>#spindownbutton:disabled
+{
+	image			: URL('theme://images/btn_Calspindown_D.png');
+}
+
+
+/* Grid */
+Grid, Grid.styGrid01
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: transparent;
+	border			: 2 solid #858585, 0 none, 1 solid #d9d9d9, 0 none;
+	bordertype		: normal 0 0;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	gradation		: ;
+	letterspace		: ;
+	line			: ;
+	opacity			: ;
+	padding			: 0 0 0 0;
+	selectline		: ;
+	selectpointimage	: ;
+	shadow			: ;
+	treeclosebuttonimage	: theme://images/ico_treeclose.png;
+	treecollapseimage	: theme://images/dummy.png;
+	treeexpandimage		: theme://images/dummy.png;
+	treeitemimage		: theme://images/ico_treeitem.png;
+	treeitemmargin		: ;
+	treelinetype		: 1 dotted #989898;
+	treeopenbuttonimage	: theme://images/ico_treeopen.png;
+}
+Grid>#head, Grid.styGrid01>#head
+{
+	background		: #ffffff;
+	border			: 0 none, 1 solid #e1e1e1, 1 solid #cacaca, 1 solid #e1e1e1;
+	bordertype		: normal 0 0;
+	cellalign		: center middle;
+	cellcolor		: #656565;
+	cellcolor2		: #656565;
+	cellfont		: 9 Dotum;
+	cellline		: 1 solid #e1e1e1;
+	cellpadding		: 0 0 0 0;	
+}
+Grid>#body, Grid.styGrid01>#body, Grid>#body:disabled, Grid.styGrid01>#body:disabled
+{
+	background		: #fafafa;
+	border			: 0 none, 1 solid #f0f0f0, 0 none, 1 solid #f0f0f0;
+	bordertype		: normal 0 0;
+	cellalign		: center middle;
+	cellbackground		: #ffffff;
+	cellbackground2		: #ffffff;
+	cellcolor		: #333333;
+	cellcolor2		: #333333;
+	cellfont		: 9 Dotum;
+	cellline		: 1 solid #f0f0f0;
+	celllinetype		: exhor;
+	cellpadding		: 2 5 2 5;
+	selectbackground	: #c4deff;
+	selectborder		: 0 none;
+	selectcolor		: #333333;
+	selectfont		: 9 Dotum;
+	selectline		: 1 solid #e1e1e1;
+}
+Grid>#body:mouseover, Grid.styGrid01>#body:mouseover
+{
+	cellbackground		: #e9ebef;
+	cellbackground2		: #e9ebef;
+	cellcolor		: #333333;
+	selectbackground	: #cce1fa;
+	selectcolor		: #333333;
+}
+
+Grid>#summ, Grid.styGrid01>#summ
+{
+	background		: #ffe3e1;
+	border			: 1 solid #d9d9d9, 1 solid #e1e1e1, 0 none, 1 solid #e1e1e1;
+	bordertype		: normal;
+	cellalign		: right middle;
+	cellbackground		: #ffe3e1;
+	cellbackground2		: #ffe3e1;
+	cellcolor		: #333333;
+	cellcolor2		: #333333;
+	cellfont		: bold 9 Dotum;
+	cellline		: 1 solid #e1e1e1;
+	cellpadding		: 2 5 2 5;
+}
+
+Grid>#summary, Grid.styGrid01>#summary
+{
+	background		: #ffe3e1;
+	border			: 1 solid #d9d9d9, 1 solid #e1e1e1, 0 none, 1 solid #e1e1e1;
+	bordertype		: normal;
+	cellalign		: right middle;
+	cellbackground		: #ffe3e1;
+	cellbackground2		: #ffe3e1;
+	cellcolor		: #333333;
+	cellcolor2		: #333333;
+	cellfont		: bold 9 Dotum;
+	cellline		: 1 solid #e1e1e1;
+	cellpadding		: 2 5 2 5;
+}
+/***/
+Grid>#vscrollbar
+{
+	background		: #ffffff;
+	border			: 0 solid #c2c2c2, 0 solid #c2c2c2, 0 solid #c2c2c2, 0 none;	
+}
+Grid>#hscrollbar
+{
+	background		: #ffffff;
+	border			: 1 solid #f0f0f0, 0 solid #c2c2c2, 0 solid #ffffff, 0 solid #f0f0f0;	
+}
+/***/
+Grid>#resizebutton
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 0 none;
+	bordertype		: normal 0 0;
+	image			: ;
+	imagealign		: ;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+/***/
+Grid>#controlbutton,Grid>#controlbutton:mouseover
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: hand;
+	font			: 9 Dotum;
+	padding			: 1 0 0 0;
+}
+Grid>#controlbutton:pushed, Grid>#controlbutton:focused, Grid>#controlbutton:selected
+{
+	background		: #458ddb;
+	border			: 1 solid #106ebe;
+	color			: #ffffff;
+}
+Grid>#controlbutton:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;	
+}
+
+/***/
+Grid>#controledit
+{
+	align			: left middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal 0 0;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Grid>#controledit:mouseover, Grid>#controledit:focused
+{
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+}
+Grid>#controledit:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+/***/
+Grid>#controlmaskedit
+{
+	align			: right middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 1 5 0 5;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Grid>#controlmaskedit:mouseover,Grid>#controlmaskedit:focused
+{
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+}
+Grid>#controlmaskedit:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+/***/
+Grid>#controltextarea
+{
+	align			: left top;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	linespace		: 3;
+	padding			: 0 0 0 0;
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+Grid>#controltextarea:mouseover, Grid>#controltextarea:focused
+{ 	
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+}
+Grid>#controltextarea:disabled
+{	
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+/***/
+Grid>#controlcheckbox, Grid>#controlcheckbox:mouseover, Grid>#controlcheckbox:selected, Grid>#controlcheckbox:focused
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonalign		: left center;
+	buttonbackground	: URL('theme://images/bg_check_N.png');
+	buttonborder		: 0 none;
+	buttonbordertype	: normal;
+	buttonimage		: URL('theme://images/img_check.png');
+	buttonsize		: 13;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;
+	textpadding		: 0 0 0 6;
+}
+Grid>#controlcheckbox:pushed
+{
+	buttonbackground	: URL('theme://images/bg_check_O.png');
+}
+Grid>#controlcheckbox:disabled
+{
+	color			: #aeaeae;
+	buttonbackground	: URL('theme://images/bg_check_D.png');
+	buttonimage		: URL('theme://images/img_check_D.png');	
+}
+/***/
+Grid>#controlcombo
+{
+	align			: left middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonsize		: 20;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itemcolor		: #333333;
+	itemfont		: 9 Dotum;
+	itemheight		: 20;
+	itempadding		: 0 5 0 5;
+}
+Grid>#controlcombo:mouseover
+{
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	itembackground		: #ffffff;
+}
+Grid>#controlcombo:selected, Grid>#controlcombo:focused
+{
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	color			: #333333;
+	itembackground		: #5698e0;
+	itemcolor		: #ffffff;
+}
+Grid>#controlcombo:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Grid>#controlcombo>#comboedit
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	font			: 9 Dotum;
+	padding			: 0 5 0 5;
+}
+Grid>#controlcombo>#comboedit:mouseover, Grid>#controlcombo>#comboedit:focused
+{
+	color			: #333333;
+}
+Grid>#controlcombo>#comboedit:disabled
+{
+	color			: #aeaeae;
+}
+Grid>#controlcombo>#dropbutton
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cursor			: hand;
+	image			: URL('theme://images/btn_drop_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcombo>#dropbutton:mouseover
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_O.png');
+}
+Grid>#controlcombo>#dropbutton:pushed
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_P.png');
+}
+Grid>#controlcombo>#dropbutton:disabled
+{
+	border			: 0 none;
+	image			: URL('theme://images/btn_drop_D.png');
+}
+Grid>#controlcombo>#combolist
+{
+	background		: #ffffff;
+	border			: 1 solid #106ebe;
+	bordertype		: normal;
+	align			: left middle;
+}
+
+/***/
+Grid>#controlcalendar
+{
+	accessibility		: ;
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	buttonsize		: 17;
+	color			: #333333;
+	cursor			: auto;
+	daybackground		: #ffffff;
+	dayborder		: 1 solid #ffffff;
+	daybordertype		: normal;
+	daycolor		: #333333;
+	dayfont			: 9 Tahoma;
+	daysize			: 30 30;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;
+	popupbackground		: #ffffff;
+	popupborder		: 1 solid #4c6187;
+	popupbordertype		: normal;
+	popupsize		: 212 240;
+}
+Grid>#controlcalendar:mouseover
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	color			: #333333;
+	daybackground		: #ece8e7;
+	dayborder		: 0 none;
+	dayfont			: 9 Tahoma;	
+	daycolor		: #333333;
+}
+Grid>#controlcalendar:selected, Grid>#controlcalendar:focused
+{
+	background		: #ffffff;
+	border			: 1 solid #4f91cf;
+	color			: #333333;
+	daybackground		: #ed6c44;
+	dayborder		: 0 none;
+	dayfont			: bold 9 Tahoma;	
+	daycolor		: #ffffff;
+}
+Grid>#controlcalendar:disabled
+{
+	background		: #fcfcfc;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}
+Grid>#controlcalendar>#calendaredit
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #333333;
+	font			: 9 Dotum;
+	padding			: 0 0 0 0;/*20160928*/
+	selectbackground	: #4a95e7;
+	selectcolor		: #ffffff;
+}
+/***/
+Grid>#controlcalendar>#dropbutton, Grid>#controlcalendar>#dropbutton:mouseover, Grid>#controlcalendar>#dropbutton:pushed
+{
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	cursor			: hand;
+	image			: URL('theme://images/btn_CalDrop_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#dropbutton:disabled
+{
+	image			: URL('theme://images/btn_CalDrop_N.png');
+}
+Grid>#controlcalendar>#spinupbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spinup_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#spinupbutton:mouseover
+{
+	image			: URL('theme://images/btn_spinup_O.png');
+}
+Grid>#controlcalendar>#spinupbutton:pushed
+{
+	image			: URL('theme://images/btn_spinup_P.png');
+}
+Grid>#controlcalendar>#spinupbutton:disabled
+{
+	image			: URL('theme://images/btn_spinup_D.png');
+}
+Grid>#controlcalendar>#spindownbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_spindown_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#spindownbutton:mouseover
+{
+	image			: URL('theme://images/btn_spindown_O.png');
+}
+Grid>#controlcalendar>#spindownbutton:pushed
+{
+	image			: URL('theme://images/btn_spindown_P.png');
+}
+Grid>#controlcalendar>#spindownbutton:disabled
+{
+	image			: URL('theme://images/btn_spindown_D.png');
+}
+/***/
+Grid>#controlcalendar>#popupcalendar
+{
+	background		: #ffffff;
+	border			: 1 solid #4c6187;
+	bordertype		: normal;
+	font			: 9 Tahoma;
+	color			: #333333;
+	align			: center middle;
+	cursor			: auto;
+	padding			: 0 0 0 0;
+	ncpadding		: 33 0 0 0;
+	headerformat		: yyyy.MM;
+	weekformat		: 일 월 화 수 목 금 토;
+	daysize			: 30 30;
+	daycolor		: #333333;
+	daybackground		: #ffffff;
+	dayborder		: 0 none;
+	daybordertype		: normal;
+	dayfont			: 9 Tahoma;
+	headerheight		: 33;
+	headercolor		: #ffffff;
+	headerbackground	: #4c4743;
+	headerborder		: 0 none;
+	headerbordertype	: normal;
+	headerfont		: bold 11 Tahoma;
+	bodybackground		: #ffffff;
+	bodyborder		: 0 none;
+	bodybordertype		: normal;
+	weekcolor		: #ffffff;
+	weekbackground		: #4c4743;
+	weekfont		: 8 Dotum;
+	todaycolor		: #ffffff;
+	todaybackground		: #f7ac14;
+	todayborder		: 0 none;
+	todaybordertype		: normal;
+	todayfont		: bold 9 Tahoma;
+	usetrailingday		: true;
+	trailingdaycolor	: #bebebe;	
+	saturdaybackground	: #ffffff;
+	saturdayborder		: 0 none;
+	saturdaybordertype	: normal;
+	saturdayfont		: 9 Tahoma;
+	saturdaycolor		: #5f9dde;
+	sundaybackground	: #ffffff;
+	sundayborder		: 0 none;
+	sundaybordertype	: normal;
+	sundaycolor		: #ee6b67;
+	sundayfont		: 9 Tahoma;
+}
+Grid>#controlcalendar>#popupcalendar:mouseover
+{
+	daybackground			: #ece8e7;
+	daycolor			: #333333;
+       	saturdaybackground		: #ece8e7;
+	sundaybackground		: #ece8e7; 
+}
+Grid>#controlcalendar>#popupcalendar:selected
+{
+	daybackground			: #ed6c44;
+	daycolor			: #ffffff;
+       	saturdaybackground		: #ed6c44;
+	sundaybackground		: #ed6c44;    
+}
+Grid>#controlcalendar>#popupcalendar>#prevbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_prev_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#popupcalendar>#prevbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#prevbutton:pushed
+{
+	image			: URL('theme://images/btn_prev_O.png');
+}
+Grid>#controlcalendar>#popupcalendar>#prevbutton:disabled
+{
+	image			: URL('theme://images/btn_prev_D.png');
+}
+Grid>#controlcalendar>#popupcalendar>#nextbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_next_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#popupcalendar>#nextbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#nextbutton:pushed
+{
+	image			: URL('theme://images/btn_next_O.png');
+}
+Grid>#controlcalendar>#popupcalendar>#nextbutton:disabled
+{
+	image			: URL('theme://images/btn_next_D.png');
+}
+
+Grid>#controlcalendar>#popupcalendar>#yearspin,
+Grid>#controlcalendar>#popupcalendar>#monthspin
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 1 solid #ffffff;
+	bordertype		: normal;
+	buttonalign		: center middle;
+	buttonsize		: 8;
+	color			: #ffffff;
+	font			: bold 11 Tahoma;
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin:mouseover, Grid>#controlcalendar>#popupcalendar>#yearspin:focused,
+Grid>#controlcalendar>#popupcalendar>#monthspin:mouseover, Grid>#controlcalendar>#popupcalendar>#monthspin:focused
+{
+	background		: transparent;
+	border			: 1 solid #fcb034;
+	color			: #ffffff;	
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin:disabled,
+Grid>#controlcalendar>#popupcalendar>#monthspin:disabled
+{
+	background		: transparent;
+	border			: 1 solid #918b89;
+	color			: #918b89;
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spinedit,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spinedit
+{
+	align			: right middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	color			: #ffffff;
+	font			: bold 11 Tahoma;
+	padding			: 0 0 0 0;
+}
+
+
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spinupbutton,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spinupbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspinup_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spinupbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#yearspin>#spinupbutton:pushed,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spinupbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#monthspin>#spinupbutton:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspinup_O.png');
+	imagealign		: center middle;	
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spinupbutton:disabled,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spinupbutton:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspinup_D.png');
+	imagealign		: center middle;	
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spindownbutton,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spindownbutton
+{
+	align			: ;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspindown_N.png');
+	imagealign		: center middle;
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spindownbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#yearspin>#spindownbutton:pushed,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spindownbutton:mouseover, Grid>#controlcalendar>#popupcalendar>#monthspin>#spindownbutton:pushed
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspindown_O.png');
+	imagealign		: center middle;	
+}
+Grid>#controlcalendar>#popupcalendar>#yearspin>#spindownbutton:disabled,
+Grid>#controlcalendar>#popupcalendar>#monthspin>#spindownbutton:disabled
+{
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: URL('theme://images/btn_Calspindown_D.png');
+	imagealign		: center middle;	
+}
+
+/* Tab */
+Tab, Tab:disabled, Tab.styTabControl, Tab.styTabControl:disabled
+{
+	background		: URL('theme://images_P/tap_bg.png') repeat-x;
+	border			: 0 none,1 solid #cacaca,1 solid #cacaca,1 solid #cacaca;
+	bordertype		: normal;
+	buttonbackground	: URL('theme://images_P/bg_tab.png') stretch 7,7;
+	buttonborder		: 0 none;
+	buttonbordertype	: normal;
+	buttonpadding		: 2 30 0 30;
+	color			: #878787;
+	cursor			: auto;
+	font			: 9 Dotum;
+	showextrabutton		: ;
+	stepalign		: ;
+	stepshowtype		: ;
+}
+Tab:mouseover, Tab.styTabControl:mouseover
+{
+	buttonbackground	: URL('theme://images_P/bg_tab_O.png') stretch 7,7;
+	color			: #333333;
+	focusborder		: 0 none;
+}
+Tab:selected, Tab:focused, Tab.styTabControl:selected, Tab.styTabControl:focused
+{
+	color			: #57629e;	
+	buttonbackground	: URL('theme://images_P/bg_tab_S.png') stretch 7,7;
+}
+
+/*The Controlbutton was fixed at  W:14px H:14px */
+Tab>#spinupbutton
+{
+	accessibility		: ;
+	align			: ;
+	background		: ;
+	border			: ;
+	bordertype		: ;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: URL('theme://images/tab_spinup.png');
+	imagealign		: center middle;
+	padding			: ;
+}
+Tab>#spinupbutton:mouseover
+{
+	image			: URL('theme://images/tab_spinup_O.png');
+}
+Tab>#spinupbutton:pushed
+{
+	image			: URL('theme://images/tab_spinup_P.png');
+}
+Tab>#spinupbutton:disabled
+{
+	image			: URL('theme://images/tab_spinup_D.png');
+}
+Tab>#spindownbutton
+{
+	accessibility		: ;
+	align			: ;
+	background		: ;
+	border			: ;
+	bordertype		: ;
+	color			: ;
+	cursor			: ;
+	font			: ;
+	gradation		: ;
+	image			: URL('theme://images/tab_spindn.png');
+	imagealign		: center middle;
+	opacity			: ;
+	padding			: ;
+	shadow			: ;
+}
+Tab>#spindownbutton:mouseover
+{
+	image			: URL('theme://images/tab_spindn_O.png');
+}
+Tab>#spindownbutton:pushed
+{
+	image			: URL('theme://images/tab_spindn_P.png');
+}
+Tab>#spindownbutton:disabled
+{
+	image			: theme://images/tab_spindn_D.png;
+}
+
+/*The Controlbutton was fixed at  W:24px H:12px */
+Tab>#extrabutton,Tab>#extrabutton:mouseover,Tab>#extrabutton:focused, Tab>#extrabutton:selected,
+Tab>#extrabutton:pushed,Tab>#extrabutton:disabled
+{
+	align			: center middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	image			: theme://images/tab_extra.png;
+	imagealign		: center middle;
+}
+/* Tabpage */
+Tabpage
+{
+	accessibility		: ;
+	background		: white;
+	cursor			: ;
+	cursor			: ;
+	gradation		: ;
+	opacity			: ;
+	padding			: ;
+	stepalign		: ;
+	stepshowtype		: ;
+}
+
+/* Menu */
+Menu
+{
+	background		: #373737;
+	border			: 0 none;
+	bordertype		: normal;
+	checkboximage		: theme://images/ico_menu_check.png;
+	color			: #ffffff;
+	cursor			: hand;
+	expandimage		: theme://images/ico_expand_N.png;
+	font			: bold 11 Dotum;
+	itemalign		: center middle;
+	itembackground		: #373737;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itempadding		: 0 23 0 23;
+	padding			: 0 0 3 0;
+	popupbackground		: #ffffff;
+	popupborder		: 1 solid #d5d5d5;
+	popupbordertype		: normal;
+	popupcolor		: #333333;
+	popupfont		: 9 Dotum;
+	popupitembackground	: #ffffff;
+	popupitemborder		: 0 none;
+	popupitembordertype	: normal;
+	popupitemheight		: 20;
+	popupitempadding	: 0 16 0 10;
+	popuppadding		: 0 0 0 0;
+}
+/*Menu:mouseover
+{
+	color			: #fcb034;
+	font			: bold 11 Dotum;
+	itembackground		: #373737;
+	itemborder		: 0 none;	
+	popupitembackground	: #ed6c44;
+	popupcolor		: #ffffff;
+}*/
+Menu:pushed, Menu:selected, Menu:focused, Menu:mouseover
+{
+	color			: #373737;
+	itembackground		: #fcb034 URL('theme://images/img_menu_S.png') center bottom;
+	itemborder		: 0 none;
+	itembordertype		: round 8 8 lefttop righttop;	
+	font			: bold 11 Dotum;
+	popupitembackground	: #ed6c44;
+	popupcolor		: #ffffff;
+	padding			: 0 0 3 0;	
+}
+Menu:disabled
+{
+	color			: #737373;
+	popupcolor		: #aeaeae;		
+}
+
+/* PopupMenu */
+PopupMenu
+{
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	checkboximage		: theme://images/ico_menu_check.png;
+	color			: #333333;
+	cursor			: auto;
+	expandimage		: theme://images/ico_expand_N.png;
+	font			: 9 Dotum;
+	itembackground		: #ffffff;
+	itemborder		: 0 none;
+	itembordertype		: normal;
+	itemheight		: 20;
+	itempadding		: 0 10 0 10;
+	padding			: 7 0 0 0;
+
+}
+PopupMenu:mouseover
+{
+	background		: #ed6c44;
+	color			: #ffffff;
+	itembackground 		: #ed6c44;
+}
+PopupMenu:disabled
+{
+	color			: #aeaeae ;
+}
+/*PopupMenu>#incbutton
+{
+           accessibility	: ;
+           align		: center middle;
+           background		: @gradation;
+           border		: 1 solid #a8a8a2;
+           bordertype		: normal;
+           color		: ;
+           cursor		: ;
+           font			: ;
+           gradation		: linear 0,0 #fbfbfa 100,0 #deded7;
+           image		: theme://images/btn_vinc_N.png;
+           imagealign		: cetner middle;
+           opacity		: ;
+           padding		: 0 0 0 0;
+           shadow		: ;
+}
+PopupMenu>#decbutton
+{
+           accessibility		: ;
+           align			: center middle;
+           background			: @gradation;
+           border			: 1 solid #a8a8a2;
+           bordertype			: normal;
+           color			: ;
+           cursor			: ;
+           font				: ;
+           gradation                    : linear 0,0 #fbfbfa 100,0 #deded7;
+           image			: theme://images/btn_vdec_N.png;
+           imagealign			: cetner middle;
+           opacity			: ;
+           padding			: 0 0 0 0;
+           shadow			: ;
+}*/
+
+/* ProgressBar */
+ProgressBar
+{
+	align			: center middle;
+	background		: #ffffff;
+	barcolor		: @gradation;
+	bargradation		: linear 0,0 #63a7ec 0,100 #4b96e7;
+	bartype			: color;
+	border			: 1 solid #8e8e8e, 1 solid #e1e1e1, 1 solid #e1e1e1, 1 solid #8e8e8e;
+	bordertype		: normal;
+	direction		: forward;
+	font			: 9 Dotum;
+	smooth			: true;
+}
+ProgressBar:disabled
+{
+	border			: 1 solid #8e8e8e, 1 solid #e1e1e1, 1 solid #e1e1e1, 1 solid #8e8e8e;
+	background		: #ffffff;
+	barcolor		: #cfcfcf;
+}
+/* ProgressBarControl */
+ProgressBarControl
+{
+	align			: center middle;
+	background		: #ffffff;
+	barcolor		: @gradation;
+	bargradation		: linear 0,0 #f1835e 0,100 #ed6d45;
+	bartype			: color;
+	border			: 1 solid #8e8e8e, 1 solid #e1e1e1, 1 solid #e1e1e1, 1 solid #8e8e8e;
+	bordertype		: normal;
+	direction		: forward;
+	font			: 9 Dotum;
+	smooth			: true;
+}
+ProgressBarControl:disabled
+{
+	border			: 1 solid #8e8e8e, 1 solid #e1e1e1, 1 solid #e1e1e1, 1 solid #8e8e8e;
+	background		: #ffffff;
+	barcolor		: #cfcfcf;
+}
+
+/* FileUpload */
+FileUpload
+{
+	align			: left middle;
+	background		: transparent;
+	border			: 0 none;
+	bordertype		: normal;
+	buttonbackground	: #ffffff;
+	buttonborder		: 1 solid #d5d5d5;
+	buttonbordertype	: normal;
+	buttoncolor		: #333333;
+	buttonfont		: 9 Dotum;
+	buttonpadding		: 1 0 0 0;
+	buttonsize		: 70;
+	buttontext		: 파일첨부;
+	color			: #333333;
+	cursor			: auto;
+	editbackground		: #ffffff;
+	editborder		: 1 solid #d5d5d5;
+	editbordertype		: normal;
+	editcolor		: #333333;
+	editfont		: 9 Dotum;
+	editpadding		: 1 5 0 5;
+	editselectbackground	: #4a95e7;
+	editselectcolor		: #ffffff;
+	font			: 9 Dotum;
+	itemheight		: 21;
+}
+FileUpload:mouseover
+{
+	buttonbackground	: #f1f8ff;
+	buttonborder		: 1 solid #106ebe;
+	buttoncolor		: #0252a2;
+	editbackground		: #f1f8ff;
+	editborder		: 1 solid #106ebe;
+	editcolor		: #333333;
+}
+FileUpload:pushed
+{
+	editbackground		: #ffffff;
+	editborder		: 1 solid #4f91cf;
+	buttonbackground	: #458ddb;
+	buttonborder		: 1 solid #0f60ab;
+	buttoncolor		: #ffffff;		
+}
+FileUpload:disabled
+{
+	editbackground		: #f4f4f4;
+	editborder		: 1 solid #d5d5d5;
+	editcolor		: #aeaeae;	
+	buttonbackground	: #f4f4f4;
+	buttonborder		: 1 solid #d5d5d5;
+	buttoncolor		: #aeaeae;	
+}/* FileDownload */
+FileDownload
+{
+	align			: center middle;
+	background		: #ffffff;
+	border			: 1 solid #d5d5d5;
+	bordertype		: normal;
+	color			: #333333;
+	cursor			: auto;
+	font			: 9 Dotum;
+	linespace		: 3;
+	padding			: 1 0 0 0;
+}
+FileDownload:mouseover
+{
+	background		: #f1f8ff;
+	border			: 1 solid #106ebe;
+	color			: #0252a2;
+}
+FileDownload:focused
+{
+	background		: #458ddb;
+	border			: 1 solid #0f60ab;
+	color			: #ffffff;	
+}
+FileDownload:disabled
+{
+	background		: #f4f4f4;
+	border			: 1 solid #d5d5d5;
+	color			: #aeaeae;
+}

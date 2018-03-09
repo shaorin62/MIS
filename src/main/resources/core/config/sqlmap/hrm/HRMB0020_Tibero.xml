@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="HRMB0020">
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기본정보 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRMB0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT  /* HRMB0020.SEARCH00.인사기본정보 테이블 조회 */
+               A.EMPL_NUMB                    /*사원번호*/
+             , A.EMPL_NAME                    /*사원명*/
+             , A.CCEM_NAME                    /*한자사원명*/
+             , A.ENEE_NAME                    /*영문사원명*/
+             , SF_DECRYPT(A.RERN_NUMB) AS RERN_NUMB   /*주민등록번호*/
+             , B.REDN_CODE                    /*보훈구분코드*/
+             , B.RCMP_NUMB                    /*보훈번호*/
+             , B.HALT_CODE                    /*장애코드*/
+             , B.SVIM_YSNO                    /*중증장애여부*/
+             , B.HALT_PROW                    /* 장애사유 */
+             , B.DEDY_CODE                    /*장애등급코드*/
+             , B.DEGC_CODE                    /*장애유형코드*/
+             , B.HAAD_DATE                    /*장애인정일*/
+             , B.RCMP_DATE                    /* 보훈일자 */
+             , B.MAMR_CODE                    /* 유공자관계코드 */
+             , B.MNOM_NAME                    /* 유공자성명 */
+             , B.HDPP_NAME                    /* 해당지청명 */
+          FROM HR_MASTXM A
+          LEFT OUTER JOIN HR_MASTXD B
+                       ON A.EMPL_NUMB = B.EMPL_NUMB
+         WHERE A.EMPL_NUMB = #EMPL_NUMB#
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 변경요청내역 조회
+********************************************************************************/
+-->
+    <select id="HRMB0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT  /* HRMB0020.SEARCH01.변경요청내역 조회 */
+               A.EMPL_NUMB                    /*사원번호*/
+             , A.CHRQ_DATE                    /*변경요청일*/
+             , A.CHRQ_SEQN                    /*변경요청일련번호*/
+             , A.CGRG_CODE                    /*변경요청구분코드*/
+             , A.CHRC_CODE                    /*변경승인코드*/
+             , A.RCGN_DATE                    /*승인일*/
+             , A.RJCT_PROW                    /*반려사유*/
+             , A.FILE_IDXX                    /*파일ID*/
+             , A.REMK_100X                    /*비고100*/
+             , B.EMPL_NAME                    /* 사원명 */
+             , B.CCEM_NAME                    /* 한자사원명 */
+             , B.ENEE_NAME                    /* 영문사원명 */
+             , SF_DECRYPT(B.RERN_NUMB) AS RERN_NUMB   /*주민등록번호*/
+             , B.EMPL_BIRT                    /* 사원생년월일 */
+             , B.GNDR_CODE                    /* 성별코드 */
+             , B.HALT_CODE                    /* 장애코드 */
+             , B.DEDY_CODE                    /* 장애등급코드 */
+             , B.DEGC_CODE                    /* 장애유형코드 */
+             , B.HAAD_DATE                    /* 장애인정일 */
+             , B.HALT_PROW                    /* 장애사유 */
+             , B.SVIM_YSNO                    /* 중증장애여부 */
+             , B.REDN_CODE                    /* 보훈구분코드 */
+             , B.RCMP_NUMB                    /* 보훈번호 */
+             , B.RCMP_DATE                    /* 보훈일자 */
+             , B.MAMR_CODE                    /* 유공자관계코드 */
+             , B.MNOM_NAME                    /* 유공자성명 */
+             , B.HDPP_NAME                    /* 해당지청명 */
+             , B.CHNG_CNTT                    /* 변경내용 */
+             , C.WKNT_EMNR                     /* 작업알림사원번호 */
+             , C.WKNT_DATE                     /* 작업알림일자 */
+             , C.WKNT_TIME                     /* 작업알림시간 */
+             , C.SRAL_NUMB                     /* 일련번호 */
+          FROM HR_MSTCRQ A
+         INNER JOIN HR_MASTRQ B
+            ON A.EMPL_NUMB = B.EMPL_NUMB
+           AND A.CHRQ_DATE = B.CHRQ_DATE
+           AND A.CHRQ_SEQN = B.CHRQ_SEQN
+          LEFT OUTER JOIN TM_WKNTXM C
+                       ON A.EMPL_NUMB = C.INUS_EMNR
+                      AND A.CHRQ_DATE = C.WKNT_DATE
+                      AND A.EMPL_NUMB||'-'||A.CHRQ_DATE||'-'||A.CHRQ_SEQN = C.SOUS_LNKY
+         WHERE A.EMPL_NUMB = #EMPL_NUMB#
+           AND A.CGRG_CODE = 'MASTXM'
+    ]]>
+    <isNotEmpty prepend="AND" property="CHRQ_DATE">
+               A.CHRQ_DATE = #CHRQ_DATE#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="CHRQ_SEQN">
+               A.CHRQ_SEQN = #CHRQ_SEQN#
+    </isNotEmpty>
+         ORDER BY A.CHRQ_DATE DESC, A.CHRQ_SEQN DESC
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 변경요청내역 조회
+********************************************************************************/
+-->
+    <select id="HRMB0020.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT COUNT(*) AS ROWCNT
+          FROM HR_MSTCRQ
+         WHERE EMPL_NUMB = #EMPL_NUMB#
+           AND CGRG_CODE = #CGRG_CODE#
+           AND CHRC_CODE = '0'
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 파일 조회
+********************************************************************************/
+-->
+    <select id="HRMB0020.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+      SELECT /* HRMB0020.SEARCH04.파일 조회 */
+             D.FILE_IDXX                /* 파일ID */
+           , D.FILE_PATH                /* 저장경로 */
+           , D.PFIL_NAME                /* 물리파일명 */
+           , D.LFIL_NAME                /* 논리파일명 */
+           , D.EXTN_NAME                /* 확장자 */
+           , D.FILE_SIZE                /* 파일크기 */
+           , D.FITY_CODE                /* 파일유형 */
+        FROM TM_AFILED D                /* [첨부파일상세] */
+       INNER JOIN HR_MSTCRQ A
+          ON A.FILE_IDXX = D.FILE_IDXX
+         AND A.CGRG_CODE = #CGRG_CODE#
+         AND A.EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+         AND A.CHRQ_DATE = #CHRQ_DATE#  /* 변경요청일 */
+         AND A.CHRQ_SEQN = #CHRQ_SEQN#  /* 변경요청일련번호 */
+       WHERE D.FILE_IDXX = #FILE_IDXX#  /* 파일ID */
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기록변경요청 테이블 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0020.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        BEGIN
+              INSERT INTO HR_MSTCRQ (
+                     EMPL_NUMB    /*사원번호*/
+                   , CHRQ_DATE    /*변경요청일*/
+                   , CHRQ_SEQN    /*변경요청일련번호*/
+                   , CGRG_CODE    /*변경요청구분코드*/
+                   , CHRC_CODE    /*변경승인코드*/
+                   , RCGN_DATE    /*승인일*/
+                   , RJCT_PROW    /*반려사유*/
+                   , FILE_IDXX    /*파일ID*/
+                   , REMK_100X    /*비고100*/
+                   , INST_USID    /*입력작업자*/
+                   , INST_DATE    /*입력일시*/
+                   , UPDT_USID    /*수정작업자*/
+                   , UPDT_DATE    /*수정일시*/
+            ) VALUES (
+                     #EMPL_NUMB#  /*사원번호*/
+                   , #CHRQ_DATE#  /*변경요청일*/
+                   , #CHRQ_SEQN#  /*변경요청일련번호*/
+                   , #CGRG_CODE#  /*변경요청구분코드*/
+                   , #CHRC_CODE#  /*변경승인코드*/
+                   , #RCGN_DATE#  /*승인일*/
+                   , #RJCT_PROW#  /*반려사유*/
+                   , #FILE_IDXX#  /*파일ID*/
+                   , #REMK_100X#  /*비고100*/
+                   , #UPDT_USID#  /*입력작업자*/
+                   , SYSDATE      /*입력일시*/
+                   , #UPDT_USID#  /*수정작업자*/
+                   , SYSDATE      /*수정일시*/
+            );
+
+        INSERT INTO HR_MASTRQ ( /* [인사기본정보변경] */
+                 EMPL_NUMB          /* 사원번호 */
+                ,CHRQ_DATE          /* 변경요청일 */
+                ,CHRQ_SEQN          /* 변경요청일련번호 */
+                ,EMPL_NAME          /* 사원명 */
+                ,CCEM_NAME          /* 한자사원명 */
+                ,ENEE_NAME          /* 영문사원명 */
+                ,RERN_NUMB          /* 주민등록번호 */
+                ,EMPL_BIRT          /* 사원생년월일 */
+                ,GNDR_CODE          /* 성별코드 */
+                ,HALT_CODE          /* 장애코드 */
+                ,DEDY_CODE          /* 장애등급코드 */
+                ,DEGC_CODE          /* 장애유형코드 */
+                ,HAAD_DATE          /* 장애인정일 */
+                ,HALT_PROW          /* 장애사유 */
+                ,SVIM_YSNO          /* 중증장애여부 */
+                ,REDN_CODE          /* 보훈구분코드 */
+                ,RCMP_NUMB          /* 보훈번호 */
+                ,RCMP_DATE          /* 보훈일자 */
+                ,MAMR_CODE          /* 유공자관계코드 */
+                ,MNOM_NAME          /* 유공자성명 */
+                ,HDPP_NAME          /* 해당지청명 */
+                ,CHNG_CNTT          /* 변경내용 */
+                ,INST_USID          /* 입력작업자 */
+                ,INST_DATE          /* 입력일시 */
+                ,UPDT_USID          /* 수정작업자 */
+                ,UPDT_DATE          /* 수정일시 */
+        ) VALUES (
+                 #EMPL_NUMB#        /* 사원번호 */
+                ,#CHRQ_DATE#        /* 변경요청일 */
+                ,#CHRQ_SEQN#        /* 변경요청일련번호 */
+                ,#EMPL_NAME#        /* 사원명 */
+                ,#CCEM_NAME#        /* 한자사원명 */
+                ,#ENEE_NAME#        /* 영문사원명 */
+                ,SF_ENCRYPT(#RERN_NUMB#)   /*주민등록번호*/
+                ,#EMPL_BIRT#        /* 사원생년월일 */
+                ,#GNDR_CODE#        /* 성별코드 */
+                ,#HALT_CODE#        /* 장애코드 */
+                ,#DEDY_CODE#        /* 장애등급코드 */
+                ,#DEGC_CODE#        /* 장애유형코드 */
+                ,#HAAD_DATE#        /* 장애인정일 */
+                ,#HALT_PROW#        /* 장애사유 */
+                ,#SVIM_YSNO#        /* 중증장애여부 */
+                ,#REDN_CODE#        /* 보훈구분코드 */
+                ,#RCMP_NUMB#        /* 보훈번호 */
+                ,#RCMP_DATE#        /* 보훈일자 */
+                ,#MAMR_CODE#        /* 유공자관계코드 */
+                ,#MNOM_NAME#        /* 유공자성명 */
+                ,#HDPP_NAME#        /* 해당지청명 */
+                ,#CHNG_CNTT#        /* 변경내용 */
+                ,#UPDT_USID#        /* 입력작업자 */
+                ,SYSDATE            /* 입력일시 */
+                ,#UPDT_USID#        /* 수정작업자 */
+                ,SYSDATE            /* 수정일시 */
+                );
+
+        END;
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기본정보변경 테이블 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0020.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+        INSERT INTO HR_MASTRQ ( /* [인사기본정보변경] */
+                 EMPL_NUMB          /* 사원번호 */
+                ,CHRQ_DATE          /* 변경요청일 */
+                ,CHRQ_SEQN          /* 변경요청일련번호 */
+                ,EMPL_NAME          /* 사원명 */
+                ,CCEM_NAME          /* 한자사원명 */
+                ,ENEE_NAME          /* 영문사원명 */
+                ,RERN_NUMB          /* 주민등록번호 */
+                ,EMPL_BIRT          /* 사원생년월일 */
+                ,GNDR_CODE          /* 성별코드 */
+                ,HALT_CODE          /* 장애코드 */
+                ,DEDY_CODE          /* 장애등급코드 */
+                ,DEGC_CODE          /* 장애유형코드 */
+                ,HAAD_DATE          /* 장애인정일 */
+                ,HALT_PROW          /* 장애사유 */
+                ,SVIM_YSNO          /* 중증장애여부 */
+                ,REDN_CODE          /* 보훈구분코드 */
+                ,RCMP_NUMB          /* 보훈번호 */
+                ,RCMP_DATE          /* 보훈일자 */
+                ,MAMR_CODE          /* 유공자관계코드 */
+                ,MNOM_NAME          /* 유공자성명 */
+                ,HDPP_NAME          /* 해당지청명 */
+                ,CHNG_CNTT          /* 변경내용 */
+                ,INST_USID          /* 입력작업자 */
+                ,INST_DATE          /* 입력일시 */
+                ,UPDT_USID          /* 수정작업자 */
+                ,UPDT_DATE          /* 수정일시 */
+        ) VALUES (
+                 #EMPL_NUMB#        /* 사원번호 */
+                ,#CHRQ_DATE#        /* 변경요청일 */
+                ,#CHRQ_SEQN#        /* 변경요청일련번호 */
+                ,#EMPL_NAME#        /* 사원명 */
+                ,#CCEM_NAME#        /* 한자사원명 */
+                ,#ENEE_NAME#        /* 영문사원명 */
+                ,SF_ENCRYPT(#RERN_NUMB#)   /*주민등록번호*/
+                ,#EMPL_BIRT#        /* 사원생년월일 */
+                ,#GNDR_CODE#        /* 성별코드 */
+                ,#HALT_CODE#        /* 장애코드 */
+                ,#DEDY_CODE#        /* 장애등급코드 */
+                ,#DEGC_CODE#        /* 장애유형코드 */
+                ,#HAAD_DATE#        /* 장애인정일 */
+                ,#HALT_PROW#        /* 장애사유 */
+                ,#SVIM_YSNO#        /* 중증장애여부 */
+                ,#REDN_CODE#        /* 보훈구분코드 */
+                ,#RCMP_NUMB#        /* 보훈번호 */
+                ,#RCMP_DATE#        /* 보훈일자 */
+                ,#MAMR_CODE#        /* 유공자관계코드 */
+                ,#MNOM_NAME#        /* 유공자성명 */
+                ,#HDPP_NAME#        /* 해당지청명 */
+                ,#CHNG_CNTT#        /* 변경내용 */
+                ,#UPDT_USID#        /* 입력작업자 */
+                ,SYSDATE            /* 입력일시 */
+                ,#UPDT_USID#        /* 수정작업자 */
+                ,SYSDATE            /* 수정일시 */
+                )
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기록변경요청 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRMB0020.UPDATE00" parameterClass="hashmap" >
+    <![CDATA[
+        DECLARE
+            v_CHRC_CODE HR_MSTCRQ.CHRC_CODE%TYPE;
+            v_CHRC_NAME VARCHAR2(100);
+        BEGIN
+
+            SELECT  CHRC_CODE   /*변경승인코드*/
+                   ,SF_GET_COMMNAME('CHRC_CODE', CHRC_CODE)
+              INTO v_CHRC_CODE, v_CHRC_NAME
+              FROM HR_MSTCRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+
+            IF #CHRC_CODE# <> 'S' OR v_CHRC_CODE <> '0' THEN
+                IF v_CHRC_CODE = '0' OR v_CHRC_CODE = '1' OR v_CHRC_CODE = '2' THEN
+                    RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM014',v_CHRC_NAME || ',수정'));
+                END IF;
+            END IF;
+
+        UPDATE HR_MSTCRQ
+               SET CHRC_CODE = #CHRC_CODE#   /*변경승인코드*/
+                 , FILE_IDXX = #FILE_IDXX#   /*파일ID*/
+                 , REMK_100X = #REMK_100X#   /*비고100*/
+                 , UPDT_USID = #UPDT_USID#   /*수정작업자*/
+                 , UPDT_DATE = SYSDATE       /*수정일시*/
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+             ;
+
+        UPDATE HR_MASTRQ /* [인사기본정보변경] */
+           SET   EMPL_NAME = #EMPL_NAME#            /* 사원명 */
+                ,CCEM_NAME = #CCEM_NAME#            /* 한자사원명 */
+                ,ENEE_NAME = #ENEE_NAME#            /* 영문사원명 */
+                ,RERN_NUMB = SF_ENCRYPT(#RERN_NUMB#)   /*주민등록번호*/
+                ,EMPL_BIRT = #EMPL_BIRT#            /* 사원생년월일 */
+                ,GNDR_CODE = #GNDR_CODE#            /* 성별코드 */
+                ,HALT_CODE = #HALT_CODE#            /* 장애코드 */
+                ,DEDY_CODE = #DEDY_CODE#            /* 장애등급코드 */
+                ,DEGC_CODE = #DEGC_CODE#            /* 장애유형코드 */
+                ,HAAD_DATE = #HAAD_DATE#            /* 장애인정일 */
+                ,HALT_PROW = #HALT_PROW#            /* 장애사유 */
+                ,SVIM_YSNO = #SVIM_YSNO#            /* 중증장애여부 */
+                ,REDN_CODE = #REDN_CODE#            /* 보훈구분코드 */
+                ,RCMP_NUMB = #RCMP_NUMB#            /* 보훈번호 */
+                ,RCMP_DATE = #RCMP_DATE#            /* 보훈일자 */
+                ,MAMR_CODE = #MAMR_CODE#            /* 유공자관계코드 */
+                ,MNOM_NAME = #MNOM_NAME#            /* 유공자성명 */
+                ,HDPP_NAME = #HDPP_NAME#            /* 해당지청명 */
+                ,CHNG_CNTT = #CHNG_CNTT#            /* 변경내용 */
+                ,UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                ,UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE   EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+           AND   CHRQ_DATE = #CHRQ_DATE#            /* 변경요청일 */
+           AND   CHRQ_SEQN = #CHRQ_SEQN#            /* 변경요청일련번호 */
+               ;
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                 RAISE_APPLICATION_ERROR(-20000,SQLERRM);
+        END;
+
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기록변경요청 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0020.DELETE00" parameterClass="hashmap" >
+    <![CDATA[
+        DECLARE
+            v_CHRC_CODE HR_MSTCRQ.CHRC_CODE%TYPE;
+            v_CHRC_NAME VARCHAR2(100);
+        BEGIN
+
+            SELECT  CHRC_CODE   /*변경승인코드*/
+                   ,SF_GET_COMMNAME('CHRC_CODE', CHRC_CODE) AS CHRC_NAME
+              INTO v_CHRC_CODE, v_CHRC_NAME
+              FROM HR_MSTCRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+
+            IF (v_CHRC_CODE = '0' OR v_CHRC_CODE = '1' OR v_CHRC_CODE = '2') AND #HRXM_YSNO# <> '1' THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM014',v_CHRC_NAME || ',삭제'));
+            END IF;
+
+            DELETE FROM HR_MASTRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+            DELETE FROM HR_MSTCRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+        EXCEPTION
+            WHEN OTHERS THEN
+                 RAISE_APPLICATION_ERROR(-20000,SQLERRM);
+        END;
+
+
+
+    ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.23
+     내      용 : 인사기본정보변경 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="HRMB0020.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRMB0020.DELETE01.인사기본정보변경 테이블 삭제 */
+            v_CHRC_CODE HR_MSTCRQ.CHRC_CODE%TYPE;
+            v_CHRC_NAME VARCHAR2(100);
+        BEGIN
+
+            SELECT  CHRC_CODE   /*변경승인코드*/
+                   ,SF_GET_COMMNAME('CHRC_CODE', CHRC_CODE) AS CHRC_NAME
+              INTO v_CHRC_CODE, v_CHRC_NAME
+              FROM HR_MSTCRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+
+            IF (v_CHRC_CODE = '0' OR v_CHRC_CODE = '1' OR v_CHRC_CODE = '2') AND #HRXM_YSNO# <> '1' THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM014',v_CHRC_NAME || ',삭제'));
+            END IF;
+
+        DELETE FROM HR_MASTRQ /* [인사기본정보변경] */
+         WHERE EMPL_NUMB = #EMPL_NUMB#      /* 사원번호 */
+           AND CHRQ_DATE = #CHRQ_DATE#      /* 변경요청일 */
+           AND CHRQ_SEQN = #CHRQ_SEQN#      /* 변경요청일련번호 */
+            ;
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                 RAISE_APPLICATION_ERROR(-20000,SQLERRM);
+        END;
+
+
+    ]]>
+    </delete>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.12.19
+     내      용 : work 알림 저장
+********************************************************************************/
+-->
+    <insert id="HRMB0020.WORKSAVE00" parameterClass="map">
+    <![CDATA[
+        BEGIN /* HRMB0020.WORKSAVE00.work 알림 저장 */
+            PKG_TMMIFWKNT2.SP_WORKNOTICE_SAVENOW (
+                #SYST_LNCD#        /* 시스템언어코드 */
+              , #WORK_USID#        /* 작업자ID */
+              , #WKNT_TYCD#        /* 작업알림유형코드[WKNT_TYCD] */
+              , #SOUS_LNKY#        /* 출처연결키 */
+              , #WKNT_CNTT#        /* 작업알림내용 */
+            );
+        END; 
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.12.19
+     내      용 : work 알림 삭제
+********************************************************************************/
+-->
+    <insert id="HRMB0020.WORKDEL00" parameterClass="map">
+    <![CDATA[
+        BEGIN /* HRMB0020.WORKDEL00.work 알림 삭제 */
+            PKG_TMMIFWKNT.SP_WORKNOTICE_DELETE (
+                #SYST_LNCD#        /* 시스템언어코드 */
+              , #WORK_USID#        /* 작업자 */
+              , #WKNT_EMNR#        /* 작업알림사원번호 */
+              , #WKNT_DATE#        /* 작업알림일자(YYYYMMDD) */
+              , #WKNT_TIME#        /* 작업알림시간(HHMI) */
+              , #SRAL_NUMB#        /* 일련번호 */
+            );
+        END; 
+    ]]>
+    </insert>
+</sqlMap>

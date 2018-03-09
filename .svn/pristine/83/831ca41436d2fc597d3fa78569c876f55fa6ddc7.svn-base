@@ -1,0 +1,421 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TMMB0130" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="권한변경이력조회" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="8"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." left="8" width="216" top="107" height="21" cssclass="styFormSearchInfo" taborder="3" usedecorate="true"/>
+        <Grid selecttype="row" autoenter="TRUE" binddataset="dsTM_GROUPH" cellsizingtype="both" enable="true" id="grdTM_GROUPH" useinputpanel="false" taborder="2" tabstop="true" usecontextmenu="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="128" cssclass="styGrid01" right="25" bottom="15" autofittype="col" autosizingtype="none">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="180"/>
+                <Column size="80"/>
+                <Column size="70"/>
+                <Column size="150"/>
+                <Column size="150"/>
+                <Column size="80"/>
+                <Column size="70"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="권한그룹ID"/>
+                <Cell col="1" text="권한그룹명"/>
+                <Cell col="2" text="사용자ID"/>
+                <Cell col="3" text="사용자명"/>
+                <Cell col="4" text="시작일시"/>
+                <Cell col="5" text="종료일시"/>
+                <Cell col="6" text="변경자ID"/>
+                <Cell col="7" text="변경자명"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:GRUP_IDXX"/>
+                <Cell col="1" style="align:left;" text="bind:GRUP_NAME"/>
+                <Cell col="2" text="bind:USER_IDXX"/>
+                <Cell col="3" text="bind:USER_NAME"/>
+                <Cell col="4" text="bind:ATHR_BEDT"/>
+                <Cell col="5" text="bind:ATHR_EDTM"/>
+                <Cell col="6" text="bind:UPDT_USID"/>
+                <Cell col="7" text="bind:UPDT_NAME"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="imgSearchTitle0" taborder="11" text="변경기간" cssclass="styFormSearchCapBe" left="28" top="71" width="76" height="21"/>
+        <Calendar id="calSHRATHR_BEDT" taborder="12" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="96" top="71" width="100" height="21"/>
+        <Static id="Static15" taborder="13" text="~" left="201" top="71" width="14" height="21"/>
+        <Calendar id="calSHRATHR_EDTM" taborder="14" dateformat="yyyy-MM-dd" onsetfocus="fn_EditFocus" cssclass="styFormSearchItemCalendar" left="216" top="71" width="100" height="21"/>
+        <Static id="Image01" taborder="15" text="권한그룹" cssclass="styFormSearchCap" left="345" top="71" width="76" height="21"/>
+        <Edit id="edtSHRGRUP_IDXX" taborder="16" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="413" top="71" width="80" height="21"/>
+        <Static id="imgHelpSHRGRUP_IDXX" taborder="17" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="495" top="71" width="22" height="21"/>
+        <Edit id="edtSHRGRUP_NAME" taborder="18" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="518" top="71" width="100" height="21"/>
+        <Static id="Image1" taborder="19" text="사용자" cssclass="styFormSearchCap" left="646" top="71" width="63" height="21"/>
+        <Edit id="edtSHRUSER_IDXX" taborder="20" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="701" top="71" width="80" height="21"/>
+        <Static id="imgHelpSHRUSER_IDXX" taborder="21" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="783" top="71" width="22" height="21"/>
+        <Edit id="edtSHRUSER_NAME" taborder="22" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormSearchItem" left="806" top="71" width="100" height="21"/>
+        <Static id="Image02" taborder="23" text="일반권한포함" cssclass="styFormSearchCap" left="935" top="71" width="102" height="21"/>
+        <CheckBox id="chkNMUS_YSNO" taborder="24" value="0" truevalue="1" falsevalue="0" onsetfocus="fn_EditFocus" cssclass="styFormItemChk" left="1030" top="71" width="19" height="21" binddataset=""/>
+        <Static id="st_FormTitle" taborder="25" text="권한변경이력조회" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="26" text="홈 &gt; 공통관리 &gt; 권한변경이력조회" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="27" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="28" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="29" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="30" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="31" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="32" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="33" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="34" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="35" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="36" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="37" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="38" text="w 40" visible="false" left="316" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static03" taborder="39" text="w 40" visible="false" left="618" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="40" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTM_GROUPH" onrowposchanged="fn_KeyFieldDisible">
+        <ColumnInfo>
+          <Column id="GRUP_IDXX" type="STRING" size="256"/>
+          <Column id="GRUP_NAME" type="STRING" size="256"/>
+          <Column id="USER_IDXX" type="STRING" size="256"/>
+          <Column id="USER_NAME" type="STRING" size="256"/>
+          <Column id="ATHR_BEDT" type="STRING" size="256"/>
+          <Column id="ATHR_EDTM" type="STRING" size="256"/>
+          <Column id="UPDT_USID" type="STRING" size="256"/>
+          <Column id="UPDT_NAME" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.0"><![CDATA[ /***************************************************************************************************
+ * # Program : TMMB0130 권한변경이력조회
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.06.24		chg			Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ *****************************************************************************INBUS*CO*KR************/
+ 
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTFFFFFF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "TMMB0130";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+
+	//조회조건 기본값 셋팅
+	var sNowDate = this.fnc_ToString(this.fnc_GetServerDateTime("DATE"));
+	this.calSHRATHR_BEDT.set_value(this.fnc_AddDate(sNowDate, -7));	//변경기간(From)
+	this.calSHRATHR_EDTM.set_value(sNowDate);						//변경기간(To)
+
+	this.fn_Search();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+	
+}
+
+/*------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear('dsTM_GROUPH');
+
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsTM_GROUPH=dsTM_GROUPH";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTM_GROUPH.setFocus();
+
+}
+
+/*------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	
+	//기능없음
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj) {
+	
+	//기능없음
+
+}
+
+/*------------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	
+	this.fnc_DataSetCancel("dsTM_GROUPH");
+	this.grdTM_GROUPH.setFocus();
+	
+}
+
+/*------------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+
+	//기능없음
+}
+
+/*------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+
+	this.fnc_ToExcel(this.name);
+	
+}
+
+/*------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*------------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("dsTM_GROUPH", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+} 
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj,e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo){
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+	
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+	
+}
+
+/***************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------+
+ |  조회 필수 조건 체크!  |
+ +------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsTM_GROUPH")) {
+		if (this.fnc_Message("TMM023") == false) return false;
+	}
+
+	return true;
+
+}
+
+/*-------------------+
+ |  삭제 여부 체크!  |
+ +-------------------*/
+this.fn_DeleteCheck = function () {
+	
+	//기능없음
+
+}
+
+/*-------------------+
+ |  저장 여부 체크!  |
+ +-------------------*/
+this.fn_SaveItemCheck = function () {
+
+	//기능없음
+	
+}
+
+/*-----------------------------------------+
+|  Service 호출 시 넘어 갈 Argument 생성!  |
++------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	if (sKind == 'SEARCH00') {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " ATHR_BEDT=" + this.fnc_Quote(this.fnc_Trim(this.calSHRATHR_BEDT.value));
+		sReturnString += " ATHR_EDTM=" + this.fnc_Quote(this.fnc_Trim(this.calSHRATHR_EDTM.value));
+		sReturnString += " GRUP_IDXX=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRGRUP_IDXX.value));
+		sReturnString += " USER_IDXX=" + this.fnc_Quote(this.fnc_Trim(this.edtSHRUSER_IDXX.value));
+		sReturnString += " NMUS_YSNO=" + this.fnc_Quote(this.fnc_Trim(this.chkNMUS_YSNO.value));
+
+	} 
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+|  Transaction 후 처리 해야 할 내용!  |
++-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+		
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+
+		this.fn_PostProcess(sMethodName);
+
+	}
+
+}
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+	
+	if (sMethodName == 'SEARCH00') {
+	
+		this.fnc_Information(this.stInformation, this.dsTM_GROUPH.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTM_GROUPH.getCaseCount("dataset.getRowLevel(currow)==0"));
+	
+	} else if (sMethodName == "GetCommCode") {
+	
+		//기능없음
+	
+	}
+
+}
+
+/*--------------------------------------+
+ |  수정 시 Key Field Disibled 처리     |
+ +-------------------------------------*/
+this.fn_KeyFieldDisible = function (obj:Dataset) {
+
+	//기능없음
+
+}
+
+/***************************************************************************************************
+ *                                사용자 정의  Function 처리 부분                                  *
+ ***************************************************************************************************/
+/*-------------------------------------+
+ | Help Popup Open                     |
+ +-------------------------------------*/
+this.fn_HelpDialoge = function (obj) {
+
+	var arrParam = new Array();
+	
+	if ((obj.name == "imgHelpSHRGRUP_IDXX") || (obj.name == "edtSHRGRUP_NAME")) {
+	
+		arrParam[0] = "TMM0001"; 								 //Popup ID
+		arrParam[1] = ""; 										 //조건구분에 대응되는 조회조건 값
+		arrParam[2] = this.fnc_Trim(this.edtSHRGRUP_NAME.value); //콤보조건구분에 대응되는 조회 조건 값
+		arrParam[3] = "N"; 										 //사용 여부 구분 포함 여부 값
+		arrParam[4] = "edtSHRGRUP_NAME"; 						 //현재 포커스 Componect명
+		arrParam[5] = "edtSHRGRUP_IDXX,edtSHRGRUP_NAME"; 		 //초기화 및 결과 Mapping Column
+		arrParam[6] = "0,1"; 									 //Mapping Column Index
+		this.fnc_HelpDialogeAction(this, obj, arrParam); 		 //팝업 호출
+
+	} else if ((obj.name == "imgHelpSHRUSER_IDXX") || (obj.name == "edtSHRUSER_NAME")) {
+	
+		arrParam[0] = "TMM1002";
+		arrParam[1] = "";
+		arrParam[2] = this.fnc_Trim(this.edtSHRUSER_NAME.value);
+		arrParam[3] = "N";
+		arrParam[4] = "edtSHRUSER_NAME";
+		arrParam[5] = "edtSHRUSER_IDXX,edtSHRUSER_NAME";
+		arrParam[6] = "0,1";
+		this.fnc_HelpDialogeAction(this, obj, arrParam);
+	
+	}
+}
+]]></Script>
+  </Form>
+</FDL>

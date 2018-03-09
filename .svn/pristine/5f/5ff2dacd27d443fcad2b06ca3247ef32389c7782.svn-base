@@ -1,0 +1,1989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                 
+           "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+                                                                                                                      
+<sqlMap namespace="FSMB0040">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동관리 조회 처리
+********************************************************************************/
+ -->
+	<select id="FSMB0040.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+		 	SELECT  /*FSMB0040.SEARCH00.자산이동관리 조회 처리*/
+                  '0'AS CHEK_YSNO /*선택*/
+                  ,A.CHNG_DATE    /*변동일*/
+                  ,A.ASST_NUMB    /*자산번호*/
+                  ,B.ASST_NAME    /*자산명*/
+                  ,A.SEQN_NUMB    /*일련번호*/
+                  ,A.CHBF_DEPT    /*변경전부서코드*/
+                  ,SF_GET_DEPTNAME(A.CHBF_DEPT) AS BFDE_NAME /*변경전부서명*/
+                  ,A.CHBF_EMPL   /*변경전사원번호*/
+                  ,D.ENFC_CODE                  AS BFDE_ACCN  /*변경전 사업장코드*/
+                  ,SF_GET_OFFINAME(D.ENFC_CODE) AS BFDE_ACCT  /*변경전 사업장명*/
+                  ,SF_GET_EMPLNAME(A.CHBF_EMPL) AS BFEM_NAME /*변경전사원명*/
+                  ,A.DEPT_CODE   /*부서코드*/
+                  ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME /*부서명*/
+                  ,D2.ENFC_CODE                  AS DEPT_ACCN
+                  ,SF_GET_OFFINAME(D2.ENFC_CODE) AS DEPT_ACCT
+                  ,A.EMPL_NUMB   /*사원번호*/
+                  ,SF_GET_EMPLNAME(A.EMPL_NUMB) AS EMPL_NAME /*사원명*/
+                  ,A.RCGN_YSNO    /*승인여부*/
+                  ,A.APPV_DATE    /*승인일시*/
+                  ,A.APPR_EMPL    /*승인자*/
+                  ,SF_GET_EMPLNAME(A.APPR_EMPL) AS APPV_EMNM /*승인자명*/
+                  ,C.ASCL_NAME    /* 자산 분류명*/
+                  ,C.SMAL_NAME AS CLSF_NAME   /*품목분류명*/
+                  ,B.ACQS_DATE    /*취득일*/
+                  ,B.ACQU_PRIC    /*취득금액*/
+                  ,B.ACCT_UNIT    /*회계단위*/
+                  ,A.DESC_REMK	  /*비고*/
+                  ,A.SLIP_NUMB    /*전표번호*/
+                  ,A.SLIP_LINE    /*전표순번*/
+             FROM FS_ASCHXM A INNER JOIN FS_ASSTXM B     ON A.ASST_NUMB = B.ASST_NUMB
+                              INNER JOIN VI_ASSETCLASS C ON B.CLSF_CODE = C.SMAL_CODE
+                              LEFT JOIN VI_DEPTXM D  ON A.CHBF_DEPT = D.DEPT_CODE
+                              LEFT JOIN VI_DEPTXM D2 ON A.DEPT_CODE = D2.DEPT_CODE
+            WHERE A.CHNG_DATE >= NVL(#CHNG_DAT1#, A.CHNG_DATE)  /*조회 시작일*/
+              AND A.CHNG_DATE <= NVL(#CHNG_DAT2#, A.CHNG_DATE)  /*조회 종료일*/
+		]]>
+		
+		  <isNotEmpty prepend="AND" property="RCGN_YSNO">
+		      A.RCGN_YSNO  = NVL(#RCGN_YSNO#, A.RCGN_YSNO)  /*승인여부*/
+		  </isNotEmpty>
+		  <isNotEmpty prepend="AND" property="ASST_NUMB">
+		      A.ASST_NUMB  = NVL(#ASST_NUMB#, A.ASST_NUMB)  /*자산번호*/
+		  </isNotEmpty>
+		  <isNotEmpty prepend="AND" property="CLSF_CODE">
+		      B.CLSF_CODE  = NVL(#CLSF_CODE#, B.CLSF_CODE)  /*품목분류*/
+		  </isNotEmpty>
+		  <isNotEmpty prepend="AND" property="EMPL_NUMB">
+              NVL(A.EMPL_NUMB, ' ') = NVL(#EMPL_NUMB#, NVL(A.EMPL_NUMB, ' '))   /*이동사원*/
+		  </isNotEmpty>
+		  <isNotEmpty prepend="AND" property="CHBF_DEPT">
+              A.CHBF_DEPT =  NVL(#CHBF_DEPT#, A.CHBF_DEPT)  /*부서코드*/
+		  </isNotEmpty>
+		  <isNotEmpty prepend="AND">
+		      <![CDATA[
+              A.ASCH_GUBN IN (SELECT COMD_CODE 
+                                FROM TM_CODEXD 
+                               WHERE COMM_CODE = 'ASCH_GUBN' 
+                                 AND REF1_FILD = 'MOVE'
+                                 ) /* 자산구분이 이동인것만 체크*/
+		      ]]>
+		  </isNotEmpty>
+        <![CDATA[
+            ORDER BY A.CHNG_DATE 
+        ]]>              
+              
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동관리 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0040.SAVE00.자산이동관리 저장 처리*/
+			iCNT                    DECIMAL(15,0);  /*상각여부*/
+	    	sASCH_GUBN  FS_ASCHXM.ASCH_GUBN%TYPE;    /*변동구분[ASCH_GUBN](APPA:부서이동, MANG:사원변경)*/
+	    	sASST_STAT  FS_ASCHXM.ASST_STAT%TYPE;    /*자산상태[ASST_STAT]*/
+	
+	    BEGIN
+	
+	        /*자산상각 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+             
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n이동입력이 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 변동 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 이력(변동,이동) 있습니다.\n\n확정(변동, 이동) 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 변경일 이후의 자료 존재 여부 체크(굳이 두번 한 이유:오류 메시지의 구분을 위해)*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND CHNG_DATE > #CHNG_DATE#;  /*변경 일 이후 변동 자료 존재 여부*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 변동확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 분할내역이 있습니다.\n\n자산분할 확정 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND SPLT_DATE > #CHNG_DATE#;  /*변경일 이후의 분할 자료*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 분할 확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*이동할 자산상태 구하기*/
+	        SELECT ASST_STAT INTO sASST_STAT FROM FS_ASSTXM WHERE ASST_NUMB = #ASST_NUMB#;
+	        
+	        sASCH_GUBN := 'MANG'; /*해당파라메터 기본값*/
+	
+	        /*변경구분 구하기*/
+	        IF (NVL(#CHBF_DEPT#, ' ') != NVL(#DEPT_CODE#, ' ')) THEN
+	
+	            /*부서가 변경되었으면 사원 변경 여부에 관계없이 부서 변경(부서 변경이 우선임)*/
+	            sASCH_GUBN := 'APPA';
+	
+	        ELSIF (NVL(#CHBF_EMPL#, ' ') != NVL(#EMPL_NUMB#, ' ')) THEN
+	
+	            /*사원만 변경되었으면*/
+	            sASCH_GUBN := 'MANG';	            
+	
+	        END IF;
+	
+	
+	        /*RAISE_APPLICATION_ERROR(-20000, 'FAIL');*/
+	        INSERT INTO FS_ASCHXM ( /*[자산변동이력]*/
+	               CHNG_DATE        /*변동일*/
+	              ,ASST_NUMB        /*자산번호*/
+	              ,SEQN_NUMB        /*일련번호*/
+	              ,ASCH_GUBN        /*변동구분[ASCH_GUBN]*/
+	              ,ASST_STAT        /*자산상태[ASST_STAT]*/
+	              ,CHBF_DEPT        /*변경전부서코드*/
+	              ,CHBF_EMPL        /*변경전사원번호*/
+	              ,DEPT_CODE        /*부서코드*/
+	              ,EMPL_NUMB        /*사원번호*/
+	              ,ACQU_ENDX        /*취득가_기말잔액*/
+	              ,DPCT_ENDX        /*충당금_기말잔액*/
+	              ,UNDP_BALE        /*미상각잔액*/
+	              ,CHNG_AMOT        /*변동금액*/
+	              ,DSPS_AMOT        /*처분가액*/
+	              ,DSPS_GILS        /*처분손익*/
+	              ,DPCT_GRDC        /*충당금가감액*/
+	              ,ACCT_INTL        /*계정과목코드*/
+	              ,CUST_CODE        /*거래처코드*/
+	              ,RCGN_YSNO        /*승인여부*/
+	              ,APPV_DATE        /*승인일시*/
+	              ,APPR_EMPL        /*승인자*/
+	              ,SLIP_NUMB        /*전표번호*/
+	              ,DESC_REMK        /*비고(100)*/
+	              ,INST_DATE        /*등록일시*/
+	              ,INST_USID        /*등록자*/
+	              ,UPDT_DATE        /*수정일시*/
+	              ,UPDT_USID        /*수정자*/
+	              ,ACCT_UNIT        /*회계단위*/
+	              )
+	       VALUES (
+	               #CHNG_DATE#       /*변동일*/
+	              ,#ASST_NUMB#       /*자산번호*/
+	              ,(SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+	                  FROM FS_ASCHXM
+	                 WHERE CHNG_DATE = #CHNG_DATE#
+	                   AND ASST_NUMB = #ASST_NUMB#) /*일련번호 채번*/
+	              ,sASCH_GUBN       /*변동구분[ASCH_GUBN]*/
+	              ,sASST_STAT       /*자산상태[ASST_STAT]*/
+	              ,#CHBF_DEPT#      /*변경전부서코드*/
+	              ,#CHBF_EMPL#      /*변경전사원번호*/
+	              ,#DEPT_CODE#      /*부서코드*/
+	              ,#EMPL_NUMB#      /*사원번호*/
+	              ,0                /*취득가_기말잔액*/
+	              ,0                /*충당금_기말잔액*/
+	              ,0                /*미상각잔액*/
+	              ,0                /*변동금액*/
+	              ,0                /*처분가액*/
+	              ,0                /*처분손익*/
+	              ,0                /*충당금가감액*/
+	              ,''               /*계정과목코드*/
+	              ,''               /*거래처코드*/
+	              ,#RCGN_YSNO#      /*승인여부*/
+	              ,#APPV_DATE#      /*승인일시*/
+	              ,#APPR_EMPL#      /*승인자*/
+	              ,''               /*전표번호*/
+	              ,#DESC_REMK#      /*비고(100)*/
+	              ,SYSDATE      /*등록일시*/
+	              ,#UPDT_USID#      /*등록자*/
+	              ,SYSDATE      /*수정일시*/
+	              ,#UPDT_USID#      /*수정자*/
+	              ,#ACCT_UNIT#
+	              );         
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동관리 저장 처리 - 엑셀 업로드 자료
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.SAVE01" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		     /*FSMB0040.SAVE01.자산이동관리 저장 처리 - 엑셀 업로드 자료*/
+			iCNT                    DECIMAL(15,0);  /*상각여부*/
+	    	iCHK                    DECIMAL(15,0);  /*상태 체크*/
+	    	sASST_STAT  FS_ASCHXM.ASST_STAT%TYPE;   /*자산상태[ASST_STAT]*/
+	    	sOLDX_DEPT  FS_ASCHXM.CHBF_DEPT%TYPE;   /*변경 전 부서코드(혹시나해서 - 안전하게 하려고)*/
+	    	sACCT_UNIT  FS_ASCHXM.ACCT_UNIT%TYPE;   /*엑셀등록시 회계구분 조회*/
+	
+		BEGIN
+	
+	        /*정상적으로 등록된 자산인지 판단*/
+	        SELECT COUNT(ASST_NUMB) INTO iCHK
+	          FROM FS_ASSTXM
+	         WHERE ASST_NUMB = #ASST_NUMB#;
+	
+	        IF (iCHK < 1) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '(은/는) 등록되지 않은 자산입니다!');
+	        END IF;
+	
+	        /*정상적인 이동부서인지 체크*/
+	        SELECT COUNT(DEPT_CODE) INTO iCHK
+	          FROM VI_DEPTXM
+	         WHERE DEPT_CODE = #DEPT_CODE#;
+	
+	        IF (iCHK < 1) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || ' 자산의 이동부서는 등록되지 않은 부서입니다!');
+	        END IF;
+	
+	        /*이미 등록된 자료인지 체크*/
+	        SELECT COUNT(ASST_NUMB) INTO iCHK
+	          FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#
+	           AND ASST_NUMB = #ASST_NUMB#
+	           AND ASCH_GUBN = 'APPA';
+	
+	        IF (iCHK > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, '이동일자 : ' || SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5,2) || '월 ' || SUBSTR(#CHNG_DATE#, 7,2) || '일\n\n자산정보 : ' || #ASST_NUMB# || '-' || #ASST_NAME# || '\n\n이미 등록된 자료 입니다!');
+	        END IF;
+	
+	        /*자산상각 체크*/
+	        SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+	        
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n이동입력이 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 변동 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 이력(변동,이동) 있습니다.\n\n확정(변동, 이동) 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 변경일 이후의 자료 존재 여부 체크(굳이 두번 한 이유:오류 메시지의 구분을 위해)*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND CHNG_DATE > #CHNG_DATE#;  /*변경 일 이후 변동 자료 존재 여부*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 변동확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 분할내역이 있습니다.\n\n자산분할 확정 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND SPLT_DATE > #CHNG_DATE#;  /*변경일 이후의 분할 자료*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 분할 확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*이동할 자산상태 및 부서코드  구하기*/
+	        SELECT ASST_STAT, DEPT_CODE INTO sASST_STAT, sOLDX_DEPT FROM FS_ASSTXM WHERE ASST_NUMB = #ASST_NUMB#;
+	
+	        /*201.09 회계단위 구하기*/
+	        /*SELECT ASST_STAT INTO sACCT_UNIT FROM FS_ASSTXM WHERE ASST_NUMB = iASST_NUMB; */
+	
+	        INSERT INTO FS_ASCHXM ( /*[자산변동이력]*/
+	               CHNG_DATE        /*변동일*/
+	              ,ASST_NUMB        /*자산번호*/
+	              ,SEQN_NUMB        /*일련번호*/
+	              ,ASCH_GUBN        /*변동구분[ASCH_GUBN]*/
+	              ,ASST_STAT        /*자산상태[ASST_STAT]*/
+	              ,CHBF_DEPT        /*변경전부서코드*/
+	              ,CHBF_EMPL        /*변경전사원번호*/
+	              ,DEPT_CODE        /*부서코드*/
+	              ,EMPL_NUMB        /*사원번호*/
+	              ,ACQU_ENDX        /*취득가_기말잔액*/
+	              ,DPCT_ENDX        /*충당금_기말잔액*/
+	              ,UNDP_BALE        /*미상각잔액*/
+	              ,CHNG_AMOT        /*변동금액*/
+	              ,DSPS_AMOT        /*처분가액*/
+	              ,DSPS_GILS        /*처분손익*/
+	              ,DPCT_GRDC        /*충당금가감액*/
+	              ,ACCT_INTL        /*계정과목코드*/
+	              ,CUST_CODE        /*거래처코드*/
+	              ,RCGN_YSNO        /*승인여부*/
+	              ,APPV_DATE        /*승인일시*/
+	              ,APPR_EMPL        /*승인자*/
+	              ,SLIP_NUMB        /*전표번호*/
+	              ,DESC_REMK        /*비고(100)*/
+	              ,INST_DATE        /*등록일시*/
+	              ,INST_USID        /*등록자*/
+	              ,UPDT_DATE        /*수정일시*/
+	              ,UPDT_USID        /*수정자*/
+	              /*,ACCT_UNIT*/        /*회계단위*/
+	              )
+	       VALUES (
+	               #CHNG_DATE#                            /*변동일*/
+	              ,#ASST_NUMB#                            /*자산번호*/
+	              ,(SELECT NVL(MAX(SEQN_NUMB), 0) + 1
+	                  FROM FS_ASCHXM
+	                 WHERE CHNG_DATE = #CHNG_DATE#
+	                   AND ASST_NUMB = #ASST_NUMB#)       /*일련번호 채번*/
+	              ,'APPA'                                /*변동구분[ASCH_GUBN]*/
+	              ,sASST_STAT                            /*자산상태[ASST_STAT]*/
+	              ,sOLDX_DEPT                            /*변경전부서코드*/
+	              ,null                                  /*변경전사원번호*/
+	              ,#DEPT_CODE#                            /*부서코드*/
+	              ,null                                  /*사원번호*/
+	              ,0                                     /*취득가_기말잔액*/
+	              ,0                                     /*충당금_기말잔액*/
+	              ,0                                     /*미상각잔액*/
+	              ,0                                     /*변동금액*/
+	              ,0                                     /*처분가액*/
+	              ,0                                     /*처분손익*/
+	              ,0                                     /*충당금가감액*/
+	              ,''                                    /*계정과목코드*/
+	              ,''                                    /*거래처코드*/
+	              ,'0'                                   /*승인여부*/
+	              ,null                                  /*승인일시*/
+	              ,null                                  /*승인자*/
+	              ,''                                    /*전표번호*/
+	              ,#DESC_REMK#                            /*비고(100)*/
+	              ,SYSDATE                            /*등록일시*/
+	              ,#UPDT_USID#                            /*등록자*/
+	              ,SYSDATE                            /*수정일시*/
+	              ,#UPDT_USID#                            /*수정자*/
+	              /*,sACCT_UNIT */                           /*회계구분*/
+	              );
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동관리 수정 처리
+********************************************************************************/
+ -->
+	<update id="FSMB0040.UPDATE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+			/*FSMB0040.UPDATE00.자산이동관리 수정 처리*/
+			sASCH_GUBN  FS_ASCHXM.ASCH_GUBN%TYPE;   /*변동구분[ASCH_GUBN](APPA:부서이동, MANG:사원변경)*/
+			sRCGN_YSNO  FS_ASCHXM.RCGN_YSNO%TYPE;   /*이동이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          수정 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO   /*승인여부*/
+	          FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#   /*이동일*/
+	           AND ASST_NUMB = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#;  /*일련번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ' ' || #ASST_NAME# || '의 이동이력이\n\n' || '이미 승인 되었습니다. ' ||
+	                                           '수정이 불가 합니다!');
+	        END IF;
+	
+	        /*변경구분 구하기*/
+	        IF (#CHBF_DEPT# != #DEPT_CODE#) THEN
+	
+	            /*부서가 변경되었으면 사원 변경 여부에 관계없이 부서 변경(부서 변경이 우선임)*/
+	            sASCH_GUBN := 'APPA';
+	
+	        ELSIF (#CHBF_EMPL# != #EMPL_NUMB#) THEN
+	
+	            /*사원만 변경되었으면*/
+	            sASCH_GUBN := 'MANG';
+	
+	        END IF;
+	
+	        UPDATE FS_ASCHXM                /*[자산변동이력]*/
+	           SET  ASCH_GUBN = sASCH_GUBN  /*변동구분[ASCH_GUBN]*/
+	               ,CHBF_DEPT = #CHBF_DEPT#  /*변경전부서코드*/
+	               ,CHBF_EMPL = #CHBF_EMPL#  /*변경전사원번호*/
+	               ,DEPT_CODE = #DEPT_CODE#  /*부서코드*/
+	               ,EMPL_NUMB = #EMPL_NUMB#  /*사원번호*/
+	               ,DESC_REMK = #DESC_REMK#  /*비고(100)*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#  /*변동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#  /*일련번호*/
+	           ;
+	
+	    END;
+		]]>
+	</update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동관리 삭제 처리
+********************************************************************************/
+ -->
+	<delete id="FSMB0040.DELETE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0040.DELETE00.자산이동관리 삭제 처리*/
+			sRCGN_YSNO FS_ASCHXM.RCGN_YSNO%TYPE;   /*이동이력 승인여부*/
+	
+	    BEGIN
+	
+			/************************************************
+			          변동, 분할, 감가상각 여부는 체크 하지 않음
+			          미확정 자료가 존재하면 신규 입력이 불가하고
+			          삭제 가능 자료는 미확정 자료만 가능함으로
+			*************************************************/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO   /*승인여부*/
+	          FROM FS_ASCHXM
+	         WHERE CHNG_DATE = #CHNG_DATE#   /*이동일*/
+	           AND ASST_NUMB = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#;  /*일련번호*/
+	                                  
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ' ' || #ASST_NAME# || '의 이동이력이\n\n' || '이미 승인 되었습니다. ' ||
+	                                           '삭제가 불가 합니다!');
+	        END IF;
+	
+	        DELETE FROM FS_ASCHXM           /*[자산변동이력]*/
+	         WHERE CHNG_DATE = #CHNG_DATE#   /*변동일*/
+	           AND ASST_NUMB = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB = #SEQN_NUMB#   /*일련번호*/
+	           ;                       
+	
+	    END;
+		]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동승인
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.APPL00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0040.APPL00.자산이동승인*/
+			sRCGN_YSNO                   FS_ASCHXM.RCGN_YSNO%TYPE;   /*승인여부*/
+	    	iDPCT_COUNT                 DECIMAL(15,0);              /*감가상각 자료 존재여부*/
+	    	iCHNG_COUNT                 DECIMAL(15,0);              /*같은 자산의 현재의 이동일보다 큰 승인자료 존재여부*/
+	
+	    BEGIN
+	
+	        /*이미 승인된 자료인지 체크*/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#
+	           AND CHNG_DATE = #CHNG_DATE#
+	           AND SEQN_NUMB = #SEQN_NUMB#
+	           AND ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD = 'MOVE'); /* 자산구분이 이동인것만 체크*/
+	
+	        IF (sRCGN_YSNO = '1') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '이미 승인된 자료가 존재합니다!!');
+	        END IF;
+	
+	        /*이동년월의 감가상각여부 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO iDPCT_COUNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+	
+	        IF (iDPCT_COUNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월의 감가상각 자료가 존재합니다!!');
+	        END IF;
+	
+	        /*이동승인*/
+	        UPDATE FS_ASCHXM
+	           SET  RCGN_YSNO = '1'          /*승인여부*/
+	               ,APPV_DATE = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')   /*승인일시*/
+	               ,APPR_EMPL = #UPDT_USID#   /*승인자*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#   /*이동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#   /*일련번호*/
+	           AND ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD = 'MOVE'); /* 자산구분이 이동인것만 체크*/
+	
+	        /*같은 자산의 현재의 이동일보다 큰 승인자료 존재여부 체크*/
+	        SELECT COUNT(CHNG_DATE) INTO iCHNG_COUNT FROM FS_ASCHXM WHERE ASST_NUMB = #ASST_NUMB# AND RCGN_YSNO = '1' AND CHNG_DATE > #CHNG_DATE#;
+	
+	        IF (iCHNG_COUNT = 0) THEN
+	
+	        UPDATE FS_ASSTXM
+	           SET  DEPT_CODE = #DEPT_CODE#   /*부서코드*/
+	               ,EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+	         WHERE ASST_NUMB  = #ASST_NUMB#   /*자산번호*/
+	           ;                        
+	
+	        END IF;
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동승인취소
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.CANC00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0040.CANC00.자산이동승인취소*/
+			sRCGN_YSNO                  FS_ASCHXM.RCGN_YSNO%TYPE;   /*승인여부*/
+			iDPCT_COUNT                 DECIMAL(15,0);              /*감가상각 자료 존재여부*/
+			iCHNG_COUNT                 DECIMAL(15,0);              /*같은 자산의 현재의 이동일보다 큰 승인자료 존재여부*/
+	
+	    BEGIN
+	
+	        /*이미 승인된 자료인지 체크*/
+	        SELECT RCGN_YSNO INTO sRCGN_YSNO
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#
+	           AND CHNG_DATE = #CHNG_DATE#
+	           AND SEQN_NUMB = #SEQN_NUMB#
+	           AND ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD = 'MOVE'); /* 자산구분이 이동인것만 체크*/
+	
+	        IF (sRCGN_YSNO = '0') THEN
+	           RAISE_APPLICATION_ERROR(-20000, '미승인된 자료가 존재합니다!!');
+	        END IF;
+	
+	        /*이동년월의 감가상각여부 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO iDPCT_COUNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+
+	        IF (iDPCT_COUNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월의 감가상각 자료가 존재합니다!!');
+	        END IF;
+	
+	        /*이동승인*/
+	        UPDATE FS_ASCHXM
+	           SET  RCGN_YSNO = '0'          /*승인여부*/
+	               ,APPV_DATE = ''           /*승인일시*/
+	               ,APPR_EMPL = ''           /*승인자*/
+	         WHERE CHNG_DATE  = #CHNG_DATE#   /*이동일*/
+	           AND ASST_NUMB  = #ASST_NUMB#   /*자산번호*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#   /*일련번호*/
+	           AND ASCH_GUBN IN (SELECT COMD_CODE FROM TM_CODEXD WHERE COMM_CODE = 'ASCH_GUBN' AND REF1_FILD = 'MOVE'); /* 자산구분이 이동인것만 체크*/
+	
+	        /*같은 자산의 현재의 이동일보다 큰 승인자료 존재여부 체크*/
+	        SELECT COUNT(CHNG_DATE) INTO iCHNG_COUNT FROM FS_ASCHXM WHERE ASST_NUMB = #ASST_NUMB# AND RCGN_YSNO = '1' AND CHNG_DATE > #CHNG_DATE#;
+	
+	        IF (iCHNG_COUNT = 0) THEN
+	
+	        UPDATE FS_ASSTXM
+	           SET  DEPT_CODE = #CHBF_DEPT#   /*부서코드*/
+	               ,EMPL_NUMB = #CHBF_EMPL#   /*사원번호*/
+	         WHERE ASST_NUMB  = #ASST_NUMB#   /*자산번호*/
+	           ;                        
+	
+	        END IF;
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동 전표 헤더처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.PROC00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0040.PROC00.자산이동 전표 헤더처리*/
+			sTITL_NAME      TA_SLIPXM.TITL_NAME%TYPE;   /*대표적요*/
+	        sEMPL_NUMB      TA_SLIPXM.EMPL_NUMB%TYPE;   /*입력자*/
+	        sDEPT_CODE      TA_SLIPXM.DEPT_CODE%TYPE;   /*입력부서*/
+	        sACCT_GUBN      TA_SLIPXM.ACCT_GUBN%TYPE;   /*사업장*/
+	        
+		    nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE := 0;   /*전표순번*/
+		    sSLIP_NUMB      TA_SLIPXM.SLIP_NUMB%TYPE;   /*전표번호*/
+		    sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*전표일자*/
+		    
+		    
+		    
+	
+	    BEGIN
+	
+	        /* 대표적요 구성 */
+	        sTITL_NAME := '[자산이동] 자동전표';
+	
+	        /* 사용자 정보 조회 */
+	       BEGIN
+	           	SELECT TO_CHAR(LAST_DAY(to_date(SUBSTR(#CHNG_DATE#, 1, 6) || '01' , 'YYYYMMDD')), 'YYYYMMDD')
+	            INTO   sSLIP_DATE
+	            FROM   DUAL
+	            ;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    sSLIP_DATE := '';
+	        END;
+	
+	        IF LENGTH(sSLIP_DATE) != 8 THEN
+	            RAISE_APPLICATION_ERROR(-20000,'기표일자를 구할 수 없습니다. 전산팀에 문의하세요.!');
+	        END IF;
+	        
+	        	        
+	        BEGIN
+	            SELECT U.DEPT_CODE
+	              INTO  sDEPT_CODE     
+	              FROM   HR_MASTXM U
+	             WHERE  EMPL_NUMB = #UPDT_USID#;
+	
+	            EXCEPTION
+	                WHEN NO_DATA_FOUND THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '입력자에 대한 정보를 찾을 수 없습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	        
+	
+			/*==============================================================
+			        1.    전표 > HEADER 추가
+			==============================================================*/
+	                BEGIN
+		        	    
+		        	      
+						        
+							PKG_FAMIFSLIP.SP_MASTER_SAVE(#SYST_LNCD#,      /* ●시스템언어코드*/
+														 #UPDT_USID#,      /* ●수정작업자*/
+														 #ACCT_UNIT#,      /* ●회계단위 */
+														 #ACCT_GUBN#,      /* ●회계구분_사업장 */
+														 sSLIP_DATE,       /* ●전표일자(회계일자) */ 
+														 #SLIP_GUBN#,      /* SLIP_GUBN*/      /* ●전표유형구분 */
+														 sTITL_NAME,       /* ●제목 */
+														 #UPDT_USID#,      /* ●사원번호 */
+														 sDEPT_CODE,	   /* ●부서코드 */ 						 
+														 #SOUS_LNKY#,      /* ●출처연결키 */
+														 NULL,
+														 NULL,
+														 NULL,
+														 NULL,
+														 NULL,
+														 sSLIP_NUMB);      /* ●전표번호(생성된 전표번호 반환) */
+		
+		
+		            EXCEPTION
+			                WHEN OTHERS THEN
+			                    RAISE_APPLICATION_ERROR(-20000, 'HEADER 추가 에러'||chr(13)||chr(10)||SQLERRM);
+			        END;	
+			        
+			        
+			        
+			        
+			        
+			 nSLIP_LINE := 0;
+			        
+         /*==============================================================
+            2-1-1. 자산이동관리 전표 > LINE 추가 > 관리계정과목(차변)변경후 부서
+        ==============================================================*/
+	         FOR CUR_FS_ASCHXM IN (
+	            
+						      SELECT A.ASST_NUMB /*자산번호 PK1*/,
+									 A.CHNG_DATE /*변동일   PK2*/,
+									 A.SEQN_NUMB /*일련번호 PK3*/,
+									 A2.CUST_CODE /*구매처코드*/,
+									 A.CHBF_DEPT /*변경전_부서코드*/,
+									 A.DEPT_CODE /*변경후_부서코드*/,
+									 DE.ACCT_GUBN AS CHBF_ACCT /* 변경전_사업장*/,
+									 DE2.ACCT_GUBN AS ACCT_GUBN /* 변경후_사업장*/,
+									 B.DPCT_ACT1 AS DPCT_ACT1,
+									 NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC /* 취득금액*/,
+									 A2.ASST_NAME /* 자산명[대표적요]*/,
+									 NVL(A2.UNDP_BALE, 0) AS UNDP_BALE /* 미상각잔액*/,
+									 DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2,
+									 A.SLIP_NUMB /* 전표번호*/
+								FROM FS_ASCHXM A
+							 INNER JOIN FS_ASSTXM A2 ON A.ASST_NUMB = A2.ASST_NUMB
+							 INNER JOIN VI_ASSETCLASS B ON A2.CLSF_CODE = B.SMAL_CODE
+								LEFT JOIN VI_DEPTXM DE /*변경전*/
+							ON DE.DEPT_CODE = A.CHBF_DEPT
+								LEFT JOIN VI_DEPTXM DE2 /*변경후*/
+							ON DE2.DEPT_CODE = A.DEPT_CODE
+								LEFT JOIN FS_ASCLXM C ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE, 1, 2) /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+							   WHERE A.ACCT_UNIT = #ACCT_UNIT# /*회계단위*/
+								 AND A.ASST_NUMB = #ASST_NUMB# /*자산번호*/
+								 AND A.CHNG_DATE = #CHNG_DATE# /*변동일*/
+								 AND A.ASCH_GUBN IN (SELECT COMD_CODE
+													 FROM TM_CODEXD
+													WHERE COMM_CODE = 'ASCH_GUBN'
+														AND REF1_FILD = 'MOVE') /* 자산구분이 이동인것만 체크*/
+	
+	        )
+	
+	        LOOP
+	        
+	              IF CUR_FS_ASCHXM.ACQU_PRIC > 0 THEN
+	        
+	                 BEGIN
+	                 
+	              
+	                  IF CUR_FS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+				            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || CUR_FS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+				      END IF;
+				      
+				        nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                         #ACCT_UNIT# ,
+	                                        CUR_FS_ASCHXM.ACCT_GUBN,
+	                                        CUR_FS_ASCHXM.DPCT_ACT1, /*계정코드      >> 관리계정과목*/
+	                                        CUR_FS_ASCHXM.DEPT_CODE,
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_FS_ASCHXM.ACQU_PRIC,
+	                                        CUR_FS_ASCHXM.ACQU_PRIC,
+	                                        '', /*상대전표번호*/
+	                                        '', /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_FS_ASCHXM.ASST_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                         
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 관리계정과목 (차변) 계정 작성 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	                
+ 	             END IF;
+ 	             
+			 END LOOP;
+			 
+		 /*==============================================================
+             2-1-2. 자산이동관리 전표 > LINE 추가 > 관리계정과목(대변)변경전 부서
+         ==============================================================*/
+	         FOR CUR_FS_ASCHXM IN (
+	            
+						 SELECT A.ASST_NUMB /*자산번호 PK1*/,
+								A.CHNG_DATE /*변동일   PK2*/,
+								A.SEQN_NUMB /*일련번호 PK3*/,
+								A2.CUST_CODE /*구매처코드*/,
+								A.CHBF_DEPT /*변경전_부서코드*/,
+								A.DEPT_CODE /*변경후_부서코드*/,
+								DE.ACCT_GUBN AS CHBF_ACCT /* 변경전_사업장*/,
+								DE2.ACCT_GUBN AS ACCT_GUBN /* 변경후_사업장*/,
+								B.DPCT_ACT1 AS DPCT_ACT1,
+								NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC /* 취득금액*/,
+								A2.ASST_NAME /* 자산명[대표적요]*/,
+								NVL(A2.UNDP_BALE, 0) AS UNDP_BALE /* 미상각잔액*/,
+								DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2,
+								A.SLIP_NUMB /* 전표번호*/
+							 FROM FS_ASCHXM A
+							INNER JOIN FS_ASSTXM A2 ON A.ASST_NUMB = A2.ASST_NUMB
+							INNER JOIN VI_ASSETCLASS B ON A2.CLSF_CODE = B.SMAL_CODE
+							 LEFT JOIN VI_DEPTXM DE /*변경전*/
+						 ON DE.DEPT_CODE = A.CHBF_DEPT
+							 LEFT JOIN VI_DEPTXM DE2 /*변경후*/
+						 ON DE2.DEPT_CODE = A.DEPT_CODE
+							 LEFT JOIN FS_ASCLXM C ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE, 1, 2) /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/						 
+					   WHERE A.ACCT_UNIT = #ACCT_UNIT# /*회계단위*/
+						 AND A.ASST_NUMB = #ASST_NUMB# /*자산번호*/
+						 AND A.CHNG_DATE = #CHNG_DATE# /*변동일*/
+						AND A.ASCH_GUBN IN (SELECT COMD_CODE
+											FROM TM_CODEXD
+					    					 WHERE COMM_CODE = 'ASCH_GUBN'
+											 AND REF1_FILD = 'MOVE')
+	
+	        )
+	
+	        LOOP
+	        
+	              IF CUR_FS_ASCHXM.ACQU_PRIC > 0 THEN
+	        
+	                 BEGIN
+	                 
+	              
+	                  IF CUR_FS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+				            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || CUR_FS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+				      END IF;
+				      
+				        nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                         #ACCT_UNIT# ,
+	                                        CUR_FS_ASCHXM.CHBF_ACCT,  /*변경전 사업장 */
+	                                        CUR_FS_ASCHXM.DPCT_ACT1, /*계정코드      >> 관리계정과목*/
+	                                        CUR_FS_ASCHXM.CHBF_DEPT,  /*변경전 부서  */
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_FS_ASCHXM.ACQU_PRIC,
+	                                        CUR_FS_ASCHXM.ACQU_PRIC,
+	                                        '', /*상대전표번호*/
+	                                        '', /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_FS_ASCHXM.ASST_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                         
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 관리계정과목 (대변) 계정 작성 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	                
+ 	             END IF;
+ 	             
+			 END LOOP;
+			 
+		/*==============================================================
+             2-1-3. 미상각 잔액 처리    관리계정과목(차변)변경후 부서 감가상각누계액
+         ==============================================================*/
+	         FOR CUR_FS_ASCHXM IN (
+	            
+						 	SELECT A.ASST_NUMB /*자산번호 PK1*/,
+									 A.CHNG_DATE /*변동일   PK2*/,
+									 A.SEQN_NUMB /*일련번호 PK3*/,
+									 A2.CUST_CODE /*구매처코드*/,
+									 A.CHBF_DEPT /*변경전_부서코드*/,
+									 A.DEPT_CODE /*변경후_부서코드*/,
+									 DE.ACCT_GUBN AS CHBF_ACCT /* 변경전_사업장*/,
+									 DE2.ACCT_GUBN AS ACCT_GUBN /* 변경후_사업장*/,
+									 B.DPCT_ACT1 AS DPCT_ACT1,
+									 NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC /* 취득금액*/,
+									 A2.ASST_NAME /* 자산명[대표적요]*/,
+									 NVL(A2.UNDP_BALE, 0) AS UNDP_BALE /* 미상각잔액*/,
+									 DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2,
+									 A.SLIP_NUMB /* 전표번호*/
+							FROM FS_ASCHXM A
+						 INNER JOIN FS_ASSTXM A2 ON A.ASST_NUMB = A2.ASST_NUMB
+						 INNER JOIN VI_ASSETCLASS B ON A2.CLSF_CODE = B.SMAL_CODE
+							LEFT JOIN VI_DEPTXM DE /*변경전*/
+						ON DE.DEPT_CODE = A.CHBF_DEPT
+							LEFT JOIN VI_DEPTXM DE2 /*변경후*/
+						ON DE2.DEPT_CODE = A.DEPT_CODE
+							LEFT JOIN FS_ASCLXM C ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE, 1, 2) /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/	
+										   WHERE A.ACCT_UNIT = #ACCT_UNIT# /*회계단위*/
+											 AND A.ASST_NUMB = #ASST_NUMB# /*자산번호*/
+											 AND A.CHNG_DATE = #CHNG_DATE# /*변동일*/
+							 AND A.ASCH_GUBN IN (SELECT COMD_CODE
+													 FROM TM_CODEXD
+													WHERE COMM_CODE = 'ASCH_GUBN'
+														AND REF1_FILD = 'MOVE') /* 자산구분이 이동인것만 체크*/
+	
+	        )
+	
+	        LOOP
+	        
+	              IF CUR_FS_ASCHXM.UNDP_BALE > 0 THEN
+	        
+	                 BEGIN
+	                 
+	              
+	                  IF CUR_FS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+				            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || CUR_FS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+				      END IF;
+				      
+				        nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                         #ACCT_UNIT# ,
+	                                        CUR_FS_ASCHXM.ACCT_GUBN,  /*변경후 사업장 */
+	                                        CUR_FS_ASCHXM.DPCT_ACT2,  /*계정코드      >> 관리계정과목*/
+	                                        CUR_FS_ASCHXM.DEPT_CODE,  /*변경후_사용부서*/
+	                                        '',
+	                                        'D',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_FS_ASCHXM.UNDP_BALE, /* 미상각금액 */
+	                                        CUR_FS_ASCHXM.UNDP_BALE, /* 미상각금액 */
+	                                        '', /*상대전표번호*/
+	                                        '', /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_FS_ASCHXM.ASST_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                         
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE관리계정과목(차변)변경전 부서 감가상각누계액 계정 작성 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	                
+ 	             END IF;
+ 	             
+			 END LOOP;
+			 
+			 /*==============================================================
+             2-1-4.미상각 잔액 처리       관리계정과목(대변)변경전 부서 감가상각누계액
+             ==============================================================*/
+	         FOR CUR_FS_ASCHXM IN (
+	            
+						     SELECT A.ASST_NUMB /*자산번호 PK1*/,
+									A.CHNG_DATE /*변동일   PK2*/,
+									A.SEQN_NUMB /*일련번호 PK3*/,
+									A2.CUST_CODE /*구매처코드*/,
+									A.CHBF_DEPT /*변경전_부서코드*/,
+									A.DEPT_CODE /*변경후_부서코드*/,
+									DE.ACCT_GUBN AS CHBF_ACCT /* 변경전_사업장*/,
+									DE2.ACCT_GUBN AS ACCT_GUBN /* 변경후_사업장*/,
+									B.DPCT_ACT1 AS DPCT_ACT1,
+									NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC /* 취득금액*/,
+									A2.ASST_NAME /* 자산명[대표적요]*/,
+									NVL(A2.UNDP_BALE, 0) AS UNDP_BALE /* 미상각잔액*/,
+									DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2,
+									A.SLIP_NUMB /* 전표번호*/
+								 FROM FS_ASCHXM A
+								INNER JOIN FS_ASSTXM A2 ON A.ASST_NUMB = A2.ASST_NUMB
+								INNER JOIN VI_ASSETCLASS B ON A2.CLSF_CODE = B.SMAL_CODE
+								 LEFT JOIN VI_DEPTXM DE /*변경전*/
+							 ON DE.DEPT_CODE = A.CHBF_DEPT
+								 LEFT JOIN VI_DEPTXM DE2 /*변경후*/
+							 ON DE2.DEPT_CODE = A.DEPT_CODE
+						 LEFT JOIN FS_ASCLXM C ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE, 1, 2) /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+									        WHERE A.ACCT_UNIT = #ACCT_UNIT# /*회계단위*/
+											 AND A.ASST_NUMB = #ASST_NUMB# /*자산번호*/
+											 AND A.CHNG_DATE = #CHNG_DATE# /*변동일*/
+			                                 AND A.ASCH_GUBN IN (SELECT COMD_CODE
+														FROM TM_CODEXD
+													 WHERE COMM_CODE = 'ASCH_GUBN'
+														 AND REF1_FILD = 'MOVE') /* 자산구분이 이동인것만 체크*/
+	
+	        )
+	
+	        LOOP
+	        
+	              IF CUR_FS_ASCHXM.UNDP_BALE > 0 THEN
+	        
+	                 BEGIN
+	                 
+	              
+	                  IF CUR_FS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+				            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || CUR_FS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+				      END IF;
+				      
+				        nSLIP_LINE := nSLIP_LINE + 1;       /*전표라인번호*/
+	                   
+	                    PKG_FAMIFSLIP.SP_LINE_SAVE(
+	                                        #SYST_LNCD#,
+	                                        #UPDT_USID#,
+	                                        sSLIP_NUMB,
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                         #ACCT_UNIT# ,
+	                                        CUR_FS_ASCHXM.CHBF_ACCT,     /* 변경전_사업장*/
+	                                        CUR_FS_ASCHXM.DPCT_ACT2,  /*계정코드      >> 관리계정과목*/
+	                                        CUR_FS_ASCHXM.CHBF_DEPT,  /*변경전_사용부서*/
+	                                        '',
+	                                        'C',
+	                                        'KRW',
+	                                        1,
+	                                        CUR_FS_ASCHXM.UNDP_BALE, /* 미상각금액 */
+	                                        CUR_FS_ASCHXM.UNDP_BALE, /* 미상각금액 */
+	                                        '', /*상대전표번호*/
+	                                        '', /*상대전표라인번호*/
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        CUR_FS_ASCHXM.ASST_NAME,
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        lpad(nSLIP_LINE , '4', '0'),
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '',
+	                                        '');
+	                         
+	                                        
+                    EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 관리계정과목(대변)변경전 부서 감가상각누계액 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+ 	                
+ 	                
+ 	                
+ 	             END IF;
+ 	             
+			 END LOOP;
+			 
+			    /*=============================================================
+		         3. FINISH 
+		        ===============================================================*/
+		     
+		     
+				   BEGIN
+				    
+			         PKG_FAMIFSLIP.SP_FINISH(
+					        #SYST_LNCD# /* ●시스템언어코드*/
+					       ,#UPDT_USID#   /* ●수정작업자*/
+						   ,sSLIP_NUMB   /* ●전표번호 */
+					    );
+					    
+				   EXCEPTION
+	               WHEN OTHERS THEN
+	                   RAISE_APPLICATION_ERROR(-20000, 'FINISH 에러'||chr(13)||chr(10)||SQLERRM);
+ 	               END;
+ 	               
+ 	               
+			 
+			 
+					 /*==============================================================
+		             4. 자산이동 관리 전표 번호 업데이트
+		             ==============================================================*/
+             
+					 BEGIN
+					 
+		             UPDATE FS_ASCHXM                /*[자산이동관리내역] */
+			           SET  SLIP_NUMB = sSLIP_NUMB  /*전표번호*/
+			               ,SLIP_LINE = lpad(nSLIP_LINE , '4', '0') /*전표순번*/
+			               ,UPDT_DATE = sysdate  /*수정일시*/
+			               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+			         WHERE ACCT_UNIT  = #ACCT_UNIT#  /*회계단위[ACCT_UNIT]*/
+			           AND ASST_NUMB  = #ASST_NUMB#      /*자산번호*/
+			           AND CHNG_DATE  = #CHNG_DATE#      /*변동일*/
+			           ;
+	                EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, 'LINE 관리계정과목(대변)변경전 부서 감가상각누계액 ERROR  '||chr(13)||chr(10)||SQLERRM);
+ 	                END;	
+			 		                   
+	
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동 전표 처리 차변
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.PROC01" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0040.PROC01.자산이동 전표 처리 차변*/
+			CURSOR CUR_FS_ASCHXM (
+		             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+		            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+		            ,P_CHNG_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+		            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+		            
+		        ) IS
+		
+		            SELECT  A.ASST_NUMB 	/*자산번호 PK1*/
+			               ,A.CHNG_DATE     /*변동일   PK2*/
+			               ,A.SEQN_NUMB     /*일련번호 PK3*/
+			               ,A2.CUST_CODE    /*구매처코드*/
+			               ,A.CHBF_DEPT     /*변경전_부서코드*/
+			               ,A.DEPT_CODE     /*변경후_부서코드*/
+			               ,DE.ACCT_GUBN    AS CHBF_ACCT        /* 변경전_사업장*/
+			               ,DE2.ACCT_GUBN   AS ACCT_GUBN        /* 변경후_사업장*/
+			                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+			                    X.DPCT_ACT1
+			                 ELSE
+			                    B.DPCT_ACT1
+			                 END  AS DPCT_ACT1
+			               /*,B.DPCT_ACT1   */                      /* 관리계정과목*/
+			               ,NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC   /* 취득금액*/
+			               ,A2.ASST_NAME                        /* 자산명[대표적요]*/
+			               ,NVL(A2.UNDP_BALE, 0) AS UNDP_BALE   /* 미상각잔액*/
+			                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+			                    DECODE(C.ASST_DTLX, 'INAS', X.DPCT_ACT1, X.DPCT_ACT2)
+			                 ELSE
+			                    DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2)
+			                 END  AS DPCT_ACT2
+			               /*,DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2 */    /*상각누계계정과목*/
+			               ,A.SLIP_NUMB                         /* 전표번호*/
+		            FROM FS_ASCHXM A
+		           INNER JOIN FS_ASSTXM A2
+		                 ON A.ASST_NUMB = A2.ASST_NUMB
+		              INNER JOIN VI_ASSETCLASS B
+		                  ON A2.CLSF_CODE = B.SMAL_CODE
+		              LEFT JOIN VI_DEPTXM DE        /*변경전*/
+		                  ON  DE.DEPT_CODE = A.CHBF_DEPT
+		              LEFT JOIN VI_DEPTXM DE2       /*변경후*/
+		                  ON  DE2.DEPT_CODE = A.DEPT_CODE
+		              LEFT JOIN FS_ASCLXM C
+		                 ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)      /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+		              /*자산분류는 년도가 없기때문에 2014BASE 를 이용해서 계정 보여준다 */
+		              LEFT OUTER JOIN FS_ASCLXM_2014BASE X ON X.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+		             WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+		                AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+		                AND A.CHNG_DATE = P_CHNG_DATE           /*변동일*/
+		                AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/
+		                AND A.ASCH_GUBN IN (SELECT COMD_CODE
+		                                  FROM TM_CODEXD
+		                                  WHERE COMM_CODE = 'ASCH_GUBN'
+		                                  AND REF1_FILD = 'MOVE'
+		                                  ) /* 자산구분이 이동인것만 체크*/
+		
+		        ;
+		
+		        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+		
+		        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+		        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+
+    BEGIN
+
+        /*======================================================================================
+            STEP 1. 자산이동관리 전표 생성 여부 체크
+        ======================================================================================*/
+        BEGIN
+            /*[자산이동관리정보]
+            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+                               ,#ASST_NUMB#     /*자산번호*/
+                               ,#CHNG_DATE#     /*변동일*/
+                               ,#SEQN_NUMB#     /*일련번호*/
+                               );         
+            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+            CLOSE CUR_FS_ASCHXM;
+
+            EXCEPTION
+                WHEN OTHERS THEN
+                    RAISE_APPLICATION_ERROR(-20000, '자산이동관리 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+        END;
+
+        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+        END IF;
+
+        /*======================================================================================
+            STEP 2. 자산이동관리 전표 생성
+        ======================================================================================*/
+        /* 발의일자 :  자산이동관리일*/
+        sSLIP_DATE := #SLIP_DATE#;
+
+        /*==============================================================
+            2-1.자산이동 전표 > LINE 추가[차>대>차변 순서대로 SLIP_LINE저장요망]
+        ==============================================================*/
+        /*nSLIP_LINE := 0;*/
+
+        /*==============================================================
+            2-1-1. 자산이동관리 전표 > LINE 추가 > 관리계정과목(차변)변경후 부서
+        ==============================================================*/
+        IF rFS_ASCHXM.ACQU_PRIC > 0 THEN
+            nSLIP_LINE := #SLIP_LINE#;
+
+            SP_SLIP_INSERT_D(
+                 SYSDATE   /*등록일시*/
+                ,#UPDT_USID#   /*등록자*/
+                ,#SLIP_NUMB#               /* 전표번호*/
+                ,LPad(nSLIP_LINE,4,'0')   /* 전표순번*/
+                ,rFS_ASCHXM.ACCT_GUBN     /* 변경후_사업장*/
+                ,''   /* 브랜드 : 농심 사용안함*/
+                ,''   /*예산구분*/
+                ,''   /*프로젝트코드*/
+                ,''   /*예산품의번호*/
+                ,''   /*상대전표일자*/
+                ,''   /*상대전표번호*/
+                ,''   /*상대전표순번*/
+                ,rFS_ASCHXM.DPCT_ACT1                                       /*계정코드      >> 관리계정과목*/
+                ,'D'          /*차변 D, 대변 C*/
+                ,'KRW'   /*통화구분*/
+                ,0   		  /*환율*/
+                ,rFS_ASCHXM.ACQU_PRIC  /*취득금액*/
+                ,0   		  /*외화금액*/
+                ,rFS_ASCHXM.DEPT_CODE   /*변경후_사용부서*/
+                ,''   	 	  /*예산부서 : 농심 사용안함*/
+                ,rFS_ASCHXM.ASST_NAME   /*적요1*/
+                ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+                ,''   /*매입매출구분*/
+                ,''   /*부가세종류*/
+                ,''   /*매입구분*/
+                ,''   /*불공제구분*/
+                ,''   /*전자발행여부*/
+                ,''   /*발행일자*/
+                ,''   /*공급가액*/
+                ,''   /*세액*/
+                ,''   /*품목*/
+                ,''   /*적요*/
+                ,rFS_ASCHXM.CUST_CODE   /*구매처*/
+                ,''   /*출납처리여부*/
+                ,''   /*지출일자*/
+                ,''   /*출납방법*/
+                ,''   /*입출구분*/
+                ,''   /*카드번호*/
+                ,''   /*카드승인번호*/
+                ,''   /*사업자번호*/
+            );
+
+            /* PARAM
+            --관리항목 저장//기타의무형,유형, 차량운반구 필수값 없음. SP_SLIP_INSERT_S 호출 안함
+            FOR CUR IN (
+                SELECT B.COND_CODE
+                      -- 관리항목 확정후 다시 정리 필요
+                      ,CASE WHEN B.COND_CODE = '0002' THEN rFS_ASCHXM.CUST_CODE --거래처
+                            ELSE '' END AS COND_VACD
+                      ,CASE WHEN B.COND_CODE = '0002' THEN SF_GET_CUSTNAME(rFS_ASCHXM.CUST_CODE) --거래처
+                            ELSE '' END AS COND_VANM
+                FROM   TA_ACCTXM A
+                    JOIN TA_ACCTXD B
+                        ON  A.ACCT_YEAR = B.ACCT_YEAR
+                        AND A.ACCT_INTL = B.ACCT_INTL
+                WHERE B.ACCT_INTL = rFS_ASCHXM.DPCT_ACT1
+                AND   A.ACCT_YEAR = SubStr(iSLIP_NUMB,3,4)
+
+          ) LOOP
+
+              SP_SLIP_INSERT_S(
+                   iWORK_DATE   --수정일시
+                  ,iWORK_USID   --수정자
+                  ,iSLIP_NUMB   --전표번호
+                  ,LPad(nSLIP_LINE,4,'0')   --전표순번
+                  ,CUR.COND_CODE   --관리항목코드 : 재무>기본정보>관리항목 참조
+                  ,CUR.COND_VACD   --항목값
+                  ,CUR.COND_VANM   --항목명
+              );
+
+          END LOOP;
+          */
+
+          /* 전표 라인별 정합성 체크 */
+          SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,LPad(nSLIP_LINE,4,'0'));
+
+        END IF;
+
+
+        EXCEPTION
+             WHEN OTHERS THEN
+                RAISE;
+    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동 전표 처리 대변
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.PROC02" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0040.PROC02.자산이동 전표 처리 대변*/
+			CURSOR CUR_FS_ASCHXM (
+	             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+	            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+	            ,P_CHNG_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+	            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+	            
+	        ) IS
+	            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+		               ,A.CHNG_DATE     /*변동일   PK2*/
+		               ,A.SEQN_NUMB     /*일련번호 PK3*/
+		               ,A2.CUST_CODE    /*구매처코드*/
+		               ,A.CHBF_DEPT     /*변경전_부서코드*/
+		               ,A.DEPT_CODE     /*변경후_부서코드*/
+		               ,DE.ACCT_GUBN    AS CHBF_ACCT        /* 변경전_사업장*/
+		               ,DE2.ACCT_GUBN   AS ACCT_GUBN        /* 변경후_사업장*/
+		               ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    X.DPCT_ACT1
+		                 ELSE
+		                    B.DPCT_ACT1
+		                 END  AS DPCT_ACT1
+		               /*,B.DPCT_ACT1  */                       /* 관리계정과목*/
+		               ,NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC   /* 취득금액*/
+		               ,A2.ASST_NAME                        /* 자산명[대표적요]*/
+		               ,NVL(A2.UNDP_BALE, 0) AS UNDP_BALE   /* 미상각잔액*/
+		                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    DECODE(C.ASST_DTLX, 'INAS', X.DPCT_ACT1, X.DPCT_ACT2)
+		                 ELSE
+		                    DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2)
+		                 END  AS DPCT_ACT2
+		               /*,DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2    */ /*상각누계계정과목*/
+		               ,A.SLIP_NUMB                         /* 전표번호*/
+	            FROM FS_ASCHXM A
+	              INNER JOIN FS_ASSTXM A2
+	                  ON A.ASST_NUMB = A2.ASST_NUMB
+	              INNER JOIN VI_ASSETCLASS B
+	                  ON A2.CLSF_CODE = B.SMAL_CODE
+	              LEFT JOIN VI_DEPTXM DE        /*변경전*/
+	                  ON  DE.DEPT_CODE = A.CHBF_DEPT
+	              LEFT JOIN VI_DEPTXM DE2       /*변경후*/
+	                  ON  DE2.DEPT_CODE = A.DEPT_CODE
+	              LEFT JOIN FS_ASCLXM C
+	                 ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)      /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+	              /*자산분류는 년도가 없기때문에 2014BASE 를 이용해서 계정 보여준다*/
+	              LEFT OUTER JOIN FS_ASCLXM_2014BASE X ON X.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+	
+	             WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+	                AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+	                AND A.CHNG_DATE = P_CHNG_DATE           /*변동일*/
+	                AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/
+	                AND A.ASCH_GUBN IN (SELECT COMD_CODE
+	                                  FROM TM_CODEXD
+	                                  WHERE COMM_CODE = 'ASCH_GUBN'
+	                                  AND REF1_FILD = 'MOVE'
+	                                  ) /* 자산구분이 이동인것만 체크*/
+	
+	        ;
+	
+	        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+	
+	        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+	        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+	
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산이동관리 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산이동관리정보]
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#CHNG_DATE#     /*변동일*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산이동관리 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 2. 자산이동관리 전표 생성
+	        ======================================================================================*/
+	
+	        /* 발의일자 :  자산이동관리일*/
+	        sSLIP_DATE := #SLIP_DATE#;
+	
+	        /*=============================================================
+	            2-1-2. 자산이동관리 전표 > LINE 추가 > 관리계정과목(대변)변경전 부서
+	        =============================================================*/
+	        IF rFS_ASCHXM.ACQU_PRIC > 0 THEN
+	
+	            nSLIP_LINE := #SLIP_LINE;#
+	
+	            SP_SLIP_INSERT_D(
+	                 SYSDATE   /*등록일시*/
+	                ,#UPDT_USID#   /*등록자*/
+	                ,#SLIP_NUMB#               /* 전표번호*/
+	                ,LPad(nSLIP_LINE,4,'0')   /* 전표순번*/
+	                ,rFS_ASCHXM.CHBF_ACCT     /* 변경전_사업장*/
+	                ,''   /* 브랜드 : 농심 사용안함*/
+	                ,''   /*예산구분*/
+	                ,''   /*프로젝트코드*/
+	                ,''   /*예산품의번호*/
+	                ,''   /*상대전표일자*/
+	                ,''   /*상대전표번호*/
+	                ,''   /*상대전표순번*/
+	                ,rFS_ASCHXM.DPCT_ACT1                                        /*계정코드      >> 관리계정과목*/
+	                ,'C'   /*차대구분       대변 : C*/
+	                ,'KRW'   /*통화구분*/
+	                ,0   /*환율*/
+	                ,rFS_ASCHXM.ACQU_PRIC         /*취득금액*/
+	                ,0   /*외화금액*/
+	                ,rFS_ASCHXM.CHBF_DEPT   /*변경전_사용부서*/
+	                ,''   /*예산부서 : 농심 사용안함*/
+	                ,rFS_ASCHXM.ASST_NAME   /*적요1*/
+	                ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+	                ,''   /*매입매출구분*/
+	                ,''   /*부가세종류*/
+	                ,''   /*매입구분*/
+	                ,''   /*불공제구분*/
+	                ,''   /*전자발행여부*/
+	                ,''   /*발행일자*/
+	                ,''   /*공급가액*/
+	                ,''   /*세액*/
+	                ,''   /*품목*/
+	                ,''   /*적요*/
+	                ,rFS_ASCHXM.CUST_CODE   /*거래처*/
+	                ,''   /*출납처리여부*/
+	                ,''   /*지출일자*/
+	                ,''   /*출납방법*/
+	                ,''   /*입출구분*/
+	                ,''   /*카드번호*/
+	                ,''   /*카드승인번호*/
+	                ,''      /*사업자번호*/
+	            );
+	
+	
+	            /* PARAM
+	            --관리항목 저장//기타의무형,유형, 차량운반구 필수값 없음. SP_SLIP_INSERT_S 호출 안함
+	            FOR CUR IN (
+	                SELECT B.COND_CODE
+	                      -- 관리항목 확정후 다시 정리 필요
+	                      ,CASE WHEN B.COND_CODE = '0002' THEN rFS_ASCHXM.CUST_CODE --거래처
+	                            ELSE '' END AS COND_VACD
+	                      ,CASE WHEN B.COND_CODE = '0002' THEN SF_GET_CUSTNAME(rFS_ASCHXM.CUST_CODE) --거래처
+	                            ELSE '' END AS COND_VANM
+	                FROM   TA_ACCTXM A
+	                    JOIN TA_ACCTXD B
+	                        ON  A.ACCT_YEAR = B.ACCT_YEAR
+	                        AND A.ACCT_INTL = B.ACCT_INTL
+	                WHERE B.ACCT_INTL = rFS_ASCHXM.DPCT_ACT1
+	                AND   A.ACCT_YEAR = SubStr(iSLIP_NUMB,3,4)
+	
+	          ) LOOP
+	
+	              SP_SLIP_INSERT_S(
+	                   iWORK_DATE   --수정일시
+	                  ,iWORK_USID   --수정자
+	                  ,iSLIP_NUMB   --전표번호
+	                  ,LPad(nSLIP_LINE,4,'0')   --전표순번
+	                  ,CUR.COND_CODE   --관리항목코드 : 재무>기본정보>관리항목 참조
+	                  ,CUR.COND_VACD   --항목값
+	                  ,CUR.COND_VANM   --항목명
+	              );
+	
+	          END LOOP;
+	          */
+	
+	            /* 전표 라인별 정합성 체크 */
+	            SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,LPad(nSLIP_LINE,4,'0'));
+	
+	        END IF;
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+	
+			
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동 전표 처리 차변[3-1.미상각 잔액 처리]
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.PROC03" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	       /*FSMB0040.PROC03.자산이동 전표 처리 차변[3-1.미상각 잔액 처리]*/
+			CURSOR CUR_FS_ASCHXM (
+	             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+	            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+	            ,P_CHNG_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+	            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+	        ) IS
+	
+	            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+		               ,A.CHNG_DATE     /*변동일   PK2*/
+		               ,A.SEQN_NUMB     /*일련번호 PK3*/
+		               ,A2.CUST_CODE    /*구매처코드*/
+		               ,A.CHBF_DEPT     /*변경전_부서코드*/
+		               ,A.DEPT_CODE     /*변경후_부서코드*/
+		               ,DE.ACCT_GUBN    AS CHBF_ACCT        /* 변경전_사업장*/
+		               ,DE2.ACCT_GUBN   AS ACCT_GUBN        /* 변경후_사업장*/
+		                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    X.DPCT_ACT1
+		                 ELSE
+		                    B.DPCT_ACT1
+		                 END  AS DPCT_ACT1
+		               /*,B.DPCT_ACT1                         *//* 관리계정과목*/
+		               ,NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC   /* 취득금액*/
+		               ,A2.ASST_NAME                        /* 자산명[대표적요]*/
+		               ,NVL(A2.UNDP_BALE, 0) AS UNDP_BALE   /* 미상각잔액*/
+		                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    DECODE(C.ASST_DTLX, 'INAS', X.DPCT_ACT1, X.DPCT_ACT2)
+		                 ELSE
+		                    DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2)
+		                 END  AS DPCT_ACT2
+		               /*,DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2     *//*상각누계계정과목*/
+		               ,A.SLIP_NUMB                         /* 전표번호*/
+	            FROM FS_ASCHXM A
+	              INNER JOIN FS_ASSTXM A2
+	                 ON A.ASST_NUMB = A2.ASST_NUMB
+	              INNER JOIN VI_ASSETCLASS B
+	                 ON A2.CLSF_CODE = B.SMAL_CODE
+	               LEFT JOIN VI_DEPTXM DE        /*변경전*/
+	                 ON  DE.DEPT_CODE = A.CHBF_DEPT
+	               LEFT JOIN VI_DEPTXM DE2       /*변경후*/
+	                 ON  DE2.DEPT_CODE = A.DEPT_CODE
+	               LEFT JOIN FS_ASCLXM C
+	                 ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)      /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+	              /*자산분류는 년도가 없기때문에 2014BASE 를 이용해서 계정 보여준다*/
+	              LEFT OUTER JOIN FS_ASCLXM_2014BASE X ON X.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+	
+	             WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+	                AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+	                AND A.CHNG_DATE = P_CHNG_DATE           /*변동일*/
+	                AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/
+	                AND A.ASCH_GUBN IN (SELECT COMD_CODE
+	                                  FROM TM_CODEXD
+	                                  WHERE COMM_CODE = 'ASCH_GUBN'
+	                                  AND REF1_FILD = 'MOVE'
+	                                  ) /* 자산구분이 이동인것만 체크*/
+	
+	        ;
+	
+	        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+	
+	        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+	        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+	
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산이동관리 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산이동관리정보]*/
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#CHNG_DATE#     /*변동일*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산이동관리 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 2. 자산이동관리 전표 생성
+	        ======================================================================================*/
+	
+	        /* 발의일자 :  자산이동관리일*/
+	        sSLIP_DATE := #SLIP_DATE#;
+	
+	        /*==============================================================
+		            3-1.미상각 잔액 처리
+		            관리계정과목(차변)변경후 부서 감가상각누계액
+	        ==============================================================*/
+	        IF rFS_ASCHXM.UNDP_BALE > 0 THEN
+	
+	            nSLIP_LINE := #SLIP_LINE#;
+	
+	            SP_SLIP_INSERT_D(
+	                 SYSDATE   /*등록일시*/
+	                ,#UPDT_USID#   /*등록자*/
+	                ,#SLIP_NUMB#               /* 전표번호*/
+	                ,LPad(nSLIP_LINE,4,'0')   /* 전표순번*/
+	                ,rFS_ASCHXM.ACCT_GUBN     /* 변경후_사업장*/
+	                ,''   /* 브랜드 : 농심 사용안함*/
+	                ,''   /*예산구분*/
+	                ,''   /*프로젝트코드*/
+	                ,''   /*예산품의번호*/
+	                ,''   /*상대전표일자*/
+	                ,''   /*상대전표번호*/
+	                ,''   /*상대전표순번*/
+	                ,rFS_ASCHXM.DPCT_ACT2   /*계정코드      >> 감가상각비*/
+	                ,'D'                    /*차대구분      >> 상각비:차변*/
+	                ,'KRW'     /*통화구분*/
+	                ,0              /*환율*/
+	                ,rFS_ASCHXM.UNDP_BALE   /*미상각금액*/
+	                ,0      /*외화금액*/
+	                ,rFS_ASCHXM.DEPT_CODE   /*변경후_사용부서*/
+	                ,''   /*예산부서 : 농심 사용안함*/
+	                ,rFS_ASCHXM.ASST_NAME   /*적요1*/
+	                ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+	                ,''   /*매입매출구분*/
+	                ,''   /*부가세종류*/
+	                ,''   /*매입구분*/
+	                ,''   /*불공제구분*/
+	                ,''   /*전자발행여부*/
+	                ,''   /*발행일자*/
+	                ,''   /*공급가액*/
+	                ,''   /*세액*/
+	                ,''   /*품목*/
+	                ,''   /*적요*/
+	                ,''   /*거래처*/
+	                ,''   /*출납처리여부*/
+	                ,''   /*지출일자*/
+	                ,''   /*출납방법*/
+	                ,''   /*입출구분*/
+	                ,''   /*카드번호*/
+	                ,''   /*카드승인번호*/
+	                ,''   /*사업자번호*/
+	            );
+	
+	            /*PARAM
+	            --관리항목 저장
+	            FOR CUR IN (
+	                SELECT B.COND_CODE
+	                      --관리항목 확정후 다시 정리 필요
+	                      ,CASE WHEN B.COND_CODE = '0004' THEN rFS_ASCHXM.DEPT_CODE --부서
+	                            ELSE '' END AS COND_VACD
+	                      ,CASE WHEN B.COND_CODE = '0004' THEN SF_GET_CONDVACD1(B.COND_CODE, rFS_ASCHXM.DEPT_CODE, sSLIP_NUMB) --부서
+	                            ELSE '' END AS COND_VANM
+	                FROM   TA_ACCTXM A
+	                    JOIN TA_ACCTXD B
+	                        ON  A.ACCT_YEAR = B.ACCT_YEAR
+	                        AND A.ACCT_INTL = B.ACCT_INTL
+	                WHERE B.ACCT_INTL = rFS_ASCHXM.DPCT_ACT4
+	                AND   A.ACCT_YEAR = SubStr(sSLIP_NUMB,3,4)      --전표번호의 해당년도
+	
+	            ) LOOP
+	
+	                SP_SLIP_INSERT_S(
+	                   iWORK_DATE   --수정일시
+	                  ,iWORK_USID   --수정자
+	                  ,sSLIP_NUMB   --전표번호
+	                  ,LPad(nSLIP_LINE,4,'0')   --전표순번
+	                  ,CUR.COND_CODE   --관리항목코드 : 재무>기본정보>관리항목 참조
+	                  ,CUR.COND_VACD   --항목값
+	                  ,CUR.COND_VANM   --항목명
+	                );
+	
+	            END LOOP;
+	            */
+	
+	            /* 전표 라인별 정합성 체크 */
+	            SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,LPad(nSLIP_LINE,4,'0'));
+	
+	        END IF;
+	
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산이동 전표 처리 차변[3-2.미상각 잔액 처리]
+********************************************************************************/
+ -->
+	<insert id="FSMB0040.PROC04" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+            /*FSMB0040.PROC04.자산이동 전표 처리 차변[3-2.미상각 잔액 처리]*/
+			CURSOR CUR_FS_ASCHXM (
+			
+	             P_ACCT_UNIT  IN FS_ASCHXM.ACCT_UNIT%TYPE   /*회계단위*/
+	            ,P_ASST_NUMB  IN FS_ASCHXM.ASST_NUMB%TYPE   /*자산번호*/
+	            ,P_CHNG_DATE  IN FS_ASCHXM.CHNG_DATE%TYPE   /*변동일*/
+	            ,P_SEQN_NUMB  IN FS_ASCHXM.SEQN_NUMB%TYPE   /*일련번호*/
+	            
+	        ) IS
+	
+	            SELECT  A.ASST_NUMB     /*자산번호 PK1*/
+		               ,A.CHNG_DATE     /*변동일   PK2*/
+		               ,A.SEQN_NUMB     /*일련번호 PK3*/
+		               ,A2.CUST_CODE    /*구매처코드*/
+		               ,A.CHBF_DEPT     /*변경전_부서코드*/
+		               ,A.DEPT_CODE     /*변경후_부서코드*/
+		               ,DE.ACCT_GUBN    AS CHBF_ACCT        /* 변경전_사업장*/
+		               ,DE2.ACCT_GUBN   AS ACCT_GUBN        /* 변경후_사업장*/
+		                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    X.DPCT_ACT1
+		                 ELSE
+		                    B.DPCT_ACT1
+		                 END  AS DPCT_ACT1
+		               /*,B.DPCT_ACT1                         *//* 관리계정과목*/
+		               ,NVL(A2.ACQU_PRIC, 0) AS ACQU_PRIC   /* 취득금액*/
+		               ,A2.ASST_NAME                        /* 자산명[대표적요]*/
+		               ,NVL(A2.UNDP_BALE, 0) AS UNDP_BALE   /* 미상각잔액*/
+		                ,CASE WHEN SUBSTR(#SLIP_DATE#,1,4) <= '2014' THEN
+		                    DECODE(C.ASST_DTLX, 'INAS', X.DPCT_ACT1, X.DPCT_ACT2)
+		                 ELSE
+		                    DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2)
+		                 END  AS DPCT_ACT2
+		               /*,DECODE(C.ASST_DTLX, 'INAS', C.DPCT_ACT1, C.DPCT_ACT2) AS DPCT_ACT2     *//*상각누계계정과목*/
+		               ,A.SLIP_NUMB                         /* 전표번호*/
+	            FROM FS_ASCHXM A
+	              INNER JOIN FS_ASSTXM A2
+	                 ON A.ASST_NUMB = A2.ASST_NUMB
+	              INNER JOIN VI_ASSETCLASS B
+	                 ON A2.CLSF_CODE = B.SMAL_CODE
+	              LEFT JOIN VI_DEPTXM DE        /*변경전*/
+	                 ON  DE.DEPT_CODE = A.CHBF_DEPT
+	               LEFT JOIN VI_DEPTXM DE2       /*변경후*/
+	                 ON  DE2.DEPT_CODE = A.DEPT_CODE
+	               LEFT JOIN FS_ASCLXM C
+	                 ON C.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)      /* 무형자산일 경우 취득계정, 그외는 감가상각누계액*/
+	              /*자산분류는 년도가 없기때문에 2014BASE 를 이용해서 계정 보여준다*/
+	              LEFT OUTER JOIN FS_ASCLXM_2014BASE X ON X.ASCL_CODE = SUBSTR(A2.CLSF_CODE,1,2)
+	
+	             WHERE  A.ACCT_UNIT = P_ACCT_UNIT           /*회계단위*/
+	                AND A.ASST_NUMB = P_ASST_NUMB           /*자산번호*/
+	                AND A.CHNG_DATE = P_CHNG_DATE           /*변동일*/
+	                AND A.SEQN_NUMB = P_SEQN_NUMB           /*일련번호*/
+	                AND A.ASCH_GUBN IN (SELECT COMD_CODE
+	                                  FROM TM_CODEXD
+	                                  WHERE COMM_CODE = 'ASCH_GUBN'
+	                                  AND REF1_FILD = 'MOVE'
+	                                  ) /* 자산구분이 이동인것만 체크*/
+	
+	        ;
+	
+	        rFS_ASCHXM      CUR_FS_ASCHXM%ROWTYPE;          /*[자산정보]*/
+	
+	        sSLIP_DATE      TA_SLIPXM.SLIP_DATE%TYPE;   /*발의일자*/
+	        nSLIP_LINE      TA_SLIPNT.SLIP_LINE%TYPE;   /*전표순번*/
+	
+	    BEGIN
+	
+	        /*======================================================================================
+	            STEP 1. 자산이동관리 전표 생성 여부 체크
+	        ======================================================================================*/
+	        BEGIN
+	            /*[자산이동관리정보]*/
+	            OPEN CUR_FS_ASCHXM( #ACCT_UNIT#     /*회계단위*/
+	                               ,#ASST_NUMB#     /*자산번호*/
+	                               ,#CHNG_DATE#     /*변동일*/
+	                               ,#SEQN_NUMB#     /*일련번호*/
+	                               );         
+	            FETCH CUR_FS_ASCHXM INTO rFS_ASCHXM;
+	            CLOSE CUR_FS_ASCHXM;
+	
+	            EXCEPTION
+	                WHEN OTHERS THEN
+	                    RAISE_APPLICATION_ERROR(-20000, '자산이동관리 정보 조회 중 오류가 발생하였습니다.'||chr(13)||chr(10)||SQLERRM);
+	        END;
+	
+	        IF rFS_ASCHXM.SLIP_NUMB IS NOT NULL THEN
+	            RAISE_APPLICATION_ERROR(-20000, '이미 생성 된 자산이동관리 전표(' || rFS_ASCHXM.SLIP_NUMB || ')가 존재 합니다.');
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 2. 자산이동관리 전표 생성
+	        ======================================================================================*/
+	
+	        /* 발의일자 :  자산이동관리일*/
+	        sSLIP_DATE := #SLIP_DATE#;
+	
+	        /*==============================================================
+	            3-1.미상각 잔액 처리
+	            관리계정과목(대변)변경전 부서 감가상각누계액
+	        ==============================================================*/
+	        IF rFS_ASCHXM.UNDP_BALE > 0 THEN
+	
+	            nSLIP_LINE := iSLIP_LINE;
+	
+	            SP_SLIP_INSERT_D(
+	                 SYSDATE   /*등록일시*/
+	                ,#UPDT_USID#   /*등록자*/
+	                ,#SLIP_NUMB#               /* 전표번호*/
+	                ,LPad(nSLIP_LINE,4,'0')   /* 전표순번*/
+	                ,rFS_ASCHXM.CHBF_ACCT     /* 변경전_사업장*/
+	                ,''   /* 브랜드 : 농심 사용안함*/
+	                ,''   /*예산구분*/
+	                ,''   /*프로젝트코드*/
+	                ,''   /*예산품의번호*/
+	                ,''   /*상대전표일자*/
+	                ,''   /*상대전표번호*/
+	                ,''   /*상대전표순번*/
+	                ,rFS_ASCHXM.DPCT_ACT2   /*계정코드*/
+	                ,'C'                    /*차대구분       >> 상각누계:대변*/
+	                ,'KRW'     /*통화구분*/
+	                ,0              /*환율*/
+	                ,rFS_ASCHXM.UNDP_BALE   /*미상각금액*/
+	                ,0          /*외화금액*/
+	                ,rFS_ASCHXM.CHBF_DEPT   /*변경전_사용부서*/
+	                ,''   /*예산부서 : 농심 사용안함*/
+	                ,rFS_ASCHXM.ASST_NAME   /*적요1*/
+	                ,'FA180090'   /*증빙종류 : 해당사항 없음*/
+	                ,''   /*매입매출구분*/
+	                ,''   /*부가세종류*/
+	                ,''   /*매입구분*/
+	                ,''   /*불공제구분*/
+	                ,''   /*전자발행여부*/
+	                ,''   /*발행일자*/
+	                ,''   /*공급가액*/
+	                ,''   /*세액*/
+	                ,''   /*품목*/
+	                ,''   /*적요*/
+	                ,''   /*거래처*/
+	                ,''   /*출납처리여부*/
+	                ,''   /*지출일자*/
+	                ,''   /*출납방법*/
+	                ,''   /*입출구분*/
+	                ,''   /*카드번호*/
+	                ,''   /*카드승인번호*/
+	                ,''   /*사업자번호*/
+	            );
+	
+	            /*
+	            --관리항목 저장
+	            FOR CUR IN (
+	                SELECT B.COND_CODE
+	                      --관리항목 확정후 다시 정리 필요
+	                      ,CASE WHEN B.COND_CODE = '0004' THEN rFS_ASCHXM.DEPT_CODE --부서
+	                            ELSE '' END AS COND_VACD
+	                      ,CASE WHEN B.COND_CODE = '0004' THEN SF_GET_CONDVACD1(B.COND_CODE, rFS_ASCHXM.DEPT_CODE, sSLIP_NUMB) --부서
+	                            ELSE '' END AS COND_VANM
+	                FROM   TA_ACCTXM A
+	                    JOIN TA_ACCTXD B
+	                        ON  A.ACCT_YEAR = B.ACCT_YEAR
+	                        AND A.ACCT_INTL = B.ACCT_INTL
+	                WHERE B.ACCT_INTL = rFS_ASCHXM.DPCT_ACT2
+	                AND   A.ACCT_YEAR = SubStr(sSLIP_NUMB,3,4)
+	
+	            ) LOOP
+	
+	                SP_SLIP_INSERT_S(
+	                   iWORK_DATE   --수정일시
+	                  ,iWORK_USID   --수정자
+	                  ,sSLIP_NUMB   --전표번호
+	                  ,LPad(nSLIP_LINE,4,'0')   --전표순번
+	                  ,CUR.COND_CODE   --관리항목코드 : 재무>기본정보>관리항목 참조
+	                  ,CUR.COND_VACD   --항목값
+	                  ,CUR.COND_VANM   --항목명
+	                );
+	
+	            END LOOP;
+	            */
+	            /* 전표 라인별 정합성 체크 */ 
+	            SP_SLIP_INSERT_CHECK(#SLIP_NUMB#,LPad(nSLIP_LINE,4,'0'));
+	
+	        END IF;
+	
+	        /*======================================================================================
+	            STEP 4. 자산이동관리 전표번호 업데이트
+	        ======================================================================================*/
+	        UPDATE FS_ASCHXM                /*[자산이동관리내역] */
+	           SET  SLIP_NUMB = #SLIP_NUMB#  /*전표번호*/
+	               ,SLIP_LINE = #SLIP_LINE#  /*전표순번*/
+	               ,UPDT_DATE = FS_ASCHXM  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE ACCT_UNIT  = #ACCT_UNIT#  /*회계단위[ACCT_UNIT]*/
+	           AND ASST_NUMB  = #ASST_NUMB#      /*자산번호*/
+	           AND CHNG_DATE  = #CHNG_DATE#      /*변동일*/
+	           AND SEQN_NUMB  = #SEQN_NUMB#      /*일련번호*/
+	           ;                        
+	
+	
+	        EXCEPTION
+	             WHEN OTHERS THEN
+	                RAISE;
+	    END;
+			
+		]]>
+	</insert>
+</sqlMap>

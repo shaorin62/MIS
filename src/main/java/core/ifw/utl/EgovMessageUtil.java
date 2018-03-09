@@ -1,0 +1,156 @@
+/**
+ * @Class Name  : EgovMessageUtil.java
+ * @Description : 메시지 처리 관련 유틸리티
+ * @Modification Information
+ * 
+ *     수정일         수정자                   수정내용
+ *     -------          --------        ---------------------------
+ *   2009.02.13       이삼섭                  최초 생성
+ *
+ * @author 공통 서비스 개발팀 이삼섭
+ * @since 2009. 02. 13
+ * @version 1.0
+ * @see 
+ * 
+ *  Copyright (C) 2008 by MOPAS  All right reserved.
+ */
+
+package core.ifw.utl;
+
+//import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import core.ifw.utl.CoreProperties;;
+
+public class EgovMessageUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EgovMessageUtil.class);
+    ///** EgovPropertyService */
+    //@Resource(name = "propertiesService")
+    //private static EgovPropertyService propertiesService;
+	
+    /**
+     * 해당되는 속성키로부터 에러 메시지를 얻는다.
+     * 
+     * @param strCode
+     * @return
+     */
+    public static String getErrorMsg(String strCode) {
+
+	return getMessage("error", strCode, null);
+    }
+
+    /**
+     * 해당되는 속성키로부터 에러 메시지(파라미터 변환 포함)를 얻는다.
+     * 
+     * @param strCode
+     * @param arrParam
+     * @return
+     */
+    public static String getErrorMsg(String strCode, String[] arrParam) {
+
+	return getMessage("error", strCode, arrParam);
+    }
+
+    /**
+     * 해당되는 속성키로부터 정보 메시지를 얻는다.
+     * 
+     * @param strCode
+     * @return
+     */
+    public static String getInfoMsg(String strCode) {
+
+	return getMessage("info", strCode, null);
+    }
+
+    /**
+     *해당되는 속성키로부터 정보 메시지(파라미터 변환 포함)를 얻는다.
+     * 
+     * @param strCode
+     * @param arrParam
+     * @return
+     */
+    public static String getInfoMsg(String strCode, String[] arrParam) {
+
+	return getMessage("info", strCode, arrParam);
+    }
+
+    /**
+     * 해당되는 속성키로부터 경고 메시지를 얻는다.
+     * 
+     * @param strCode
+     * @return
+     */
+    public static String getWarnMsg(String strCode) {
+
+	return getMessage("warn", strCode, null);
+    }
+
+    /**
+     * 해당되는 속성키로부터 경고 메시지(파라미터 변환 포함)를 얻는다.
+     * 
+     * @param strCode
+     * @param arrParam
+     * @return
+     */
+    public static String getWarnMsg(String strCode, String[] arrParam) {
+
+	return getMessage("warn", strCode, arrParam);
+    }
+
+    /**
+     * 해당되는 속성키로부터 확인 메시지를 얻는다.
+     * 
+     * @param strCode
+     * @return
+     */
+    public static String getConfirmMsg(String strCode) {
+
+	return getMessage("confirm", strCode, null);
+    }
+
+    /**
+     * 해당되는 속성키로부터 확인 메시지(파라미터 변환 포함)를 얻는다.
+     * 
+     * @param strCode
+     * @param arrParam
+     * @return
+     */
+    public static String getConfirmMsg(String strCode, String[] arrParam) {
+
+	return getMessage("confirm", strCode, arrParam);
+    }
+
+    private static String getMessage(String wrkCode, String strCode, String[] arrParam) {
+
+	String message = null;
+
+	try {
+
+	    String strMsg = "";
+	    if (!"".equals(EgovStringUtil.isNullToString(strCode.trim()))) {
+
+		strMsg = CoreProperties.loadGetProperty(System.getProperty("user.home") + System.getProperty("file.separator") + "egovProps"
+			+ System.getProperty("file.separator") + "conf" + System.getProperty("file.separator") + wrkCode + "message.properties",
+			strCode);
+
+		//propertiesService.getString("");
+
+		for (int i = (arrParam != null && arrParam.length > 0 ? arrParam.length - 1 : -1); i >= 0; i--) {
+		    strMsg = EgovStringUtil.replace(strMsg, "{" + i + "}", arrParam[i].toString());
+		}
+		message = strMsg;
+	    } else {
+		message = "";
+	    }
+
+	} catch (Exception e) {
+		logger.warn("예외 발생");
+	    
+	}
+
+	return message;
+    }
+}

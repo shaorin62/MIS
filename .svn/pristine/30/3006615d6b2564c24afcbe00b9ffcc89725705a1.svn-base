@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HATF0050">
+
+<!--
+ *   프로그램명 : 출장승인신청등록  SQLMAP
+ *   작 성 일 : 2016.09.20
+ *   작 성 자 : 박정윤
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.20
+	 내    용 : 출장신청  헤더 조회
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATF0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX			/*결재문서 DOC_ID*/
+		       ,A.APPR_SEQN 		/*결재문서 SEQ*/
+		       ,A.APPR_DATE			/*신청일자*/
+		       ,A.EMPL_NUMB			/*신청자 사원번호*/
+		       ,A.SUBJ_NAME			/*결재문서 제목*/
+		       ,A.APPR_STAT			/*결재상태*/
+		       ,A.DEPT_CODE			/*신청자 부서*/
+		       ,A.ENDX_DATE			/*결재완료일자*/
+		       ,A.INST_USID			/*입력작업자*/
+		       ,A.INST_DATE			/*입력일시*/
+		       ,A.UPDT_USID			/*수정작업자*/
+		       ,A.UPDT_DATE			/*수정일시*/
+		  FROM TM_APPRXH A			/*결재테이블*/
+		 WHERE A.DOCU_IDXX 			= #DOCU_IDXX#
+		   AND A.APPR_SEQN			= #APPR_SEQN#			
+	]]>
+	</select>	
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.20
+	 내    용 : 출장신청등록
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATF0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	SELECT  A.APPR_SEQN     		  /*	결재 SEQ     */
+		    ,A.BSRP_SEQ1              /* 일련번호 */
+		    ,A.TITL_NAME              /* 제목 */  
+		    ,A.BSRP_STDT              /* 출장시작일자 */
+		    ,A.BSRP_ENDD              /* 출장종료일자 */
+		    ,A.SDYT_STDT              /* 연수시작일자 */
+		    ,A.SDYT_ENDD              /* 연수종료일자 */
+		    ,A.BSRP_CODE              /* 출장구분코드 */
+			,SF_GET_COMMNAME('DPAY_CODE', A.BSRP_CODE) 						AS BSRP_CDNM	     /*출장구분코드명*/ 
+		    ,A.BSRP_DSTN              /* 출장거리 */
+		    ,A.BSRP_PLAC              /* 출장지 */
+		    ,A.BSRP_PURC              /* 출장목적코드 */
+			,SF_GET_COMMNAME('BUTR_PURS', A.BSRP_PURC) 						AS BSRP_PUNM	     /*출장목적코드명*/ 
+		    ,A.BSRP_PURE              /* 출장목적기타 */
+		    ,A.TRAN_RAIL              /* 교통편_철도 */
+		    ,A.TRAP_RAIL              /* 교통편_철도비용 */
+		    ,A.TRAN_BUSB              /* 교통편_버스 */
+		    ,A.TRAP_BUSB              /* 교통편_버스비용 */
+		    ,A.TRAN_CARM              /* 교통편_자가차 */
+		    ,A.TRAP_CARM              /* 교통편_자가차비용 */
+		    ,A.TRAN_AIRB              /* 교통편_항공기 */
+		    ,A.TRAP_AIRB              /* 교통편_항공비용 */
+		    ,A.TRAN_SHIP              /* 교통편_선박 */
+		    ,A.TRAP_SHIP              /* 교통편_선박비용 */
+		    ,A.TRAN_CARB              /* 교통편_회사차 */
+		    ,A.TRAP_CARB              /* 교통편_회사차비용 */
+		    ,A.TRAN_ETCR              /* 교통편_기타 */
+		    ,A.TRAP_ETCR              /* 교통편_기타비용 */
+		    ,A.TRAN_ETCD              /* 교통편_기타내용 */
+	        ,A.BTCL_TRAN       		  /*출장여비_교통비*/
+	        ,A.BTCL_DAYP       		  /*출장여비_일비*/
+	        ,A.BTCL_ROOM       		  /*출장여비_숙박비*/
+	        ,A.BTCL_ETCP       		  /*출장여비_기타비용*/
+	        ,A.BTCL_ADDP       		  /*출장여비_일반공제액*/
+	        ,A.BTCL_LDDP       		  /*출장여비_장기출장공제액*/
+	        ,A.BTCL_ALLP       		  /*출장여비_계*/
+		    ,A.RCPX_DNSP              /* 해외시장개척비_자료수집비 */
+		    ,A.RCPX_PNSP              /* 해외시장개척비_접대비 */
+	        ,A.RCPX_ALLP              /* 해외시장개척비_계*/
+		    ,A.DETL_ETCR              /* 상세기타 */    
+		    ,A.BTCL_RPDT              /* 출장계획 */    
+		    ,A.STAT_CODE              /* 진행상태코드 */
+    	    ,SF_GET_COMMNAME('APPV_STAT', A.STAT_CODE) 						AS STAT_NAME	 /*진행상태명*/ 
+		    ,A.STAT_DATE              /* 진행상태일자 */    
+		    ,A.INST_USID              /* 등록자  */   
+			,SF_GET_EMPLNAME(A.INST_USID) AS INST_USNM /* 신청자이름*/
+		    ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE 
+		    ,A.UPDT_USID
+		    ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE
+		    ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '1') AS APLT_EMNR    /* 신청자 사원번호 */
+		    ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '2') AS APLT_EMNM    /* 신청자 사원명 */
+		    ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '3') AS APLT_CNTR    /* 출장자 수 */
+		FROM AT_BUTRXM A
+	]]>
+	<![CDATA[
+		WHERE 1=1
+		   AND A.APPR_SEQN			= #APPR_SEQN#			
+    ]]>
+	</select>
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.20
+	 내    용 : 출장등록상세
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATF0050.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT
+			A.BSRP_SEQ1                /* 일련번호1 */
+		    ,A.BSRP_SEQ2                /* 일련번호2 */
+		    ,A.EMPL_CODE                /* 직원구분코드 */
+			,SF_GET_COMMNAME('BUTR_GUBN', A.EMPL_CODE) 						AS EMPL_CDNM	     /*직원구분코드명*/ 
+			,A.APLT_EMNR                /* 신청자사번 */
+			,A.APLT_EMNM				/* 신청자이름 */						
+			,A.APLT_OPCD				/* 신청자직책코드 */
+			,A.APLT_OPNM				/* 신청자직책명 */
+			,A.APLT_DTCD				/* 신청자부서코드 */
+			,A.APLT_DTNM				/* 신청자부서명 */
+			,A.ADNV_AMNT                /* 전도금 */
+			,A.pers_trex       			/*개별여비*/
+		    ,A.INST_USID				
+		    ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE  /* 등록일 */ 
+		    ,A.UPDT_USID /* 수정자 */
+		    ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE /* 수정일 */
+		FROM AT_BUTRXD A
+		WHERE 1=1
+		   AND A.BSRP_SEQ1			= #BSRP_SEQ1#
+	]]>
+	</select>
+
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.27
+	 내    용  : 사원정보 가져오기
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="HATF0050.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	SELECT  A.EMPL_NUMB    AS EMPL_NUMB        /* 사원번호 */
+           ,A.EMPL_NAME    AS EMPL_NAME        /* 성명 */
+           ,B.SECT_NAME    AS SECT_NAME        /* 소속 */
+	       ,B.DEPT_CODE    AS DEPT_CODE        /* 부서코드 */
+           ,B.DEPT_NAME    AS DEPT_NAME        /* 부서 */
+		   ,A.OPOS_CODE    AS OPOS_CODE        /* 직위코드 */
+           ,SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_CDNM  /*직위명*/
+		   ,C.WABK_CODE    AS WABK_CODE        /* 은행코드*/
+           ,SF_GET_COMMNAME('BANK_CODE', WABK_CODE) AS WABK_CDNM  /*은행명*/
+           ,C.WAGE_ACNO    AS WAGE_ACNO        /* 계좌번호 */
+		   ,C.WAGE_DPST    AS WAGE_DPST        /* 예금주 */	
+  	 FROM HR_MASTXM A 
+          LEFT OUTER JOIN VI_DEPTXM B ON A.DEPT_CODE = B.DEPT_CODE
+          LEFT OUTER JOIN PY_MASTPM C ON A.EMPL_NUMB = C.EMPL_NUMB
+     WHERE A.EMPL_NUMB = #INST_USID#	   
+	]]>
+	</select>	
+	
+
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청 결재해더 등록
+********************************************************************************/
+-->
+	<insert id="HATF0050.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO TM_APPRXH ( /* HATF0050.SAVE00.시간외근무신청 결재해더 등록 */
+             DOCU_IDXX 			/*결재 DOC_ID*/
+			,APPR_SEQN          /*결재 SEQ   */
+			,EMPL_NUMB     		/*사번       */
+			,APPR_DATE			/*신청일자*/
+			,SUBJ_NAME			/*제목*/
+			,APPR_STAT			/*결재상태*/
+			,DEPT_CODE     		/*신청자 부서 */
+			,INST_USID          /*입력작업자 */
+			,INST_DATE          /*입력일시   */
+			,UPDT_USID          /*수정작업자 */
+			,UPDT_DATE          /*수정일시   */
+		)
+       	VALUES (
+             #DOCU_IDXX#		/*결재 DOC_ID*/
+			,#APPR_SEQN#       	/*결재 SEQ  */
+			,#EMPL_NUMB#    	/*사번              */
+			,TO_CHAR(SYSDATE,'YYYYMMDD')   /*신청일자*/
+			,#SUBJ_NAME#	   	/*제목              */
+			,'N'		       	/*결재상태    */
+			,#DEPT_CODE#   		/*신청자부서코드    */
+            ,#UPDT_USID#       	/* 입력작업자 */
+            ,SYSDATE            /* 입력일시  */
+            ,#UPDT_USID#        /* 수정작업자 */
+            ,SYSDATE            /* 수정일시  */
+		)		               		
+    ]]>
+	</insert>		
+
+
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청 헤더 등록
+********************************************************************************/
+-->
+	<insert id="HATF0050.SAVE01" parameterClass="hashmap">
+	<![CDATA[		
+		INSERT INTO AT_BUTRXM 	(   /* HATF0050.SAVE01.출장신청등록 결재해더 등록 */
+			APPR_SEQN            /* 결재 SEQ     */                                        
+			,BSRP_SEQ1              /* 일련번호 */
+			,TITL_NAME              /* 제목 */
+			,BSRP_STDT              /* 출발일 */
+			,BSRP_ENDD              /* 종료일 */
+			,SDYT_STDT              /* 연수시작일 */
+			,SDYT_ENDD              /* 연수종료일 */
+			,BSRP_CODE              /* 출장구분 */
+			,BSRP_DSTN              /* 출장거리 */
+			,BSRP_PLAC              /* 출장지 */
+			,BSRP_PURC              /* 출장목적 */
+			,BSRP_PURE              /* 출장목적기타 */
+			,TRAN_RAIL              /* 교통비-기차 */
+			,TRAP_RAIL              /* 교통비-기차 */
+			,TRAN_BUSB              /* 교통비-버스 */
+			,TRAP_BUSB              /* 교통비-버스 */
+			,TRAN_CARM              /* 교통비-자가차 */
+			,TRAP_CARM              /* 교통비-자가차 */
+			,TRAN_AIRB              /* 교통비-비행기 */
+			,TRAP_AIRB              /* 교통비-비행기 */
+			,TRAN_SHIP              /* 교통비-배 */
+			,TRAP_SHIP              /* 교통비-배 */
+			,TRAN_CARB              /* 교통비-회사차 */
+			,TRAP_CARB              /* 교통비-회사차 */
+			,TRAN_ETCR              /* 교통비-기타 */
+			,TRAP_ETCR              /* 교통비-기타 */
+			,TRAN_ETCD              /* 교통비-기타내용 */
+			,BTCL_TRAN				/* 출장여비_교통비 */
+			,BTCL_ROOM				/* 출장여비_숙박비 */
+			,BTCL_DAYP				/* 출장여비_일비 */
+			,BTCL_ETCP				/* 출장여비_기타 */
+			,BTCL_ADDP				/* 출장여비_일반공제 */
+			,BTCL_LDDP				/* 출장여비_장기출장공제 */
+			,BTCL_ALLP				/* 출장여비_합계 */
+			,RCPX_DNSP              /* 해외시장개척비-자료수집비 */
+			,RCPX_PNSP              /* 해외시장개척비-접대비 */
+			,RCPX_ALLP              /* 해외시장개척비-합계 */
+			,DETL_ETCR              /* 상세기타 */
+			,BTCL_RPDT              /* 출장계획 */
+			,STAT_CODE              /* 결재진행상태코드 */
+			,STAT_DATE              /* 기안일자 */
+			,INST_USID              /* 등록자 */
+			,INST_DATE	            /* 등록일 */
+			,UPDT_USID              /*수정작업자 */
+			,UPDT_DATE              /*수정일시   */
+		)
+		VALUES (
+			#APPR_SEQN#       	/*결재 SEQ  */
+			,(SELECT  NVL(MAX(BSRP_SEQ1), '1') + 1 AS BSRP_SEQ1
+	  		  FROM  AT_BUTRXM)  /* 일련번호 */
+		    ,#TITL_NAME#              /* 제목 */		    
+			,#BSRP_STDT#              /* 출발일 */
+			,#BSRP_ENDD#              /* 종료일 */
+			,#SDYT_STDT#              /* 연수시작일 */
+			,#SDYT_ENDD#              /* 연수종료일 */
+			,#BSRP_CODE#              /* 출장구분 */
+			,#BSRP_DSTN#              /* 출장거리 */
+			,#BSRP_PLAC#              /* 출장지 */
+			,#BSRP_PURC#              /* 출장목적 */
+			,#BSRP_PURE#              /* 출장목적기타 */
+			,#TRAN_RAIL#              /* 교통비-기차 */
+			,#TRAP_RAIL#              /* 교통비-기차 */
+			,#TRAN_BUSB#              /* 교통비-버스 */
+			,#TRAP_BUSB#              /* 교통비-버스 */
+			,#TRAN_CARM#              /* 교통비-자가차 */
+			,#TRAP_CARM#              /* 교통비-자가차 */
+			,#TRAN_AIRB#              /* 교통비-비행기 */
+			,#TRAP_AIRB#              /* 교통비-비행기 */
+			,#TRAN_SHIP#              /* 교통비-배 */
+			,#TRAP_SHIP#              /* 교통비-배 */
+			,#TRAN_CARB#              /* 교통비-회사차 */
+			,#TRAP_CARB#              /* 교통비-회사차 */
+			,#TRAN_ETCR#              /* 교통비-기타 */
+			,#TRAP_ETCR#              /* 교통비-기타 */
+			,#TRAN_ETCD#              /* 교통비-기타내용 */
+			,#BTCL_TRAN#			  /* 출장여비_교통비 */
+			,#BTCL_ROOM#			  /* 출장여비_숙박비 */
+			,#BTCL_DAYP#			  /* 출장여비_일비 */
+			,#BTCL_ETCP#			  /* 출장여비_기타 */
+			,#BTCL_ADDP#			  /* 출장여비_일반공제 */
+			,#BTCL_LDDP#			  /* 출장여비_장기출장공제 */
+			,#BTCL_ALLP#			  /* 출장여비_합계 */
+			,#RCPX_DNSP#              /* 해외시장개척비-자료수집비 */
+			,#RCPX_PNSP#              /* 해외시장개척비-접대비 */
+			,#RCPX_ALLP#              /* 해외시장개척비-합계 */
+			,#DETL_ETCR#              /* 상세기타 */
+			,#BTCL_RPDT#              /* 출장계획 */			
+		    ,#STAT_CODE#              /* 결재진행상태코드 */
+		    ,#STAT_DATE#              /* 기안일자 */	
+		    ,#INST_USID#              /* 등록자 */
+		    ,SYSDATE	              /* 등록일 */
+            ,#UPDT_USID#              /* 수정작업자 */
+            ,SYSDATE                  /* 수정일시  */
+		)
+    ]]>
+	</insert>	
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청 상세 등록
+********************************************************************************/
+-->
+	<insert id="HATF0050.SAVE02" parameterClass="hashmap">
+	<![CDATA[		
+		INSERT INTO AT_BUTRXD	(	/* 출장승인신청서 신청자 등록 저장 테이블 */
+			BSRP_SEQ1      /*	일련번호_MASTER */                                     
+			,BSRP_SEQ2      /*	일련번호_DETAIL */                             
+			,EMPL_CODE      /*	직원구분                  */                                 
+			,APLT_EMNR      /*	신청자		     */                               
+			,APLT_EMNM      /*	신청자이름	     */                               
+			,APLT_OPCD      /*  신청자직급               */        	
+			,APLT_OPNM      /*  신청자직급명	     */         
+			,APLT_DTCD      /*  신청자무서코드         */        
+			,APLT_DTNM      /*  신청자부서명       	 */         
+			,ADNV_AMNT      /*  전도금  	     */         
+			,PERS_TREX      /*  개별여비  	     */
+			,INST_USID      /*  등록자  	     */         
+			,INST_DATE      /*  등록일 	     */        
+			,UPDT_USID      /*수정작업자 */
+			,UPDT_DATE      /*수정일시   */
+		)
+		VALUES (
+			(SELECT  NVL(MAX(BSRP_SEQ1), '1')  AS BSRP_SEQ1
+	  		  FROM  AT_BUTRXM)  /* 일련번호 */
+			,(SELECT  NVL(MAX(BSRP_SEQ2), '1') + 1 AS BSRP_SEQ2
+	  		  FROM  AT_BUTRXD)  /* 일련번호 */
+			,#EMPL_CODE#     /*	직원구분       */                                 
+			,#APLT_EMNR#     /*	신청자사번	*/                               
+			,#APLT_EMNM#     /*	신청자이름	*/                               
+			,#APLT_OPCD#     /*  입력작업자  */        	
+			,#APLT_OPNM#     /*  입력일시  	*/         
+			,#APLT_DTCD#     /*  수정작업자 	*/        
+			,#APLT_DTNM#     /*  수정일시  	*/         
+			,#ADNV_AMNT#     /*  전도금  	*/ 
+			,#PERS_TREX#     /*  개별여비  	*/        
+			,#INST_USID#     /*  입력일시  	*/         
+		    ,SYSDATE         /*  수정일시 	*/        
+            ,#UPDT_USID#     /* 수정작업자 */
+            ,SYSDATE         /* 수정일시  */
+		)  
+    ]]>
+	</insert>		
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내       용 : 출장승인신청 결재해더 수정
+********************************************************************************/
+-->
+	<update id="HATF0050.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		 UPDATE TM_APPRXH   /* HATF0050.UPDATE00.시간외근무신청 결재해더 수정 */
+	        SET  EMPL_NUMB  = #EMPL_NUMB#    				/* 사번                 */            
+				,APPR_DATE	= TO_CHAR(SYSDATE,'YYYYMMDD')   /* 신청일자           */
+				,SUBJ_NAME	= #SUBJ_NAME#	   				/* 제목                 */    
+				,APPR_STAT	= 'N'		       				/* 결재상태           */          
+				,DEPT_CODE  = #DEPT_CODE#   				/* 신청자부서코드  */
+				,UPDT_USID  = #UPDT_USID#        			/* 수정작업자        */       
+				,UPDT_DATE  = SYSDATE            			/* 수정일시           */        
+		  WHERE	 DOCU_IDXX  = #DOCU_IDXX#					/* 결재 DOC_ID */
+	        AND	 APPR_SEQN  = #APPR_SEQN#    				/* 결재 SEQ    */    		               		
+    ]]>
+	</update>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내       용 : 출장승인신청 헤더 수정
+********************************************************************************/
+-->
+	<insert id="HATF0050.UPDATE01" parameterClass="hashmap">
+	<![CDATA[		
+		UPDATE AT_BUTRXM	 	/* HATF0050.UPDATE01  출장신청신청자 헤더 테이블 */
+		   SET  TITL_NAME  = #TITL_NAME#    /* 제목                   */                                                   
+			   ,BSRP_STDT  = #BSRP_STDT#    /* 출장시작일           */                                   
+			   ,BSRP_ENDD  = #BSRP_ENDD#    /* 출장종료일     	  */                                       
+			   ,SDYT_STDT  = #SDYT_STDT#    /* 연수시작일           */                                           
+			   ,SDYT_ENDD  = #SDYT_ENDD#    /* 연수종료일           */                                           
+			   ,BSRP_CODE  = #BSRP_CODE#    /* 출장구분              */                                       
+			   ,BSRP_DSTN  = #BSRP_DSTN#    /* 출장거리       	  */                                       
+			   ,BSRP_PLAC  = #BSRP_PLAC#    /* 출장지       	  */                                       
+			   ,BSRP_PURC  = #BSRP_PURC#    /* 출잘목적        	  */                                       
+			   ,BSRP_PURE  = #BSRP_PURE#    /* 출장목적기타        */                                       
+			   ,TRAN_RAIL  = #TRAN_RAIL#    /* 교통비-기차       	*/                                       
+			   ,TRAP_RAIL  = #TRAP_RAIL#    /* 교통비-기차       	*/
+			   ,TRAN_BUSB  = #TRAN_BUSB#    /* 교통비-버스        	*/                                       
+			   ,TRAP_BUSB  = #TRAP_BUSB#    /* 교통비-버스        	*/
+			   ,TRAN_CARM  = #TRAN_CARM#    /* 교통비-자가차 	*/        	             
+			   ,TRAP_CARM  = #TRAP_CARM#    /* 교통비-자가차 	*/
+			   ,TRAN_AIRB  = #TRAN_AIRB#    /* 교통비-항공 	*/
+			   ,TRAP_AIRB  = #TRAP_AIRB#    /* 교통비-항공 	*/
+			   ,TRAN_SHIP  = #TRAN_SHIP#    /* 교통비-배 	*/        	             
+			   ,TRAP_SHIP  = #TRAP_SHIP#    /* 교통비-배 	*/
+			   ,TRAN_CARB  = #TRAN_CARB#    /* 교통비-회사차  		*/                       
+			   ,TRAP_CARB  = #TRAP_CARB#    /* 교통비-회사차  		*/
+			   ,TRAN_ETCR  = #TRAN_ETCR#    /* 교통비-기타 	*/                       
+			   ,TRAP_ETCR  = #TRAP_ETCR#    /* 교통비-기타 	*/
+			   ,TRAN_ETCD  = #TRAN_ETCD#    /* 교통비-기타상세 		*/
+			   ,BTCL_TRAN  = #BTCL_TRAN#	/* 출장여비_교통비 */
+			   ,BTCL_DAYP  = #BTCL_DAYP#	/* 출장여비_일비 */
+			   ,BTCL_ROOM  = #BTCL_ROOM#	/* 출장여비_숙박비 */
+			   ,BTCL_ETCP  = #BTCL_ETCP#	/* 출장여비_기타 */
+			   ,BTCL_ADDP  = #BTCL_ADDP#	/* 출장여비_일반공제 */
+			   ,BTCL_LDDP  = #BTCL_LDDP#	/* 출장여비_장기출장공제 */
+			   ,BTCL_ALLP  = #BTCL_ALLP#	/* 출장여비_합계 */
+			   ,RCPX_DNSP  = #RCPX_DNSP#    /* 업무추진비       	*/                                       
+			   ,RCPX_PNSP  = #RCPX_PNSP#    /* 접대비      	*/
+			   ,RCPX_ALLP  = #RCPX_ALLP#	/* 해외시장개척비_합계 */                                       
+			   ,DETL_ETCR  = #DETL_ETCR#    /* 기타상세 	*/        	             
+			   ,BTCL_RPDT  = #BTCL_RPDT#    /* 출장계획        	*/
+			   ,STAT_DATE  = #STAT_DATE#    /* 결재일 	      */        	             
+			   ,UPDT_USID  = #UPDT_USID#    /* 수정작업자 	  */                       
+			   ,UPDT_DATE  = SYSDATE        /* 수정일시 	  */
+		 WHERE  APPR_SEQN  = #APPR_SEQN#	/* 결재 SEQ  */
+	       AND  BSRP_SEQ1  = #BSRP_SEQ1#    /* 일련번호  	  */    	
+				  
+    ]]>
+	</insert>		
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청 상세 수정
+********************************************************************************/
+-->
+	<insert id="HATF0050.UPDATE02" parameterClass="hashmap">
+	<![CDATA[		
+		UPDATE AT_BUTRXD	 	/* HATF0050.UPDATE02. 출장승인신청 상세(신청자) 수정 */
+		   SET  EMPL_CODE  = #EMPL_CODE#    /* 직원구분         */                                                   
+			   ,APLT_EMNR  = #APLT_EMNR#    /* 신청자 	    */                                           
+			   ,APLT_EMNM  = #APLT_EMNM#    /* 신청자명         */                                   
+			   ,APLT_OPCD  = #APLT_OPCD#    /* 직책코드         */                                       
+			   ,APLT_OPNM  = #APLT_OPNM#    /* 직책명            */                                           
+			   ,APLT_DTCD  = #APLT_DTCD#    /* 부서코드         */                                           
+			   ,APLT_DTNM  = #APLT_DTNM#    /* 부서명            */                                       
+			   ,ADNV_AMNT  = #ADNV_AMNT#    /* 전도금            */                                       
+			   ,UPDT_USID  = #UPDT_USID#    /* 수정작업자      */                       
+			   ,UPDT_DATE  = SYSDATE        /* 수정일시         */
+		 WHERE  BSRP_SEQ1  = #BSRP_SEQ1#    /* 일련번호1  	*/    
+	       AND  BSRP_SEQ2  = #BSRP_SEQ2#    /* 일련번호2   */	
+    ]]>
+	</insert>	
+
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청서 결재헤더  삭제
+********************************************************************************/
+-->
+	<delete id="HATF0050.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+	
+		DELETE	TM_APPRXH    /* HATF0050.DELETE00. 출장승인신청 결재 삭제 */
+         WHERE DOCU_IDXX   = #DOCU_IDXX#      /* 결재문서 DOC_ID */
+           AND APPR_SEQN   = #APPR_SEQN#      /* 결재문서 SEQ */
+		
+    ]]>
+	</delete>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청서 헤더 내용 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0050.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		DELETE	AT_BUTRXM    /* HATF0050.DELETE01. 출장승인신청 신청서 메인 삭제 */
+         WHERE APPR_SEQN   = #APPR_SEQN#      /* 결재문서 SEQ */
+           AND BSRP_SEQ1   = #BSRP_SEQ1#      /* 일련번호 */
+    ]]>
+	</delete>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.20
+     내         용 : 출장승인신청서 상세 내용 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0050.DELETE02" parameterClass="hashmap">
+	<![CDATA[
+		DELETE	AT_BUTRXD    /* HATF0050.DELETE02. 출장승인신청 신청서 상세(신청자) 삭제 */
+         WHERE BSRP_SEQ1  = #BSRP_SEQ1#       /* 일련번호 1 */
+	       AND BSRP_SEQ2  = #BSRP_SEQ2#       /* 일련번호 2 */	
+    ]]>
+	</delete>
+
+</sqlMap>

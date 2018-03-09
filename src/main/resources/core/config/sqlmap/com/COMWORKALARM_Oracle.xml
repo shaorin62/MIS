@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="COMWORKALARM">
+
+<!--
+ *   프로그램명 : 알람 쿼리
+ *   작 성 일 : 2016.11.17
+ *   작 성 자 : 남상기
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	 
+    <!--
+	     작 성 자 : 남상기
+	     작 성 일 : 2016.11.17
+	     내    용 : 알람 조회
+    -->
+    <select id="COMWORKALARM.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+		SELECT  	INUS_EMNR												/* 알람 대상자 */
+		        ,	SF_GET_EMPLNAME(INUS_EMNR) 	AS	INUS_EMNR_NAME		/* 알람 대상자 명 */	 
+		        ,	WKNT_TYCD												/* 알람유형 */
+		        ,	SF_GET_COMMNAME('WKNT_TYCD', WKNT_TYCD ) AS WKNT_TYCD_NAME	/* 알람유형 명*/
+		        ,	WKNT_CNTT	/* 알람내용 */
+		        ,	WKNT_DATE /* 알람일자 */
+		        ,	WKNT_TIME /* 알람시간 */
+		FROM    TM_WKNTXM 
+		WHERE   WKNT_EMNR = #GBL_EMPLNO#
+		/*
+		AND		SOUS_LNKY = '2010014-20161111-7'
+		*/
+		ORDER
+		BY      WKCF_YSNO,
+		        WKNT_DATE DESC, 
+		        WKNT_TIME DESC
+    ]]>
+    </select>
+    
+    <!--
+	     작 성 자 : 남상기
+	     작 성 일 : 2016.11.18
+	     내    용 : 알람 업데이트
+    -->
+    <update id="COMWORKALARM.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE  /* COMWORKALARM.UPDATE00 알람 수정  */
+        		TM_WKNTXM
+         SET	WKCF_YSNO = '1'				/*읽음표시*/ 
+			  , UPDT_USID = #GBL_EMPLNO#			/*로그인사 번*/
+              , UPDT_DATE = SYSDATE			/*수정일자*/
+        WHERE   WKNT_EMNR = #GBL_EMPLNO#
+       	/*
+		AND		SOUS_LNKY = '2010014-20161111-7'
+		*/
+   	]]>
+	</update>
+	
+	<!--
+	     작 성 자 : 남상기
+	     작 성 일 : 2016.11.18
+	     내    용 : 알람 삭제
+    -->
+	<delete id="COMWORKALARM.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE  /* COMWORKALARM.DELETE00 알람 삭제  */
+        FROM	TM_WKNTXM
+        WHERE   WKNT_EMNR = #GBL_EMPLNO#
+		AND		WKCF_YSNO = '1'
+		/*
+		AND		SOUS_LNKY = '2010014-20161111-7'
+		*/		
+   	]]>
+	</delete>
+	
+</sqlMap>
+
+

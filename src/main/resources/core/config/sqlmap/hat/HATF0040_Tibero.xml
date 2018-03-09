@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="HATF0040">
+
+<!-- 
+* 프로그램명 : 출장신청/정산 데이터 처리 SQLMAP 
+* 작 성 일 : 2016.09.07 
+* 작 성 자 : 박정윤 
+* 비 고 : * 
+Copyright (c) 2016 NDS Co.,Ltd All Rights reserved. -->
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.07
+     내       용 : 출장승인신청 목록 조회
+********************************************************************************/
+-->	
+	<select id="HATF0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+			SELECT 
+		        A.DOCU_IDXX AS DOCU_IDXX          /* 결재문서 DOC_ID */
+		        ,A.APPR_SEQN AS APPR_SEQN         /* 결재문서 SEQ */
+		        ,A.APPR_DATE AS APPR_DATE         /* 신청일자 */
+		        ,A.DEPT_CODE AS DEPT_CODE         /* 신청자 부서명 */
+		        ,A.SUBJ_NAME AS SUBJ_NAME	 	  /*결재문서 제목*/
+		        ,A.APPR_STAT AS APPR_STAT		  /*결재상태*/
+ 		        ,SF_GET_COMMNAME('APPR_STAT', A.APPR_STAT) APPR_STAT_STR /*결재상태*/
+ 		        ,SF_GET_COMMNAMEREF('APPR_STAT', A.APPR_STAT, '1') APPR_STAT_PROC /*결재상태*/
+ 		        ,A.ENDX_DATE AS ENDX_DATE		  /*결재완료일자*/
+		        ,B.BSRP_SEQ1 AS BSRP_SEQ1         /* 일련번호 */
+		        ,B.TITL_NAME AS TITL_NAME         /* 제목 */  
+		        ,B.BSRP_STDT AS BSRP_STDT         /* 출장시작일자 */
+		        ,B.BSRP_ENDD AS BSRP_ENDD         /* 출장종료일자 */
+		        ,B.BSRP_CODE AS BSRP_CODE         /* 출장구분코드 */
+		        ,B.BSRP_PLAC AS BSRP_PLAC         /* 출장지 */
+		        ,B.BSRP_PURC AS BSRP_PURC         /* 출장목적코드 */
+		        ,B.STAT_CODE AS STAT_CODE         /* 진행상태코드 */
+		        ,B.STAT_CDNM AS STAT_CDNM         /*진행상태명*/ 
+		        ,B.STAT_DATE AS STAT_DATE         /* 진행상태일자 */  
+		        ,B.DRFT_DATE AS DRFT_DATE         /* 기안일자 */
+		        ,B.FILE_USID AS FILE_USID
+		        ,B.INST_USID AS INST_USID         /* 등록자사번 */  
+		        ,B.INST_USNM AS INST_USNM         /* 등록자사원명 */
+		        ,B.INST_DATE AS INST_DATE         /* 등록일 */
+		        ,B.UPDT_USID AS UPDT_USID         /* 수정자 */
+		        ,B.UPDT_DATE AS UPDT_DATE         /* 수정일 */
+		        ,B.APLT_EMNR AS APLT_EMNR         /* 신청자 사원번호 */
+		        ,B.APLT_EMNM AS APLT_EMNM         /* 신청자 사원명 */
+		        ,B.APLT_CNTR AS APLT_CNTR         /* 출장자 수 */
+		    FROM 
+		        TM_APPRXH A, /* 결재연동테이블 */
+		       (SELECT 
+		             A.APPR_SEQN           /* 결재연동일련번호 */
+		            ,A.BSRP_SEQ1           /* 일련번호 */
+		            ,A.TITL_NAME           /* 제목 */  
+		            ,A.BSRP_STDT           /* 출장시작일자 */
+		            ,A.BSRP_ENDD           /* 출장종료일자 */
+		            ,A.BSRP_CODE           /* 출장구분코드 */
+		            ,A.BSRP_PLAC           /* 출장지 */
+		            ,A.BSRP_PURC           /* 출장목적코드 */
+		            ,A.STAT_CODE           /* 진행상태코드 */
+		            ,SF_GET_COMMNAME('GWAP_STAT', A.STAT_CODE)             AS STAT_CDNM   /*진행상태명*/ 
+		            ,A.STAT_DATE           /* 진행상태일자 */  
+		            ,A.DRFT_DATE           /* 기안일자 */
+		            ,A.FILE_USID
+		            ,A.INST_USID
+		            ,SF_GET_EMPLNAME(A.INST_USID) AS INST_USNM   /* 등록자사원명 */
+		            ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE 
+		            ,A.UPDT_USID
+		            ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE        
+		            ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '1') AS APLT_EMNR    /* 신청자 사원번호 */
+		            ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '2') AS APLT_EMNM    /* 신청자 사원명 */
+		            ,SF_GET_BSRP_APPLCNT_INFO(A.BSRP_SEQ1, '3') AS APLT_CNTR    /* 출장자 수 */
+		        FROM AT_BUTRXM A
+		            ,(SELECT 
+		                    AA.BSRP_SEQ1
+		                    ,AA.APLT_EMNR
+		              FROM AT_BUTRXD AA
+		              WHERE 1=1
+		                AND AA.APLT_EMNR = #EMP_NO#) B
+		        WHERE 1=1
+		          AND A.BSRP_SEQ1 = B.BSRP_SEQ1(+)
+		          AND TO_CHAR(A.INST_DATE, 'YYYYMMDD') BETWEEN #BSRP_STDT# AND #BSRP_ENDD#) B
+		    WHERE 1=1
+		      AND  A.APPR_SEQN = B.APPR_SEQN
+		      AND  A.EMPL_NUMB = B.INST_USID
+	]]>		 
+    	<isNotEmpty prepend="AND" property="APLT_EMNR">
+    		(B.INST_USID = #APLT_EMNR#
+		     	OR B.APLT_EMNR = #APLT_EMNR#)
+    	</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="APPR_STAT">
+			A.APPR_STAT = #APPR_STAT#
+		</isNotEmpty>					 
+	<![CDATA[	
+		ORDER BY B.BSRP_STDT DESC, B.BSRP_ENDD DESC, B.UPDT_DATE DESC, B.DRFT_DATE DESC, A.EMPL_NUMB
+	]]>		 
+	</select>
+	
+<!--
+/*******************************************************************************
+	 작 성 자 : 박정윤
+	 작 성 일 : 2016.09.23
+	 내    용 : 출장신청결재 SEQ 조회 
+	 비    고 : MAX + 1로 사용. 
+	 파라미터 : 
+********************************************************************************/
+-->
+<select id="HATF0040.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+<![CDATA[ 
+	SELECT  NVL(MAX(APPR_SEQN) + 1, TO_CHAR(SYSDATE,'YYYYMMDD')||LPAD('1',5,0)) APPR_SEQN
+	  FROM  TM_APPRXH
+        WHERE  APPR_SEQN LIKE TO_CHAR(SYSDATE,'YYYYMMDD')||'%'
+]]>
+</select>	
+
+
+<!--
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.06
+     내      용 : 출장신청서 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0040.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE FROM TM_APPRXH 
+         WHERE DOCU_IDXX   = #DOCU_IDXX#      /* 결재문서 DOC_ID */
+           AND APPR_SEQN   = #APPR_SEQN#      /* 결재문서 SEQ */
+	]]>
+	</delete>	
+		
+</sqlMap>

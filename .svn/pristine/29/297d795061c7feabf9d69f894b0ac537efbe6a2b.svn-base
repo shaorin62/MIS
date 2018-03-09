@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Temp00016M" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="그리드만있음" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess">
+    <Layouts>
+      <Layout>
+        <Grid autoenter="TRUE" binddataset="dsHR_APPOBS" cellsizingtype="both" enable="true" id="grdHR_APPOBS" useinputpanel="false" selecttype="row" taborder="9" tabstop="false" autosizingtype="none" usecontextmenu="true" useselcolor="true" visible="true" wheelscrollrow="1" position="absolute" left="8" top="71" cssclass="styGrid01" right="25" bottom="15" autosizebandtype="body">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="127"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+                <Column size="90"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="align:center;" text="발령구분"/>
+                <Cell col="1" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="부서"/>
+                <Cell col="2" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="급여형태"/>
+                <Cell col="3" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="직종"/>
+                <Cell col="4" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="직급"/>
+                <Cell col="5" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="직위"/>
+                <Cell col="6" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="직책"/>
+                <Cell col="7" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="직무"/>
+                <Cell col="8" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="호봉"/>
+                <Cell col="9" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="겸직"/>
+                <Cell col="10" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="파견부서"/>
+                <Cell col="11" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="파견지"/>
+                <Cell col="12" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="종료일"/>
+                <Cell col="13" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="부서장"/>
+                <Cell col="14" style="backgroundimage: ;" cssclass="Cellgrd_WF_edit" text="퇴직사유"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;background: ;" text="bind:APDN_NAME" editlimit="4"/>
+                <Cell col="1" displaytype="combo" edittype="combo" text="bind:DTCH_YSNO"/>
+                <Cell col="2" displaytype="combo" edittype="combo" text="bind:PYTC_YSNO"/>
+                <Cell col="3" displaytype="combo" edittype="combo" text="bind:OCCH_YSNO"/>
+                <Cell col="4" displaytype="combo" edittype="combo" text="bind:CLPC_YSNO"/>
+                <Cell col="5" displaytype="combo" edittype="combo" text="bind:OFPC_YSNO"/>
+                <Cell col="6" displaytype="combo" edittype="combo" text="bind:DURC_YSNO"/>
+                <Cell col="7" displaytype="combo" edittype="combo" text="bind:JOCH_YSNO"/>
+                <Cell col="8" displaytype="combo" edittype="combo" text="bind:NMCG_YSNO"/>
+                <Cell col="9" displaytype="combo" edittype="combo" text="bind:AJDC_YSNO"/>
+                <Cell col="10" displaytype="combo" edittype="combo" text="bind:DTDC_YSNO"/>
+                <Cell col="11" displaytype="combo" edittype="combo" text="bind:PSCH_YSNO"/>
+                <Cell col="12" displaytype="combo" edittype="combo" text="bind:EDCH_YSNO"/>
+                <Cell col="13" displaytype="combo" edittype="combo" text="bind:HDTC_YSNO"/>
+                <Cell col="14" displaytype="combo" edittype="combo" text="bind:RETC_YSNO"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="st_FormTitle" taborder="10" text="발령기초설정" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="11" text="홈 &gt; 인사관리&gt;인사기준정보&gt;발령기초설정" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="12" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="13" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="14" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="16" text="h 15" visible="false" left="637" top="56" width="128" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="19" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="20" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="stInformation" taborder="21" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="8" top="50" width="262" height="21"/>
+        <Static id="Static09" taborder="22" text="h 6" visible="false" left="8" top="65" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="23" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind/>
+  </Form>
+</FDL>

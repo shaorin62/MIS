@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MACA0080">
+
+<!--  
+ *   프로그램명 : 매체 전표순번생성
+ *   작 성 일 : 2016.11.06(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용  : 광고주 순번 목록을 조회
+		파라미터  : YEAR_MNTH : 세금계산서년월
+	-->
+	<select id="MACA0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0080.SEARCH00     광고주 순번 목록 조회 */
+               DISTINCT 
+			  CASE WHEN CUST_NAME LIKE '%농심%' THEN 0 ELSE 1 END AS ORDERNO
+              , A.TAXY_MONT
+              , A.CUST_CODE              /* 광고주코드 */
+              , A.CUST_NAME              /* 광고주명 */
+              , TO_NUMBER(B.CUST_SEQX)  CUST_SEQX               /* 광고주순번 */
+              , A.TAXY_MONT				/*세금계산서년월*/
+              FROM MD_SATXXH A 
+              LEFT JOIN MD_SEQXXM B ON A.CUST_CODE = B.CUST_CODE AND A.TAXY_MONT = B.TAXY_MONT
+              WHERE A.TAXY_MONT = #YEAR_MNTH# 
+              AND A.CUST_CODE IS NOT NULL
+              AND A.INPT_GUBN IS NULL
+              ORDER BY CUST_SEQX, ORDERNO
+	]]>		
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용  : 매체코드 순번 목록을 조회
+		파라미터  : YEAR_MNTH : 세금계산서년월
+	-->
+	<select id="MACA0080.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0080.SEARCH01     매체코드 순번 목록 조회 */
+               DISTINCT 
+              A.TAXY_MONT
+              , A.MEDX_FLAG              			/* 매체코드 */
+              , B.COMM_CDNM AS MEDX_NAME  /* 매체명 */
+              , TO_NUMBER(C.MEDF_SEQX)  MEDF_SEQX             		  /* 매체순번 */
+              , A.TAXY_MONT				/*세금계산서년월*/
+              FROM MD_SATXXH A 
+              LEFT JOIN MD_CODEXM B ON A.MEDX_FLAG = B.COMM_CODE
+              LEFT JOIN MD_SEQXXM C ON A.MEDX_FLAG = C.MEDX_FLAG AND A.TAXY_MONT = C.TAXY_MONT
+              WHERE A.TAXY_MONT = #YEAR_MNTH#
+              AND A.INPT_GUBN IS NULL
+              ORDER BY MEDF_SEQX,A.MEDX_FLAG
+	]]>		
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용  : 매체사 순번 목록을 조회
+		파라미터  : YEAR_MNTH : 세금계산서년월
+	-->
+	<select id="MACA0080.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0080.SEARCH00     매체사 순번 목록 조회 */
+               DISTINCT 
+               CASE WHEN MEDX_CDNM LIKE '%농심%' THEN 0 ELSE 1 END AS ORDERNO
+              , A.TAXY_MONT
+              , A.MEDX_CODE              /* 매체사코드 */
+              , A.MEDX_CDNM              /* 매체사명 */
+              , TO_NUMBER(B.MEDX_SEQX)   MEDX_SEQX              /* 매체사순번 */
+              , A.TAXY_MONT				/*세금계산서년월*/
+              FROM MD_SATXXH A 
+              LEFT JOIN MD_SEQXXM B ON A.MEDX_CODE = B.MEDX_CODE AND A.TAXY_MONT = B.TAXY_MONT
+              WHERE A.TAXY_MONT = #YEAR_MNTH#
+              AND A.INPT_GUBN IS NULL
+              ORDER BY MEDX_SEQX, ORDERNO
+	]]>		
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용 : 광고주 순번 입력
+		파라미터  : CUST_CODE : 광고주코드
+	-->
+	<insert id="MACA0080.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SEQXXM(      /* MACA0080.SAVE00 광고주 순번 입력 */
+        TAXY_MONT 
+        ,CUST_CODE
+        ,CUST_SEQX
+        )VALUES(
+        #TAXY_MONT#
+        ,#CUST_CODE#
+        ,#CUST_SEQX#
+        )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용 : 매체구분 순번 입력
+		파라미터  : CUST_CODE : 광고주코드
+	-->
+	<insert id="MACA0080.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SEQXXM(      /* MACA0080.SAVE00 매체구분 순번 입력 */
+        TAXY_MONT 
+        ,MEDX_FLAG
+        ,MEDF_SEQX
+        )VALUES(
+        #TAXY_MONT#
+        ,#MEDX_FLAG#
+        ,#MEDF_SEQX#
+        )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용 : 매체사코드 순번 입력
+		파라미터  : CUST_CODE : 광고주코드
+	-->
+	<insert id="MACA0080.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SEQXXM(      /* MACA0080.SAVE00 매체사코드 순번 입력 */
+        TAXY_MONT 
+        ,MEDX_CODE
+        ,MEDX_SEQX
+        )VALUES(
+        #TAXY_MONT#
+        ,#MEDX_CODE#
+        ,#MEDX_SEQX#
+        )
+	]]>
+	</insert>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용 : 광고주 순번 수정
+		파라미터  : CUST_CODE : 광고주코드
+	-->
+	<update id="MACA0080.processUPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SEQXXM    /* MACA0080.UPDATE00 광고주 순번 수정 */
+           SET CUST_SEQX = #CUST_SEQX#    /* 광고주순번 */
+        	WHERE CUST_CODE=#CUST_CODE#
+        	AND TAXY_MONT = #TAXY_MONT#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용 : 매체 순번 수정
+		파라미터  : MEDX_FLAG : 매체코드
+	-->
+	<update id="MACA0080.processUPDATE01" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SEQXXM    /* MACA0080.UPDATE01 매체 순번 수정 */
+           SET MEDF_SEQX = #MEDF_SEQX#    /* 매체순번 */
+        	WHERE MEDX_FLAG=#MEDX_FLAG#
+        	AND TAXY_MONT = #TAXY_MONT#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.06(표준화 완료)
+		내      용 : 매체사 순번 수정
+		파라미터  : MEDX_CODE : 매체사코드
+	-->
+	<update id="MACA0080.processUPDATE02" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SEQXXM    /* MACA0080.UPDATE02 매체사 순번 수정 */
+           SET MEDX_SEQX = #MEDX_SEQX#    /* 매체사순번 */
+        	WHERE MEDX_CODE=#MEDX_CODE#
+        	AND TAXY_MONT = #TAXY_MONT#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용  : 광고주코드 조회
+		파라미터  : TAXY_MONT : 세금계산서년월
+	-->
+	<select id="MACA0080.getCUST_CODE" parameterClass="hashmap" resultClass="int">
+	<![CDATA[ 
+		SELECT /* MACA0080.getCUST_CODE     광고주코드 조회 */
+			COUNT(CUST_CODE)
+             FROM MD_SEQXXM 
+             WHERE CUST_CODE=#CUST_CODE#
+       	AND TAXY_MONT = #TAXY_MONT#
+	]]>		
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용  : 매체구분 조회
+		파라미터  : TAXY_MONT : 세금계산서년월
+	-->
+	<select id="MACA0080.getMEDX_FLAG" parameterClass="hashmap" resultClass="int">
+	<![CDATA[ 
+		SELECT /* MACA0080.getMEDX_FLAG     매체구분 조회 */
+			COUNT(MEDX_FLAG)
+             FROM MD_SEQXXM 
+             WHERE MEDX_FLAG=#MEDX_FLAG#
+       	AND TAXY_MONT = #TAXY_MONT#
+	]]>		
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.29(표준화 완료)
+		내      용  : 매체사코드 조회
+		파라미터  : TAXY_MONT : 세금계산서년월
+	-->
+	<select id="MACA0080.getMEDX_CODE" parameterClass="hashmap" resultClass="int">
+	<![CDATA[ 
+		SELECT /* MACA0080.getMEDX_CODE     매체사코드 조회 */
+			COUNT(MEDX_CODE)
+             FROM MD_SEQXXM 
+             WHERE MEDX_CODE=#MEDX_CODE#
+       	AND TAXY_MONT = #TAXY_MONT#
+	]]>		
+	</select>
+	
+	
+</sqlMap>

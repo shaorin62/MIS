@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TMMB0010">
+
+<!--  
+ *   프로그램명 : 사용자정보관리
+ *   작 성 일 : 2013.08.23
+ *   작 성 자 : 김춘호
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+     작  성  자 : 권미영
+     작  성  일 : 2016.10.10
+     내      용 : 사용자정보 조회 표준화
+     -->
+	<select id="TMMB0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.USDN_CODE /*사용자구분코드*/
+		       ,A.USER_IDXX /*사용자ID*/
+		       ,A.EMPL_NUMB /*사원번호*/
+		       ,A.USER_NAME /*사원명*/		
+		       ,A.DEPT_CODE /*부서코드*/       
+		       ,E.SECT_NAME /*소속*/
+		       ,E.DEPT_NAME /*부서*/
+		       ,B.ENCO_DATE /*입사일*/
+		       ,B.RETR_DATE /*퇴사일*/
+		       ,B.EMPL_BIRT /*주민등록 생년월일*/
+		       ,A.REMK_100X /*비고100*/
+		       ,NVL(A.USEX_YSNO, '0') AS USEX_YSNO /*사용여부*/
+		  FROM TM_USERXM A LEFT OUTER JOIN HR_MASTXM B ON A.EMPL_NUMB = B.EMPL_NUMB
+                           LEFT OUTER JOIN VI_DEPTXM E ON A.DEPT_CODE = E.DEPT_CODE
+	]]>
+	<dynamic prepend="WHERE">
+
+		<isNotEmpty prepend="AND" property="EMPL_NAME">		 
+			   A.USER_NAME LIKE '%' || #EMPL_NAME# || '%' 
+		</isNotEmpty>	
+
+		<isNotEmpty prepend="AND" property="USEX_YSNO">		 
+			   NVL(A.USEX_YSNO, '0') = #USEX_YSNO#
+		</isNotEmpty>	
+	
+		<isNotEmpty prepend="AND" property="USDN_CODE">		 
+			   A.USDN_CODE = #USDN_CODE#
+		</isNotEmpty>
+	</dynamic>
+	
+	<![CDATA[
+		 ORDER BY A.USER_IDXX
+	]]>
+	</select>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자 권한정보 조회
+     파라미터   : USER_IDXX : 사용자ID
+     -->
+	<select id="TMMB0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.USER_IDXX
+		       ,A.GRUP_IDXX
+		       ,B.GRUP_NAME
+		  FROM TM_GROUPX A
+		   INNER JOIN TM_ATGPXM B
+		      ON A.GRUP_IDXX = B.GRUP_IDXX
+		 WHERE A.USER_IDXX = #USER_IDXX#
+		 
+	]]>
+	</select>
+
+	
+	<!-- 
+     작  성  자 : 장성환
+     작  성  일 : 2013.05.16
+     내      용 : 비밀번호 변경을 위한 사용자정보 조회
+     파라미터   : USER_IDXX 사용자 ID
+     -->
+	<select id="TMMB0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+	        SELECT  A.USER_IDXX   /*사용자ID*/
+	               ,A.USDN_CODE   /*사용자구분코드*/
+	               ,A.EMPL_NUMB   /*사원번호*/
+	               ,A.USER_NAME   /*사용자성명*/
+	               ,A.SCRT_NUMB	  /*비밀번호*/
+	               ,A.REMK_100X   /*비고100*/
+	               ,A.USEX_YSNO   /*사용여부*/
+	          FROM TM_USERXM A	/* 사용자정보 */
+	    ]]>
+	    <dynamic prepend="WHERE">
+		    <isNotEmpty prepend="AND" property="USER_IDXX">
+				A.USER_IDXX = #USER_IDXX#   /*사용자ID*/
+		    </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자정보 저장
+     파라미터   :  			  	
+     -->
+	<insert id="TMMB0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+         INSERT INTO TM_USERXM (
+                USER_IDXX    /*사용자ID*/
+               ,USDN_CODE    /*사용자구분코드*/
+               ,EMPL_NUMB    /*사원번호*/
+               ,USER_NAME    /*사용자성명*/
+               ,DEPT_CODE	 /*부서코드*/
+               ,SCRT_NUMB    /*비밀번호*/
+               ,REMK_100X    /*비고100*/
+               ,USEX_YSNO    /*사용여부*/
+               ,INST_USID    /*입력작업자*/
+               ,INST_DATE    /*입력일시*/
+               ,UPDT_USID    /*수정작업자*/
+               ,UPDT_DATE    /*수정일시*/
+        ) VALUES (
+                #USER_IDXX#  /*사용자ID*/
+               ,#USDN_CODE#  /*사용자구분코드*/
+               ,#EMPL_NUMB#  /*사원번호*/
+               ,#USER_NAME#  /*사용자성명*/
+               ,#DEPT_CODE#  /*부서코드*/
+               ,#SCRT_NUMB#  /*비밀번호*/
+               ,#REMK_100X#  /*비고100*/
+               ,#USEX_YSNO#  /*사용여부*/
+               ,#UPDT_USID#  /*입력작업자*/
+               ,SYSDATE      /*입력일시*/
+               ,#UPDT_USID#  /*수정작업자*/
+               ,SYSDATE      /*수정일시*/
+        )
+	]]>
+	</insert>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자정보 수정
+     파라미터   :  			  	
+     -->
+	<update id="TMMB0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	        UPDATE TM_USERXM
+	           SET  USDN_CODE = #USDN_CODE#   /*사용자구분코드*/
+	               ,EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+	               ,USER_NAME = #USER_NAME#   /*사용자성명*/
+	               ,DEPT_CODE = #DEPT_CODE#	  /*부서코드*/
+	               ,REMK_100X = #REMK_100X#   /*비고100*/
+	               ,USEX_YSNO = #USEX_YSNO#   /*사용여부*/
+	               ,UPDT_USID = #UPDT_USID#   /*수정작업자*/
+	               ,UPDT_DATE = SYSDATE       /*수정일시*/
+	         WHERE USER_IDXX  = #USER_IDXX#   /*사용자ID*/
+	]]>
+	</update>
+
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2015.09.01
+     내      용 : 그룹별사용자정보 삭제시 이력 수정
+     파라미터   :  			  	
+     -->
+	<update id="TMMB0010.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+		
+        UPDATE TM_GROUPH
+           SET  ATHR_EDTM = SYSDATE   /*권한종료일시*/
+               ,UPDT_USID = #UPDT_USID#   /*수정작업자*/
+               ,UPDT_DATE = SYSDATE   /*수정일시*/
+         WHERE GRUP_IDXX  = #GRUP_IDXX#   /*그룹ID*/
+           AND USER_IDXX  = #USER_IDXX#   /*사용자ID*/
+           AND ATHR_EDTM  IS NULL   /*권한종료일시*/
+           
+	]]>
+	</update>	
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자정보 삭제
+     파라미터   :  			  	
+     -->
+	<delete id="TMMB0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		BEGIN
+			DELETE FROM TM_MYMENU
+			 WHERE USER_IDXX = #USER_IDXX#;
+			 
+	        DELETE FROM TM_USERXM
+	         WHERE USER_IDXX = #USER_IDXX#   /*사용자ID*/
+	         ;
+	    END;
+        
+	]]>		
+	</delete>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 그룹정보 삭제
+     파라미터   :  			  	
+     -->
+	<delete id="TMMB0010.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_GROUPX
+         WHERE GRUP_IDXX = #GRUP_IDXX#		
+		   AND USER_IDXX = #USER_IDXX# 
+        
+	]]>		
+	</delete>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자정보 삭제시 그룹정보 삭제
+     파라미터   :  			  	
+     -->
+	<delete id="TMMB0010.DELETE02" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_GROUPX
+         WHERE USER_IDXX = #USER_IDXX#
+	]]>		
+	</delete>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2013.08.23
+     내      용 : 사용자정보 삭제시 로그인정보 삭제
+     파라미터   :  			  	
+     -->
+	<delete id="TMMB0010.DELETE03" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_LOGINX
+         WHERE USER_IDXX = #USER_IDXX#
+	]]>		
+	</delete>
+	
+	<!-- 
+     작  성  자 : 김춘호
+     작  성  일 : 2016.01.04
+     내      용 : 사용자정보 삭제시 권한변경이력정보 삭제
+     파라미터   :  			  	
+     -->
+	<delete id="TMMB0010.DELETE04" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM TM_GROUPH
+         WHERE USER_IDXX = #USER_IDXX#
+	]]>		
+	</delete>	
+	
+</sqlMap>

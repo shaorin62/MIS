@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="YEAA0070T03" classname="YEAA0070T01" left="0" top="0" width="1024" height="493" titletext="종근무지">
+    <Layouts>
+      <Layout>
+        <Static id="Static00" taborder="12" text="근로소득내역" cssclass="sta_WF_Subtitle" left="9" width="127" height="21" bottom="168"/>
+        <Static id="Static12" taborder="6" text="근로소득내역" cssclass="sta_WF_Subtitle" left="9" top="12" width="127" height="21"/>
+        <Grid id="grdYEA_BFWORK" taborder="0" useinputpanel="false" left="10" top="34" right="10" bottom="200" binddataset="dsYEA_BFWORK">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="100" band="left"/>
+                <Column size="79" band="left"/>
+                <Column size="100" band="left"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="150"/>
+                <Column size="100"/>
+                <Column size="150"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+                <Column size="100"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="20"/>
+                <Row size="23" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="사업자번호"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="구분"/>
+                <Cell col="2" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="회사명"/>
+                <Cell col="3" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="근무시작일"/>
+                <Cell col="4" displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="근무종료일"/>
+                <Cell col="5" displaytype="text" style="backgroundimage: ;" text="감면시작일"/>
+                <Cell col="6" displaytype="text" style="backgroundimage: ;" text="감면종료일"/>
+                <Cell col="7" displaytype="text" style="backgroundimage: ;" text="급여총액"/>
+                <Cell col="8" displaytype="text" style="backgroundimage: ;" text="상여총액"/>
+                <Cell col="9" displaytype="text" style="backgroundimage: ;" text="인정상여"/>
+                <Cell col="10" displaytype="text" style="backgroundimage: ;" text="주식매수선택권행사이익"/>
+                <Cell col="11" displaytype="text" style="backgroundimage: ;" text="우리사주인출금"/>
+                <Cell col="12" displaytype="text" style="backgroundimage: ;" text="임원퇴직소득한도초과액"/>
+                <Cell col="13" displaytype="text" style="backgroundimage: ;" text="국민연금"/>
+                <Cell col="14" displaytype="text" style="backgroundimage: ;" text="건강보험"/>
+                <Cell col="15" displaytype="text" style="backgroundimage: ;" text="고용보험"/>
+                <Cell col="16" displaytype="text" style="backgroundimage: ;" text="소득세"/>
+                <Cell col="17" displaytype="text" style="backgroundimage: ;" text="지방소득세"/>
+                <Cell col="18" displaytype="text" style="backgroundimage: ;" text="농특세"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BIZ_NO" mask="###-##-#####"/>
+                <Cell col="1" displaytype="combo" edittype="combo" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR001"/>
+                <Cell col="2" displaytype="text" edittype="normal" style="align:left;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR002" editlimit="40" editimemode="native" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="3" displaytype="date" edittype="date" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR003" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="4" displaytype="date" edittype="date" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR004" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="5" displaytype="date" edittype="date" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR005" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="6" displaytype="date" edittype="date" style="align:center;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_STR006" editimemode="native" calendardisplaynulltype="none"/>
+                <Cell col="7" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM001" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="8" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM002" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="9" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM003" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="10" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM004" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="11" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM005" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="12" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM006" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="13" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM007" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="14" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM008" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="15" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM009" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="16" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM010" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="17" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM011" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+                <Cell col="18" displaytype="number" edittype="text" editfilter="number" style="align:right;background:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);background2:EXPR(dataset.getRowType(currow)==Dataset.ROWTYPE_INSERT?application.GBL_COLORINSERT:dataset.getRowType(currow)==Dataset.ROWTYPE_UPDATE?application.GBL_COLORUPDATE:application.GBL_COLORDISABLE);" text="bind:YEA_BFW_NUM012" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+              <Band id="summary">
+                <Cell displaytype="text" text="합계"/>
+                <Cell col="1" displaytype="text"/>
+                <Cell col="2" displaytype="text"/>
+                <Cell col="3" displaytype="text"/>
+                <Cell col="4" displaytype="text"/>
+                <Cell col="5" displaytype="text"/>
+                <Cell col="6" displaytype="text"/>
+                <Cell col="7" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM001&quot;)"/>
+                <Cell col="8" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM002&quot;)"/>
+                <Cell col="9" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM003&quot;)"/>
+                <Cell col="10" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM004&quot;)"/>
+                <Cell col="11" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM005&quot;)"/>
+                <Cell col="12" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM006&quot;)"/>
+                <Cell col="13" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM007&quot;)"/>
+                <Cell col="14" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM008&quot;)"/>
+                <Cell col="15" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM009&quot;)"/>
+                <Cell col="16" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM010&quot;)"/>
+                <Cell col="17" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM011&quot;)"/>
+                <Cell col="18" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFW_NUM012&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="stInformation" taborder="1" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="119" top="12" width="168" height="21"/>
+        <Button id="btnAddRow01" taborder="2" text="행추가" onclick="btnAddRow01_OnClick" cssclass="btn_WF_Module" top="9" width="62" height="21" right="77"/>
+        <Button id="btnDelRow01" taborder="3" text="행삭제" onclick="btnDelRow01_OnClick" cssclass="btn_WF_Module" top="9" height="21" right="10" width="64"/>
+        <Static id="Static09" taborder="4" text="h 6" visible="false" left="8" top="28" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="stInformation04" taborder="5" cssclass="sta_WF_line" left="111" top="15" width="10" height="13"/>
+        <Grid id="grdYEA_BFNTAX" taborder="7" binddataset="dsYEA_BFNTAX" useinputpanel="false" left="10" bottom="8" height="159" width="390" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="215" band="left"/>
+                <Column size="172"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="23" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell displaytype="text" style="backgroundimage: ;" cssclass="Cellgrd_WF_essential" text="비과세/감면 항목"/>
+                <Cell col="1" displaytype="text" style="backgroundimage: ;" text="비과세액/감면금액"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="combo" edittype="combo" style="align:left;background: ;" text="bind:YEA_NON_TAX_CD"/>
+                <Cell col="1" displaytype="number" edittype="text" editfilter="number" style="align:right;background: ;" text="bind:YEA_BFN_NUM001" editlimit="15" editautoselect="true" editlengthunit="ascii"/>
+              </Band>
+              <Band id="summary">
+                <Cell displaytype="text" style="align:center;" text="합계"/>
+                <Cell col="1" displaytype="number" style="align:right;" expr="expr:dataset.getSum(&quot;YEA_BFN_NUM001&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btnDelRow02" taborder="8" text="행삭제" onclick="btnDelRow02_OnClick" cssclass="btn_WF_Module" width="64" height="21" bottom="171" left="336"/>
+        <Button id="btnAddRow02" taborder="9" text="행추가" onclick="btnAddRow02_OnClick" cssclass="btn_WF_Module" width="62" height="21" bottom="171" left="271"/>
+        <Static id="stInformation00" taborder="10" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." usedecorate="true" cssclass="styFormSearchInfo" left="119" width="168" height="21" bottom="168"/>
+        <Static id="stInformation01" taborder="11" cssclass="sta_WF_line" left="111" width="10" height="13" bottom="173"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.0"><![CDATA[this.btnAddRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_BfworkAddRow();
+}
+
+this.btnDelRow01_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_BfworkDelRow();
+}
+
+this.btnAddRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_BfntaxAddRow();
+}
+
+this.btnDelRow02_OnClick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	this.parent.parent.parent.fn_BfntaxDelRow();
+}
+]]></Script>
+  </Form>
+</FDL>

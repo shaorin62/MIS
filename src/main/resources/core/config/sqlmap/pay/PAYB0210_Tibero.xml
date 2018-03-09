@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0210">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 정산예외 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0210.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYB0210.SEARCH00.정산예외 테이블 조회 */
+               '0' AS CHK
+             , A.EMPL_NUMB                                                          /* 사원번호 */
+             , SF_GET_EMPLNAME(A.EMPL_NUMB ) AS EMPL_NAME                           /* 성명 */
+             , C.SECT_NAME                                                          /* 소속 */
+             , C.DEPT_NAME                                                          /* 부서 */
+             , A.INDN_DATE                                                          /* 기타지급일 */
+             , A.INDN_CODE                                                          /* 소득구분코드 */
+             , SF_GET_COMMNAME('INDN_CODE', A.INDN_CODE) AS INDN_NAME               /* 소득구분명 */
+             , NVL(A.TAP1_AMOT, 0) AS TAP1_AMOT                                     /* 과세1지급금액 */
+             , NVL(A.TAP2_AMOT, 0) AS TAP2_AMOT                                     /* 과세2지급금액 */
+             , NVL(A.TAP3_AMOT, 0) AS TAP3_AMOT                                     /* 과세3지급금액 */
+             , NVL(A.NTP1_AMOT, 0) AS NTP1_AMOT                                     /* 비과세1지급금액 */
+             , NVL(A.NTP2_AMOT, 0) AS NTP2_AMOT                                     /* 비과세2지급금액 */
+             , NVL(A.NTP3_AMOT, 0) AS NTP3_AMOT                                     /* 비과세3지급금액 */
+             , NVL(A.TAP1_AMOT, 0) + NVL(A.NTP1_AMOT, 0) AS PAYX_TAMT               /* 지급계 */
+             , NVL(A.INCM_TAXX, 0) AS INCM_TAXX                                     /* 소득세 */
+             , NVL(A.INHA_TAXX, 0) AS INHA_TAXX                                     /* 주민세 */
+             , NVL(A.OTDE_AMOT, 0) AS OTDE_AMOT                                     /* 기타공제금액 */
+             , NVL(A.INCM_TAXX, 0) + NVL(A.INHA_TAXX, 0) AS DEDU_TAMT               /* 공제계 */
+             , (NVL(A.TAP1_AMOT, 0) + NVL(A.NTP1_AMOT, 0)) - (NVL(A.INCM_TAXX, 0) + NVL(A.INHA_TAXX, 0)) AS REAL_AMOT   /* 실지급액 */
+             , A.PAYX_DATE                                                          /* 지급일 */
+             , A.WAGE_CODE                                                          /* 급여코드 */
+             , (SELECT WORK_CNTT FROM PY_PMDIRY WHERE PAYX_DATE = A.PAYX_DATE AND WAGE_CODE = A.WAGE_CODE ) AS WORK_CNTT /* 작업내용 */
+             , A.ENFC_CODE                                                          /* 사업장코드 */
+             , A.DEPT_CODE                                                          /* 부서코드 */
+             , A.CLSD_CODE                                                          /* 직원구분코드 */
+             , A.CPOS_CODE                                                          /* 직급코드 */
+             , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_NAME               /* 직급명 */
+             , A.OPOS_CODE                                                          /* 직위코드 */
+             , A.REMK_400X                                                          /* 비고400 */
+             , B.WABK_CODE                                                          /* 은행코드 */
+             , B.WAGE_ACNO                                                          /* 계좌번호 */
+             , NVL(SF_GET_REFXFILD('INDN_CODE', A.INDN_CODE, '1'), 0) AS REF1_FILD  /* 소득구분 보조필드1 */
+             , D.WODN_CODE                                                          /* 재직구분 */ 
+          FROM PY_INCOME A
+          LEFT OUTER JOIN PY_MASTPM B
+                       ON A.EMPL_NUMB = B.EMPL_NUMB
+          LEFT OUTER JOIN VI_DEPTXM C
+                       ON A.DEPT_CODE = C.DEPT_CODE
+		  LEFT OUTER JOIN HR_MASTXM D 
+		  			   ON A.EMPL_NUMB = D.EMPL_NUMB
+         WHERE SUBSTR(A.INDN_DATE, 0, 6) = #INDN_DATE#
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                      C.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+                      A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="INDN_CODE">
+                      A.INDN_CODE = #INDN_CODE#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="CLSD_CODE">
+                      D.CLSD_CODE = #CLSD_CODE#
+    </isNotEmpty>
+         ORDER BY C.DEPT_FCOD, A.EMPL_NUMB, A.INDN_CODE, A.PAYX_DATE
+
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 정산예외내역관리 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0210.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYB0210.SEARCH01.정산예외내역관리 테이블 조회 */
+                   A.EMPL_NUMB
+                 , A.EMPL_NAME
+                 , B.SECT_CODE
+                 , B.SECT_NAME
+                 , A.DEPT_CODE
+                 , B.DEPT_NAME
+                 , A.CPOS_CODE
+                 , SF_GET_COMMNAME('CPOS_CODE',A.CPOS_CODE) AS CPOS_NAME
+                 , A.DUTY_CODE
+                 , SF_GET_COMMNAME('DUTY_CODE',A.DUTY_CODE) AS DUTY_CODE
+              FROM HR_MASTXM A
+             INNER JOIN VI_DEPTXM B
+                ON A.DEPT_CODE = B.DEPT_CODE
+             WHERE A.RETR_DATE IS NULL OR A.RETR_DATE >= #PAYX_YMTH# || '01'
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 정산예외 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0210.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0210.SAVE00.정산예외 테이블 저장 */
+             v_IRSB_CODE VARCHAR2(100);
+             v_IRSA_ACNO VARCHAR2(100);
+             v_DEPT_CODE VARCHAR2(100);
+             v_CLSD_CODE VARCHAR2(100);
+             v_CPOS_CODE VARCHAR2(100);
+             v_DUTY_CODE VARCHAR2(100);
+             v_PSTP_CODE VARCHAR2(100);
+             v_OPOS_CODE VARCHAR2(100);
+
+        BEGIN
+            SELECT B.IRSB_CODE   /* 은행코드 */
+                 , B.IRSA_ACNO   /* 계좌번호 */
+                 , A.DEPT_CODE   /* 부서코드 */
+                 , A.CLSD_CODE   /* 직원구분코드 */
+                 , A.CPOS_CODE   /* 직급코드 */
+                 , A.DUTY_CODE   /* 직무코드 */
+                 , A.PSTP_CODE   /* 호봉코드 */
+                 , A.OPOS_CODE   /* 직위코드 */
+              INTO v_IRSB_CODE
+                 , v_IRSA_ACNO
+                 , v_DEPT_CODE
+                 , v_CLSD_CODE
+                 , v_CPOS_CODE
+                 , v_DUTY_CODE
+                 , v_PSTP_CODE
+                 , v_OPOS_CODE
+              FROM TABLE(SF_HR_MASTXM(#EMPL_NUMB#,#PAYX_DATE#))A
+              LEFT OUTER JOIN PY_MASTPM B
+                ON A.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN TM_DEPTXM C
+                ON A.DEPT_CODE = C.DEPT_CODE
+            ;
+
+        INSERT INTO PY_INCOME (        /* [기타소득지급] */
+                    EMPL_NUMB          /* 사원번호 */
+                  , INDN_DATE          /* 기타지급일 */
+                  , INDN_CODE          /* 소득구분코드 */
+                  , TAP1_AMOT          /* 과세1지급금액 */
+                  , TAP2_AMOT          /* 과세2지급금액 */
+                  , TAP3_AMOT          /* 과세3지급금액 */
+                  , NTP1_AMOT          /* 비과세1지급금액 */
+                  , NTP2_AMOT          /* 비과세2지급금액 */
+                  , NTP3_AMOT          /* 비과세3지급금액 */
+                  , INCM_TAXX          /* 소득세 */
+                  , INHA_TAXX          /* 주민세 */
+                  , OTDE_AMOT          /* 기타공제금액 */
+                  , PAYX_DATE          /* 지급일 */
+                  , WAGE_CODE          /* 급여코드 */
+                  , ENFC_CODE          /* 사업장코드 */
+                  , DEPT_CODE          /* 부서코드 */
+                  , CLSD_CODE          /* 직원구분코드 */
+                  , CPOS_CODE          /* 직급코드 */
+                  , OPOS_CODE          /* 직위코드 */
+                  , REMK_400X          /* 비고400 */
+                  , INST_USID          /* 입력작업자 */
+                  , INST_DATE          /* 입력일시 */
+                  , UPDT_USID          /* 수정작업자 */
+                  , UPDT_DATE          /* 수정일시 */
+         ) VALUES (
+                    #EMPL_NUMB#        /* 사원번호 */
+                  , #INDN_DATE#        /* 기타지급일 */
+                  , #INDN_CODE#        /* 소득구분코드 */
+                  , #TAP1_AMOT#        /* 과세1지급금액 */
+                  , #TAP2_AMOT#        /* 과세2지급금액 */
+                  , #TAP3_AMOT#        /* 과세3지급금액 */
+                  , #NTP1_AMOT#        /* 비과세1지급금액 */
+                  , #NTP2_AMOT#        /* 비과세2지급금액 */
+                  , #NTP3_AMOT#        /* 비과세3지급금액 */
+                  , #INCM_TAXX#        /* 소득세 */
+                  , #INHA_TAXX#        /* 주민세 */
+                  , #OTDE_AMOT#        /* 기타공제금액 */
+                  , #PAYX_DATE#        /* 지급일 */
+                  , #WAGE_CODE#        /* 급여코드 */
+                  , #ENFC_CODE#        /* 사업장코드 */
+                  , v_DEPT_CODE        /* 부서코드 */
+                  , v_CLSD_CODE        /* 직원구분코드 */
+                  , v_CPOS_CODE        /* 직급코드 */
+                  , v_OPOS_CODE        /* 직위코드 */
+                  , #REMK_400X#        /* 비고400 */
+                  , #UPDT_USID#        /* 입력작업자 */
+                  , SYSDATE            /* 입력일시 */
+                  , #UPDT_USID#        /* 수정작업자 */
+                  , SYSDATE            /* 수정일시 */
+                );
+        END;
+    ]]>
+    </insert>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 황치웅
+     작 성 일 : 2016.10.12
+     내    용 : 이전자료를 복사한다.
+********************************************************************************/
+-->
+    <insert id="PAYB0210.PROC00" parameterClass="hashmap">
+    <![CDATA[
+        BEGIN
+
+        DELETE FROM PY_INCOME /* PAYB0210.DELETE00.정산예외 테이블 삭제 */
+         WHERE SUBSTR(INDN_DATE, 0, 6) = #PAYX_DATE_TO#    /* 기타지급일 */
+           AND INDN_CODE <> '09' /* 학자금 제외 2016-12-02 (장혜진과장요청) */
+        ;
+
+        INSERT INTO PY_INCOME (        /* [기타소득지급] */
+                    EMPL_NUMB          /* 사원번호 */
+                  , INDN_DATE          /* 기타지급일 */
+                  , INDN_CODE          /* 소득구분코드 */
+                  , TAP1_AMOT          /* 과세1지급금액 */
+                  , TAP2_AMOT          /* 과세2지급금액 */
+                  , TAP3_AMOT          /* 과세3지급금액 */
+                  , NTP1_AMOT          /* 비과세1지급금액 */
+                  , NTP2_AMOT          /* 비과세2지급금액 */
+                  , NTP3_AMOT          /* 비과세3지급금액 */
+                  , INCM_TAXX          /* 소득세 */
+                  , INHA_TAXX          /* 주민세 */
+                  , OTDE_AMOT          /* 기타공제금액 */
+                  , PAYX_DATE          /* 지급일 */
+                  , WAGE_CODE          /* 급여코드 */
+                  , ENFC_CODE          /* 사업장코드 */
+                  , DEPT_CODE          /* 부서코드 */
+                  , CLSD_CODE          /* 직원구분코드 */
+                  , CPOS_CODE          /* 직급코드 */
+                  , OPOS_CODE          /* 직위코드 */
+                  , REMK_400X          /* 비고400 */
+                  , INST_USID          /* 입력작업자 */
+                  , INST_DATE          /* 입력일시 */
+                  , UPDT_USID          /* 수정작업자 */
+                  , UPDT_DATE          /* 수정일시 */
+         )
+            SELECT A.EMPL_NUMB         /* 사원번호 */
+                 , #PAYX_DATE_TO#||SUBSTR(A.INDN_DATE,7)       /* 기타지급일 */
+                 , A.INDN_CODE         /* 소득구분코드 */
+                 , A.TAP1_AMOT         /* 과세1지급금액 */
+                 , A.TAP2_AMOT         /* 과세2지급금액 */
+                 , A.TAP3_AMOT         /* 과세3지급금액 */
+                 , A.NTP1_AMOT         /* 비과세1지급금액 */
+                 , A.NTP2_AMOT         /* 비과세2지급금액 */
+                 , A.NTP3_AMOT         /* 비과세3지급금액 */
+                 , A.INCM_TAXX         /* 소득세액 */
+                 , A.INHA_TAXX         /* 주민세액 */
+                 , A.OTDE_AMOT         /* 기타공제금액 */
+                 , ''                  /* 지급일 */
+                 , ''                  /* 급여코드 */
+                 , A.ENFC_CODE         /* 부서코드 */
+                 , A.DEPT_CODE         /* 부서코드 */
+                 , A.CLSD_CODE         /* 직원구분코드 */
+                 , A.CPOS_CODE         /* 직급코드 */
+                 , A.OPOS_CODE         /* 직위코드 */
+                 , A.REMK_400X         /* 비고400 */
+                 ,#UPDT_USID#          /* 입력작업자*/
+                 ,SYSDATE              /* 입력일시*/
+                 ,#UPDT_USID#          /* 수정작업자*/
+                 ,SYSDATE              /* 수정일시*/
+              FROM PY_INCOME A
+              LEFT OUTER JOIN PY_MASTPM B
+                ON A.EMPL_NUMB = B.EMPL_NUMB
+             WHERE SUBSTR(A.INDN_DATE, 0, 6) = #PAYX_DATE_FROM#
+               AND A.INDN_CODE <> '09' /* 학자금 제외 2016-12-02 (장혜진과장요청) */
+             ;
+         END;
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 정산예외 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYB0210.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0210.UPDATE00.정산예외 테이블 수정 */
+             v_IRSB_CODE VARCHAR2(100);
+             v_IRSA_ACNO VARCHAR2(100);
+             v_DEPT_CODE VARCHAR2(100);
+             v_CLSD_CODE VARCHAR2(100);
+             v_CPOS_CODE VARCHAR2(100);
+             v_DUTY_CODE VARCHAR2(100);
+             v_PSTP_CODE VARCHAR2(100);
+             v_OPOS_CODE VARCHAR2(100);
+
+        BEGIN
+            SELECT B.IRSB_CODE   /* 은행코드 */
+                 , B.IRSA_ACNO   /* 계좌번호 */
+                 , A.DEPT_CODE   /* 부서코드 */
+                 , A.CLSD_CODE   /* 직원구분코드 */
+                 , A.CPOS_CODE   /* 직급코드 */
+                 , A.DUTY_CODE   /* 직무코드 */
+                 , A.PSTP_CODE   /* 호봉코드 */
+                 , A.OPOS_CODE
+              INTO v_IRSB_CODE, v_IRSA_ACNO, v_DEPT_CODE
+                 , v_CLSD_CODE, v_CPOS_CODE, v_DUTY_CODE
+                 , v_PSTP_CODE, v_OPOS_CODE
+              FROM TABLE(SF_HR_MASTXM(#EMPL_NUMB#,#PAYX_DATE#)) A
+              LEFT OUTER JOIN PY_MASTPM B
+                ON A.EMPL_NUMB = B.EMPL_NUMB
+              LEFT OUTER JOIN TM_DEPTXM C
+                ON A.DEPT_CODE = C.DEPT_CODE
+              ;
+
+        UPDATE PY_INCOME /* [기타소득지급] */
+           SET TAP1_AMOT = #TAP1_AMOT#            /* 과세1지급금액 */
+             , TAP2_AMOT = #TAP2_AMOT#            /* 과세2지급금액 */
+             , TAP3_AMOT = #TAP3_AMOT#            /* 과세3지급금액 */
+             , NTP1_AMOT = #NTP1_AMOT#            /* 비과세1지급금액 */
+             , NTP2_AMOT = #NTP2_AMOT#            /* 비과세2지급금액 */
+             , NTP3_AMOT = #NTP3_AMOT#            /* 비과세3지급금액 */
+             , INCM_TAXX = #INCM_TAXX#            /* 소득세 */
+             , INHA_TAXX = #INHA_TAXX#            /* 주민세 */
+             , OTDE_AMOT = #OTDE_AMOT#            /* 기타공제금액 */
+             , PAYX_DATE = #PAYX_DATE#            /* 지급일 */
+             , WAGE_CODE = #WAGE_CODE#            /* 급여코드 */
+             , ENFC_CODE = #ENFC_CODE#            /* 사업장코드 */
+             , DEPT_CODE = #DEPT_CODE#            /* 부서코드 */
+             , CLSD_CODE = #CLSD_CODE#            /* 직원구분코드 */
+             , CPOS_CODE = #CPOS_CODE#            /* 직급코드 */
+             , OPOS_CODE = #OPOS_CODE#            /* 직위코드 */
+             , REMK_400X = #REMK_400X#            /* 비고400 */
+             , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+           AND INDN_DATE = #INDN_DATE#            /* 기타지급일 */
+           AND INDN_CODE = #INDN_CODE#            /* 소득구분코드 */
+             ;
+        END;
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 정산예외 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYB0210.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+    BEGIN
+        DELETE FROM PY_INCOME /* PAYB0210.DELETE00.정산예외 테이블 삭제 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#      /* 사원번호 */
+           AND INDN_DATE = #INDN_DATE#      /* 기타지급일 */
+           AND INDN_CODE = #INDN_CODE#      /* 소득구분코드 */
+           ;
+           
+      IF #INDN_CODE# = '09' THEN
+        UPDATE WF_SCEXXD
+           SET SCPY_CODE = '0'
+             , GIVE_YMDX = ''
+             , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#      /* 사원번호 */  
+           AND GIVE_YMDX = #INDN_DATE#      /* 지급일 */ 
+           AND SCPY_CODE = '1'              /* 학자금급여전환처리상태 */
+           ;
+      END IF;
+    END;
+    ]]>
+    </delete>
+    
+    
+</sqlMap>

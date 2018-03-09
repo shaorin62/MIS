@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0110">
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차수당관리 조회
+******************************************************************************* */
+-->
+    <select id="PAYB0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+               SELECT /* PAYB0110.SEARCH00.연차수당관리 조회 */
+                      '0' AS CHK
+                    , A.STDS_YEAR                                              /* 기준년도 */
+                    , A.EMPL_NUMB                                              /* 사원번호 */
+                    , B.EMPL_NAME                                              /* 성명 */
+                    , B.DEPT_CODE                                              /* 부서코드 */
+                    , C.SECT_NAME                                              /* 소속명 */
+                    , C.DEPT_NAME                                              /* 부서명 */
+                    , B.OPOS_CODE                                              /* 직위코드 */
+                    , SF_GET_COMMNAME('OPOS_CODE', B.OPOS_CODE) AS OPOS_NAME   /* 직위명 */
+                    , B.ENCO_DATE                                              /* 입사일 */
+                    , B.RETR_DATE                                              /* 퇴사일 */
+                    , A.APLY_ANDC                                              /* 적용연차개수 */
+                    , A.USEX_ANDC                                              /* 사용연차개수 */
+                    , A.REMA_ANDC                                              /* 사용가능연차개수 */
+                    , A.PAYX_VADC                                              /* 지급휴가개수 */
+                    , A.REYS_VADC                                              /* 퇴직정산휴가개수 */
+                    , A.BSLY_AMOT                                              /* 기본급금액 */
+                    , A.DAVR_WAGE                                              /* 일평균임금 */
+                    , A.AVAM_AMOT                                              /* 연차수당금액 */
+                    , A.PAAU_CODE                                              /* 지급대상여부코드 */
+                    , A.PAYX_CODE                                              /* 급여반영코드 */
+                    , A.REMK_100X                                              /* 비고100 */
+                    , A.PAYX_DATE                                              /* 지급일 */
+                    , A.WAGE_CODE                                              /* 급여코드 */
+                    , NVL(D.WADE_YSNO, 0) AS WADE_YSNO                         /* 마감여부 */
+                 FROM PY_ANNUVA A                                              /* [연차수당] */
+                INNER JOIN HR_MASTXM B
+                        ON A.EMPL_NUMB = B.EMPL_NUMB
+                 LEFT OUTER JOIN VI_DEPTXM C
+                              ON B.DEPT_CODE = C.DEPT_CODE
+                 LEFT OUTER JOIN PY_PMDIRY D
+                              ON D.PAYX_DATE = A.PAYX_DATE
+                             AND D.WAGE_CODE = A.WAGE_CODE
+              WHERE A.STDS_YEAR =  #STDS_YEAR#          /* 기준년도 */
+        ]]>
+        <isNotEmpty prepend="AND" property="DEPT_CODE">
+            C.DEPT_FCOD LIKE (SELECT DEPT_FCOD FROM VI_DEPTXM WHERE DEPT_CODE = #DEPT_CODE#)
+            || '%'
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="EMPL_NUMB">
+            A.EMPL_NUMB = #EMPL_NUMB#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="WODN_CODE">
+            B.WODN_CODE = #WODN_CODE#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="PAYX_CODE">
+            A.PAYX_CODE = #PAYX_CODE#
+        </isNotEmpty>
+        ORDER BY C.DEPT_FCOD, B.ENCO_DATE
+    </select>
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차불러오기(퇴직연차) 조회
+******************************************************************************* */
+-->
+    <select id="PAYB0110.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYB0110.SEARCH01.연차불러오기(퇴직연차) 조회 */
+               '0' AS CHK
+             , A.STDS_YEAR                                        /* 기준년도 */
+             , A.EMPL_NUMB                                        /* 사원번호 */
+             , A.EMPL_NAME                                        /* 성명 */
+             , A.SECT_NAME                                        /* 소속명 */
+             , A.DEPT_NAME                                        /* 부서명 */
+             , A.OPOS_CODE                                        /* 직위코드 */
+             , A.OPOS_NAME                                        /* 직위명 */
+             , A.ENCO_DATE                                        /* 입사일 */
+             , A.RETR_DATE                                        /* 퇴사일 */
+             , NVL(A.APLY_ANDC, 0) AS APLY_ANDC                   /* 적용연차개수_총연차 */
+             , NVL(A.USEX_ANDC, 0) AS USEX_ANDC                   /* 사용연차개수_사용일수 */
+             , NVL(A.REMA_ANDC, 0) AS REMA_ANDC                   /* 사용가능연차개수_잔여연차 */
+             , NVL(A.PAYX_VADC, 0) AS PAYX_VADC                   /* 지급연차 */
+             , NVL(A.REYS_VADC, 0) AS REYS_VADC                   /* 퇴직정산분 */
+             , NVL(A.BSLY_AMOT, 0) AS BSLY_AMOT                   /* 기본급 */
+             , NVL(A.DAVR_WAGE, 0) AS DAVR_WAGE                   /* 일평균금액 */
+             , CASE WHEN NVL((A.PAYX_VADC+A.REYS_VADC)*A.DAVR_WAGE, 0) < 0 THEN 0
+                    ELSE NVL((A.PAYX_VADC+A.REYS_VADC)*A.DAVR_WAGE, 0) END AS AVAM_AMOT /* 연차수당금액 */
+             , '1' AS PAAU_CODE                                   /* 지급대상여부코드 */
+             , '2' AS PAYX_CODE                                   /* 급여반영코드 */
+             , '' AS REMK_100X                                    /* 비고 */
+         FROM ( SELECT C.STDS_YEAR
+                     , A.EMPL_NUMB
+                     , A.EMPL_NAME
+                     , B.SECT_NAME
+                     , B.DEPT_NAME
+                     , A.OPOS_CODE
+                     , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME
+                     , A.ENCO_DATE
+                     , A.RETR_DATE
+                     , C.APLY_ANDC
+                     , C.USEX_ANDC
+                     , C.REMA_ANDC
+                     , C.REMA_ANDC AS PAYX_VADC
+                     , CASE WHEN TRUNC(TRUNC((TO_DATE(TO_NCHAR(A.RETR_DATE),'YYYYMMDD') - TO_DATE(A.ENCO_DATE,'YYYYMMDD')) / 30.4375) / 12) = 0 
+                            THEN CASE WHEN TO_CHAR(TO_DATE(A.ENCO_DATE, 'YYYYMMDD'), 'MMDD') - TO_CHAR(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), 'MMDD') = 1
+                                      THEN ROUND(15/12*TRUNC(MOD(((TO_DATE(A.RETR_DATE,'YYYYMMDD') - TO_DATE(A.ENCO_DATE,'YYYYMMDD')) / 30.4375)  , 12))-C.REMA_ANDC+1) 
+                                      ELSE ROUND(15/12*TRUNC(MOD(((TO_DATE(A.RETR_DATE,'YYYYMMDD') - TO_DATE(A.ENCO_DATE,'YYYYMMDD')) / 30.4375)  , 12))-C.REMA_ANDC)
+                                 END /* 1년미만퇴직자 */
+                            WHEN TO_CHAR(TO_DATE(A.ENCO_DATE, 'YYYYMMDD'), 'MMDD') >= TO_CHAR(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), 'MMDD') THEN 0 /* 2-1. 입사일>=퇴사일 */
+                            WHEN TO_CHAR(TO_DATE(A.ENCO_DATE, 'YYYYMMDD'), 'MMDD') < TO_CHAR(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), 'MMDD')  
+                            THEN CASE WHEN TO_DATE(A.RETR_DATE, 'YYYYMMDD') = TO_CHAR(LAST_DAY(#STDS_YEAR#||SUBSTR(A.RETR_DATE,5)),'YYYYMMDD') 
+                                      THEN ROUND((C.APLY_ANDC/12)*(TRUNC(MONTHS_BETWEEN(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), TO_DATE(#STDS_YEAR#||'0101', 'YYYYMMDD')))+1))
+                                      ELSE ROUND((C.APLY_ANDC/12)*(TRUNC(MONTHS_BETWEEN(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), TO_DATE(#STDS_YEAR#||'0101', 'YYYYMMDD')))))
+                                 END /* 2-2. 입사일<퇴사일 */
+                            WHEN TO_CHAR(TO_DATE(A.RETR_DATE, 'YYYYMMDD'), 'YYYYMMDD') = TO_CHAR(LAST_DAY(#STDS_YEAR#||'1201'),'YYYYMMDD') THEN C.APLY_ANDC /* 3. 12.31퇴직자 */
+                            ELSE 0 
+                       END AS REYS_VADC
+                     , D.BSLY_AMOT
+                     , ROUND((D.BSLY_AMOT/209)*8, -1) AS DAVR_WAGE
+                  FROM HR_MASTXM A /* 인사마스터 */
+                  LEFT OUTER JOIN VI_DEPTXM B
+                               ON A.DEPT_CODE = B.DEPT_CODE
+                 INNER JOIN (SELECT A.EMPL_NUMB
+                                  , A.STDS_YEAR
+                                  , SUM(A.APLY_ANDC) + SUM(A.ADJT_ANDC) AS APLY_ANDC                    /* 발생연차 */
+                                  , SUM(A.USEX_ANDC) AS USEX_ANDC                                       /* 사용연차 */
+                                  , SUM(A.APLY_ANDC) + SUM(A.ADJT_ANDC) - SUM(A.USEX_ANDC) AS REMA_ANDC /* 잔여연차 */
+                                  , SUM(A.PROM_ANDC) AS PROM_ANDC                                       /* 촉진연차 */
+                               FROM (SELECT EMPL_NUMB
+                                          , STDS_YEAR
+                                          , APLY_ANDC
+                                          , 0 ADJT_ANDC
+                                          , 0 USEX_ANDC
+                                          , PROM_ANDC
+                                       FROM AT_ANNUXM    /* 연차관리 */
+                                      WHERE STDS_YEAR =#STDS_YEAR#
+                                      UNION ALL
+                                     SELECT EMPL_NUMB
+                                          , STDS_YEAR
+                                          , 0 APLY_ANDC
+                                          , SUM(ADJT_ANDC) ADJT_ANDC
+                                          , 0 USEX_ANDC
+                                          , 0 PROM_ANDC
+                                       FROM AT_ANNUXD     /* 연차조정 */
+                                      WHERE STDS_YEAR =#STDS_YEAR#
+                                      GROUP BY EMPL_NUMB, STDS_YEAR
+                                      UNION ALL
+                                     SELECT EMPL_NUMB
+                                          , SUBSTR(ATTE_DATE,1,4) STDS_YEAR
+                                          , 0 APLY_ANDC
+                                          , 0 ADJT_ANDC
+                                          , SUM(WORK_TIME) USEX_ANDC
+                                          , 0 PROM_ANDC
+                                       FROM AT_ATTEDY        /* 일일근태 */
+                                      WHERE WORK_GUBN = '4'
+                                        AND SUBSTR(ATTE_DATE,1,4) =#STDS_YEAR#
+                                      GROUP BY EMPL_NUMB, SUBSTR(ATTE_DATE,1,4)
+                                     ) A
+                              GROUP BY A.EMPL_NUMB, A.STDS_YEAR
+                             HAVING A.STDS_YEAR = #STDS_YEAR#
+                             ) C ON A.EMPL_NUMB = C.EMPL_NUMB
+                  LEFT OUTER JOIN ( SELECT EMPL_NUMB
+                                         , STDS_DATE
+                                         , SRAL_NUMB
+                                         , BSLY_AMOT
+                                      FROM ( SELECT EMPL_NUMB
+                                                  , STDS_DATE
+                                                  , SRAL_NUMB
+                                                  , BSLY_AMOT
+                                                  , MAX(STDS_DATE) OVER ( PARTITION BY EMPL_NUMB ) MAXX_DATE
+                                                  , ROW_NUMBER() OVER ( PARTITION BY EMPL_NUMB ORDER BY EMPL_NUMB, STDS_DATE DESC,SRAL_NUMB DESC ) RK
+                                               FROM PY_REGSAL
+                                              WHERE SUBSTR(STDS_DATE, 0, 4) <= #STDS_YEAR#
+                                            )
+                                     WHERE RK = 1
+                                       AND STDS_DATE = MAXX_DATE
+                                     ORDER BY STDS_DATE DESC ) D
+                                ON A.EMPL_NUMB = D.EMPL_NUMB
+                  LEFT OUTER JOIN PY_ANNUVA E
+                               ON A.EMPL_NUMB = E.EMPL_NUMB
+                              AND E.STDS_YEAR = #STDS_YEAR#
+                  WHERE C.STDS_YEAR =  #STDS_YEAR#          /* 기준년도 */
+                    AND NVL(E.PAYX_CODE, '2') = '2'
+    ]]>
+        <isNotEmpty property="WODN_CODE">
+            <isEqual property="WODN_CODE" compareValue="1">
+                AND (A.WODN_CODE = '1' OR A.RETR_DATE = TO_CHAR(LAST_DAY(#STDS_YEAR#||'1201'), 'YYYYMMDD'))
+            </isEqual>
+            <isEqual property="WODN_CODE" compareValue="2">
+                AND A.WODN_CODE = '2'
+                AND SUBSTR(A.RETR_DATE,0,4) = #STDS_YEAR#
+                AND TO_DATE(TO_NCHAR(A.RETR_DATE),'YYYYMMDD') != TO_CHAR(LAST_DAY(#STDS_YEAR#||'1201'), 'YYYYMMDD')
+                AND A.EMPL_NUMB NOT IN (SELECT EMPL_NUMB 
+                                          FROM PY_ANNUVA 
+                                         WHERE STDS_YEAR = #STDS_YEAR#)
+            </isEqual>
+        </isNotEmpty>
+    <![CDATA[
+              ) A
+    ]]>
+    </select>
+    
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차수당관리 저장
+******************************************************************************* */
+-->
+    <insert id="PAYB0110.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        INSERT INTO PY_ANNUVA (/* PAYB0110.SAVE00.연차수당관리 저장 *//* [연차수당] */
+                    STDS_YEAR          /* 기준년도 */
+                  , EMPL_NUMB          /* 사원번호 */
+                  , APLY_ANDC          /* 적용연차개수 */
+                  , USEX_ANDC          /* 사용연차개수 */
+                  , REMA_ANDC          /* 잔여연차개수 */
+                  , PAYX_VADC          /* 지급휴가개수 */
+                  , REYS_VADC          /* 퇴직정산휴가개수 */
+                  , BSLY_AMOT          /* 기본급금액 */
+                  , DAVR_WAGE          /* 일평균임금 */
+                  , AVAM_AMOT          /* 연차수당금액 */
+                  , PAAU_CODE          /* 지급대상여부코드 */
+                  , PAYX_CODE          /* 급여반영코드 */
+                  , REMK_100X          /* 비고100 */
+                  , PAYX_DATE          /* 지급일 */
+                  , WAGE_CODE          /* 급여코드 */
+                  , INST_USID          /* 입력작업자 */
+                  , INST_DATE          /* 입력일시 */
+                  , UPDT_USID          /* 수정작업자 */
+                  , UPDT_DATE          /* 수정일시 */
+         ) VALUES (
+                    #STDS_YEAR#        /* 기준년도 */
+                  , #EMPL_NUMB#        /* 사원번호 */
+                  , #APLY_ANDC#        /* 적용연차개수 */
+                  , #USEX_ANDC#        /* 사용연차개수 */
+                  , #REMA_ANDC#        /* 잔여연차개수 */
+                  , #PAYX_VADC#        /* 지급휴가개수 */
+                  , #REYS_VADC#        /* 퇴직정산휴가개수 */
+                  , #BSLY_AMOT#        /* 기본급금액 */
+                  , #DAVR_WAGE#        /* 일평균임금 */
+                  , #AVAM_AMOT#        /* 연차수당금액 */
+                  , #PAAU_CODE#        /* 지급대상여부코드 */
+                  , #PAYX_CODE#        /* 급여반영코드 */
+                  , #REMK_100X#        /* 비고100 */
+                  , #PAYX_DATE#        /* 지급일 */
+                  , #WAGE_CODE#        /* 급여코드 */
+                  , #UPDT_USID#        /* 입력작업자 */
+                  , SYSDATE            /* 입력일시 */
+                  , #UPDT_USID#        /* 수정작업자 */
+                  , SYSDATE            /* 수정일시 */
+                )
+    ]]>
+    </insert>
+    
+<!--
+/* ******************************************************************************
+     작 성 자 : 권미영
+     작 성 일 : 2017. 02. 01
+     내    용 : 퇴직자의 급여기본정보 연차수당금액 갱신
+******************************************************************************* */
+-->
+    <update id="PAYB0110.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_MASTPM /* PAYB0110.SAVE01.퇴직자의 급여기본정보 연차수당금액 갱신 *//* [급여기본정보] */
+	       SET RAVM_AMOT = #AVAM_AMOT#
+	     WHERE EMPL_NUMB = #EMPL_NUMB#;
+    ]]>
+    </update>
+    
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차수당관리 수정
+******************************************************************************* */
+-->
+    <update id="PAYB0110.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_ANNUVA /* PAYB0110.UPDATE00.연차수당관리 수정 *//* [연차수당] */
+           SET APLY_ANDC = #APLY_ANDC#            /* 적용연차개수 */
+             , USEX_ANDC = #USEX_ANDC#            /* 사용연차개수 */
+             , REMA_ANDC = #REMA_ANDC#            /* 잔여연차개수 */
+             , PAYX_VADC = #PAYX_VADC#            /* 지급휴가개수 */
+             , REYS_VADC = #REYS_VADC#            /* 퇴직정산휴가개수 */
+             , BSLY_AMOT = #BSLY_AMOT#            /* 기본급금액 */
+             , DAVR_WAGE = #DAVR_WAGE#            /* 일평균임금 */
+             , AVAM_AMOT = #AVAM_AMOT#            /* 연차수당금액 */
+             , PAAU_CODE = #PAAU_CODE#            /* 지급대상여부코드 */
+             , PAYX_CODE = #PAYX_CODE#            /* 급여반영코드 */
+             , REMK_100X = #REMK_100X#            /* 비고100 */
+             , PAYX_DATE = #PAYX_DATE#            /* 지급일 */
+             , WAGE_CODE = #WAGE_CODE#            /* 급여코드 */
+             , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE STDS_YEAR = #STDS_YEAR#            /* 기준년도 */
+           AND EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+    ]]>
+    </update>
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차수당관리 삭제
+******************************************************************************* */
+-->
+    <delete id="PAYB0110.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM PY_ANNUVA /* PAYB0110.DELETE00.연차수당관리 삭제 *//* [연차수당] */
+         WHERE STDS_YEAR = #STDS_YEAR#      /* 기준년도 */
+           AND EMPL_NUMB = #EMPL_NUMB#      /* 사원번호 */
+    ]]>
+    </delete>
+<!--
+/* ******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016. 10. 24
+     내    용 : 연차불러오기시 삭제
+******************************************************************************* */
+-->
+    <delete id="PAYB0110.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DELETE /* PAYB0110.DELETE01.연차불러오기시 삭제 */ /* [연차수당] */
+          FROM PY_ANNUVA A
+         WHERE A.STDS_YEAR = #STDS_YEAR#      /* 기준년도 */
+           AND A.PAYX_CODE = '2'
+           AND A.EMPL_NUMB IN (SELECT EMPL_NUMB 
+                                 FROM TABLE(SF_HR_MASTXM(A.EMPL_NUMB, #STDS_YEAR# || '1231'))
+                                WHERE WODN_CODE = #WODN_CODE#) /* 재직자, 퇴직자 구분 */
+    ]]>
+    </delete>
+</sqlMap>

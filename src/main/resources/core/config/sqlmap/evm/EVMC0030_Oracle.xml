@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="EVMC0030">
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.24
+     내      용 : 조직 목표설정서 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMC0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT  /* EVMC0030.SEARCH00.조직 목표설정서 테이블 조회 */
+                   A.SYNT_EACD              /* 인사평가코드 */
+                 , A.DEPT_CODE              /* 부서코드 */
+                 , A.SRAL_NUMB              /* 일련번호 */
+                 , A.SEQN_NUMB              /* 순번 */
+                 , A.PRWK_CNTT              /* 핵심과제 */
+                 , A.PROB_CNTT              /* 추진방법 */
+                 , A.EVBS_CNTT              /* 평가지표 */
+                 , A.TAIP_RATE              /* 업무비중비율 */
+                 , A.GLRS_CNTT              /* 목표실적내용 */
+                 , A.WRGD_EVSC              /* 근무성적평정점수 */
+                 , A.SELF_CODE              /* 자기평가등급코드 */
+              FROM EV_DTEGXM A              /* [조직 목표설정서] */       
+        INNER JOIN EV_DTETXM B              /* [VIEW_부서정보(현재시점)] */
+                ON A.SYNT_EACD = B.SYNT_EACD
+               AND A.DEPT_CODE = B.DEPT_CODE    
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+               AND B.DTMN_EMNR = #EMPL_NUMB#     /* 사원번호 */
+	         ORDER BY A.SEQN_NUMB
+	]]>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.24
+     내      용 : 평가점수등급환산표 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMC0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT  /* EVMC0030.SEARCH01.평가점수등급환산표 테이블 조회  */
+                   A.SYNT_EACD              /* 인사평가코드 */
+                 , A.WGEG_CODE              /* 업적평가평가등급코드 */
+                 , A.BGIN_SCOR              /* 시작점수 */
+                 , A.ENDX_SCOR              /* 종료점수 */
+                 , A.ABLT_EVSC              /* 역량평정점수 */
+                 , A.EVAL_RATE              /* 평가비율 */
+              FROM EV_WGEGXM A              /* [평가점수등급환산표] */
+              LEFT OUTER JOIN TM_CODEXD B   /* [공통코드상세] */
+                ON A.WGEG_CODE = B.COMD_CODE
+               AND B.COMM_CODE = 'WGEG_CODE'
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+	         ORDER BY B.SORT_ORDR
+    ]]>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.24
+     내      용 : 조직평가대상부서 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMC0030.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMC0030.SEARCH02.조직평가대상부서 테이블 조회 */
+                   A.SYNT_EACD                                               /* 인사평가코드 */
+                 , B.SECT_NAME                                               /* 소속명 */
+			     , B.DEPT_NAME                                               /* 부서명 */
+			     , A.DTMN_EMNR                                               /* 부서장사원번호 */
+                 , C.EMPL_NAME                               AS DTMN_NAME    /* 부서장성명 */                 
+                 , SF_GET_COMMNAME('OPOS_CODE', C.OPOS_CODE) AS DTMN_OPOS    /* 부서장직위명 */
+                 , A.WES1_EMNR                                               /* 업적평가상사1차사원번호 */
+                 , D.EMPL_NAME                               AS WES1_EMNM    /* 업적평가상사1차사원성명*/
+                 , SF_GET_COMMNAME('OPOS_CODE', D.OPOS_CODE) AS WES1_OPOS    /* 업적평가상사1차사원직위명 */
+                 , SF_GET_SECTNAME(D.DEPT_CODE)              AS WES1_SECT    /* 업적평가상사1차사원소속명 */
+			     , SF_GET_DEPTNAME(D.DEPT_CODE)              AS WES1_DEPT    /* 업적평가상사1차사원부서명 */
+                 , A.WES2_EMNR                                               /* 업적평가상사2차사원번호 */
+                 , E.EMPL_NAME                               AS WES2_EMNM    /* 업적평가상사2차사원성명*/
+                 , SF_GET_COMMNAME('OPOS_CODE', E.OPOS_CODE) AS WES2_OPOS    /* 업적평가상사2차사원직위명 */
+                 , SF_GET_SECTNAME(E.DEPT_CODE)              AS WES2_SECT    /* 업적평가상사2차사원소속명 */
+			     , SF_GET_DEPTNAME(E.DEPT_CODE)              AS WES2_DEPT    /* 업적평가상사2차사원부서명 */			     
+                 , A.EVTT_YSNO                                               /* 피평가자대상여부 */
+                 , NVL(A.GLRS_YSNO, '0')                     AS GLRS_YSNO    /* 목표설정제출여부 */
+                 , NVL(A.GLR1_CODE, '0')                     AS GLR1_CODE    /* 목표설정1차승인코드 */                              
+                 , NVL(A.GLR2_CODE, '0')                     AS GLR2_CODE    /* 목표설정2차승인코드 */
+             FROM EV_DTETXM A             /* [조직평가대상부서] */     
+       INNER JOIN VI_DEPTXM B             /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = B.DEPT_CODE                      
+  LEFT OUTER JOIN HR_MASTXM C             /* [인사기본정보] */
+               ON A.DTMN_EMNR = C.EMPL_NUMB
+  LEFT OUTER JOIN HR_MASTXM D             /* [인사기본정보] */
+               ON A.WES1_EMNR = D.EMPL_NUMB
+  LEFT OUTER JOIN HR_MASTXM E             /* [인사기본정보] */
+               ON A.WES2_EMNR = E.EMPL_NUMB   
+            WHERE 1=1
+    ]]>
+		<isNotEmpty property="SYNT_EACD" prepend="AND">
+		    A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+		</isNotEmpty>
+		<isNotEmpty property="DEPT_CODE" prepend="AND">
+			A.DEPT_CODE = #DEPT_CODE#     /* 부서코드 */
+		</isNotEmpty>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.24
+     내      용 : 조직 목표설정서 테이블 수정
+********************************************************************************/
+-->
+	<update id="EVMC0030.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE   /* EVMC0030.UPDATE00.조직 목표설정서 테이블 수정 */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+				
+		    UPDATE EV_DTEGXM                /* [조직 목표설정서] */
+	           SET GLRS_CNTT = #GLRS_CNTT#  /* 목표실적내용 */
+	             , WRGD_EVSC = #WRGD_EVSC#  /* 근무성적평정점수 */
+	             , SELF_CODE = #SELF_CODE#  /* 자기평가등급코드 */
+	             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+	             , UPDT_DATE = SYSDATE      /* 수정일시 */
+	         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+	           AND DEPT_CODE = #DEPT_CODE#  /* 부서코드 */
+               AND SRAL_NUMB = #SRAL_NUMB#  /* 일련번호 */
+             ;	            
+		END;	
+
+	]]>
+	</update>
+
+</sqlMap>

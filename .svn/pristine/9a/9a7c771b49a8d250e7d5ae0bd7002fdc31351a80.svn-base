@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Popup00009" classname="passwordChange" left="0" top="0" width="520" height="188" titletext="[예외]상세팝업01" onload="fn_FormLoadSetting">
+    <Layouts>
+      <Layout>
+        <Static id="Static28" taborder="70" cssclass="sta_WF_Labelbg" left="15" top="47" width="490" height="33"/>
+        <Static id="Static30" taborder="72" cssclass="sta_WF_Labelbg" left="15" top="79" width="490" height="33"/>
+        <Static id="Static26" taborder="68" cssclass="sta_WF_Labelbg" left="15" top="15" width="490" height="33"/>
+        <Static id="Static03" taborder="30" cssclass="sta_WF_Labelbg" left="15" top="111" width="490" height="33"/>
+        <Static id="Static02" taborder="1" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="0" width="15" height="135"/>
+        <Static id="Static108" taborder="3" text="h 15" visible="false" left="134" top="0" width="216" height="15" style="background:#fb7b7b7a;"/>
+        <Button id="btnCancle" taborder="7" text="닫기" onclick="fn_End" cssclass="btn_POP_CRUD" top="152" width="62" height="24" titletext="비밀번호 변경" left="443"/>
+        <Button id="btnSubmit" taborder="8" text="등록" onclick="fn_changePassword" cssclass="btn_POP_CRUD" top="152" width="62" height="24" left="378"/>
+        <Static id="Static05" taborder="33" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="505" top="0" width="15" height="135"/>
+        <Static id="Static07" taborder="35" text="h 8" visible="false" left="441" top="144" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="36" text="h 12" visible="false" left="441" top="176" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="32" text="원" left="232" top="117" width="12" height="21"/>
+        <Static id="Static00" taborder="20" text="합계" cssclass="sta_WF_Label_P" left="15" top="111" width="90" height="33"/>
+        <MaskEdit id="MaskEdit01" taborder="31" value="20160101" mask="###,###" left="110" top="117" width="120" height="21"/>
+        <Static id="Static25" taborder="67" text="유류대" cssclass="sta_WF_Label_P" left="15" top="15" width="90" height="33"/>
+        <Static id="Static27" taborder="69" text="통행료" cssclass="sta_WF_Label_P" left="15" top="47" width="90" height="33"/>
+        <Static id="Static29" taborder="71" text="기타" cssclass="sta_WF_Label" left="15" top="79" width="90" height="33"/>
+        <MaskEdit id="MaskEdit00" taborder="28" value="0" left="208" top="21" width="35" height="21"/>
+        <Static id="Static01" taborder="29" text="X" left="249" top="21" width="14" height="21"/>
+        <MaskEdit id="MaskEdit04" taborder="43" value="1234" left="264" top="21" width="75" height="21" mask="###,###"/>
+        <Static id="Static11" taborder="44" text="원  =" left="343" top="21" width="37" height="21"/>
+        <MaskEdit id="MaskEdit05" taborder="45" value="20160101" mask="###,###" left="377" top="21" width="95" height="21"/>
+        <Static id="Static12" taborder="46" text="원" left="475" top="21" width="20" height="21"/>
+        <MaskEdit id="MaskEdit12" taborder="26" value="40" mask="###,###" left="110" top="21" width="55" height="21"/>
+        <Static id="Static71" taborder="27" text="KM  /" left="169" top="21" width="36" height="21"/>
+        <Static id="Static31" taborder="73" text="원" left="232" top="53" width="12" height="21"/>
+        <MaskEdit id="MaskEdit13" taborder="74" value="20160101" mask="###,###" left="110" top="53" width="120" height="21"/>
+        <Static id="Static32" taborder="75" text="원" left="232" top="85" width="12" height="21"/>
+        <MaskEdit id="MaskEdit14" taborder="76" value="20160101" mask="###,###" left="110" top="85" width="120" height="21"/>
+        <Edit id="Edit34" taborder="77" left="248" top="85" width="224" height="21"/>
+      </Layout>
+    </Layouts>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0040">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 급여일지 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYB0040.SEARCH00.급여일지 테이블 조회 */
+                   A.PAYX_DATE /* 지급일 */
+                 , A.WAGE_CODE /* 급여코드 */
+                 , A.WORK_CNTT /* 작업내용 */
+                 , A.HRCH_YSNO /* 인사변경여부 */
+                 , A.PYCH_YSNO /* 급여변경여부 */
+                 , A.CLSD_CNTT /* 직원구분내용 */
+                 , A.WADE_YSNO /* 급여마감여부 */
+                 , A.CHPS_YSNO /* 전표처리여부 */
+                 , A.SLIP_NUMB /* 전표번호 */
+                 , A.WAGE_YMTH /* 급여년월 */
+                 , A.ITCS_YMTH /* 소득세계산시작년월 */
+                 , A.ITCE_YMTH /* 소득세계산종료년월 */
+                 , A.RTBG_YMTH /* 소급시작년월 */
+                 , A.RTED_YMTH /* 소급종료년월 */
+                 , A.RTBS_DATE /* 소급기준일 */
+              FROM PY_PMDIRY A
+             WHERE 1=1
+    ]]>
+    <isNotEmpty prepend="AND" property="PAYX_YYYY">
+                   SUBSTR(A.PAYX_DATE,1,4) = #PAYX_YYYY#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="WAGE_CODE">
+                   A.WAGE_CODE = #WAGE_CODE#          /* 급여코드 */
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="WAGE_YMTH">
+                   SUBSTR(A.WAGE_YMTH,1,4) = #WAGE_YMTH#
+    </isNotEmpty>
+              ORDER BY A.PAYX_DATE DESC, A.WAGE_CODE
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 박철영
+     작 성 일 : 2016.07.18
+     내    용 : 급여일지 직원구분 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0040.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYB0040.SEARCH01.급여일지 직원구분 테이블 조회 */
+               NVL2(B.CLSD_CODE,'1','0') AS CHK
+             , A.COMD_CODE AS CLSD_CODE
+             , A.COMD_CDNM AS CLSD_NAME
+          FROM TM_CODEXD A
+	      LEFT JOIN (
+			      SELECT B.COLUMN_VALUE AS CLSD_CODE
+			        FROM PY_PMDIRY A
+		           INNER JOIN TABLE(SPLIT(A.CLSD_CNTT)) B
+		                   ON 1=1
+		           WHERE A.PAYX_DATE = #PAYX_DATE#
+	                 AND A.WAGE_CODE = #WAGE_CODE#
+		            ) B
+	             ON A.COMD_CODE = B.CLSD_CODE
+         WHERE A.COMM_CODE = 'CLSD_CODE'
+          ORDER BY A.SORT_ORDR
+    ]]>
+    </select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.12
+     내    용 : 급여일지 상여기준정보 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0040.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYB0040.SEARCH02.급여일지 상여기준 테이블 조회 */
+               A.PAYX_DATE
+             , A.WAGE_CODE
+             , A.STDS_DATE
+             , A.BONU_RATE
+         FROM PY_BONBRT A 
+        WHERE A.PAYX_DATE 	= #PAYX_DATE#
+          AND A.WAGE_CODE 	= #WAGE_CODE#
+        ORDER BY A.STDS_DATE
+    ]]>
+    </select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 급여일지 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0040.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+         INSERT INTO PY_PMDIRY (  /* PAYB0040.SAVE00.급여일지 테이블 저장 */
+                     PAYX_DATE    /* 지급일 */
+                   , WAGE_CODE    /* 급여코드 */
+                   , WORK_CNTT    /* 작업내용 */
+                   , WADE_YSNO    /* 급여마감여부 */
+                   , HRCH_YSNO    /* 인사변경여부 */
+                   , PYCH_YSNO    /* 급여변경여부 */
+                   , CLSD_CNTT    /* 직원구분내용 */
+                   , CHPS_YSNO    /* 전표처리여부 */
+                   , SLIP_NUMB    /* 전표번호 */
+                   , WAGE_YMTH    /* 급여년월 */
+                   , ITCS_YMTH    /* 소득세계산시작년월 */
+                   , ITCE_YMTH    /* 소득세계산종료년월 */
+                   , RTBG_YMTH    /* 소급시작년월 */
+                   , RTED_YMTH    /* 소급종료년월 */
+                   , RTBS_DATE    /* 소급기준일 */
+                   , INST_USID    /* 입력작업자 */
+                   , INST_DATE    /* 입력일시 */
+                   , UPDT_USID    /* 수정작업자 */
+                   , UPDT_DATE    /* 수정일시 */
+            ) VALUES (
+                     #PAYX_DATE#  /* 지급일 */
+                   , #WAGE_CODE#  /* 급여코드 */
+                   , #WORK_CNTT#  /* 작업내용 */
+                   , #WADE_YSNO#  /* 급여마감여부 */
+                   , '1'  /* 인사변경여부 */
+                   , '1'  /* 급여변경여부 */
+                   , #CLSD_CNTT#  /* 직원구분내용 */
+                   , '0'  /* 전표처리여부 */
+                   , #SLIP_NUMB#  /* 전표번호 */
+                   , SUBSTR(#WAGE_YMTH#, 1, 6)  /* 급여년월 */
+                   , SUBSTR(#ITCS_YMTH#, 1, 6)  /* 소득세계산시작년월 */
+                   , SUBSTR(#ITCE_YMTH#, 1, 6)  /* 소득세계산종료년월 */
+                   , #RTBG_YMTH#  /* 소급시작년월 */
+                   , #RTED_YMTH#  /* 소급종료년월 */
+                   , #RTBS_DATE#  /* 소급기준일 */
+                   , #UPDT_USID#  /* 입력작업자 */
+                   , SYSDATE      /* 입력일시 */
+                   , #UPDT_USID#  /* 수정작업자 */
+                   , SYSDATE      /* 수정일시 */
+            )
+    ]]>
+    </insert>
+    
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.10.12
+     내    용 : 급여일지 상여기준 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0040.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+         INSERT INTO PY_BONBRT (  /* PAYB0040.SAVE01.급여일지 상여기준 테이블 저장 */
+                     PAYX_DATE    	/* 지급일 */
+                   , WAGE_CODE    /* 급여코드 */
+                   , STDS_DATE    	/* 기준일 */
+                   , BONU_RATE    	/* 상여율 */
+                   , INST_USID    	/* 입력작업자 */
+                   , INST_DATE    	/* 입력일시 */
+                   , UPDT_USID    	/* 수정작업자 */
+                   , UPDT_DATE    	/* 수정일시 */
+            ) VALUES (
+                     #PAYX_DATE#  /* 지급일 */
+                   , #WAGE_CODE#	/* 급여코드 */
+                   , #STDS_DATE#  	/* 기준일 */
+                   , NVL(#BONU_RATE#,0)  	/* 상여율 */
+                   , #UPDT_USID#  /* 입력작업자 */
+                   , SYSDATE      	/* 입력일시 */
+                   , #UPDT_USID#  /* 수정작업자 */
+                   , SYSDATE      	/* 수정일시 */
+            )
+    ]]>
+    </insert>    
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 급여일지 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYB0040.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_PMDIRY  /* PAYB0040.UPDATE00.급여일지 테이블 수정 */
+           SET WORK_CNTT = #WORK_CNTT#                /* 작업내용 */
+             , WADE_YSNO = #WADE_YSNO#                /* 급여마감여부 */
+             , HRCH_YSNO = #HRCH_YSNO#                /* 인사변경여부 */
+             , PYCH_YSNO = #PYCH_YSNO#                /* 급여변경여부 */
+             , CLSD_CNTT = #CLSD_CNTT#                /* 직원구분내용 */
+             , CHPS_YSNO = #CHPS_YSNO#                /* 전표처리여부 */
+             , SLIP_NUMB = #SLIP_NUMB#                /* 전표번호 */
+             , WAGE_YMTH = SUBSTR(#WAGE_YMTH#, 1, 6)  /* 급여년월 */
+             , ITCS_YMTH = SUBSTR(#ITCS_YMTH#, 1, 6)  /* 소득세계산시작년월 */
+             , ITCE_YMTH = SUBSTR(#ITCE_YMTH#, 1, 6)  /* 소득세계산종료년월 */
+             , RTBG_YMTH = #RTBG_YMTH#                /* 소급시작년월 */
+             , RTED_YMTH = #RTED_YMTH#                /* 소급종료년월 */
+             , RTBS_DATE = #RTBS_DATE#                /* 소급기준일 */
+             , UPDT_USID = #UPDT_USID#                /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                    /* 수정일시 */
+         WHERE PAYX_DATE = #PAYX_DATE#                /* 지급일 */
+           AND WAGE_CODE = #WAGE_CODE#                /* 급여코드 */
+    ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.12
+     내    용 : 급여일지 상여기준 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYB0040.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+        UPDATE PY_BONBRT  /* PAYB0040.UPDATE01 급여일지 상여기준 테이블 수정 */
+             SET BONU_RATE = NVL(#BONU_RATE#,0)   /* 상여율 */
+                 , UPDT_USID = #UPDT_USID#   		/* 수정작업자 */
+                 , UPDT_DATE = SYSDATE       		/* 수정일시 */
+         WHERE PAYX_DATE = #PAYX_DATE#   	/* 지급일 */
+            AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+            AND STDS_DATE = #STDS_DATE#		/* 기준일 */
+    ]]>
+    </update>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 급여일지 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYB0040.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM PY_PMDIRY /* PAYB0040.DELETE00.급여일지 테이블 삭제 */
+         WHERE PAYX_DATE = #PAYX_DATE#    /* 지급일 */
+           AND WAGE_CODE = #WAGE_CODE#    /* 급여코드 */
+    ]]>
+    </delete>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.10.12
+     내    용 : 급여일지 상여기준 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYB0040.DELETE01" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM PY_BONBRT /* PAYB0040.DELETE01.급여일지 상여기준 테이블 삭제 */
+         WHERE PAYX_DATE = #PAYX_DATE#   	/* 지급일 */
+            AND WAGE_CODE = #WAGE_CODE#   /* 급여코드 */
+            AND STDS_DATE = #STDS_DATE#		/* 기준일 */
+    ]]>
+    </delete>
+
+    <!--
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 급여마감 체크
+     파라미터 : STDS_BEYM : 기준시작월
+                STDS_EDYM : 기준종료월
+                WAGP_CODE : 급여코드
+                ENFC_CODE : 사업장코드
+                DATA_NAME : 메시지파라미터1 (기본 : 데이터)
+                PROC_NAME : 메시지파라미터2 (기본 : 변경)
+                CLSD_YN05 : 유통여부 2016.02.04 추가
+    -->
+    <select id="PAYB0040.CHECK00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT A.CLSE_PROW
+              FROM (
+                    SELECT CASE
+                                WHEN COUNT(1) > 0 THEN SF_GET_MESSAGE('PAY045', NVL(TO_CHAR(#DATA_NAME#), '데이터') || ',' || NVL(TO_CHAR(#PROC_NAME#), '변경'))
+                                ELSE NULL
+                           END AS CLSE_PROW   /* 마감사유 */
+                      FROM PY_PMDIRY A
+                INNER JOIN PY_PAYCOD B
+                        ON A.WAGE_CODE = B.WAGE_CODE
+                     WHERE A.WADE_YSNO = '1'
+                       AND WAGE_YMTH BETWEEN #STDS_BEYM# AND #STDS_EDYM#
+                       AND (CASE WHEN A.CLSD_CNTT LIKE '%05%' THEN '1' ELSE '0' END) = NVL(TO_CHAR(#CLSD_YN05#), '0')
+    ]]>
+    <isNotEmpty prepend="AND" property="WAGP_CODE">
+    <![CDATA[
+                           B.WAGP_CODE = #WAGP_CODE#
+    ]]>
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="ENFC_CODE">
+    <![CDATA[
+                           B.ENFC_CODE = #ENFC_CODE#
+    ]]>
+    </isNotEmpty>
+    <![CDATA[
+                   ) A
+             WHERE A.CLSE_PROW IS NOT NULL
+    ]]>
+    </select>
+
+    <!--
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 변동급여마감 체크
+     파라미터 : STDS_BEYM : 기준시작월
+                STDS_EDYM : 기준종료월
+                WAGP_CODE : 급여코드
+                ENFC_CODE : 사업장코드
+                DATA_NAME : 메시지파라미터1 (기본 : 데이터)
+                PROC_NAME : 메시지파라미터2 (기본 : 변경)
+                CLSD_YN05 : 유통여부 2016.02.04 추가
+    -->
+    <select id="PAYB0040.CHECK01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT A.CLSE_PROW
+              FROM (
+                    SELECT CASE
+                                WHEN COUNT(1) > 0 THEN SF_GET_MESSAGE('PAY061', NVL(TO_CHAR(#DATA_NAME#), '데이터') || ',' || NVL(TO_CHAR(#PROC_NAME#), '변경'))
+                                ELSE NULL
+                           END AS CLSE_PROW   /* 마감사유 */
+                      FROM PY_PMDIRY A
+                INNER JOIN PY_PAYCOD B
+                        ON A.WAGE_CODE = B.WAGE_CODE
+                     WHERE A.ACTE_YSNO = '1'
+                       AND A.ACTV_YMTH BETWEEN #STDS_BEYM# AND #STDS_EDYM#
+                       AND (CASE WHEN A.CLSD_CNTT LIKE '%05%' THEN '1' ELSE '0' END) = NVL(TO_CHAR(#CLSD_YN05#), '0')
+    ]]>
+    <isNotEmpty prepend="AND" property="WAGP_CODE">
+    <![CDATA[
+                           B.WAGP_CODE = #WAGP_CODE#
+    ]]>
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="ENFC_CODE">
+    <![CDATA[
+                           B.ENFC_CODE = #ENFC_CODE#
+    ]]>
+    </isNotEmpty>
+    <![CDATA[
+                   ) A
+             WHERE A.CLSE_PROW IS NOT NULL
+    ]]>
+    </select>
+</sqlMap>

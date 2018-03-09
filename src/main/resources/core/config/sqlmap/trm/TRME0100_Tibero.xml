@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+        
+<sqlMap namespace="TRME0100">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016. 06. 28
+    내      용 : 법인카드 승인내역 및 전표처리 조회
+********************************************************************************/
+ -->
+    <select id="TRME0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TRME0100.SEARCH00 카드별/계정별 사용내역 보고서 조회 */
+                   A.ACCT_INTL
+                 , A.ACCT_NAME
+                 , NVL(A.EMPL_NUMB,'0')  AS EMPL_NUMB
+                 , CASE WHEN A.EMPL_NUMB IS NULL THEN '공용' ELSE SF_GET_EMPLNAME(A.EMPL_NUMB) END AS EMPL_NAME
+                 , NVL(A.DEPT_CODE,'0')  AS DEPT_CODE
+                 , CASE WHEN A.DEPT_CODE IS NULL THEN '공용' ELSE SF_GET_DEPTNAME(A.DEPT_CODE) END AS DEPT_NAME
+                 , A.APPR_AMNT
+              FROM (
+                     SELECT A.ACCT_INTL                   AS ACCT_INTL     /* 계정코드 */
+                          , SF_GET_ACCTNAME(A.ACCT_INTL)  AS ACCT_NAME     /* 계정명 */
+                          , NVL(A.EMPL_NUMB, B.USER_EMPL) AS EMPL_NUMB     /* 사원번호 */
+                          , NVL(A.DEPT_CODE, C.DEPT_CODE) AS DEPT_CODE     /* 부서코드 */
+                          , SUM(A.APPR_AMNT)              AS APPR_AMNT     /* 승인금액 */
+                       FROM TA_CARDAM A     /* [카드승인내역관리] */
+                            LEFT JOIN TA_CARDXM B
+                                   ON A.CARD_NUMB = B.CARD_NUMB
+                            LEFT JOIN VI_MASTEM C
+                                   ON B.USER_EMPL = C.EMPL_NUMB
+                      WHERE A.APPR_DATE BETWEEN #ACCT_DATEFROM# AND #ACCT_DATETO#
+                        AND A.CSPS_CODE = '1'    /* 처리 */
+                      GROUP BY A.ACCT_INTL
+                          , A.EMPL_NUMB
+                          , B.USER_EMPL
+                          , A.DEPT_CODE
+                          , C.DEPT_CODE
+                 ) A
+             ORDER BY A.ACCT_INTL
+                 , A.DEPT_CODE
+                 , A.EMPL_NUMB
+        ]]>
+    </select>
+    
+</sqlMap>

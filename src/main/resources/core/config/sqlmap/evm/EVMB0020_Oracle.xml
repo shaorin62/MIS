@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="EVMB0020">
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.14
+     내      용 : 평가대상자관리 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMB0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMB0020.SEARCH00.평가대상자관리 테이블 조회 */
+                   A.SYNT_EACD                                               /* 인사평가코드 */
+                 , A.EMPL_NUMB                                               /* 사원번호 */
+                 , B.EMPL_NAME                                               /* 성명*/
+                 , C.SECT_NAME                                               /* 소속명 */
+                 , C.DEPT_NAME                                               /* 부서명 */
+                 , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_NAME    /* 직급명 */
+                 , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME    /* 직위명 */
+                 , DECODE(A.GLRS_YSNO,'1','Y','N')           AS GLRS_YSNO    /* 목표설정제출여부 */
+                 , NVL(A.GLR1_CODE, '0')                     AS GLR1_CODE    /* 목표설정1차승인코드 */ 
+	             , SF_GET_COMMNAME('GLRS_CODE', A.GLR1_CODE) AS GLR1_NAME    /* 목표설정1차승인명 */
+	             , NVL(A.GLR2_CODE, '0')                     AS GLR2_CODE    /* 목표설정2차승인코드 */ 
+	             , SF_GET_COMMNAME('GLRS_CODE', A.GLR2_CODE) AS GLR2_NAME    /* 목표설정2차승인명 */
+	             , '1'                                       AS GLRS_GUBUN   
+	             , C.SORT_ORDR
+             FROM EV_WGETXM A                                                /* [인사평가대상자] */             
+       INNER JOIN HR_MASTXM B                                                /* [인사기본정보] */
+               ON A.EMPL_NUMB = B.EMPL_NUMB
+  LEFT OUTER JOIN VI_DEPTXM C                                                /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = C.DEPT_CODE                
+            WHERE 1=1
+              AND A.EVTT_YSNO = '1'
+		      AND A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+			  AND A.WES1_EMNR = #EMPL_NUMB#     /* 사원번호 */
+			UNION
+           SELECT  A.SYNT_EACD                                               /* 인사평가코드 */
+                 , A.EMPL_NUMB                                               /* 사원번호 */
+                 , B.EMPL_NAME                                               /* 성명*/
+                 , C.SECT_NAME                                               /* 소속명 */
+                 , C.DEPT_NAME                                               /* 부서명 */
+                 , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_NAME    /* 직급명 */
+                 , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME    /* 직위명 */
+                 , DECODE(A.GLRS_YSNO,'1','Y','N')           AS GLRS_YSNO    /* 목표설정제출여부 */
+                 , NVL(A.GLR1_CODE, '0')                     AS GLR1_CODE    /* 목표설정1차승인코드 */ 
+	             , SF_GET_COMMNAME('GLRS_CODE', A.GLR1_CODE) AS GLR1_NAME    /* 목표설정1차승인명 */
+	             , NVL(A.GLR2_CODE, '0')                     AS GLR2_CODE    /* 목표설정2차승인코드 */ 
+	             , SF_GET_COMMNAME('GLRS_CODE', A.GLR2_CODE) AS GLR2_NAME    /* 목표설정2차승인명 */
+	             , '2'                                       AS GLRS_GUBUN   
+	             , C.SORT_ORDR
+             FROM EV_WGETXM A                                                /* [인사평가대상자] */             
+       INNER JOIN HR_MASTXM B                                                /* [인사기본정보] */
+               ON A.EMPL_NUMB = B.EMPL_NUMB
+  LEFT OUTER JOIN VI_DEPTXM C                                                /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = C.DEPT_CODE                
+            WHERE 1=1
+              AND A.EVTT_YSNO = '1'
+		      AND A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+			  AND A.WES2_EMNR = #EMPL_NUMB#     /* 사원번호 */			
+	         ORDER BY 14, 4, 5, 6, 2 DESC
+	]]>
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.14
+     내      용 : 목표합의서 테이블 조회
+********************************************************************************/
+-->
+	<select id="EVMB0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT  /* EVMB0020.SEARCH01.목표합의서 테이블 조회 */
+                   A.SYNT_EACD              /* 인사평가코드 */
+                 , A.EMPL_NUMB              /* 사원번호 */
+                 , A.SRAL_NUMB              /* 일련번호 */
+                 , A.SEQN_NUMB              /* 순번 */
+                 , A.PRWK_CNTT              /* 핵심과제 */
+                 , A.PROB_CNTT              /* 추진방법 */
+                 , A.EVBS_CNTT              /* 평가지표 */
+                 , A.TAIP_RATE              /* 업무비중비율 */
+                 , A.GLRS_CNTT              /* 목표실적내용 */
+                 , A.WRGD_EVSC              /* 근무성적평정점수 */
+                 , A.SELF_CODE              /* 자기평가등급코드 */
+              FROM EV_TAEGXD A              /* [목표합의서] */
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+               AND A.EMPL_NUMB = #EMPL_NUMB#     /* 사원번호 */
+	         ORDER BY A.SEQN_NUMB
+	]]>
+	</select>	
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.14
+     내      용 : 인사평가대상자 테이블 목표설정제출
+********************************************************************************/
+-->
+	<update id="EVMB0020.PROC00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE   /* EVMB0020.PROC00.인사평가대상자 테이블 목표설정제출 */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+				
+			IF #GLRS_GUBUN# = '1' THEN 	
+			    UPDATE EV_WGETXM                /* [인사평가대상자] */
+		           SET GLR1_CODE = '1'          /* 목표설정승인코드 */
+		             , SBM1_YSNO = '0'          /* 업적평가1차제출여부 */
+		             , SBM2_YSNO = '0'          /* 업적평가2차제출여부 */
+		             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		             , UPDT_DATE = SYSDATE      /* 수정일시 */
+		         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+		           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+		         ;
+	        END IF;
+	        			    	            
+	        IF #GLRS_GUBUN# = '2' THEN 	
+			    UPDATE EV_WGETXM                /* [인사평가대상자] */
+		           SET GLR2_CODE = '1'          /* 목표설정승인코드 */
+		             , SBM1_YSNO = '0'          /* 업적평가1차제출여부 */
+		             , SBM2_YSNO = '0'          /* 업적평가2차제출여부 */
+		             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		             , UPDT_DATE = SYSDATE      /* 수정일시 */
+		         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+		           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+		         ;
+	        END IF;
+		END;	 
+	]]>
+	</update>	
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.14
+     내      용 : 인사평가대상자 테이블 목표설정제출취소 
+********************************************************************************/
+-->
+	<update id="EVMB0020.PROC01" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE   /* EVMB0020.PROC01.인사평가대상자 테이블 목표설정제출취소 */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+				
+		    IF #GLRS_GUBUN# = '1' THEN 	
+			    UPDATE EV_WGETXM                /* [인사평가대상자] */
+		           SET GLR1_CODE = '2'          /* 목표설정승인코드 */
+		             , SBM1_YSNO = '0'          /* 업적평가1차제출여부 */
+		             , SBM2_YSNO = '0'          /* 업적평가2차제출여부 */
+		             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		             , UPDT_DATE = SYSDATE      /* 수정일시 */
+		         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+		           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+		         ;
+	        END IF;
+	        			    	            
+	        IF #GLRS_GUBUN# = '2' THEN 	
+			    UPDATE EV_WGETXM                /* [인사평가대상자] */
+		           SET GLR2_CODE = '2'          /* 목표설정승인코드 */
+		             , SBM1_YSNO = '0'          /* 업적평가1차제출여부 */
+		             , SBM2_YSNO = '0'          /* 업적평가2차제출여부 */
+		             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		             , UPDT_DATE = SYSDATE      /* 수정일시 */
+		         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+		           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+		         ;
+	        END IF;           
+		END;	
+			     
+	]]>
+	</update>	
+
+</sqlMap>

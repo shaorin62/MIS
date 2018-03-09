@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRME0020">
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.14
+     내    용 : 발령관리 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRME0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* HRME0020.SEARCH00.발령관리 테이블 조회 */
+                   A.APNT_HOCT   /*발령호수*/
+                 , A.DRFT_DATE   /*기안일*/
+                 , A.APNT_SBJT   /*발령제목*/
+                 , NVL(A.APAL_YSNO,'0') AS APAL_YSNO   /*발령승인여부*/
+                 , A.APPK_CODE   /*발령종류코드*/
+                 , A.DRFR_DTCD   /*기안자부서코드*/
+                 , SF_GET_DEPTNAME(B.SECT_CODE) AS SECT_NAME   /*기안자소속명*/
+                 , B.DEPT_NAME   /*기안자부서명*/
+                 , A.DRFR_EMNR   /*기안자사원번호*/
+                 , SF_GET_EMPLNAME(A.DRFR_EMNR) AS DRFR_EMNM  /*기안자성명*/
+                 , A.APPR_DOCN   /*결재문서번호*/
+                 , A.APPS_CODE   /*결재상태코드*/
+                 , A.MIGR_YSNO   /* 마이그여부 */
+              FROM HR_APPOXM A
+              LEFT OUTER JOIN VI_DEPTXM B
+                ON A.DRFR_DTCD = B.DEPT_CODE
+             WHERE A.DRFT_DATE BETWEEN #DRFT_STDT# AND #DRFT_ENDT#
+               AND A.APPK_CODE = '1'
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+                   B.DEPT_FCOD LIKE  SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="APNT_SBJT">
+                   A.APNT_SBJT LIKE '%' || #APNT_SBJT# || '%'
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="APAL_YSNO">
+                   NVL(A.APAL_YSNO, '0') = #APAL_YSNO#
+    </isNotEmpty>
+             ORDER BY APNT_HOCT DESC
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.14
+     내    용 : 발령확정처리
+********************************************************************************/
+-->
+    <procedure id="HRME0020.SAVE00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        {CALL /* HRME0020.SAVE00.발령확정처리 */
+         PKG_HRME0020.SP_HRME0020_PROC00( #UPDT_USID#, #APNT_HOCT#, #APAL_YSNO#)}
+    ]]>
+    </procedure>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.14
+     내    용 : 발령관리 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRME0020.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        {CALL /* HRME0020.UPDATE00.발령관리 테이블 수정 */
+        PKG_HRME0020.SP_HRME0020_PROC03}
+    ]]>
+    </update>
+</sqlMap>

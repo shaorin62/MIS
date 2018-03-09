@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="YEAA0100_2015">
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.28
+     내    용 : 원천징수의무자 Search 
+********************************************************************************/
+-->
+	<select id="YEAA0100_2015.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+            SELECT /* YEAA0100_2015.SEARCH00.원천징수의무자 Search */
+                   SF_GET_COMMNAME('CNTL_TXOF', A.YEA_TAXOFFIC_CD) AS YEA_TAXOFFIC_NM
+		          ,#calSHRYEA_SEND_YMD# AS YEA_SEND_YMD
+		          ,A.YEA_BIZ_NO AS YEA_BIZ_NO1
+		          ,A.YEA_HOMETAX_ID
+		          ,A.YEA_BIZ_NO AS YEA_BIZ_NO2
+		          ,A.YEA_BRANCH_NM
+		      FROM VI_YEA_BRCHXM A
+		      WHERE A.YEA_BRANCH_CD = #cmbSHRYEA_BRANCH_CD#
+		        AND A.YEA_SETUP_YMD = (
+		                              SELECT MAX(YEA_SETUP_YMD)
+		                                FROM VI_YEA_BRCHXM
+		                                WHERE YEA_BRANCH_CD = #cmbSHRYEA_BRANCH_CD#
+		                                  AND YEA_SETUP_YMD <= #medSHRYEA_STD_YY# || '1231'
+		                              )  
+	]]>
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.28
+     내    용 : 의료비명세서 Search
+********************************************************************************/
+-->
+	<select id="YEAA0100_2015.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+            SELECT /* YEAA0100_2015.SEARCH01.의료비명세서 Search */
+             	   A.YEA_EMP_NO
+	              ,D.YEA_EMP_NM
+	              ,SF_YEA_COMMNAME('YEA_90007', D.YEA_LOFO_CD)    AS YEA_LOFO_NM    /*내외국인구분*/
+	              ,SF_YEA_DECRYPT_SSN(A.YEA_MES_STR007) AS YEA_MES_STR007           /*지급처사업자번호*/
+	              ,A.YEA_MES_STR006                                                 /*지급처상호*/
+	              ,SF_YEA_COMMNAME('YEA_90015',A.YEA_MES_STR001) AS YEA_MES_STR001  /*코드*/
+	              ,A.YEA_MES_NUM001                                                 /*건수*/
+	              ,A.YEA_MES_NUM002                                                 /*금액*/
+	              ,Decode(A.YEA_MES_STR008, '1', '1','') AS YEA_MES_STR008          /*[2015귀속]_난임시술비여부 추가*/
+	              ,A.YEA_MES_STR002                                                 /*성명*/
+	              ,SF_YEA_COMMNAME('YEA_90007', A.YEA_MES_STR004) AS YEA_MES_STR004 /*내외국인구분*/
+	              ,DECODE(A.YEA_MES_STR005, '1', '본인,장애인,65세이상', '2', '기본공제대상자') AS YEA_MES_STR005 /*본인등해당여부*/
+	          FROM (
+	                SELECT *
+	                  FROM YEA_MEDISP A
+	                 WHERE YEA_STD_YY = (
+	                                     SELECT MAX(YEA_STD_YY)
+	                                       FROM YEA_MEDISP
+	                                      WHERE YEA_STD_YY = #medSHRYEA_STD_YY#
+	                                        AND YEA_EMP_NO = A.YEA_EMP_NO
+	                                    )
+	               ) A
+	    INNER JOIN YEA_YEPROC C
+	            ON A.YEA_STD_YY = C.YEA_STD_YY
+	           AND A.YEA_EMP_NO = C.YEA_EMP_NO
+	           AND C.YEA_PRC_STR001 = '1'
+	    INNER JOIN TABLE(SF_YEA_MASTXD(#medSHRYEA_STD_YY# ||'1231')) D
+	            ON A.YEA_EMP_NO = D.YEA_EMP_NO
+	         WHERE NVL(C.YEA_PRC_NUM064, 0)  >= 1 
+    ]]>
+    </select>	    
+<!--
+/*******************************************************************************
+     작 성 자 : 김석영
+     작 성 일 : 2016.10.28
+     내    용 : 전산매체자료 Search 
+********************************************************************************/
+-->
+	<select id="YEAA0100_2015.SAVE00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[    
+			SELECT /* YEAA0100_2015.SAVE00.전산매체자료 Search  */
+	             'A'                                                     /*레코드구분*/
+	          || '26'                                                    /*자료구분*/
+	          || RPAD(NVL(F.YEA_TAXOFFIC_CD,' '), 3, ' ')                /*세무서*/
+	          || LPAD(ROW_NUMBER() OVER (ORDER BY A.YEA_EMP_NO), 6, '0') /*일련번호*/
+	          || #calSHRYEA_SEND_YMD#                                           /*제출년월일*/
+	          /*제출자*/
+	          || RPAD(NVL(F.YEA_BIZ_NO,' '),10, ' ')                     /*사업자등록번호*/
+	          || RPAD(NVL(F.YEA_HOMETAX_ID,' '), 20, ' ')                /*홈택스ID*/
+	          || '9000'                                                  /*세무프로그램코드*/
+	          /*원천징수의무자*/
+	          || RPAD(NVL(F.YEA_BIZ_NO,' '), 10, ' ')                    /*사업자등록번호*/
+	          || RPAD(NVL(F.YEA_BRANCH_NM,' '), 40, ' ')                 /*업체명*/
+	          /*소득자(연말정산 신청자)*/
+	          || RPAD(REPLACE(D.YEA_EMP_SSN,'-',''), 13, ' ')            /*소득자주민등록번호*/
+	          || RPAD(NVL(D.YEA_LOFO_CD,'1'), 1, ' ')                    /*내외국인구분*/
+	          || RPAD(NVL(D.YEA_EMP_NM,' '), 30, ' ')                    /*성명*/
+	          /*지급처*/
+	          || RPAD(NVL(SF_YEA_DECRYPT_SSN(A.YEA_MES_STR007),' '), 10 , ' ')   /*지급처사업자번호*/
+	          || RPAD(NVL(A.YEA_MES_STR006,' '), 40, ' ')                /*지급처상호*/
+	          || RPAD(NVL(A.YEA_MES_STR001,' '), 1, ' ')                 /*코드*/
+	          /*지급명세*/
+	          || LPAD(NVL(A.YEA_MES_NUM001,'0'), 5, '0')                 /*건수*/
+	          || LPAD(NVL(A.YEA_MES_NUM002,'0'), 11, '0')                /*금액*/
+	          || CASE WHEN TO_CHAR(A.YEA_MES_STR008) = '1' THEN RPAD(TO_CHAR(A.YEA_MES_STR008), '1', ' ') ELSE  ' ' END                /*[2015귀속]_난임시술비여부 난임시술비이면 '1' 아니면 공란*/
+	          /*의료비 공제 대상자*/
+	          || RPAD(REPLACE(SF_YEA_DECRYPT_SSN(A.YEA_MES_STR003),'-',''), 13, ' ')    /*주민등록번호*/
+	          || RPAD(NVL(A.YEA_MES_STR004,'1'), 1, ' ')                 /*내외국인구분*/
+	          || RPAD(NVL(A.YEA_MES_STR005,' '), 1, ' ')                 /*본인등해당여부*/
+	          || '1'                                                     /*제출대상기간코드(연간지급분)*/
+	          || RPAD(' ', 19, ' ') AS YEA_REC_DATA                      /*공란*/
+	        FROM (
+	          SELECT * FROM YEA_MEDISP A
+	          WHERE YEA_STD_YY = (
+	            SELECT MAX(YEA_STD_YY) FROM YEA_MEDISP
+	            WHERE YEA_STD_YY = #medSHRYEA_STD_YY#
+	              AND YEA_EMP_NO = A.YEA_EMP_NO
+	            )
+	          ) A
+	          INNER JOIN YEA_YEPROC C
+	            ON A.YEA_STD_YY = C.YEA_STD_YY
+	              AND A.YEA_EMP_NO = C.YEA_EMP_NO
+	              AND C.YEA_PRC_STR001 = '1'
+	          INNER JOIN TABLE(SF_YEA_MASTXD(#medSHRYEA_STD_YY# ||'1231')) D
+	             ON A.YEA_EMP_NO = D.YEA_EMP_NO
+	          INNER JOIN (
+	            SELECT * FROM VI_YEA_BRCHXM A
+	            WHERE A.YEA_BRANCH_CD = #cmbSHRYEA_BRANCH_CD#
+	              AND A.YEA_BRANCH_YMD = (
+	                SELECT MAX(YEA_BRANCH_YMD) FROM VI_YEA_BRCHXM
+	                WHERE YEA_BRANCH_CD = #cmbSHRYEA_BRANCH_CD#
+	                  AND YEA_BRANCH_YMD <= #medSHRYEA_STD_YY# || '1231'
+	                )
+	            ) F
+	            ON 1=1
+	        WHERE NVL(C.YEA_PRC_NUM064, 0) >= 1
+    ]]>
+    </select>                
+</sqlMap>

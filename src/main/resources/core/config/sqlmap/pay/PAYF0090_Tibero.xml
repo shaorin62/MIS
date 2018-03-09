@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PAYF0090">
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 7
+     내    용 : 퇴직연금사업자 조회
+********************************************************************************/
+-->
+	<select id="PAYF0090.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+        SELECT /* PAYF0090.SEARCH00 퇴직연금사업자 조회 */
+       	       REAY_JOCD	/* 퇴직연금가입기관코드 */
+             , DBTU_YSNO	/* DB형사용여부 */
+             , DCTU_YSNO	/* DC형사용여부 */
+             , BIZR_NUMB	/* 사업자번호 */
+             , BIZR_NAME	/* 사업자성명 */
+             , ENFC_CODE    /* 사업장 */
+          FROM PY_RTBUSI
+         WHERE 1=1
+	]]>
+         
+		<isNotEmpty prepend="AND" property="ENFC_CODE">          
+				ENFC_CODE = #ENFC_CODE#							/* 사업자 */
+	    </isNotEmpty>
+	    <isNotEmpty prepend="AND" property="BIZR_NAME">			    
+				BIZR_NAME LIKE '%'||#BIZR_NAME#||'%'            /* 연금사업자명 */
+		</isNotEmpty>    
+     	 ORDER BY REAY_JOCD
+	</select>
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 7
+     내    용 : 퇴직연금사업자 저장
+********************************************************************************/
+-->
+	<insert id="PAYF0090.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO PY_RTBUSI (  /* PAYF0090.SAVE00.퇴직연금사업자 저장 */
+                     REAY_JOCD	            /* 퇴직연금가입기관코드 */
+                   , ENFC_CODE	            /* 사업장코드 */
+                   , DBTU_YSNO	            /* DB형사용여부 */
+                   , DCTU_YSNO	            /* DC형사용여부 */
+                   , BIZR_NUMB	            /* 사업자번호 */
+                   , BIZR_NAME	            /* 사업자성명 */
+                   , INST_USID	            /* 입력작업자 */
+                   , INST_DATE	            /* 입력일시 */
+                   , UPDT_USID	            /* 수정작업자 */
+                   , UPDT_DATE	            /* 수정일시 */
+            ) VALUES (
+                     #REAY_JOCD#			/* 퇴직연금가입기관코드 */
+                   , #ENFC_CODE#	        /* 사업장코드 */
+                   , NVL(#DBTU_YSNO#, '0')	/* DB형사용여부 */
+                   , NVL(#DCTU_YSNO#, '0')	/* DC형사용여부 */
+                   , #BIZR_NUMB#	        /* 사업자번호 */
+                   , #BIZR_NAME#	        /* 사업자성명 */
+                   , #UPDT_USID#	        /* 입력작업자 */
+                   , SYSDATE		        /* 입력일시 */
+                   , #UPDT_USID#	        /* 수정작업자 */
+                   , SYSDATE		        /* 수정일시 */
+            )
+	]]>
+	</insert>
+	
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 7
+     내    용 : 퇴직연금사업자 수정
+********************************************************************************/
+-->
+	<update id="PAYF0090.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE PY_RTBUSI  /* PAYF0090.UPDATE00.퇴직연금사업자 수정 */
+           SET DBTU_YSNO = NVL(#DBTU_YSNO#, '0'	)   /* DB형사용여부 */
+             , DCTU_YSNO = NVL(#DCTU_YSNO#,	'0' )   /* DC형사용여부 */
+             , BIZR_NUMB = #BIZR_NUMB#	            /* 사업자번호 */
+             , BIZR_NAME = #BIZR_NAME#	            /* 사업자성명 */
+             , UPDT_USID = #UPDT_USID#	            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE		            /* 수정일시 */
+         WHERE REAY_JOCD = #REAY_JOCD#	            /* 퇴직연금가입기관코드 */
+		   AND ENFC_CODE = #ENFC_CODE#	            /* 사업장코드 */
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작 성 자 : 김준수
+     작 성 일 : 2016. 9. 7
+     내    용 : 퇴직연금사업자 삭제
+********************************************************************************/
+-->
+	<delete id="PAYF0090.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE FROM PY_RTBUSI /* PAYF0090.DELETE00.퇴직연금사업자 삭제 */
+		 WHERE REAY_JOCD = #REAY_JOCD#	/* 퇴직연금가입기관코드 */
+		   AND ENFC_CODE = #ENFC_CODE#	/* 사업장코드 */
+	]]>
+	</delete>
+</sqlMap>

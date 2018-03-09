@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="form" titletext="공통버튼처리" position="absolute" scrollbars="none" left="0" width="492" top="0" height="23" onload="fn_InitCommButton">
+    <Layouts>
+      <Layout>
+        <Button id="btnSearch" onclick="fn_Search" taborder="0" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="조회" right="432" visible="false"/>
+        <Button id="btnInput" onclick="fn_Input" taborder="1" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="입력" right="369"/>
+        <Button id="btnSave" onclick="fn_Save" taborder="2" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="저장" right="306"/>
+        <Button id="btnPrint" onclick="fn_Print" taborder="3" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="인쇄" right="243"/>
+        <Button id="btnToExcel" onclick="fn_ToExcel" taborder="4" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="엑셀" right="180"/>
+        <Button id="btnDelete" onclick="fn_Delete" taborder="5" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="삭제" right="117"/>
+        <Button id="btnCancel" onclick="fn_Cancel" taborder="6" visible="false" position="absolute" width="60" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD" text="취소" right="54"/>
+        <Button id="btnEnd" onclick="fn_End" taborder="8" visible="false" position="absolute" top="0" height="23" style="cursor:hand;" cssclass="btn_WF_CRUD2" right="0" width="24"/>
+        <Button id="btnNew" taborder="7" onclick="fn_PopupWindow" cssclass="btn_WF_CRUD1" visible="false" top="0" width="24" height="23" style="cursor:hand;" right="27"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.0"><![CDATA[/*******************************************************************************************
+ 2014.10.25 김석두 (최초 개발)
+ 본 화면은 공통 버튼 처리 화면 입니다.
+
+ ★ 현재 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+    현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요!
+ *******************************************************************************************/
+
+/*공통버튼 초기화*/
+this.fn_InitCommButton = function(obj:Form, e:nexacro.LoadEventInfo)
+{
+	if (application.GBL_LANGCD != "ko") {
+		
+		this.btnSearch.set_text("SEARCH");
+		this.btnInput.set_text("INPUT");
+		this.btnSave.set_text("SAVE");
+		this.btnPrint.set_text("PRINT");
+		this.btnToExcel.set_text("EXCEL");
+		this.btnDelete.set_text("DELETE");
+		this.btnCancel.set_text("CANCEL");
+		
+	}
+}
+ 
+/* 조회 처리 */
+this.fn_Search = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Search(obj,e);}
+
+/* 입력 처리 */
+this.fn_Input = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Input(obj,e);}
+
+/* 저장 처리 */
+this.fn_Save = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Save(obj,e);}
+
+/* 인쇄 처리 */
+this.fn_Print = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Print(obj,e);}
+
+/* 엑셀 처리 */
+this.fn_ToExcel = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_ToExcel(obj,e);}
+
+/* 삭제 처리 */
+this.fn_Delete = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Delete(obj,e);}
+
+/* 취소 처리 */
+this.fn_Cancel = function(obj:Button,  e:nexacro.ClickEventInfo) {this.parent.fn_Cancel(obj,e);}
+
+/* 종료 처리 */
+this.fn_End = function(obj:Button,  e:nexacro.ClickEventInfo) {
+	// WorkFrame의 종료 처리
+	if (this.parent.parent.parent.name == "_WORKFRAME") {
+		this.parent.parent.parent.fn_End(obj, e);
+	} else {
+		this.parent.fn_End(obj,e);
+	}
+}
+
+/**
+ * 현재 화면을 새창으로 호출한다.
+ */
+this.fn_PopupWindow = function(obj:button, e:nexacro.ClickEventInfo) {
+
+	// WorkFrame을 호출한다.
+	if (this.parent.parent.parent.name == "_WORKFRAME") {
+		
+		var _popName = "_pop_child_" + this.parent.sPACKAGENAME;
+		var _popFormUrl = "frame::workFrame.xfdl";
+		var _oPopArgs = 
+		{
+			"sFORM_MENU_ID" : this.getOwnerFrame()["sFORM_MENU_ID"],
+			"sFORM_URL" : this.getOwnerFrame()["sFORM_URL"],
+			"sFORMCAPTION" : this.getOwnerFrame()["sFORMCAPTION"],
+			"sFORMLOCATION" : this.getOwnerFrame()["sFORMLOCATION"],
+			"sUSERLAVEL" : this.getOwnerFrame()["sUSERLAVEL"],
+			"sUSERAUTH" : this.getOwnerFrame()["sUSERAUTH"],
+			"sLINKPARAM" : this.getOwnerFrame()["oLINKPARAM"],
+			"sCALLFROM" : this.getOwnerFrame()["sCALLFROM"],
+			"_WIN_POPUP" : true
+		}
+		
+		var _sOpenStyle = "resizable=true";
+		
+		var nParentTop = (opener.window ? opener.window.screenTop : 0);
+		var nParentLeft = (opener.window ? opener.window.screenLeft : 0);
+		
+		application.open(_popName, _popFormUrl, this, _oPopArgs, _sOpenStyle, nParentTop, nParentLeft); 
+		
+	}
+
+}
+
+]]></Script>
+  </Form>
+</FDL>

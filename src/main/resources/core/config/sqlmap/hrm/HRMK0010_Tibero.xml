@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMK0010">
+
+<!--
+ *   프로그램명 : 증명서신청 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.09.05
+ *   작 성 자 : jar
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 증명서발급 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT  /* HRMK0010.SEARCH00 증명서 발급 조회 */
+					A.EMPL_NUMB   /* 사원번호 */
+			       ,A.APPL_DATE   /* 신청일 */
+			       ,A.APPL_SEQN   /* 신청일련번호 */
+			       ,A.STSD_CODE   /* 증명서구분코드 */
+			       ,A.LADN_CODE   /* 언어구분코드 */
+				   ,A.CSUS_CODE	  /* 증명서용도코드 */
+				   ,SF_GET_COMMNAME('CSUS_CODE',A.CSUS_CODE) AS CSUS_NAME   /* 증명서용도명 */
+			       ,A.CERS_USEX   /* 증명서용도 */
+			       ,A.SBMT_ORGT   /* 제출처 */
+			       ,A.ISSU_DATE   /* 발급일 */
+			       ,A.ISSU_NUMB   /* 발급번호 */
+			       ,A.ISSU_PCNT   /* 인쇄매수 */	
+             	   ,A.APPL_PCNT   /* 신청매수 */	
+             	   ,A.PCOC_YSNO   /* 담당자연락처여부 */		
+             	   ,A.APPL_YEAR   /* 발행년도 */       
+			       ,A.RCGN_DATE   /* 승인일 */ 
+			       ,A.APPD_CODE   /* 승인구분코드 */
+			       ,A.REMK_100X   /* 비고100-반려사유 */  
+			       ,A.DEPT_CODE   /* 부서코드 */ 
+			       ,A.CPOS_CODE   /* 직급코드 */
+			       ,A.DURS_CODE   /* 직책코드 */
+			       ,A.OPOS_CODE   /* 직위코드 */
+			       ,SF_GET_COMMNAME('CPOS_CODE',A.CPOS_CODE) AS CPOS_NAME   /* 직급 */
+		           ,SF_GET_COMMNAME('DURS_CODE',A.DURS_CODE) AS DURS_NAME   /* 직책 */
+		           ,SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+			       ,B.EMPL_NAME   /* 사원명 */ 
+			       ,SF_GET_COMMNAME('STSD_CODE', A.STSD_CODE) AS STSD_NAME  /* 발급구분명 */
+			       ,SF_GET_COMMNAME('LADN_CODE', A.LADN_CODE) AS LADN_NAME  /* 언어구분명 */
+			       ,C.SECT_NAME  /* 소속명 */
+			       ,C.DEPT_NAME  /* 부서명 */
+			       ,A.EMPL_NUMB || A.APPL_DATE AS KEYVALUE
+			       ,B.WODN_CODE /* 재직구분코드 */
+			       ,B.WRDV_CODE /* 근무구분코드 */
+			  FROM HR_CERSIS A  /* 증명서발급 */
+			    LEFT OUTER JOIN HR_MASTXM B /* 인사기본정보 */
+			      ON A.EMPL_NUMB = B.EMPL_NUMB
+			    LEFT OUTER JOIN VI_DEPTXM C /* 부서정보VIEW */
+			      ON A.DEPT_CODE = C.DEPT_CODE
+			 WHERE A.APPL_DATE BETWEEN NVL(#APPL_STDT#, '19000101') AND NVL(#APPL_ENDT#, '29991231')
+	]]>		
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+				   C.DEPT_CODE = #DEPT_CODE#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+				   A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="STSD_CODE">
+				   A.STSD_CODE = #STSD_CODE#   
+	</isNotEmpty>
+			 ORDER BY A.APPL_DATE DESC , A.APPL_SEQN DESC, A.EMPL_NUMB 
+	</select>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 발령상세 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		        SELECT /* HRMK0010.SEARCH01 발령상세 조회 */
+		        	   A.CSPT_YSNO   /* 증명서출력여부 */
+					 , A.EMPL_NUMB   /* 사원번호 */
+		             , A.SRAL_NUMB   /* 일련번호 */
+		             , A.APNT_DATE   /* 발령일 */
+		             , A.APNT_SEQN   /* 발령일련번호 */
+		             , A.APNT_HOCT   /* 발령호수 */
+		             , SF_GET_COMMNAME('APDN_CODE',A.APDN_CODE) AS APDN_NAME   /* 발령구분코드 */
+					 , SF_GET_SECTNAME(A.DEPT_CODE) AS SECT_NAME	
+					 , SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME	  /* 부서 */
+		             , SF_GET_COMMNAME('CPOS_CODE',A.CPOS_CODE) AS CPOS_NAME   /* 직급 */
+		             , SF_GET_COMMNAME('DURS_CODE',A.DURS_CODE) AS DURS_NAME   /* 직책 */
+		             , SF_GET_COMMNAME('OPOS_CODE',A.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+		          FROM HR_APPOXD A  /* 발령상세 */
+			 LEFT JOIN HR_APPOXM B  /* 발령관리 */
+					ON A.APNT_HOCT = B.APNT_HOCT
+				   AND B.APAL_YSNO = '1' /* */
+				 WHERE A.EMPL_NUMB = #EMPL_NUMB#
+				ORDER BY A.APNT_DATE DESC
+	]]>
+	</select>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 선택한 발령상세 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		      SELECT /* HRMK0010.SEARCH02 선택한 발령상세 조회 */
+		        	   A.CSPT_YSNO   /* 증명서출력여부 */
+					 , A.EMPL_NUMB   /* 사원번호 */
+		             , A.SRAL_NUMB   /* 일련번호 */
+		             , A.APNT_DATE   /* 발령일 */
+		             , A.APNT_SEQN   /* 발령일련번호 */
+		             , A.APNT_HOCT   /* 발령호수 */
+		             , SF_GET_COMMNAME('APDN_CODE',A.APDN_CODE) AS APDN_NAME   /* 발령구분코드 */
+					 , SF_GET_SECTNAME(A.DEPT_CODE) AS SECT_NAME	
+					 , SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME	  /* 부서 */
+					 , SF_GET_DEPTENAME(A.DEPT_CODE) AS DEPT_ENAME	  /* 영문부서명 */
+		             , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_NAME   /* 직급 */
+		             , SF_GET_COMMENAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_ENAME /* 직급코드영문명 */
+		             , SF_GET_COMMNAME('DURS_CODE', A.DURS_CODE) AS DURS_NAME   /* 직책 */
+		             , SF_GET_COMMENAME('DURS_CODE', A.DURS_CODE) AS DURS_ENAME /* 직책코드영문명 */
+		             , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME   /* 직위 */
+		             , SF_GET_COMMENAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_ENAME /* 직위코드영문명 */
+		             FROM HR_APPOXD A  /* 발령상세 */
+			 LEFT JOIN HR_APPOXM B  /* 발령관리 */
+					ON A.APNT_HOCT = B.APNT_HOCT
+				   AND B.APAL_YSNO = '1' /* */
+				 WHERE 1=1
+	]]>			 
+	<isNotEmpty prepend="AND" property="SRAL_NUMB">
+				A.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="SRAL_NUMB">
+				A.SRAL_NUMB 
+	</isNotEmpty>	
+	<isNotEmpty property="SRAL_NUMB">
+		<iterate prepend="IN" property="SRAL_NUMB" open="(" close=")" conjunction=",">
+	        	    #SRAL_NUMB[]#
+	    </iterate>
+    </isNotEmpty>	
+	<![CDATA[
+				ORDER BY A.APNT_DATE DESC
+	]]>
+	</select>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 증명서 출력 내용 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH03" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT  /* HRMK0010.SEARCH03 증명서 출력 내용 조회 */
+		        M.EMPL_NUMB AS EMPL_NUMB /* 사원번호 */
+		       ,M.EMPL_NAME AS EMPL_NAME /* 사원명 */
+		       ,M.CCEM_NAME AS CCEM_NAME /* 한자사원명 */
+		       ,M.ENEE_NAME AS ENEE_NAME /* 영문사원명 */
+		       ,SUBSTR(M.RERN_NUMB,1,7) AS RERN_NUMB /* 주민등록번호 */
+		       ,M.EMPL_BIRT AS EMPL_BIRT /* 사원생년월일 */
+		       ,M.REAL_BIRT AS REAL_BIRT /* 실제생년월일 */
+		       ,M.SLCA_CODE AS SLCA_CODE /* 양력음력구분코드 */
+		       ,M.GNDR_CODE AS GNDR_CODE /* 성별코드 */
+		       ,M.REDI_CODE AS REDI_CODE /* 채용구분코드 */
+		       ,SF_GET_COMMNAME('REDI_CODE', M.REDI_CODE) AS REDI_NAME /* 채용구분코드명 */
+		       ,SF_GET_COMMENAME('REDI_CODE', M.REDI_CODE) AS REDI_ENAME /* 채용구분코드영문명 */
+		       ,M.WRDV_CODE AS WRDV_CODE /* 근무구분코드 */
+		       ,SF_GET_COMMNAME('WRDV_CODE', M.WRDV_CODE) AS WRDV_NAME /* 근무구분코드명 */
+		       ,SF_GET_COMMENAME('WRDV_CODE', M.WRDV_CODE) AS WRDV_ENAME /* 근무구분코드영문명 */
+		       ,M.CLSD_CODE AS CLSD_CODE /* 직원구분코드 */
+		       ,SF_GET_COMMNAME('CLSD_CODE', M.CLSD_CODE) AS CLSD_NAME /* 직원구분코드명 */
+		       ,SF_GET_COMMENAME('CLSD_CODE', M.CLSD_CODE) AS CLSD_ENAME /* 직원구분코드영문명 */
+		       ,M.PCOP_JCDT AS PCOP_JCDT /* 그룹입사일 */
+		       ,M.ANSD_DATE AS ANSD_DATE /* 연차기준일 */
+		       ,M.ENCO_DATE AS ENCO_DATE /* 입사일 */
+		       ,NVL(M.RETR_DATE,'99991231') AS RETR_DATE /* 퇴사일 */
+		       ,M.WODN_CODE AS WODN_CODE /* 재직구분코드 */
+		       ,SF_GET_COMMNAME('WODN_CODE', M.WODN_CODE) AS WODN_NAME /* 재직구분코드명 */
+		       ,SF_GET_COMMENAME('WODN_CODE', M.WODN_CODE) AS WODN_ENAME /* 재직구분코드영문명 */
+		       ,M.WRKS_CODE AS WRKS_CODE /* 근무상태코드 */
+		       ,SF_GET_COMMNAME('WRKS_CODE', M.WRKS_CODE) AS WRKS_NAME /* 근무상태코드명 */
+		       ,SF_GET_COMMENAME('WRKS_CODE', M.WRKS_CODE) AS WRKS_ENAME /* 근무상태코드영문명 */
+		       ,M.DEPT_CODE AS DEPT_CODE /* 부서코드 */
+		       ,SF_GET_DEPTNAME(M.DEPT_CODE) AS DEPT_NAME /* 부서명 */
+		       ,SF_GET_DEPTENAME(M.DEPT_CODE) AS DEPT_ENAME /* 부서영문명 */
+		       ,M.CPOS_CODE AS CPOS_CODE /* 직급코드 */
+		       ,SF_GET_COMMNAME('CPOS_CODE', M.CPOS_CODE) AS CPOS_NAME /* 직급코드명 */
+		       ,SF_GET_COMMENAME('CPOS_CODE', M.CPOS_CODE) AS CPOS_ENAME /* 직급코드영문명 */
+		       ,M.OPOS_CODE AS OPOS_CODE /* 직위코드 */
+		       ,SF_GET_COMMNAME('OPOS_CODE', M.OPOS_CODE) AS OPOS_NAME /* 직위코드명 */
+		       ,SF_GET_COMMENAME('OPOS_CODE', M.OPOS_CODE) AS OPOS_ENAME /* 직위코드영문명 */
+		       ,M.DURS_CODE AS DURS_CODE /* 직책코드 */
+		       ,SF_GET_COMMNAME('DURS_CODE', M.DURS_CODE) AS DURS_NAME /* 직책코드명 */
+		       ,SF_GET_COMMENAME('DURS_CODE', M.DURS_CODE) AS DURS_ENAME /* 직책코드영문명 */
+		       ,M.DUTY_CODE AS DUTY_CODE /* 직무코드 */
+		       ,SF_GET_COMMNAME('DUTY_CODE', M.DUTY_CODE) AS DUTY_NAME /* 직무코드명 */
+		       ,SF_GET_COMMENAME('DUTY_CODE', M.DUTY_CODE) AS DUTY_ENAME /* 직무코드영문명 */  
+		       ,D.POST_NUMB AS POST_NUMB /* 우편번호 */
+		       ,D.DTL1_ADDR AS DTL1_ADDR /* 상세1주소 */
+		       ,D.DTL2_ADDR AS DTL2_ADDR /* 상세2주소 */
+		       ,D.ENPT_NUMB AS ENPT_NUMB /* 영문우편번호 */
+		       ,D.END1_ADDR AS END1_ADDR /* 영문상세1주소 */
+		       ,D.END2_ADDR AS END2_ADDR /* 영문상세2주소 */		       
+		       ,D.RERN_PONB AS RERN_PONB /* 주민등록우편번호 */
+		       ,D.RGD1_ADDR AS RGD1_ADDR /* 주민등록상세1주소 */
+		       ,D.RGD2_ADDR AS RGD2_ADDR /* 주민등록상세2주소 */
+		       ,D.LEGL_PONB AS LEGL_PONB /* 본적우편번호 */
+		       ,D.LED1_ADDR AS LED1_ADDR /* 본적상세1주소 */
+		       ,D.LED2_ADDR AS LED2_ADDR /* 본적상세2주소 */
+		       ,REPLACE(D.COMP_TENR,'-','') AS COMP_TENR /* 회사전화번호 */
+		       ,REPLACE(D.HNPN_TENR,'-','') AS HNPN_TENR /* 휴대전화번호 */
+		       ,REPLACE(D.OHOM_TENR,'-','') AS OHOM_TENR /* 자택전화번호 */
+		       ,D.ELTR_MLAD AS ELTR_MLAD /* 전자메일주소 */
+		       ,C.CSUS_CODE	AS CSUS_CODE /* 증명서용도코드 */
+			   ,SF_GET_COMMNAME('CSUS_CODE',C.CSUS_CODE) AS CSUS_NAME   /* 증명서용도명 */
+			   ,SF_GET_COMMENAME('CSUS_CODE',C.CSUS_CODE) AS CSUS_ENAME   /* 증명서용도영문명 */
+			   ,C.CERS_USEX AS CERS_USEX  /* 증명서용도 */
+			   ,C.SBMT_ORGT AS SBMT_ORGT  /* 제출처 */
+               ,C.ISSU_NUMB AS ISSU_NUMB  /* 발급번호 */
+               ,C.PCOC_YSNO AS PCOC_YSNO  /* 담당자연락처여부 */	
+               ,C.APPL_PCNT AS APPL_PCNT  /* 신청매수 */	
+               ,C.APPL_YEAR AS APPL_YEAR  /* 발행년도 */   
+		FROM  HR_MASTXM M /* 인사기본정보 */
+		INNER JOIN HR_MASTXD D /* 인사상세정보 */
+			ON M.EMPL_NUMB = D.EMPL_NUMB
+		INNER JOIN HR_CERSIS C /* 증명서발급 */
+        	ON M.EMPL_NUMB = C.EMPL_NUMB
+	    WHERE M.EMPL_NUMB = #EMPL_NUMB#
+	  	  AND C.APPL_DATE = #APPL_DATE#
+	      AND C.APPL_SEQN = #APPL_SEQN#
+	]]>     
+	</select>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 사업장 정보 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		    SELECT /* HRMK0010.SEARCH04 사업장 정보 조회 */
+                   O.OFFI_NAME AS OFFI_NAME /* 사업장명칭 */
+                  ,O.ENGX_OFFI AS ENGX_OFFI /* 영문사업장 */
+                  ,O.OWNR_NAME AS OWNR_NAME /* 대표자명 */
+                  ,O.ENGX_OWNR AS ENGX_OWNR /* 영문대표자명 */
+                  ,O.POST_NUMB AS POST_NUMB /* 우편번호 */
+                  ,O.ADDR_DESC AS ADDR_DESC /* 주소 */
+                  ,O.ADDR_DETL AS ADDR_DETL /* 주소상세 */
+                  ,O.TELE_NUMB AS TELE_NUMB /* 전화번호 */
+                  ,O.FAXX_NUMB AS FAXX_NUMB /* 팩스번호 */
+                  ,O.BSNS_NUMB AS BSNS_NUMB /* 사업자등록번호 */
+                  ,O.JURI_NUMB AS JURI_NUMB /* 법인등록번호 */
+                  ,O.BSNS_STAT AS BSNS_STAT /* 업태 */
+                  ,O.BSNS_TYPE AS BSNS_TYPE /* 업종 */
+                  ,O.ENGL_ADDR AS ENGL_ADDR /* 영문주소 */
+                  ,O.CNTL_TXOF AS CNTL_TXOF /* 관할세무서 */
+                  ,SF_GET_COMMNAME('CNTL_TXOF', O.CNTL_TXOF ) AS CNTL_NAME /* 관할세무서명 */
+            FROM   TM_OFFICE O /* 사업장정보 */
+            WHERE  O.ACCT_GUBN = '100'
+	]]>			 
+	</select>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 갑종근로소득 조회
+	 파라미터 : 
+	-->
+	<select id="HRMK0010.SEARCH05" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[  
+		    SELECT /* HRMK0010.SEARCH05 갑종근로소득 조회 */
+			       MAX(DECODE(IDX,'1', PAYX_YYMM)) AS PAYX_YYM1 /* 급여년월 */
+				  ,MAX(DECODE(IDX,'1', TOTL_PAYX)) AS TOTL_PAY1 /* 급여액 */
+				  ,MAX(DECODE(IDX,'1', TOTL_TAXX)) AS TOTL_TAX1 /* 세액 */
+				  ,MAX(DECODE(IDX,'1', PAYX_DATE)) AS PAYX_DAT1 /* 납부년월일 */
+				  ,MAX(DECODE(IDX,'2', PAYX_YYMM)) AS PAYX_YYM2
+				  ,MAX(DECODE(IDX,'2', TOTL_PAYX)) AS TOTL_PAY2
+				  ,MAX(DECODE(IDX,'2', TOTL_TAXX)) AS TOTL_TAX2
+				  ,MAX(DECODE(IDX,'2', PAYX_DATE)) AS PAYX_DAT2
+				  ,MAX(DECODE(IDX,'3', PAYX_YYMM)) AS PAYX_YYM3
+				  ,MAX(DECODE(IDX,'3', TOTL_PAYX)) AS TOTL_PAY3
+				  ,MAX(DECODE(IDX,'3', TOTL_TAXX)) AS TOTL_TAX3
+				  ,MAX(DECODE(IDX,'3', PAYX_DATE)) AS PAYX_DAT3
+				  ,MAX(DECODE(IDX,'4', PAYX_YYMM)) AS PAYX_YYM4
+				  ,MAX(DECODE(IDX,'4', TOTL_PAYX)) AS TOTL_PAY4
+				  ,MAX(DECODE(IDX,'4', TOTL_TAXX)) AS TOTL_TAX4
+				  ,MAX(DECODE(IDX,'4', PAYX_DATE)) AS PAYX_DAT4
+				  ,MAX(DECODE(IDX,'5', PAYX_YYMM)) AS PAYX_YYM5
+				  ,MAX(DECODE(IDX,'5', TOTL_PAYX)) AS TOTL_PAY5
+				  ,MAX(DECODE(IDX,'5', TOTL_TAXX)) AS TOTL_TAX5
+				  ,MAX(DECODE(IDX,'5', PAYX_DATE)) AS PAYX_DAT5
+				  ,MAX(DECODE(IDX,'6', PAYX_YYMM)) AS PAYX_YYM6
+				  ,MAX(DECODE(IDX,'6', TOTL_PAYX)) AS TOTL_PAY6
+				  ,MAX(DECODE(IDX,'6', TOTL_TAXX)) AS TOTL_TAX6
+				  ,MAX(DECODE(IDX,'6', PAYX_DATE)) AS PAYX_DAT6
+				  ,MAX(DECODE(IDX,'7', PAYX_YYMM)) AS PAYX_YYM7
+				  ,MAX(DECODE(IDX,'7', TOTL_PAYX)) AS TOTL_PAY7
+				  ,MAX(DECODE(IDX,'7', TOTL_TAXX)) AS TOTL_TAX7
+				  ,MAX(DECODE(IDX,'7', PAYX_DATE)) AS PAYX_DAT7
+				  ,MAX(DECODE(IDX,'8', PAYX_YYMM)) AS PAYX_YYM8
+				  ,MAX(DECODE(IDX,'8', TOTL_PAYX)) AS TOTL_PAY8
+				  ,MAX(DECODE(IDX,'8', TOTL_TAXX)) AS TOTL_TAX8
+				  ,MAX(DECODE(IDX,'8', PAYX_DATE)) AS PAYX_DAT8
+				  ,MAX(DECODE(IDX,'9', PAYX_YYMM)) AS PAYX_YYM9
+				  ,MAX(DECODE(IDX,'9', TOTL_PAYX)) AS TOTL_PAY9
+				  ,MAX(DECODE(IDX,'9', TOTL_TAXX)) AS TOTL_TAX9
+				  ,MAX(DECODE(IDX,'9', PAYX_DATE)) AS PAYX_DAT9
+				  ,MAX(DECODE(IDX,'10', PAYX_YYMM)) AS PAYX_YYM10
+				  ,MAX(DECODE(IDX,'10', TOTL_PAYX)) AS TOTL_PAY10
+				  ,MAX(DECODE(IDX,'10', TOTL_TAXX)) AS TOTL_TAX10
+				  ,MAX(DECODE(IDX,'10', PAYX_DATE)) AS PAYX_DAT10
+				  ,MAX(DECODE(IDX,'11', PAYX_YYMM)) AS PAYX_YYM11
+				  ,MAX(DECODE(IDX,'11', TOTL_PAYX)) AS TOTL_PAY11
+				  ,MAX(DECODE(IDX,'11', TOTL_TAXX)) AS TOTL_TAX11
+				  ,MAX(DECODE(IDX,'11', PAYX_DATE)) AS PAYX_DAT11
+				  ,MAX(DECODE(IDX,'12', PAYX_YYMM)) AS PAYX_YYM12
+				  ,MAX(DECODE(IDX,'12', TOTL_PAYX)) AS TOTL_PAY12
+				  ,MAX(DECODE(IDX,'12', TOTL_TAXX)) AS TOTL_TAX12
+				  ,MAX(DECODE(IDX,'12', PAYX_DATE)) AS PAYX_DAT12
+			FROM
+			(
+				SELECT T.IDX AS IDX
+				      ,T.PAYX_YYMM||'01' AS PAYX_YYMM
+				      ,S.TOTL_PAYX AS TOTL_PAYX
+				      ,S.TOTL_TAXX AS TOTL_TAXX
+				      ,S.PAYX_DATE AS PAYX_DATE
+				FROM
+				(
+					SELECT
+						   ROWNUM AS IDX
+						  ,TO_CHAR(ADD_MONTHS(TO_DATE(#APPL_YEAR#||'0101'),(ROWNUM-1)), 'YYYYMM') AS PAYX_YYMM
+			   		FROM DUAL
+			   		CONNECT BY LEVEL <=12
+				) T 
+				LEFT OUTER JOIN
+				(		        	
+			  		SELECT X.WAGE_YMTH AS PAYX_YYMM      /* 귀속년월 */
+					      ,MAX(X.PAYX_DATE) AS PAYX_DATE /* 지급일 */
+					      ,SUM(X.PAYX_AMOT) AS TOTL_PAYX /* 지급액 */
+					      ,SUM(X.WTAX_AMOT) AS TOTL_TAXX /* 공제액 */
+					FROM 
+					(
+					      SELECT A.WAGE_YMTH
+					            ,A.PAYX_DATE
+					            ,CASE WHEN B.EXPD_CODE LIKE 'A%' AND B.EXPD_CODE NOT IN ('A9005') THEN /* A9005.소급액 제외 */
+					                       B.EXPD_AMOT + B.RTRC_AMOT 
+					                  ELSE 0 
+					             END AS PAYX_AMOT
+					            ,CASE WHEN B.EXPD_CODE = 'D2000' THEN /* D.2000.소득세 */
+					                       B.EXPD_AMOT + B.RTRC_AMOT 
+					                  ELSE 0 
+					             END AS WTAX_AMOT 
+					      FROM PY_PMDIRY A              /* [급여일지] */
+					      INNER JOIN PY_PMDETL B        /* [급여상세] */
+					      ON A.PAYX_DATE = B.PAYX_DATE
+					      AND A.WAGE_CODE = B.WAGE_CODE
+					      WHERE SUBSTR(A.WAGE_YMTH,1,4) = #APPL_YEAR#
+					      AND   B.EMPL_NUMB = #EMPL_NUMB#
+					      UNION ALL
+					      SELECT A.WAGE_YMTH
+					            ,A.PAYX_DATE
+					            ,NVL(B.TAP1_AMOT, 0) + NVL(B.TAP2_AMOT, 0) + NVL(B.TAP3_AMOT, 0) AS PAYX_AMOT /* 급여액 = 과세1~3지급액 */
+					            ,NVL(B.INCM_TAXX, 0)                       AS WTAX_AMOT /* 세액 = 소득세 + 지방소득세 + NVL(B.INHA_TAXX, 0) */
+					      FROM PY_PMDIRY A             /* [급여일지] */
+					      INNER JOIN PY_INCOME B       /* [기타소득지급] */
+					      ON A.PAYX_DATE = B.PAYX_DATE
+					      AND A.WAGE_CODE = B.WAGE_CODE
+					      WHERE SUBSTR(A.WAGE_YMTH,1,4) = #APPL_YEAR#
+					      AND   B.EMPL_NUMB = #EMPL_NUMB#
+					      UNION ALL        /* 기타소득정산예외 - 12월로 표시  */
+				          SELECT TO_NCHAR(SUBSTR(B.INDN_DATE,1,4)||'12')    AS WAGE_YMTH
+				             , B.PAYX_DATE
+				             , NVL(B.TAP1_AMOT, 0) + NVL(B.TAP2_AMOT, 0) + NVL(B.TAP3_AMOT, 0) AS PAYX_AMOT /* 급여액 = 과세1~3지급액 */
+				             , NVL(B.INCM_TAXX, 0)                       AS WTAX_AMOT /* 세액 = 소득세 + 지방소득세( + NVL(B.INHA_TAXX, 0)) */
+				          FROM PY_INCOME B   /* [기타소득지급] */
+				          WHERE B.EMPL_NUMB = #EMPL_NUMB#
+				          AND SUBSTR(B.INDN_DATE,1,4) = #APPL_YEAR#   
+				          AND B.PAYX_DATE IS NULL					      
+                          UNION ALL
+					      SELECT A.WAGE_YMTH
+					            ,A.PAYX_DATE
+					            ,NVL(B.PRTN_AMOT, 0) AS PAYX_AMOT /* 급여성퇴직위로금 */
+					            ,0 AS WTAX_AMOT
+					      FROM 
+					      (
+					            SELECT A.WAGE_YMTH
+					          		  ,MAX(A.PAYX_DATE) AS PAYX_DATE        
+					            FROM   PY_PMDIRY A    /* [급여일지] */
+					            WHERE  SUBSTR(A.WAGE_YMTH,1,4) = #APPL_YEAR#
+					            GROUP BY A.WAGE_YMTH
+					      ) A
+					      INNER JOIN PY_RTPCXM B      /* [퇴직급여계산] */
+					      ON A.WAGE_YMTH = SUBSTR(B.FINL_ENDT, 1, 6)
+					      WHERE B.EMPL_NUMB = #EMPL_NUMB#
+					) X
+					GROUP BY X.WAGE_YMTH
+				) S
+			 	ON T.PAYX_YYMM = S.PAYX_YYMM
+				ORDER BY T.IDX
+			)
+	]]>			 
+	</select>
+	
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 증명서발급 테이블 저장
+	 파라미터 : 
+	-->
+	<insert id="HRMK0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+	         INSERT INTO HR_CERSIS ( /* HRMK0010.SAVE00 증명서발급 테이블 저장 */
+	                EMPL_NUMB   /* 사원번호 */
+	              , APPL_DATE   /* 신청일 */
+	              , APPL_SEQN   /* 신청일련번호 */
+	              , STSD_CODE   /* 증명서구분코드 */
+	              , LADN_CODE   /* 언어구분코드 */
+	              , CSUS_CODE   /* 증명서용도코드 */
+	              , CERS_USEX   /* 증명서용도 */
+	              , SBMT_ORGT   /* 제출처 */
+	              , ISSU_DATE   /* 발급일 */
+	              , ISSU_NUMB   /* 발급번호 */
+	              , APPL_YEAR   /* 발행년도 */
+	              , APPL_PCNT   /* 신청매수 */
+	              , PCOC_YSNO   /* 담당자연락처여부 */
+	              , RCGN_DATE   /* 승인일 */
+	              , APPD_CODE   /* 승인구분코드 */
+	              , REMK_100X   /* 비고100 */
+	              , DEPT_CODE   /* 부서코드 */
+	              , CPOS_CODE   /* 직급코드 */
+	              , DURS_CODE   /* 직책코드 */
+	              , OPOS_CODE   /* 직위코드 */
+	              , INST_USID   /* 입력작업자 */
+	              , INST_DATE   /* 입력일시 */
+	              , UPDT_USID   /* 수정작업자 */
+	              , UPDT_DATE   /* 수정일시 */
+	       ) VALUES (
+	                #EMPL_NUMB#   /* 사원번호 */
+	              , #APPL_DATE#   /* 신청일 */
+                  , (SELECT NVL(MAX(APPL_SEQN),0)+1 AS APPL_SEQN
+					  FROM HR_CERSIS)	/* 신청일련번호 */
+	              , #STSD_CODE#   /* 증명서구분코드 */
+	              , #LADN_CODE#   /* 언어구분코드 */
+	              , #CSUS_CODE#   /* 증명서용도코드 */
+	              , #CERS_USEX#   /* 증명서용도 */
+	              , #SBMT_ORGT#   /* 제출처 */
+	              , #ISSU_DATE#   /* 발급일 */
+	              , #ISSU_NUMB#   /* 발급번호 */
+	              , #APPL_YEAR#   /* 발행년도 */
+	              , #APPL_PCNT#   /* 신청매수 */
+	              , #PCOC_YSNO#   /* 담당자연락처여부 */
+	              , #RCGN_DATE#   /* 승인일 */
+	              , #APPD_CODE#   /* 승인구분코드 */
+	              , #REMK_100X#   /* 비고100 */
+	              , #DEPT_CODE#   /* 부서코드 */
+	              , #CPOS_CODE#   /* 직급코드 */
+	              , #DURS_CODE#   /* 직책코드 */
+	              , #OPOS_CODE#   /* 직위코드 */
+	              , #UPDT_USID#   /* 입력작업자 */
+	              , SYSDATE       /* 입력일시 */
+	              , #UPDT_USID#   /* 수정작업자 */
+	              , SYSDATE  	  /* 수정일시 */
+	        )		
+
+	]]>
+	</insert>
+
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 증명서발급 테이블 수정
+	 파라미터 : 
+	-->
+	<update id="HRMK0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE HR_CERSIS  /* HRMK0010.UPDATE000 증명서발급 테이블 수정 */
+           SET STSD_CODE = #STSD_CODE#   /* 증명서구분코드 */
+             , LADN_CODE = #LADN_CODE#   /* 언어구분코드 */
+             , CSUS_CODE = #CSUS_CODE#   /* 증명서용도코드 */
+             , CERS_USEX = #CERS_USEX#   /* 증명서용도 */
+             , SBMT_ORGT = #SBMT_ORGT#   /* 제출처 */
+             , ISSU_DATE = #ISSU_DATE#   /* 발급일 */
+             , ISSU_NUMB = #ISSU_NUMB#   /* 발급번호 */
+             , APPL_YEAR = #APPL_YEAR#   /* 발행년도 */
+             , APPL_PCNT = #APPL_PCNT#   /* 신청매수 */
+             , ISSU_PCNT = #ISSU_PCNT#   /* 인쇄매수 */
+             , PCOC_YSNO = #PCOC_YSNO#	 /* 담당자연락처여부 */
+             , RCGN_DATE = #RCGN_DATE#   /* 승인일 */
+             , APPD_CODE = #APPD_CODE#   /* 승인구분코드 */
+             , REMK_100X = #REMK_100X#   /* 비고100 */
+             , DEPT_CODE = #DEPT_CODE#   /* 부서코드 */
+             , CPOS_CODE = #CPOS_CODE#   /* 직급코드 */
+             , OPOS_CODE = #OPOS_CODE#   /* 직무코드 */
+             , UPDT_USID = #UPDT_USID#   /* 수정작업자 */
+             , UPDT_DATE = SYSDATE   	 /* 수정일시 */
+         WHERE EMPL_NUMB  = #EMPL_NUMB#   /* 사원번호 */
+           AND APPL_DATE  = #APPL_DATE#   /* 신청일 */
+           AND APPL_SEQN  = #APPL_SEQN#   /* 신청일련번호 */
+	]]>
+	</update>
+
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 발령상세 테이블 수정
+	 파라미터 : 
+	-->
+	<update id="HRMK0010.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE HR_APPOXD /* HRMK0010.UPDATE01 발령상세 테이블 수정 */
+           SET CSPT_YSNO = #CSPT_YSNO#   /* 증명서출력여부 */
+             , UPDT_USID = #UPDT_USID#   /* 수정작업자 */
+             , UPDT_DATE = SYSDATE   /* 수정일시 */
+         WHERE EMPL_NUMB  = #EMPL_NUMB#   /* 사원번호 */
+           AND SRAL_NUMB  = #SRAL_NUMB#   /* 일련번호 */	
+	]]>
+	</update>
+
+
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 출력번호 채번 및 반영 
+	 파라미터 : 
+	-->
+	<insert id="HRMK0010.UPDATE02" parameterClass="hashmap">
+	<![CDATA[
+
+		/* HRMK0010.UPDATE02 출력번호 채번 및 반영 */
+		
+		DECLARE 
+			V_MINX_VALU NUMBER(15,0);
+		 	V_MAXX_VALU NUMBER(15,0);
+			V_ROWCNT    INT;
+			v_DEPT_CODE VARCHAR2(6);
+		 	v_CPOS_CODE VARCHAR2(6);
+		 	v_OPOS_CODE VARCHAR2(6);
+		 	v_ISSU_DATE VARCHAR2(8); 
+			v_ISSU_NUMB VARCHAR(100);
+			v_ISSU_PCNT NUMBER(15,0);
+			v_ISSU_SEQN  NUMBER(15,0);
+		
+		BEGIN 
+			
+			SELECT  MINX_VALU
+				  , MAXX_VALU
+			  INTO  V_MINX_VALU
+			      , V_MAXX_VALU
+			  FROM TM_SEQUNC
+	         WHERE TABLE_NAME = 'HR_CERSIS'
+			   AND COLUMN_NAME = 'ISSU_NUMB'
+			;
+			
+			SELECT COUNT(TABLE_NAME)
+			  INTO V_ROWCNT
+			  FROM TM_SEQDTL
+	         WHERE TABLE_NAME = 'HR_CERSIS'
+			   AND COLUMN_NAME = 'ISSU_NUMB'
+			   AND SECH_COND = #STSD_CODE#
+			;
+			
+			SELECT NVL(MAX(ISSU_PCNT),0)+1 
+			  INTO v_ISSU_PCNT
+			  FROM HR_CERSIS
+	         WHERE EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+			   AND APPL_DATE = #APPL_DATE#	/* 신청일 */
+			   AND APPL_SEQN = #APPL_SEQN#	/* 신청일련번호 */
+			;
+			
+			SELECT NVL(MAX(ISSU_SEQN),0)+1 
+			  INTO v_ISSU_SEQN
+			  FROM HR_CERSISH
+	         WHERE EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+			   AND APPL_DATE = #APPL_DATE#	/* 신청일 */
+			   AND APPL_SEQN = #APPL_SEQN#	/* 신청일련번호 */
+			;
+			
+			IF V_ROWCNT > 0 THEN
+		        UPDATE TM_SEQDTL
+		           SET  NOWX_VALU = CASE WHEN NVL(NOWX_VALU, V_MINX_VALU) + 1 > V_MAXX_VALU THEN V_MAXX_VALU ELSE NVL(NOWX_VALU, V_MAXX_VALU) + 1 END   /* 현재값 */	          
+		         WHERE TABLE_NAME = 'HR_CERSIS'
+				   AND COLUMN_NAME = 'ISSU_NUMB'
+				   AND SECH_COND = #STSD_CODE#
+				 ;
+			ELSE
+		       INSERT INTO TM_SEQDTL (
+		                TABLE_NAME   /* 테이블명 */
+		               ,COLUMN_NAME  /* 컬럼명 */
+		               ,SECH_COND    /* 조회조건명 */
+		               ,NOWX_VALU    /* 현재값 */
+		       ) VALUES (
+		                'HR_CERSIS'   /* 테이블명 */
+		               ,'ISSU_NUMB'   /* 컬럼명 */
+		               ,#STSD_CODE#   /* 조회조건명 */
+		               ,V_MINX_VALU   /* 현재값 */
+		       );	
+		    END IF; 
+					
+	        SELECT SF_GET_SEQUENCE('HR_CERSIS', 'ISSU_NUMB',#STSD_CODE#, '') 
+	          INTO v_ISSU_NUMB
+	          FROM DUAL		
+	          ; 
+			   
+			SELECT A.DEPT_CODE
+			    ,  A.CPOS_CODE
+			    ,  A.OPOS_CODE
+			    ,  TO_CHAR(SYSDATE, 'YYYYMMDD')
+			  INTO v_DEPT_CODE
+			 	,  v_CPOS_CODE
+			 	,  v_OPOS_CODE
+			 	,  v_ISSU_DATE
+	          FROM HR_MASTXM A
+	         WHERE A.EMPL_NUMB = #EMPL_NUMB#
+	         ;
+			
+	        UPDATE HR_CERSIS
+	           SET DEPT_CODE = v_DEPT_CODE	/* 부서코드 */
+	             , CPOS_CODE = v_CPOS_CODE	/* 직급코드 */
+	             , OPOS_CODE = v_OPOS_CODE	/* 직위코드 */
+             	 , APPD_CODE = '3'   		/* 승인구분코드 */
+	             , ISSU_DATE = v_ISSU_DATE	/* 발급일 */
+             	 , ISSU_NUMB = v_ISSU_NUMB	/* 발급번호 */
+             	 , ISSU_PCNT = v_ISSU_PCNT  /* 인쇄매수 */
+	         WHERE EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+			   AND APPL_DATE = #APPL_DATE#	/* 신청일 */
+			   AND APPL_SEQN = #APPL_SEQN#	/* 신청일련번호 */
+			   ;
+			
+			INSERT INTO HR_CERSISH(
+                    EMPL_NUMB   /* 사원번호 */
+                  , APPL_DATE   /* 신청일 */
+                  , APPL_SEQN   /* 신청일련번호 */
+                  , ISSU_SEQN   /* 인쇄일련번호 */
+                  , STSD_CODE   /* 증명서구분코드 */
+                  , LADN_CODE   /* 언어구분코드 */
+                  , ISSU_NUMB   /* 발급번호 */
+                  , ISEM_NUMB   /* 발급자 */
+                  , ISSU_DATE   /* 발급일 */
+                  , INST_USID   /* 입력작업자 */
+                  , INST_DATE   /* 입력일시 */
+                  , UPDT_USID   /* 수정작업자 */
+                  , UPDT_DATE   /* 수정일시 */
+           ) VALUES (
+                    #EMPL_NUMB#   /* 사원번호 */
+                  , #APPL_DATE#   /* 신청일 */
+                  , #APPL_SEQN#   /* 신청일련번호 */
+                  , v_ISSU_SEQN   /* 인쇄일련번호 */
+                  , #STSD_CODE#   /* 증명서구분코드 */
+                  , #LADN_CODE#   /* 언어구분코드 */
+                  , v_ISSU_NUMB   /* 발급번호 */
+                  , #ISEM_NUMB#   /* 발급자 */
+                  , v_ISSU_DATE   /* 발급일 */
+	              , #UPDT_USID#   /* 입력작업자 */
+	              , SYSDATE  	  /* 입력일시 */
+	              , #UPDT_USID#   /* 수정작업자 */
+	              , SYSDATE       /* 수정일시 */
+	        );
+	           
+		END; 
+	]]>
+	<selectKey keyProperty="ISSU_SEQN" resultClass="hashmap">
+		SELECT ISSU_NUMB, ISSU_SEQN
+		FROM HR_CERSISH
+		WHERE EMPL_NUMB = #EMPL_NUMB#	
+			   AND APPL_DATE = #APPL_DATE#	
+			   AND APPL_SEQN = #APPL_SEQN#
+			   AND ISSU_SEQN IN (SELECT NVL(MAX(ISSU_SEQN),0)
+								  FROM HR_CERSISH
+						         WHERE EMPL_NUMB = #EMPL_NUMB#	
+								   AND APPL_DATE = #APPL_DATE#	
+								   AND APPL_SEQN = #APPL_SEQN#)
+	</selectKey>
+	</insert>
+	
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 인쇄 출력유무 저장
+	 파라미터 : 
+	-->
+	<update id="HRMK0010.UPDATE03" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE HR_CERSISH/* HRMK0010.UPDATE03 인쇄 출력유무 저장 */
+           SET PRNT_YSNO = '1' /* 출력유무 */
+             , UPDT_DATE = SYSDATE /* 수정일시 */
+             , UPDT_USID = #UPDT_USID#   /* 수정작업자 */
+         WHERE EMPL_NUMB = #EMPL_NUMB# /* 사원번호 */	
+		   AND APPL_DATE = #APPL_DATE# /* 신청일 */	
+		   AND APPL_SEQN = #APPL_SEQN# /* 신청일련번호 */
+		   AND ISSU_SEQN = #ISSU_SEQN# /* 순번 */
+		   AND ISSU_NUMB = #ISSU_NUMB# /* 발급번호 */
+	]]>
+	</update>
+
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.09.05
+	 내    용 : 증명서발급 테이블 삭제
+	 파라미터 : 
+	-->
+	<delete id="HRMK0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM HR_CERSIS  /* HRMK0010.DELETE00  증명서발급 테이블 삭제 */
+		 WHERE EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 */
+		   AND APPL_DATE = #APPL_DATE#	/* 신청일 */
+		   AND APPL_SEQN = #APPL_SEQN#	/* 신청일련번호 */
+	]]>
+	</delete>
+
+
+	<!--
+	 작 성 자 : jar
+	 작 성 일 : 2016.11.03
+	 내    용 : work 알림 저장 
+	 파라미터 : 
+	-->
+	<insert id="HRMK0010.SAVE02" parameterClass="map">
+	<![CDATA[
+	      
+		BEGIN
+
+		    PKG_TMMIFWKNT2.SP_WORKNOTICE_SAVENOW (
+		        #SYST_LNCD#        /* 시스템언어코드 */
+		      , #WORK_USID#		   /* 작업자ID */
+		      , #WKNT_TYCD#  	   /* 작업알림유형코드[WKNT_TYCD] */
+		      , #SOUS_LNKY#        /* 출처연결키 */
+		      , #WKNT_CNTT#        /* 작업알림내용 */
+		    );
+		
+		END; 
+
+	]]>
+	</insert>
+
+
+</sqlMap>

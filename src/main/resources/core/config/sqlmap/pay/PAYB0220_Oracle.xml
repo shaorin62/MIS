@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0220">
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 기부처 테이블 조회
+********************************************************************************/
+-->
+	<select id="PAYB0220.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* PAYB0220.SEARCH00.기부처 테이블 조회 */
+		       A.PAYX_DATE                /* 지급일*/ 
+		     , A.WAGE_CODE                /* 급여코드*/ 
+		     , A.EXPD_CODE                /* 수당공제코드*/ 
+		     , A.DNTN_ORGT                /* 상호명*/ 
+		     , A.DOTE_CODE                /* 기부유형코드*/ 
+		     , A.BIZR_RGNB                /* 사업자번호*/ 
+		     , A.DNTN_CNTT                /* 기부내용*/ 
+		     , B.WAGE_NAME                /* 급여명*/
+		     , C.EXPD_NAME                /* 수당공제명*/ 
+		FROM PY_DONAXM A                  /* [기부처] */
+		  LEFT OUTER JOIN PY_PAYCOD B     /* [급여코드] */
+		    ON A.WAGE_CODE = B.WAGE_CODE
+		  LEFT OUTER JOIN PY_ALLDED C     /* [수당공제코드] */
+		    ON A.EXPD_CODE = C.EXPD_CODE
+		 WHERE 1=1
+	]]>
+	<isNotEmpty prepend="AND" property="DNTN_ORGT">			    
+            A.DNTN_ORGT LIKE '%'||#DNTN_ORGT#||'%'          /* 기부처 */
+	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="STDS_YEAR">			    
+            A.PAYX_DATE LIKE #STDS_YEAR# || '%'             /* 지급일 */
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="EXPD_CODE">			    
+            A.EXPD_CODE = #EXPD_CODE#                       /* .수당공제코드 */
+	</isNotEmpty>		
+			ORDER BY PAYX_DATE DESC
+	</select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 기부처 테이블 저장
+********************************************************************************/
+-->
+	<insert id="PAYB0220.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+         INSERT INTO PY_DONAXM (    /* PAYB0220.SAVE00.기부처 테이블 저장 *//* [기부처] */
+                     PAYX_DATE	    /* 지급일 */
+                   , WAGE_CODE	    /* 급여코드 */
+                   , EXPD_CODE	    /* 수당공제코드 */
+                   , DNTN_ORGT	    /* 기부처 */
+                   , DOTE_CODE	    /* 기부유형코드 */
+                   , BIZR_RGNB	    /* 사업자주민번호 */
+                   , DNTN_CNTT	    /* 기부내용 */
+                   , INST_USID	    /* 입력작업자 */
+                   , INST_DATE	    /* 입력일시 */
+                   , UPDT_USID	    /* 수정작업자 */
+                   , UPDT_DATE	    /* 수정일시 */
+            ) VALUES (
+                     #PAYX_DATE#	/* 지급일 */
+                   , #WAGE_CODE#	/* 급여코드 */
+                   , #EXPD_CODE#	/* 수당공제코드 */
+                   , #DNTN_ORGT#	/* 기부처 */
+                   , #DOTE_CODE#	/* 기부유형코드 */
+                   , #BIZR_RGNB#	/* 사업자주민번호 */
+                   , #DNTN_CNTT#	/* 기부내용 */
+                   , #UPDT_USID#	/* 입력작업자 */
+                   , SYSDATE		/* 입력일시 */
+                   , #UPDT_USID#	/* 수정작업자 */
+                   , SYSDATE		/* 수정일시 */
+            )
+	]]>
+	</insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 기부처 테이블 수정
+********************************************************************************/
+-->
+	<update id="PAYB0220.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+        UPDATE PY_DONAXM   /* PAYB0220.UPDATE00.기부처 테이블 수정 */
+           SET DNTN_ORGT = #DNTN_ORGT#	/* 기부처 */
+             , DOTE_CODE = #DOTE_CODE#	/* 기부유형코드 */
+             , BIZR_RGNB = #BIZR_RGNB#	/* 사업자주민번호 */
+             , DNTN_CNTT = #DNTN_CNTT#	/* 기부내용 */
+             , UPDT_USID = #UPDT_USID#	/* 수정작업자 */
+             , UPDT_DATE = SYSDATE		/* 수정일시 */
+         WHERE PAYX_DATE = #PAYX_DATE#	/* 지급일 */
+		   AND WAGE_CODE = #WAGE_CODE#	/* 급여코드 */
+		   AND EXPD_CODE = #EXPD_CODE#	/* 수당공제코드 */
+	]]>
+	</update>
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.25
+     내    용 : 기부처 테이블 삭제
+********************************************************************************/
+-->
+	<delete id="PAYB0220.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		DELETE FROM PY_DONAXM /* PAYB0220.DELETE00.기부처 테이블 삭제 */
+		 WHERE PAYX_DATE = #PAYX_DATE#	/* 지급일 */
+		   AND WAGE_CODE = #WAGE_CODE#	/* 급여코드 */
+		   AND EXPD_CODE = #EXPD_CODE#	/* 수당공제코드 */
+	]]>
+	</delete>
+</sqlMap>

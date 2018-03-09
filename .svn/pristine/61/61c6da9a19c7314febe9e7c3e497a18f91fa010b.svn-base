@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMB0025">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0020P01.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+		      /*FSMB0025.SAVE00.자산변동관리 저장 처리*/
+			iCNT                    DECIMAL(15,0);  /*상각 여부*/
+			sACQU_ENDX  FS_DPCTXM.ACQU_ENDX%TYPE;   /*취득가 기말잔액*/
+			sDPCT_ENDX  FS_DPCTXM.DPCT_ENDX%TYPE;   /*충당금 기말잔액*/
+	
+	    BEGIN
+	
+	        /*자산상각 체크*/
+			SELECT COUNT(STDS_YMTH)
+              INTO iCNT
+              FROM FS_DPCTXM
+             WHERE STDS_YMTH = SUBSTR(#CHNG_DATE#, 1, 6);
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, SUBSTR(#CHNG_DATE#, 1, 4) || '년 ' || SUBSTR(#CHNG_DATE#, 5, 2) || '월은 감가상각 자료가 있습니다.\n\n변동입력이 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 변동 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 이력(변동,이동) 있습니다.\n\n확정(변동, 이동) 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 변경일 이후의 자료 존재 여부 체크(굳이 두번 한 이유:오류 메시지의 구분을 위해)*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASCHXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND CHNG_DATE > #CHNG_DATE#;  /*변경 일 이후 변동 자료 존재 여부*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 변동확정 자료가 존재합니다..\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND RCGN_YSNO = '0';         /*분할 확정이 안된 데이터*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 미확정 분할내역이 있습니다.\n\n자산분할 확정 후 작업하세요!');
+	        END IF;
+	
+	        /*변동 입력 시 해당 자산의 미확정 분할 내역이 있으면 입력 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSPXM
+	         WHERE ASST_NUMB = #ASST_NUMB#   /*신규 입력 자산에 대한*/
+	           AND SPLT_DATE > #CHNG_DATE#;  /*변경일 이후의 분할 자료*/
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 변경일 이후의 분할 확정 자료가 존재합니다.\n\n소급 변동 적용은 불가 합니다!');
+	        END IF;
+	
+	        /*이미 폐기된 자산은 재 폐기 불가*/
+	        SELECT COUNT(ASST_NUMB) INTO iCNT
+	          FROM FS_ASSTXM
+	         WHERE ASST_NUMB = #ASST_NUMB#
+	           AND ASST_STAT = 'DSUS';
+	
+	        IF (iCNT > 0) THEN
+	           RAISE_APPLICATION_ERROR(-20000, #ASST_NUMB# || ':' || #ASST_NAME# || '은 이미 폐기된 자산입니다.\n\n재폐기 작업은 불가 합니다!');
+	        END IF;
+	
+	
+	        BEGIN
+		        /*저장될 값 구하기(취득가 및 충당금 기말잔액)*/
+		        SELECT  ACQU_ENDX                      /*취득가 기말잔액*/
+		               ,DPCT_ENDX                      /*충당금 기말잔액*/
+		          INTO  sACQU_ENDX                     /*취득가 기말잔액*/
+		               ,sDPCT_ENDX                     /*충당금 기말잔액*/
+		          FROM  FS_DPCTXM
+		         WHERE STDS_YMTH = (SELECT MAX(STDS_YMTH) FROM FS_DPCTXM WHERE ASST_NUMB = #ASST_NUMB#)
+		           AND ASST_NUMB = #ASST_NUMB#;
+		
+		        EXCEPTION WHEN NO_DATA_FOUND THEN
+		            sACQU_ENDX := 0;
+		            sDPCT_ENDX := 0;
+	        END;
+	
+	        INSERT INTO FS_ASCHXM (
+	                    CHNG_DATE,       /*   변동일*/
+	                    ASST_NUMB,       /*   자산번호*/
+	                    SEQN_NUMB,       /*   일련번호*/
+	                    ASCH_GUBN,       /*   변동구분[ASCH_GUBN]*/
+	                    ASST_STAT,       /*   자산상태[ASST_STAT]*/
+	                    CHBF_DEPT,       /*   변경전부서코드*/
+	                    CHBF_EMPL,       /*   변경전사원번호*/
+	                    DEPT_CODE,       /*   부서코드*/
+	                    EMPL_NUMB,       /*   사원번호*/
+	                    ACQU_ENDX,       /*   취득가_기말잔액*/
+	                    DPCT_ENDX,       /*   충당금_기말잔액*/
+	                    UNDP_BALE,       /*   미상각잔액*/
+	                    CHNG_AMOT,       /*   변동금액*/
+	                    DSPS_AMOT,       /*   처분가액*/
+	                    DSPS_GILS,       /*   처분손익*/
+	                    DPCT_GRDC,       /*   충당금가감액*/
+	                    ACCT_INTL,       /*   계정과목코드*/
+	                    CUST_CODE,       /*   거래처코드*/
+	                    RCGN_YSNO,       /*   승인여부*/
+	                    APPV_DATE,       /*   승인일시*/
+	                    APPR_EMPL,       /*   승인자*/
+	                    ACCT_UNIT,       /*   회계단위[ACCT_UNIT]*/
+	                    SLIP_NUMB,       /*   전표번호*/
+	                    SLIP_LINE,       /*   전표순번*/
+	                    DESC_REMK,       /*   비고(100)*/
+	                    INST_DATE,       /*   등록일시*/
+	                    INST_USID,       /*   등록자*/
+	                    UPDT_DATE,       /*   수정일시*/
+	                    UPDT_USID        /*   수정자*/
+	                    )
+	            VALUES (#CHNG_DATE#       /*   변동일*/
+	                   ,#ASST_NUMB#       /*   자산번호*/
+	                   ,(SELECT NVL(MAX(SEQN_NUMB),0)+1 FROM FS_ASCHXM WHERE CHNG_DATE = #CHNG_DATE# AND ASST_NUMB = #ASST_NUMB#)  /*   일련번호*/
+	                   ,'DSAL'           /*   변동구분[ASCH_GUBN]*/
+	                   ,'DSUS'           /*   자산상태[ASST_STAT]*/
+	                   ,#DEPT_CODE#       /*   변경전부서코드*/
+	                   ,NULL             /*   변경전사원번호*/
+	                   ,#DEPT_CODE#       /*   부서코드*/
+	                   ,NULL             /*   사원번호*/
+	                   ,sACQU_ENDX       /*   취득가_기말잔액*/
+	                   ,sDPCT_ENDX       /*   충당금_기말잔액*/
+	                   ,sACQU_ENDX - sDPCT_ENDX              /*미상각잔액*/
+	                   ,sACQU_ENDX              /*변동금액(취득가 기말잔액 전체가 변동금액임)*/
+	                   ,0                  /*처분가액*/
+	                   ,(sACQU_ENDX - sDPCT_ENDX) * -1              /*처분손익*/
+	                   ,sDPCT_ENDX              /*충당금가감액(미상각 잔액*/
+	                   ,NULL             /*   계정과목코드*/
+	                   ,NULL             /*   거래처코드*/
+	                   ,'0'              /*   승인여부*/
+	                   ,NULL             /*   승인일시*/
+	                   ,NULL             /*   승인자*/
+	                   ,NULL             /*   회계단위[ACCT_UNIT]*/
+	                   ,NULL             /*   전표번호*/
+	                   ,NULL             /*   전표순번*/
+	                   ,#ASST_NUMB# || ':' || #ASST_NAME# || '(폐기)'        /*   비고(100)*/
+	                   ,SYSDATE   /*등록일시*/
+	                   ,#UPDT_USID#   /*등록자*/
+	                   ,SYSDATE   /*수정일시*/
+	                   ,#UPDT_USID#   /*수정자*/
+	                   );         
+	
+	    END;
+					
+		]]>
+	</insert>
+</sqlMap>

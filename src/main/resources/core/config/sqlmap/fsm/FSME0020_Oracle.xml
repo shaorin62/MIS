@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSME0020">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산변동관리 조회
+********************************************************************************/
+ -->
+	<select id="FSME0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			 SELECT /* FSME0020.SEARCH00.자산변동관리 조회*/  	
+					 DEPT_NAME
+                    ,ASST_NUMB
+                    ,OLDX_ASST
+                    ,ASST_NAME
+                    ,ACQS_DATE
+                    ,ACQU_PRIC
+                    ,UNDP_BALE
+                    ,ASST_STNM
+                    ,ACQU_NUMB
+                    ,ACTU_NUMB
+                    ,ACTU_CODE
+                    ,CHAR_NUMB
+                    ,DESC_REMK
+                    ,Z.INVT_DATE
+                    , NVL((select 'Y' AS CHECK_DATE from FS_INVTXM cd where sysdate between cd.invt_stdt and cd.invt_endt AND cd.INVT_DATE = z.INVT_DATE) , 'N')  AS CHCK_DATE
+             FROM (SELECT  A.DEPT_CODE                                                 /*부서코드*/
+                          , ('[' || A.DEPT_CODE || ']' || SF_GET_DEPTNAME(A.DEPT_CODE)) AS DEPT_NAME     /*부서명*/
+                          ,A.ASST_NUMB                                                 /*자산번호*/
+                          ,A.INVT_DATE												   /*자산일 */
+                          ,B.BEFO_ASST || '-' || B.BEFO_DEPT          AS OLDX_ASST     /*구자산번호*/
+                          ,B.ASST_NAME                                                 /*자산명*/
+                          ,B.ACQS_DATE                                                 /*취득일*/
+                          ,B.ACQU_PRIC                                                 /*취득금액*/
+                          ,NVL(B.UNDP_BALE, 0) + NVL(SAVG_VALU, 0)    AS UNDP_BALE     /*미상각잔액*/
+                          ,SF_GET_COMMNAME('ASST_STAT', A.ASST_STAT)  AS ASST_STNM     /*자산상태[ASST_STAT]*/
+                          ,A.ACQU_NUMB                                                 /*취득수량*/
+                          ,A.ACTU_CODE                                                 /*실사결과코드*/
+                          ,A.ACTU_NUMB                                                 /*실사수량*/
+                          ,A.ACQU_NUMB - A.ACTU_NUMB                  AS CHAR_NUMB     /*차이*/
+                          ,A.DESC_REMK                                                 /*비고(100)*/
+                          ,CASE WHEN A.ACTU_NUMB IS NULL THEN '0'
+                                ELSE '1' END                          AS ACTU_YSNO     /*실사여부*/
+                     FROM FS_INVTXD A INNER JOIN FS_ASSTXM     B ON A.ASST_NUMB = B.ASST_NUMB
+                                      INNER JOIN VI_ASSETCLASS C ON B.CLSF_CODE = C.SMAL_CODE
+                    WHERE 1=1
+                      AND  A.INVT_DATE = #INVT_DATE# /*실사일*/
+        ]]>                    
+        <isNotEmpty property = "ASCL_CODE" prepend = "AND">
+        	<![CDATA[ C.ASCL_CODE = NVL(#ASCL_CODE#, C.ASCL_CODE) /*자산분류*/ ]]>
+        </isNotEmpty> 
+        <isNotEmpty property = "CLSF_CODE" prepend = "AND">
+       		<![CDATA[ C.SMAL_CODE = NVL(#CLSF_CODE#, C.SMAL_CODE) /*품목분류*/ ]]>
+        </isNotEmpty> 
+        <isNotEmpty property = "DEPT_CODE" prepend = "AND">
+        	<![CDATA[ NVL(A.DEPT_CODE, ' ') = NVL(#DEPT_CODE#, NVL(A.DEPT_CODE, ' ')) /*부서코드*/ ]]>
+        </isNotEmpty>
+        <![CDATA[) Z      
+			WHERE 1=1 
+         ]]> 
+        <isNotEmpty property = "ACTU_YSNO" prepend = "AND">
+        	<![CDATA[ Z.ACTU_YSNO = NVL(#ACTU_YSNO#, Z.ACTU_YSNO) /*실사여부*/ ]]>
+        </isNotEmpty>         
+        <![CDATA[              
+         ORDER BY Z.DEPT_CODE, Z.ASST_NUMB
+         ]]>    
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 신민규
+    작  성  일 : 2016. 07. 26
+    내      용 : 매장별자산실사 콤보 정보 조회
+    실행 예제  : SP_FSME0020_SEARCH01()
+********************************************************************************/
+ -->
+   
+	<select id="FSME0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			 SELECT /* FSME0020.SEARCH01.매장별자산실사 콤보 정보 조회*/     
+			        INVT_DATE                                   AS INVT_CODE
+	                   ,'[' || INVT_DATE || '] ' || INVT_NAME   AS INVT_NAME
+	             FROM FS_INVTXM
+	           ORDER BY INVT_DATE DESC
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 :재물조사 저장 처리
+********************************************************************************/
+ -->
+	<update id="FSME0020.UPDATE00" parameterClass="hashmap">
+		<![CDATA[
+			UPDATE  /* FSME0020.SAVE00.재물조사 저장 처리 */    
+			        FS_INVTXD                /*[재물조사상세]*/
+	           SET  ACTU_CODE = #ACTU_CODE#  /*실사결과*/
+	               ,ACTU_NUMB = #ACTU_NUMB#  /*실사수량*/
+	               ,DESC_REMK = #DESC_REMK#  /*비고(100)*/
+	               ,UPDT_DATE = SYSDATE  /*수정일시*/
+	               ,UPDT_USID = #UPDT_USID#  /*수정자*/
+	         WHERE INVT_DATE  = #INVT_DATE#  /*조사일*/
+	           AND ASST_NUMB  = #ASST_NUMB#  /*자산번호*/
+
+		]]>
+	</update>
+</sqlMap>

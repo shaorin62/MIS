@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYB0050">
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 상여율 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYB0050.SEARCH00.성과상여율 테이블 조회 */
+			       #SYNT_EACD#  AS  SYNT_EACD   /*인사평가코드*/
+			     , A.COMD_CODE  AS  EVGD_CODE   /*평가등급코드*/
+			     , B.COMD_CODE  AS  EVAL_DTGN   /*평가부서구분코드*/
+			     , C.BONU_RATE  /*상여율*/
+			  FROM TM_CODEXD A LEFT JOIN TM_CODEXD B 
+			                     ON B.COMM_CODE = 'EVAL_DTGN'
+			                   LEFT JOIN PY_BONYRT C 
+			                     ON C.SYNT_EACD = #SYNT_EACD#
+			                    AND C.EVGD_CODE = A.COMD_CODE
+			                    AND C.EVAL_DTGN = B.COMD_CODE                       
+			 WHERE A.COMM_CODE = 'WGEG_CODE' 
+            ORDER BY A.SORT_ORDR, B.SORT_ORDR
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 개인별성과상여금 테이블 조회
+********************************************************************************/
+-->
+    <select id="PAYB0050.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+            SELECT /* PAYB0050.SEARCH01.개인별성과상여금 테이블 조회 */
+                   A.SYNT_EACD              /* 인사평가코드 */
+                 , A.EMPL_NUMB              /* 사원번호 */
+                 , C.EMPL_NAME              /* 사원명 */
+                 , A.BSLY_AMOT              /* 기본급금액 */
+                 , A.BSBN_RATE              /* 표준상여율 */
+                 , A.BVGD_CODE              /* 조직평가등급코드 */
+                 , A.BVGP_RATE              /* 조직평가지급율 */
+                 , A.PVGD_CODE              /* 개인평가등급코드 */
+                 , A.PVGP_RATE              /* 개인평가지급율 */
+                 , A.BONU_AMOT              /* 상여금 */
+                 , A.PAYR_YSNO              /* 급여반영여부 */
+                 , A.PAYX_DATE              /* 지급일 */
+                 , A.WAGE_CODE              /* 급여코드 */
+                 , A.EVAL_DTGN              /* 평가부서구분코드 */
+                 , A.BVGN_RATE              /* 조직평가배분율 */
+                 , A.PVGN_RATE              /* 개인평가배분율 */
+                 , D.DEPT_NAME              /* 부서명 */
+                 , SF_GET_COMMNAME( 'OPOS_CODE', C.OPOS_CODE )  AS  OPOS_NAME
+                 , F.WADE_YSNO
+              FROM PY_EVBONU A              /* [개인별성과상여금] */
+                        INNER JOIN EV_TEVPXM B
+                           ON B.SYNT_EACD = A.SYNT_EACD
+                        INNER JOIN TABLE(SF_HR_MASTXM( A.EMPL_NUMB, B.STDS_DATE)) C
+                           ON C.EMPL_NUMB = A.EMPL_NUMB
+                        LEFT JOIN TABLE(SF_TM_DEPTXM ( B.STDS_DATE )) D
+                           ON D.DEPT_CODE = C.DEPT_CODE   
+					    LEFT JOIN TM_CODEXD E
+					       ON E.COMM_CODE = 'CPOS_CODE'
+					      AND E.COMD_CODE = C.CPOS_CODE   
+					    LEFT JOIN PY_PMDIRY F
+					       ON F.PAYX_DATE = A.PAYX_DATE
+					      AND F.WAGE_CODE = A.WAGE_CODE                    
+             WHERE A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */   
+            ORDER BY D.DEPT_FCOD, E.SORT_ORDR, C.EMPL_NUMB
+    ]]>
+    </select>
+    
+    
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 공통코드의 성과상여 기준값 조회
+********************************************************************************/
+-->
+    <select id="PAYB0050.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT /* PAYB0050.SEARCH02.공통코드의 성과상여 기준값 조회 */
+               B.SYNT_EACD  /*인사평가코드*/  
+             , B.EVAL_NAME  /*평가명*/
+             , TO_NUMBER(A.REF1_FILD) AS BSBN_RATE /*표준상여율*/
+             , TO_NUMBER(A.REF2_FILD) AS BVGN_RATE /*조직평가배분율*/
+             , TO_NUMBER(A.REF3_FILD) AS PVGN_RATE /*개인평가배분율*/
+          FROM TM_CODEXD A 
+                     INNER JOIN EV_TEVPXM B
+                        ON B.SYNT_EACD = A.COMD_CODE
+         WHERE A.COMM_CODE = 'PMBU_CONF'
+           AND A.COMD_CODE = #SYNT_EACD#     /* 인사평가코드 */ 
+        UNION ALL
+        SELECT
+               TO_NCHAR(#SYNT_EACD#)  AS  SYNT_EACD  /*인사평가코드*/  
+             , TO_NCHAR(#EVAL_NAME#)  AS  EVAL_NAME  /*평가명*/
+             , TO_NUMBER(NVL(MAX(A.REF1_FILD),'100'))   AS  BSBN_RATE /*표준상여율*/
+             , TO_NUMBER(NVL(MAX(A.REF2_FILD),'50'))    AS  BVGN_RATE /*조직평가배분율*/
+             , TO_NUMBER(NVL(MAX(A.REF3_FILD),'50'))    AS  PVGN_RATE /*개인평가배분율*/
+          FROM TM_CODEXD A
+                     LEFT JOIN EV_TEVPXM B
+                       ON B.SYNT_EACD = A.COMD_CODE          
+         WHERE A.COMM_CODE = 'PMBU_CONF'
+           AND NOT EXISTS ( SELECT 'Y'
+                              FROM TM_CODEXD Z
+                             WHERE Z.COMM_CODE = A.COMM_CODE
+                               AND Z.COMD_CODE = #SYNT_EACD#
+                           )
+           AND A.COMD_CODE = (SELECT MAX(Z.COMD_CODE)
+                                FROM TM_CODEXD Z
+                               WHERE Z.COMM_CODE = A.COMM_CODE )                
+    ]]>
+    </select>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 고민주
+     작 성 일 : 2016.07.18
+     내    용 : 상여율 처리
+********************************************************************************/
+-->
+    <insert id="PAYB0050.PROC00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0050.PROC00.상여율 처리 */
+            v_ROWCNT        INTEGER;
+            v_WADE_YSNO     INTEGER;
+            v_STDS_DATE     EV_TEVPXM.STDS_DATE%TYPE;  
+            v_REF1_FILD     TM_CODEXD.REF1_FILD%TYPE;   /*표준지급율*/         
+            v_REF2_FILD     TM_CODEXD.REF2_FILD%TYPE;   /*조직평가반영율*/         
+            v_REF3_FILD     TM_CODEXD.REF3_FILD%TYPE;   /*개인평가반영율*/   
+            v_BVGD_RATE1    NUMBER; /*조직평가지급율*/
+            v_PVGD_RATE1    NUMBER; /*개인평가지급율*/     
+            v_BVGD_RATE2    NUMBER; /*조직평가지급율(반영비율적용)*/
+            v_PVGD_RATE2    NUMBER; /*개인평가지급율(반영비율적용)*/   
+            v_BONU_AMOT     PY_EVBONU.BONU_AMOT%TYPE;  
+        BEGIN
+            /* 급여마감여부체크 */
+            /* 고정 급여마감 체크-지급일 + 사원 */
+            SELECT COUNT(*)
+              INTO v_WADE_YSNO
+              FROM PY_BONYRT A
+                        INNER JOIN PY_EVBONU B
+                           ON A.SYNT_EACD = B.SYNT_EACD
+                        INNER JOIN PY_PMDIRY C
+                           ON B.PAYX_DATE = C.PAYX_DATE
+                          AND B.WAGE_CODE = C.WAGE_CODE
+
+             WHERE C.WADE_YSNO = '1'
+               AND A.SYNT_EACD = #SYNT_EACD#
+            ;
+
+            /* 마감되었다면 수정불가 */
+            IF v_WADE_YSNO > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','자료,계산처리'));
+            END IF;
+            
+            /*평가기준일 조회*/
+            SELECT A.STDS_DATE
+              INTO v_STDS_DATE
+              FROM EV_TEVPXM A
+             WHERE A.SYNT_EACD = #SYNT_EACD#
+            ;
+            
+            /*표준지급율, 조직평가반영율, 개인평가반영율*/
+            BEGIN
+	            SELECT REF1_FILD    /*표준지급율*/
+	                 , REF2_FILD    /*조직평가반영율*/
+	                 , REF3_FILD    /*개인평가반영율*/
+	              INTO v_REF1_FILD, v_REF2_FILD, v_REF3_FILD
+	              FROM TM_CODEXD
+	             WHERE COMM_CODE = 'PMBU_CONF'
+	               AND COMD_CODE = #SYNT_EACD#
+	            ; 
+            EXCEPTION
+                WHEN OTHERS THEN
+                    v_REF1_FILD :=  '100';    
+                    v_REF2_FILD :=  '50';    
+                    v_REF3_FILD :=  '50';    
+            END;
+             
+            /*기존 자료 삭제*/
+            DELETE FROM PY_EVBONU
+             WHERE SYNT_EACD = #SYNT_EACD#
+            ;
+                        
+            FOR RS IN (
+            
+                SELECT #SYNT_EACD#  AS  SYNT_EACD   /*인사평가코드*/
+                     , B.EMPL_NUMB                  /*사원번호*/
+                     , E.EVAL_DTGN                  /*평가부서구분코드*/
+                     , C.FACH_CODE  AS  PVGD_CODE   /*개인평가등급코드*/
+                     , D.FACH_CODE  AS  BVGD_CODE   /*조직평가등급코드*/
+                     , F.BSLY_AMOT  AS  BSLY_AMOT   /*기본급*/
+                  FROM HR_MASTXM A
+                            INNER JOIN TABLE(SF_HR_MASTXM(A.EMPL_NUMB, v_STDS_DATE)) B
+                               ON A.EMPL_NUMB = B.EMPL_NUMB
+                            LEFT JOIN EV_WGETXM C   /*[인사평가대상자]*/
+                              ON C.SYNT_EACD = #SYNT_EACD#
+                             AND C.EMPL_NUMB = B.EMPL_NUMB
+                            LEFT JOIN EV_DTETXM D   /*[조직평가대상부서]*/
+                              ON D.SYNT_EACD = #SYNT_EACD#
+                             AND D.DEPT_CODE = B.DEPT_CODE
+                            LEFT JOIN TM_DEPTXM E   /*[부서코드]*/
+                              ON B.DEPT_CODE = E.DEPT_CODE         
+                            LEFT JOIN (
+										SELECT EMPL_NUMB
+										     , STDS_DATE
+										     , BSLY_AMOT
+										     , ROW_NUMBER() OVER (PARTITION BY EMPL_NUMB ORDER BY EMPL_NUMB, STDS_DATE DESC ) R_NUM
+										  FROM PY_REGSAL A
+										 WHERE STDS_DATE <= v_STDS_DATE
+									  ) F          
+							  ON F.EMPL_NUMB = B.EMPL_NUMB 
+							 AND F.R_NUM = 1
+                                                
+                 WHERE A.WODN_CODE = '1'    /*현재 재직자만 대상으로 함*/ 
+                
+            ) LOOP
+                
+                /*조직평가 지급율 조회*/
+                v_BVGD_RATE1 :=  0;
+                v_BVGD_RATE2 :=  0;
+                IF (v_REF2_FILD IS NOT NULL AND RS.BVGD_CODE IS NOT NULL) THEN
+
+	                SELECT NVL(BONU_RATE,0)
+	                     , ( NVL(BONU_RATE,0) * (TO_NUMBER(NVL(v_REF2_FILD,'0')) / 100)) / 100
+	                  INTO v_BVGD_RATE1, v_BVGD_RATE2
+	                  FROM PY_BONYRT
+	                 WHERE SYNT_EACD = RS.SYNT_EACD /*인사평가코드*/
+	                   AND EVGD_CODE = RS.BVGD_CODE /*평가등급코드*/
+	                   AND EVAL_DTGN = RS.EVAL_DTGN /*평가부서구분코드*/
+                    ;
+                    
+                END IF;
+
+                /*개인평가 지급율 조회*/
+                v_PVGD_RATE1 :=  0;
+                v_PVGD_RATE2 :=  0;
+                IF (v_REF3_FILD IS NOT NULL AND RS.PVGD_CODE IS NOT NULL) THEN
+
+                    SELECT NVL(BONU_RATE,0)
+                         , ( NVL(BONU_RATE,0) * (TO_NUMBER(NVL(v_REF3_FILD,'0')) / 100)) / 100
+                      INTO v_PVGD_RATE1, v_PVGD_RATE2
+                      FROM PY_BONYRT
+                     WHERE SYNT_EACD = RS.SYNT_EACD /*인사평가코드*/
+                       AND EVGD_CODE = RS.PVGD_CODE /*평가등급코드*/
+                       AND EVAL_DTGN = RS.EVAL_DTGN /*평가부서구분코드*/
+                    ;
+                    
+                END IF;
+                
+                /* 성과상여금 = 기본금 * 표준지급율 * (조직평가지급율+개인평가지급율)*/
+                v_BONU_AMOT :=  TRUNC(RS.BSLY_AMOT * ( TO_NUMBER(NVL(v_REF1_FILD,'0')) / 100 ) * (v_BVGD_RATE2 + v_PVGD_RATE2));
+                
+                /*
+                IF (RS.EMPL_NUMB = '2008006') THEN
+                    RAISE_APPLICATION_ERROR(-20000,'BSLY_AMOT=' || RS.BSLY_AMOT || ', v_REF1_FILD='||v_REF1_FILD||', v_BVGD_RATE2='||v_BVGD_RATE2||', v_PVGD_RATE2='||v_PVGD_RATE2||', v_BONU_AMOT='||v_BONU_AMOT); 
+                END IF;     
+                */           
+		        
+		        INSERT INTO PY_EVBONU (  /* 저장주석수정바람 *//* [개인별성과상여금] */
+		                SYNT_EACD        /* 인사평가코드 */
+		               ,EMPL_NUMB        /* 사원번호 */
+		               ,BSLY_AMOT        /* 기본급금액 */
+		               ,BSBN_RATE        /* 표준상여율 */
+		               ,BVGD_CODE        /* 조직평가등급코드 */
+		               ,BVGP_RATE        /* 조직평가지급율 */
+		               ,PVGD_CODE        /* 개인평가등급코드 */
+		               ,PVGP_RATE        /* 개인평가지급율 */
+		               ,BONU_AMOT        /* 상여금 */
+		               ,PAYR_YSNO        /* 급여반영여부 */
+		               ,PAYX_DATE        /* 지급일 */
+		               ,WAGE_CODE        /* 급여코드 */
+		               ,INST_USID        /* 입력작업자 */
+		               ,INST_DATE        /* 입력일시 */
+		               ,UPDT_USID        /* 수정작업자 */
+		               ,UPDT_DATE        /* 수정일시 */
+		               ,EVAL_DTGN        /* 평가부서구분코드 */
+		               ,BVGN_RATE        /* 조직평가배분율 */
+		               ,PVGN_RATE        /* 개인평가배분율 */
+		              )
+		       VALUES (
+		               RS.SYNT_EACD      /* 인사평가코드 */
+		              ,RS.EMPL_NUMB      /* 사원번호 */
+		              ,RS.BSLY_AMOT      /* 기본급금액 */
+		              ,v_REF1_FILD       /* 표준상여율 */
+		              ,RS.BVGD_CODE      /* 조직평가등급코드 */
+		              ,v_BVGD_RATE1      /* 조직평가지급율 */
+		              ,RS.PVGD_CODE      /* 개인평가등급코드 */
+		              ,v_PVGD_RATE1      /* 개인평가지급율 */
+		              ,v_BONU_AMOT       /* 상여금 */
+		              ,'0'               /* 급여반영여부 */
+		              ,''                /* 지급일 */
+		              ,''                /* 급여코드 */
+		              ,#UPDT_USID#       /* 입력작업자 */
+		              ,SYSDATE           /* 입력일시 */
+		              ,#UPDT_USID#       /* 수정작업자 */
+		              ,SYSDATE           /* 수정일시 */
+		              ,RS.EVAL_DTGN      /* 평가부서구분코드 */
+		              ,v_REF2_FILD       /* 조직평가배분율 */
+		              ,v_REF3_FILD       /* 개인평가배분율 */
+		              );                
+            
+            END LOOP;
+            
+            
+        END;
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 개인별성과상여금 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0050.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        INSERT INTO PY_EVBONU (  /* PAYB0050.SAVE00.개인별성과상여금 테이블 저장 */
+                SYNT_EACD        /* 인사평가코드 */
+               ,EMPL_NUMB        /* 사원번호 */
+               ,BSLY_AMOT        /* 기본급금액 */
+               ,BSBN_RATE        /* 표준상여율 */
+               ,BVGD_CODE        /* 조직평가등급코드 */
+               ,BVGP_RATE        /* 조직평가지급율 */
+               ,PVGD_CODE        /* 개인평가등급코드 */
+               ,PVGP_RATE        /* 개인평가지급율 */
+               ,BONU_AMOT        /* 상여금 */
+               ,PAYR_YSNO        /* 급여반영여부 */
+               ,PAYX_DATE        /* 지급일 */
+               ,WAGE_CODE        /* 급여코드 */
+               ,INST_USID        /* 입력작업자 */
+               ,INST_DATE        /* 입력일시 */
+               ,UPDT_USID        /* 수정작업자 */
+               ,UPDT_DATE        /* 수정일시 */
+               ,EVAL_DTGN        /* 평가부서구분코드 */
+               ,BVGN_RATE        /* 조직평가배분율 */
+               ,PVGN_RATE        /* 개인평가배분율 */
+              )
+       VALUES (
+               #SYNT_EACD#       /* 인사평가코드 */
+              ,#EMPL_NUMB#       /* 사원번호 */
+              ,#BSLY_AMOT#       /* 기본급금액 */
+              ,#BSBN_RATE#       /* 표준상여율 */
+              ,#BVGD_CODE#       /* 조직평가등급코드 */
+              ,#BVGP_RATE#       /* 조직평가지급율 */
+              ,#PVGD_CODE#       /* 개인평가등급코드 */
+              ,#PVGP_RATE#       /* 개인평가지급율 */
+              ,#BONU_AMOT#       /* 상여금 */
+              ,#PAYR_YSNO#       /* 급여반영여부 */
+              ,#PAYX_DATE#       /* 지급일 */
+              ,#WAGE_CODE#       /* 급여코드 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE           /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE           /* 수정일시 */
+              ,#EVAL_DTGN#       /* 평가부서구분코드 */
+              ,#BVGN_RATE#       /* 조직평가배분율 */
+              ,#PVGN_RATE#       /* 개인평가배분율 */
+              )
+
+    ]]>
+    </insert>
+
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 개인별성과상여금 테이블 수정
+********************************************************************************/
+-->
+    <update id="PAYB0050.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE /* PAYB0050.UPDATE00.개인별성과상여금 테이블 수정 */
+        v_WADE_YSNO     INTEGER;
+    BEGIN
+        /* 급여마감여부체크 */
+        /* 고정 급여마감 체크-지급일 + 사원 */
+        SELECT COUNT(*)
+          INTO v_WADE_YSNO
+          FROM PY_PMDIRY A
+         WHERE A.WADE_YSNO = '1'
+           AND A.PAYX_DATE = #PAYX_DATE#
+           AND A.WAGE_CODE = #WAGE_CODE#
+        ;
+
+        /* 마감되었다면 수정불가 */
+        IF v_WADE_YSNO > 0 THEN
+            RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','자료,변경'));
+        END IF;    
+    
+        UPDATE PY_EVBONU   
+           SET BSLY_AMOT = #BSLY_AMOT#  /* 기본급금액 */
+             , BSBN_RATE = #BSBN_RATE#  /* 표준상여율 */
+             , BVGD_CODE = #BVGD_CODE#  /* 조직평가등급코드 */
+             , BVGP_RATE = #BVGP_RATE#  /* 조직평가지급율 */
+             , PVGD_CODE = #PVGD_CODE#  /* 개인평가등급코드 */
+             , PVGP_RATE = #PVGP_RATE#  /* 개인평가지급율 */
+             , BONU_AMOT = #BONU_AMOT#  /* 상여금 */
+             , PAYR_YSNO = #PAYR_YSNO#  /* 급여반영여부 */
+             , PAYX_DATE = #PAYX_DATE#  /* 지급일 */
+             , WAGE_CODE = #WAGE_CODE#  /* 급여코드 */
+             , EVAL_DTGN = #EVAL_DTGN#  /* 평가부서구분코드 */
+             , BVGN_RATE = #BVGN_RATE#  /* 조직평가배분율 */
+             , PVGN_RATE = #PVGN_RATE#  /* 개인평가배분율 */             
+             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+             , UPDT_DATE = SYSDATE      /* 수정일시 */
+         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+        ;
+    END;
+    ]]>
+    </update>    
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 개인별성과상여금 테이블 삭제
+********************************************************************************/
+-->
+    <delete id="PAYB0050.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+    DECLARE /* PAYB0050.UPDATE00.개인별성과상여금 테이블 삭제 */
+        v_WADE_YSNO     INTEGER;
+    BEGIN
+        /* 급여마감여부체크 */
+        /* 고정 급여마감 체크-지급일 + 사원 */
+        SELECT COUNT(*)
+          INTO v_WADE_YSNO
+          FROM PY_PMDIRY A
+         WHERE A.WADE_YSNO = '1'
+           AND A.PAYX_DATE = #PAYX_DATE#
+           AND A.WAGE_CODE = #WAGE_CODE#
+
+        /* 마감되었다면 수정불가 */
+        IF v_WADE_YSNO > 0 THEN
+            RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','자료,삭제'));
+        END IF;    
+    
+        DELETE FROM PY_EVBONU    /* PAYB0050.DELETE00.개인별성과상여금 테이블 삭제 */
+         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+           AND EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+        ;
+    END;
+    ]]>
+    </delete>        
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 성과상여율 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0050.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0050.SAVE01.성과상여율 테이블 저장 */
+            v_ROWCNT         INTEGER;
+            v_WADE_YSNO     INTEGER;
+
+        BEGIN
+            /* 급여마감여부체크 */
+            /* 고정 급여마감 체크-지급일 + 사원 */
+            SELECT COUNT(*)
+              INTO v_WADE_YSNO
+              FROM PY_BONYRT A
+                        INNER JOIN PY_EVBONU B
+                           ON A.SYNT_EACD = B.SYNT_EACD
+                        INNER JOIN PY_PMDIRY C
+                           ON B.PAYX_DATE = C.PAYX_DATE
+                          AND B.WAGE_CODE = C.WAGE_CODE
+
+             WHERE C.WADE_YSNO = '1'
+               AND A.SYNT_EACD = #SYNT_EACD#
+            ;
+
+            /* 마감되었다면 수정불가 */
+            IF v_WADE_YSNO > 0 THEN
+                RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('PAY045','자료,변경'));
+            END IF;
+
+            /* 데이터건수조회 */
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM PY_BONYRT
+             WHERE SYNT_EACD  = #SYNT_EACD#   /* 인사평가코드 */
+               AND EVGD_CODE  = #EVGD_CODE#   /* 평가등급코드 */
+               AND EVAL_DTGN  = #EVAL_DTGN#   /* 평가부서구분코드 */
+            ;
+
+            IF v_ROWCNT < 1 THEN
+		        INSERT INTO PY_BONYRT (  /* [성과상여율] */
+		                SYNT_EACD        /* 인사평가코드 */
+		               ,EVGD_CODE        /* 평가등급코드 */
+		               ,EVAL_DTGN        /* 평가부서구분코드 */
+		               ,BONU_RATE        /* 상여율 */
+		               ,INST_USID        /* 입력작업자 */
+		               ,INST_DATE        /* 입력일시 */
+		               ,UPDT_USID        /* 수정작업자 */
+		               ,UPDT_DATE        /* 수정일시 */
+		              )
+		       VALUES (
+		               #SYNT_EACD#       /* 인사평가코드 */
+		              ,#EVGD_CODE#       /* 평가등급코드 */
+		              ,#EVAL_DTGN#       /* 평가부서구분코드 */
+		              ,#BONU_RATE#       /* 상여율 */
+		              ,#UPDT_USID#       /* 입력작업자 */
+		              ,SYSDATE           /* 입력일시 */
+		              ,#UPDT_USID#       /* 수정작업자 */
+		              ,SYSDATE           /* 수정일시 */
+		              );
+
+            ELSE
+		        UPDATE PY_BONYRT    /* [성과상여율] */
+		           SET BONU_RATE = #BONU_RATE#  /* 상여율 */
+		             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		             , UPDT_DATE = SYSDATE      /* 수정일시 */
+		         WHERE SYNT_EACD = #SYNT_EACD#  /* 인사평가코드 */
+		           AND EVGD_CODE = #EVGD_CODE#  /* 평가등급코드 */
+		           AND EVAL_DTGN = #EVAL_DTGN#  /* 평가부서구분코드 */
+                ;
+            END IF;
+        END;
+
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 이용관
+     작 성 일 : 2016.12.07
+     내    용 : 성과상여율 테이블 저장
+********************************************************************************/
+-->
+    <insert id="PAYB0050.SAVE02" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* PAYB0050.SAVE02.공통코드의 성과상여 기준값 저장 */
+            v_ROWCNT        INTEGER;
+            v_WADE_YSNO     INTEGER;
+
+        BEGIN
+            /* 데이터건수조회 */
+            SELECT COUNT(*)
+              INTO v_ROWCNT
+              FROM TM_CODEXD
+             WHERE COMM_CODE  = 'PMBU_CONF'
+               AND COMD_CODE  = #SYNT_EACD#   /* 인사평가코드 */
+            ;
+
+            IF v_ROWCNT < 1 THEN
+                INSERT INTO TM_CODEXD (  /* [성과상여율] */
+                        COMM_CODE        /* 공통코드 */
+		               ,COMD_CODE        /* 세부코드 */
+		               ,COMD_CDNM        /* 세부코드명 */
+		               ,CRTE_DATE        /* 생성일 */
+		               ,REF1_FILD        /* 보조1필드 */
+		               ,REF2_FILD        /* 보조2필드 */
+		               ,REF3_FILD        /* 보조3필드 */
+                       ,INST_USID        /* 입력작업자 */
+                       ,INST_DATE        /* 입력일시 */
+                       ,UPDT_USID        /* 수정작업자 */
+                       ,UPDT_DATE        /* 수정일시 */
+                      )
+               VALUES (
+                       'PMBU_CONF'       /* 공통코드 */
+                      ,#SYNT_EACD#       /* 인사평가코드 */
+                      ,#EVAL_NAME#       /* 인사평가명 */
+                      ,TO_NCHAR(SYSDATE, 'YYYYMMDD')    /* 생성일 */
+                      ,TO_NCHAR(NVL(#BSBN_RATE#,0))     /* 표준지급율 */
+                      ,TO_NCHAR(NVL(#BVGN_RATE#,0))     /* 조직평가반영율 */
+                      ,TO_NCHAR(NVL(#PVGN_RATE#,0))     /* 개인평가반영율 */
+                      ,#UPDT_USID#       /* 입력작업자 */
+                      ,SYSDATE           /* 입력일시 */
+                      ,#UPDT_USID#       /* 수정작업자 */
+                      ,SYSDATE           /* 수정일시 */
+                      );
+
+            ELSE
+                UPDATE TM_CODEXD    /* [성과상여율] */
+                   SET REF1_FILD = TO_NCHAR(NVL(#BSBN_RATE#,0))  /* 표준지급율 */
+                     , REF2_FILD = TO_NCHAR(NVL(#BVGN_RATE#,0))  /* 조직평가반영율 */
+                     , REF3_FILD = TO_NCHAR(NVL(#PVGN_RATE#,0))  /* 개인평가반영율 */
+                     , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+                     , UPDT_DATE = SYSDATE      /* 수정일시 */
+                 WHERE COMM_CODE = 'PMBU_CONF'  /* 공통코드 */
+                   AND COMD_CODE = #SYNT_EACD#  /* 인사평가코드 */
+                ;
+                
+            END IF;
+        END;
+    ]]>
+    </insert>
+</sqlMap>

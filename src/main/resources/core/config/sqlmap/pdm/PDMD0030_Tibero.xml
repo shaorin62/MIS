@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PDMD0030">
+
+<!--  
+/***********************************************************************************
+ *   프로그램명 : 제작 청구완료
+ *   작 성 일 : 2016.10.05
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved.
+ /*********************************************************************************** 
+ -->
+	
+	<!-- 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="JOBN_NUMB" >
+			 A.JOBN_NUMB = #JOBN_NUMB#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="JOBN_NAME" >
+			A.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%'
+		</isNotEmpty>
+		
+	    <isNotEmpty prepend="AND" property="SUJU_DATE1" >
+			 D.SUJU_DATE BETWEEN #SUJU_DATE1# AND '99999999'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="SUJU_DATE2" >
+			 D.SUJU_DATE BETWEEN '00000000' AND #SUJU_DATE2# 
+		</isNotEmpty>
+		
+		<isEqual prepend="AND" property="REQU_DATE" compareValue="1">
+			NVL(A.DEND_DATE,'') IS NOT NULL
+		</isEqual>
+		<isEqual prepend="AND" property="REQU_DATE" compareValue="2">
+			NVL(A.DEND_DATE,'') IS NULL
+		</isEqual>
+		
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.05
+     내      용 : 제작 청구완료 처리
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PDMD0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+                     
+					SELECT						/* PDMD0030.SEARCH00.제작 청구완료*//* [제작청구완료 조회] */
+					A.JOBN_NUMB				/* 제작번호 */
+					,A.CUST_CODE				/* 광고주코드 */
+					,B.CUST_NAME				/* 광고주명 */
+					,A.JOBN_NAME				/* 제작명 */
+					,A.REQU_DATE				/* 의뢰일 */
+					,A.COMP_DATE				/* 완료희망일 */
+					,A.DEND_DATE 			/* 청구일자 */
+					,D.SUJU_DATE
+					FROM PD_JOBNXM A 
+					LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+					LEFT JOIN PD_SUJUMH C ON A.JOBN_NUMB = C.JOBN_NUMB
+					LEFT JOIN (
+					    SELECT 
+					    JOBN_NUMB, 
+					    MAX(SUJU_DATE) AS SUJU_DATE 
+					    FROM PD_SUJUMD
+					    WHERE 1=1
+					    GROUP BY JOBN_NUMB
+					)D ON A.JOBN_NUMB = D.JOBN_NUMB
+					WHERE 1=1
+					AND C.JOBN_NUMB IS NOT NULL
+			]]>
+				<include refid="search" />	
+			<![CDATA[
+				 ORDER BY A.JOBN_NUMB
+			]]>
+	</select>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.05
+     내      용 : 제작 청구 일자를 제작테이블에 저장하여 청구가 완료됨을 알린다.
+     파라미터   : 				
+     /***********************************************************************************
+     -->
+	<update id="PDMD0030.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	
+	        UPDATE PD_JOBNXM    								/* PDMD0020.UPDATE01.제작 정산 -정산 상세 데이터 수정*//* [제작정산 하단 상세 수정] */
+           	SET DEND_DATE = #DEND_DATE#  				/* 정구일자 */
+           	, STAT_FLAG =  DECODE(#DEND_DATE#,'','SF01','SF02')								/* 청구일자 생성 및 상태 완료 */
+           	, UPDT_USID = #UPDT_USID#  					/*수정자*/
+            ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+            WHERE 1=1
+            AND JOBN_NUMB = #JOBN_NUMB#
+
+	]]>
+	</update>	
+		
+	
+</sqlMap>
+

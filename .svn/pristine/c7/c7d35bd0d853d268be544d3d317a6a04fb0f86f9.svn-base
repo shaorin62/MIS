@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WFMF0010">
+
+<!--
+ *   프로그램명 : 전산자원관리 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.09.08
+ *   작 성 자 : 김용만
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="WFMF0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	SELECT		A.STDS_YMTH,		/* 기준년월 */
+	           	A.EMPL_NUMB,		/* 사원번호 */
+	            B.EMPL_NAME,		/* 사원명 */
+	            A.DEPT_CODE,		/* 부서코드 */
+	            SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME,					/* 부서명 */
+	            B.OPOS_CODE,		/* 직위코드 */
+	            SF_GET_COMMNAME('OPOS_CODE',B.OPOS_CODE) AS OPOS_NAME,		/* 직위명 */
+	            A.COMR_MNNO,		/* 관리번호 */
+	            A.COMR_SEQN,		/* 일련번호 */
+	            A.PBCM_YSNO,		/* 공동전산여부 */
+	            A.STCM_YSNO,		/* 예비전산여부 */
+	            A.OTCM_YSNO,		/* 기타전산여부 */
+	            A.USEX_CODE,		/* 용도코드 */
+	            A.TYPE_CODE,		/* 종류코드 */
+	            A.MODE_NAME,		/* 모델명 */
+	            A.CPUX_NAME,		/* CPU명 */
+	            A.RAMX_NAME,		/* RAM명 */
+	            A.HDDX_NAME,		/* HDD명 */
+	            A.OSXX_NAME,		/* OS명 */
+	            A.PCHS_YMTH,		/* 구입년월 */
+	            A.STRG_CODE,		/* 보관코드 */
+	            A.REMK_100X			/* 비고 */
+	FROM		CW_COMRMN A		/* [전산자원관리 테이블] */
+	LEFT OUTER JOIN  HR_MASTXM B			/* [인사마스터 테이블] 20161230 수정*/
+	ON  		A.EMPL_NUMB = B.EMPL_NUMB					/* 사원번호 */      
+	]]>
+	WHERE 1=1 /* 20161230 수정*/
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+    B.DEPT_CODE LIKE '%'|| #DEPT_CODE# || '%'				/* 부서코드 */
+   	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+	A.EMPL_NUMB LIKE '%' || #EMPL_NUMB# || '%'				/* 사원번호 */
+    </isNotEmpty>	
+	<isNotEmpty prepend="AND" property="STDS_YMTH">
+	A.STDS_YMTH LIKE '%' || #STDS_YMTH# || '%' 				/* 기준년월 */
+	</isNotEmpty>		   
+	ORDER BY  A.INST_DATE									/* 입력일자 */
+	</select>
+	
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="WFMF0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	SELECT	   	DECODE(COUNT(*),0,'N','Y')	BEFO_DTYN								/* 전월데이터 유무 */
+	FROM		CW_COMRMN															/* [전산자원관리 테이블] */
+	WHERE  		STDS_YMTH =  #STDS_YMTH#	/* 기준년월 */	      
+	]]> 
+	</select>
+		
+		
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="WFMF0010.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	SELECT	   	COMR_MNNO					/* 사원번호 */
+	FROM		CW_COMRMN					/* [전산자원관리 테이블] */
+	WHERE  		STDS_YMTH = #STDS_YMTH#		/* 기준월 */     
+	]]>
+	</select>
+	
+			
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 저장
+	 파라미터 : 
+	-->
+	<insert id="WFMF0010.SAVE00" parameterClass="hashmap">
+	
+	<selectKey keyProperty="COMR_SEQN" resultClass="String">
+		<![CDATA[
+		  SELECT 	NVL(MAX(COMR_SEQN),0) + 1  /*전산자원관리 일련번호 seq*/
+	      FROM 		CW_COMRMN
+		]]>
+	</selectKey>
+	
+	<![CDATA[
+ 	INSERT INTO CW_COMRMN 		/* WFMF0010.SAVE00 전산자원관리 입력 [전산자원관리] */
+ 	(							
+        STDS_YMTH				/* 기준년도 */
+       	, EMPL_NUMB				/* 사원번호 */
+       	, DEPT_CODE				/* 부서코드 */
+       	, COMR_SEQN				/* 일련번호 */
+       	, COMR_MNNO				/* 관련번호 */
+       	, PBCM_YSNO				/* 공동전산여부 */
+       	, STCM_YSNO				/* 예비전산여부 */
+       	, OTCM_YSNO				/* 기타전산여부 */
+       	, USEX_CODE				/* 용도코드 */
+       	, TYPE_CODE				/* 종류코드 */
+       	, MODE_NAME				/* 모델명 */
+       	, CPUX_NAME				/* CPU명 */
+       	, RAMX_NAME				/* RAM명 */
+       	, HDDX_NAME				/* HDD명 */
+       	, OSXX_NAME				/* OS명 */
+       	, PCHS_YMTH				/* 구입년월 */
+       	, STRG_CODE				/* 보관코드 */
+       	, REMK_100X				/* 비고100 */
+       	, INST_USID				/* 입력작업자 */
+       	, INST_DATE				/* 입력일시 */
+       	, UPDT_USID				/* 수정작업자 */
+       	, UPDT_DATE				/* 수정일시 */
+  	) 
+  	VALUES 
+  	(
+         #STDS_YMTH#			/* 기준년도 */
+       , #EMPL_NUMB#			/* 사원번호 */
+       , #DEPT_CODE#			/* 부서코드 */
+       , #COMR_SEQN#			/* 일련번호 */
+       , #COMR_MNNO#			/* 관련번호 */
+       , #PBCM_YSNO#			/* 공동전산여부 */
+       , #STCM_YSNO#			/* 예비전산여부 */
+       , #OTCM_YSNO#			/* 기타전산여부 */
+       , #USEX_CODE#			/* 용도코드 */
+       , #TYPE_CODE#			/* 종류코드 */
+       , #MODE_NAME#			/* 모델명 */
+       , #CPUX_NAME#			/* CPU명 */
+       , #RAMX_NAME#			/* RAM명 */
+       , #HDDX_NAME#			/* HDD명 */
+       , #OSXX_NAME#			/* OS명 */
+       , #PCHS_YMTH#			/* 구입년월 */
+       , #STRG_CODE#			/* 보관코드 */
+       , #REMK_100X#			/* 비고100 */
+       , #UPDT_USID#			/* 입력작업자 */
+       , SYSDATE				/* 입력일시 */
+       , #UPDT_USID#			/* 수정작업자 */
+       , SYSDATE				/* 수정일시 */
+  	)
+	]]>
+	</insert>
+
+
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 저장
+	 파라미터 : 
+	-->
+	<insert id="WFMF0010.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+	BEGIN
+	
+	DELETE 	FROM CW_COMRMN
+	WHERE	STDS_YMTH = #STDS_YMTH2# ;	
+	
+   	INSERT INTO CW_COMRMN 				/* WFMF0010.SAVE01 전산자원관리 전월 데이터 입력 [전산자원관리] */
+   	(
+             	STDS_YMTH				/* 기준년도 */
+           		, EMPL_NUMB				/* 사원번호 */
+           		, DEPT_CODE				/* 부서코드 */
+           		, COMR_SEQN				/* 인련번호 */
+           		, COMR_MNNO				/* 관련번호 */
+           		, PBCM_YSNO				/* 공동전산여부 */
+           		, STCM_YSNO				/* 예비전산여부 */
+           		, OTCM_YSNO				/* 기타전산여부 */
+           		, USEX_CODE				/* 용도코드 */
+           		, TYPE_CODE				/* 종류코드 */
+           		, MODE_NAME				/* 모델명 */
+           		, CPUX_NAME				/* CPU명 */
+           		, RAMX_NAME				/* RAM명 */
+           		, HDDX_NAME				/* HDD명 */
+           		, OSXX_NAME				/* OS명 */
+           		, PCHS_YMTH				/* 구입년월 */
+           		, STRG_CODE				/* 보관코드 */
+           		, REMK_100X				/* 비고100 */
+           		, INST_USID				/* 입력작업자 */
+           		, INST_DATE				/* 입력일시 */
+           		, UPDT_USID				/* 수정작업자 */
+           		, UPDT_DATE				/* 수정일시 */
+    )
+	SELECT		#STDS_YMTH2#			/* 대상년월 */
+              	, EMPL_NUMB				/* 사원번호 */
+              	, DEPT_CODE				/* 부서코드 */
+              	, COMR_SEQN				/* 인련번호 */
+              	, COMR_MNNO				/* 관련번호 */
+              	, PBCM_YSNO				/* 공동전산여부 */
+              	, STCM_YSNO				/* 예비전산여부 */
+              	, OTCM_YSNO				/* 기타전산여부 */
+              	, USEX_CODE				/* 용도코드 */
+              	, TYPE_CODE				/* 종류코드 */
+              	, MODE_NAME				/* 모델명 */
+              	, CPUX_NAME				/* CPU명 */
+              	, RAMX_NAME				/* RAM명 */
+              	, HDDX_NAME				/* HDD명 */
+              	, OSXX_NAME				/* OS명 */
+              	, PCHS_YMTH				/* 구입년월 */
+              	, STRG_CODE				/* 보관코드 */
+              	, REMK_100X				/* 비고100 */
+              	, #UPDT_USID#			/* 입력작업자 */
+              	, SYSDATE				/* 입력일시 */
+              	, #UPDT_USID#			/* 수정작업자 */
+              	, SYSDATE				/* 수정일시 */
+     FROM		CW_COMRMN				/* [전산자원관리 테이블] */
+     WHERE		STDS_YMTH = #STDS_YMTH1#	/* 기준년월 */
+	 ;
+						     
+     END;
+	]]> 
+	</insert>
+	
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 수정
+	 파라미터 : 
+	-->
+	<update id="WFMF0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+    UPDATE		CW_COMRMN					/* WFMF0010.UPDATE00 전산자원관리 수정 [전산자원관리] */
+    SET   		COMR_MNNO = #COMR_MNNO#		/* 관리번호 	*/
+    			, EMPL_NUMB = #EMPL_NUMB#	/* 사원번호 	*/
+				, PBCM_YSNO = #PBCM_YSNO#	/* 공동전산여부 */
+				, STCM_YSNO = #STCM_YSNO#	/* 예비전산여부 */
+				, OTCM_YSNO = #OTCM_YSNO#	/* 기타전산여부 */
+				, USEX_CODE = #USEX_CODE#	/* 용도코드 	*/
+				, TYPE_CODE = #TYPE_CODE#	/* 종류모드 	*/
+				, MODE_NAME = #MODE_NAME#	/* 모델명 		*/
+				, CPUX_NAME = #CPUX_NAME#	/* CPU명 	*/
+				, RAMX_NAME = #RAMX_NAME#	/* RAM명		*/
+				, HDDX_NAME = #HDDX_NAME#	/* HDD명 	*/
+				, OSXX_NAME = #OSXX_NAME#	/* OS명 		*/
+				, PCHS_YMTH = #PCHS_YMTH#	/* 구입년월 	*/
+				, STRG_CODE = #STRG_CODE#	/* 보관코드 	*/
+				, REMK_100X = #REMK_100X#	/* 비고100 	*/
+				, UPDT_USID = #UPDT_USID#	/* 수정작업자 	*/
+				, UPDT_DATE = SYSDATE		/* 수정일시 	*/
+     WHERE 		STDS_YMTH = #STDS_YMTH#		/* 기준년월	*/
+     AND		COMR_SEQN = #COMR_SEQN# 	/* 일련번호	*/
+     AND		DEPT_CODE = #DEPT_CODE#		/* 부서코드	*/
+	]]>
+	</update>
+	
+
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 삭제
+	 파라미터 : 
+	-->
+	<delete id="WFMF0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+	DELETE		FROM CW_COMRMN			/* WFMF0010.DELETE00 전산자원관리 삭제 [전산자원관리] */
+	WHERE 		STDS_YMTH = #STDS_YMTH#	/* 기준년도 */
+	AND			DEPT_CODE = #DEPT_CODE# /* 관리부서  20161230 수정*/  
+	AND			COMR_SEQN = #COMR_SEQN# /* 일련번호 */  
+	]]>
+	</delete>
+	
+	<!--
+	 작 성 자 : 김용만
+	 작 성 일 : 2016.09.08
+	 내    용 : 전산자원관리 테이블 삭제
+	 파라미터 : 
+	-->
+	<delete id="WFMF0010.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+	DELETE		FROM CW_COMRMN			/* WFMF0010.DELETE01 전산자원관리 삭제 [전산자원관리] */
+	WHERE		STDS_YMTH = #STDS_YMTH#	/* 기준년도 */
+	]]>
+	</delete>
+		
+
+</sqlMap>

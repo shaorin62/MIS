@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TXMB0010">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 권미영
+    작  성  일 : 2016.08.03
+    내      용 : 전자세금계산서 조회
+********************************************************************************/
+-->
+	<select id="TXMB0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+			SELECT /* TXMB0010.SEARCH00.전자세금계산서 조회 */
+			        A.ACCT_GUBN     /* 회계구분_사업장 */
+                   ,A.VATX_GUBN     /* 매입매출구분 */
+                   ,A.ETAX_APNO     /* 전자세금계산서승인번호 */
+                   ,A.ETAX_NUMB     /* 전자세금계산서번호 */
+                   ,A.ETAX_DATE     /* 전자세금계산서작성일 */
+                   ,A.ISSU_DATE     /* 발급일 */
+                   ,A.TRNS_DATE     /* 전송일 */
+                   ,A.PROV_BSNS     /* 공급자사업자등록번호 */
+                   ,A.PROV_JONG     /* 공급자종사업장번호 */
+                   ,A.PROV_NAME     /* 공급자상호 */
+                   ,A.PROV_BOSS     /* 공급자대표자명 */
+                   ,A.HIMX_BSNS     /* 공급받는자사업자등록번호 */
+                   ,A.HIMX_JONG     /* 공급받는자종사업장번호 */
+                   ,A.HIMX_NAME     /* 공급받는자상호 */
+                   ,A.HIMX_BOSS     /* 공급받는자대표자 */
+                   ,A.SUMX_AMNT     /* 합계금액 */
+                   ,A.SUPP_AMNT     /* 공급가액 */
+                   ,A.TAXX_AMTX     /* 세액 */
+                   ,A.ETAX_CLAS     /* 전자세금계산서분류 */
+                   ,A.ETAX_TYPE     /* 전자세금계산서종류 */
+                   ,A.TRNS_TYPE     /* 발급유형 */
+                   ,A.REMK_NOTE     /* 비고메모 */
+                   ,A.REMK_GITA     /* 비고기타 */
+                   ,A.RECE_BILL     /* 영수청구구분 */
+                   ,A.PROV_MAIL     /* 공급자이메일 */
+                   ,A.HIMX_MAI1     /* 공급받는자이메일1 */
+                   ,A.HIMX_MAI2     /* 공급받는자이메일2 */
+                   ,A.ITEM_DATE     /* 품목일자 */
+                   ,A.ITEM_NAME     /* 품목명 */
+                   ,A.ITEM_STRD     /* 품목규격 */
+                   ,A.ITEM_QTYX     /* 품목수량 */
+                   ,A.ITEM_PRIC     /* 품목단가 */
+                   ,A.ITEM_SUPP     /* 품목공급가액 */
+                   ,A.ITEM_VATX     /* 품목세액 */
+                   ,A.ITEM_REMK     /* 품목비고 */
+	          FROM TA_ETAXUP A      /* [전자세금계산서E세로] */
+		]]>
+			<dynamic prepend="WHERE">
+				<isNotEmpty prepend="AND" property="ACCT_GUBN">
+					A.ACCT_GUBN = #ACCT_GUBN#     /* 회계구분_사업장 */
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="VATX_GUBN">
+					A.VATX_GUBN = #VATX_GUBN#     /* 매입매출구분 */
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="BASE_DAT1">
+				<![CDATA[
+					A.ETAX_DATE >= #BASE_DAT1#	  /* 전자세금계산서작성일 */
+				]]>
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="BASE_DAT2">
+				<![CDATA[
+					A.ETAX_DATE <= #BASE_DAT2#	  /* 전자세금계산서작성일 */
+				]]>
+				</isNotEmpty>
+			</dynamic>
+	         ORDER BY ACCT_GUBN, VATX_GUBN, ETAX_DATE DESC, ETAX_NUMB
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 권미영
+    작  성  일 : 2016.08.03
+    내      용 : 전자세금계산서 저장
+********************************************************************************/
+-->
+	<insert id="TXMB0010.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE /* TXMB0010.SAVE00.전자세금계산서 저장*/
+			sCNT          INT;
+			sETAX_NUMB    INT;
+	
+		BEGIN
+	
+			SELECT Count(0)
+			  INTO sCNT
+			  FROM TA_ETAXUP
+			 WHERE ETAX_APNO = #ETAX_APNO#;
+	
+			IF sCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, '이미 등록된 부가세 대사 자료가 존재합니다! 승인번호[' || #ETAX_APNO# || ']');
+			END IF;
+	
+			SELECT NVL(MAX(ETAX_NUMB), 0) + 1
+			  INTO sETAX_NUMB
+			  FROM TA_ETAXUP
+			 WHERE ACCT_GUBN = #ACCT_GUBN#
+			   AND VATX_GUBN = #VATX_GUBN#;
+	
+        INSERT INTO TA_ETAXUP ( /* [전자세금계산서E세로] */
+               ACCT_GUBN        /* 회계구분_사업장 */
+              ,VATX_GUBN        /* 매입매출구분 */
+              ,ETAX_APNO        /* 전자세금계산서승인번호 */
+              ,ETAX_NUMB        /* 전자세금계산서번호 */
+              ,ETAX_DATE        /* 전자세금계산서작성일 */
+              ,ISSU_DATE        /* 발급일 */
+              ,TRNS_DATE        /* 전송일 */
+              ,PROV_BSNS        /* 공급자사업자등록번호 */
+              ,PROV_JONG        /* 공급자종사업장번호 */
+              ,PROV_NAME        /* 공급자상호 */
+              ,PROV_BOSS        /* 공급자대표자명 */
+              ,HIMX_BSNS        /* 공급받는자사업자등록번호 */
+              ,HIMX_JONG        /* 공급받는자종사업장번호 */
+              ,HIMX_NAME        /* 공급받는자상호 */
+              ,HIMX_BOSS        /* 공급받는자대표자 */
+              ,SUMX_AMNT        /* 합계금액 */
+              ,SUPP_AMNT        /* 공급가액 */
+              ,TAXX_AMTX        /* 세액 */
+              ,ETAX_CLAS        /* 전자세금계산서분류 */
+              ,ETAX_TYPE        /* 전자세금계산서종류 */
+              ,TRNS_TYPE        /* 발급유형 */
+              ,REMK_NOTE        /* 비고메모 */
+              ,REMK_GITA        /* 비고기타 */
+              ,RECE_BILL        /* 영수청구구분 */
+              ,PROV_MAIL        /* 공급자이메일 */
+              ,HIMX_MAI1        /* 공급받는자이메일1 */
+              ,HIMX_MAI2        /* 공급받는자이메일2 */
+              ,ITEM_DATE        /* 품목일자 */
+              ,ITEM_NAME        /* 품목명 */
+              ,ITEM_STRD        /* 품목규격 */
+              ,ITEM_QTYX        /* 품목수량 */
+              ,ITEM_PRIC        /* 품목단가 */
+              ,ITEM_SUPP        /* 품목공급가액 */
+              ,ITEM_VATX        /* 품목세액 */
+              ,ITEM_REMK        /* 품목비고 */
+              ,INST_USID        /* 입력작업자 */
+              ,INST_DATE        /* 입력일시 */
+              ,UPDT_USID        /* 수정작업자 */
+              ,UPDT_DATE        /* 수정일시 */
+              )
+       VALUES (
+               #ACCT_GUBN#       /* 회계구분_사업장 */
+              ,#VATX_GUBN#       /* 매입매출구분 */
+              ,#ETAX_APNO#       /* 전자세금계산서승인번호 */
+              ,sETAX_NUMB       /* 전자세금계산서번호 */
+              ,#ETAX_DATE#       /* 전자세금계산서작성일 */
+              ,#ISSU_DATE#       /* 발급일 */
+              ,#TRNS_DATE#       /* 전송일 */
+              ,#PROV_BSNS#       /* 공급자사업자등록번호 */
+              ,#PROV_JONG#       /* 공급자종사업장번호 */
+              ,#PROV_NAME#       /* 공급자상호 */
+              ,#PROV_BOSS#       /* 공급자대표자명 */
+              ,#HIMX_BSNS#       /* 공급받는자사업자등록번호 */
+              ,#HIMX_JONG#       /* 공급받는자종사업장번호 */
+              ,#HIMX_NAME#       /* 공급받는자상호 */
+              ,#HIMX_BOSS#       /* 공급받는자대표자 */
+              ,#SUMX_AMNT#       /* 합계금액 */
+              ,#SUPP_AMNT#       /* 공급가액 */
+              ,#TAXX_AMTX#       /* 세액 */
+              ,#ETAX_CLAS#       /* 전자세금계산서분류 */
+              ,#ETAX_TYPE#       /* 전자세금계산서종류 */
+              ,#TRNS_TYPE#       /* 발급유형 */
+              ,#REMK_NOTE#       /* 비고메모 */
+              ,#REMK_GITA#       /* 비고기타 */
+              ,#RECE_BILL#       /* 영수청구구분 */
+              ,#PROV_MAIL#       /* 공급자이메일 */
+              ,#HIMX_MAI1#       /* 공급받는자이메일1 */
+              ,#HIMX_MAI2#       /* 공급받는자이메일2 */
+              ,#ITEM_DATE#       /* 품목일자 */
+              ,#ITEM_NAME#       /* 품목명 */
+              ,#ITEM_STRD#       /* 품목규격 */
+              ,#ITEM_QTYX#       /* 품목수량 */
+              ,#ITEM_PRIC#       /* 품목단가 */
+              ,#ITEM_SUPP#       /* 품목공급가액 */
+              ,#ITEM_VATX#       /* 품목세액 */
+              ,#ITEM_REMK#       /* 품목비고 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE           /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE           /* 수정일시 */
+              );
+	
+	  END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 권미영
+    작  성  일 : 2016.08.03
+    내      용 : 전자세금계산서 삭제
+********************************************************************************/
+-->
+	<delete id="TXMB0010.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+        DELETE FROM TA_ETAXUP            /* TXMB0010.DELETE00.전자세금계산서 삭제 */ /* [전자세금계산서E세로] */
+         WHERE ACCT_GUBN = #ACCT_GUBN#   /* 회계구분_사업장 */
+           AND VATX_GUBN = #VATX_GUBN#   /* 매입매출구분 */
+           AND ETAX_APNO = #ETAX_APNO#   /* 전자세금계산서승인번호 */
+		]]>
+	</delete>
+</sqlMap>

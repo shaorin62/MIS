@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMA0100">
+<!-- 
+/*******************************************************************************
+   작 성 자 : 오혜성
+   작 성 일 : 2016.07.13
+   내    용 : 환율 조회
+********************************************************************************/
+-->
+	<select id="FAMA0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+		SELECT	 /* FAMA0100.SEARCH00 환율정보 조회 */ 
+			
+				A.STDS_DATE      /*기준일자*/
+	             , A.CURR_GUBN      /*통화코드*/
+	             , A.STND_RATE      /*기준환율*/
+	             , A.USDS_RATE      /*USD환산율*/
+	             , A.NOTI_RATE      /*고시환율*/
+	             , A.VALU_RATE      /*평가환율*/
+	        FROM TA_EXRTXM A
+	      	WHERE 1 = 1
+	          	AND A.STDS_DATE BETWEEN NVL(#STND_STDT#, '00000000') AND NVL(#STND_ENDT#, '99999999')
+	    ]]>
+	    <isNotEmpty prepend="AND" property="CURR_GUBN">
+	    	<![CDATA[
+				A.CURR_GUBN = NVL(#CURR_GUBN#, A.CURR_GUBN) /*통화구분*/
+			]]>
+		</isNotEmpty>
+	          	
+	    <![CDATA[
+	        ORDER BY A.STDS_DATE DESC
+	       
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 오혜성
+   작 성 일 : 2016.07.13
+   내    용 : 환율 저장
+********************************************************************************/
+-->
+	<insert id="FAMA0100.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+        INSERT /* FAMA0100.UPDATE00 환율정보 저장*/
+        INTO TA_EXRTXM ( 
+             STDS_DATE      /* 기준일 */
+            ,CURR_GUBN      /* 통화구분 */
+            ,STND_RATE      /* 기준환율 */
+            ,USDS_RATE      /* USD환산율 */
+            ,NOTI_RATE      /* 고시환율 */
+            ,VALU_RATE      /* 평가환율 */
+            ,INST_USID      /* 입력작업자 */
+            ,INST_DATE      /* 입력일시 */
+            ,UPDT_USID      /* 수정작업자 */
+            ,UPDT_DATE      /* 수정일시 */
+            ) 
+        VALUES 
+            ( 
+             #STDS_DATE#    /* 기준일 */
+            ,#CURR_GUBN#    /* 통화구분 */
+            ,#STND_RATE#    /* 기준환율 */
+            ,#USDS_RATE#    /* USD환산율 */
+            ,#NOTI_RATE#    /* 고시환율 */
+            ,#VALU_RATE#    /* 평가환율 */
+            ,#UPDT_USID#    /* 입력작업자 */
+            ,SYSDATE        /* 입력일시 */
+            ,#UPDT_USID#    /* 수정작업자 */
+            ,SYSDATE        /* 수정일시 */
+            ) 
+	
+	]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 오혜성
+   작 성 일 : 2016.07.13
+   내    용 : 환율 수정
+********************************************************************************/
+-->
+	<update id="FAMA0100.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		       
+        UPDATE /* FAMA0100.UPDATE00 환율정보 수정*/ 
+        TA_EXRTXM
+           SET  STND_RATE = #STND_RATE#  /* 기준환율 */
+               ,USDS_RATE = #USDS_RATE#  /* USD환산율 */
+               ,NOTI_RATE = #NOTI_RATE#  /* 고시환율 */
+               ,VALU_RATE = #VALU_RATE#  /* 평가환율 */
+               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+               ,UPDT_DATE = SYSDATE      /* 수정일시 */
+         WHERE STDS_DATE  = #STDS_DATE#  /* 기준일 */
+           AND CURR_GUBN  = #CURR_GUBN#  /* 통화구분 */
+           
+    ]]>
+	</update>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 오혜성
+   작 성 일 : 2016.07.13
+   내    용 : 환율 삭제
+********************************************************************************/
+-->
+	<delete id="FAMA0100.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		
+        DELETE /* FAMA0100.DELETE00 환율정보 삭제 */
+        TA_EXRTXM
+         WHERE 1 = 1
+           AND STDS_DATE  = #STDS_DATE#  /* 기준일 */ 
+           AND CURR_GUBN  = #CURR_GUBN#  /* 통화구분 */ 
+
+	]]>
+	</delete>
+<!-- 
+/*******************************************************************************
+   작 성 자 : 오혜성
+   작 성 일 : 2016.07.13
+   내    용 : 환율 연동 << 미적용 >>
+********************************************************************************/
+-->
+	<insert id="FAMA0100.GET_EXCHANGE_RATE" parameterClass="hashmap">
+		<![CDATA[
+		BEGIN
+		
+			NULL;
+			
+            DELETE FROM TB_MONYRT
+             WHERE STND_DATE = #STND_DATE#
+            ;
+    
+            INSERT INTO TB_MONYRT
+            (
+                   STND_DATE   /*기준일자*/
+                 , CURR_GUBN   /*통화코드*/
+                 , STND_RATE   /*기준환율*/
+                 , USDS_RATE   /*USD환산율*/
+                 , INST_USID   /*입력작업자*/
+                 , INST_DATE   /*입력일시*/
+                 , UPDT_USID   /*수정작업자*/
+                 , UPDT_DATE   /*수정일시*/
+            )
+            SELECT A.REGDATE    /*고시일자*/
+                 , B.CODD_VALU  /*화폐코드*/
+                 , CASE WHEN A.CURRNAME = 'JPY' THEN A.BASICRATE / 100  /* JPY100 환산 */
+                        ELSE A.BASICRATE END  /*기준환율*/
+                 , A.USDTRAN      /*대미환산율*/
+                 , #UPDT_USID#    /*등록자*/
+                 , SYSDATE        /*등록일시*/
+                 , #UPDT_USID#    /*수정자*/
+                 , SYSDATE        /*수정일시*/
+              FROM NSEACCIF.BICNET_CBS_AWFB_FXRATE A
+              JOIN TM_CODEXD B
+                ON A.CURRNAME = B.CODD_REF1
+               AND B.CODH_FLNM = 'CURR_GUBN'
+               AND B.CODD_YSNO = '1'
+             WHERE 1 = 1
+               AND A.REGDATE = #STND_DATE#
+            ;
+    
+	    END;
+		]]>
+	</insert>
+	
+
+</sqlMap>

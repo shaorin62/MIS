@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="BC_NDS" onload="fn_FormLoadSetting" position="absolute" left="0" width="1156" top="0" height="580" scrollbars="autovert" onbeforeclose="fn_BeforeWorkFrameClosing" onclose="fn_WorkFrameClose" titletext="[솔루션]하단컨텐츠" style="padding:0 0 10 0;">
+    <Layouts>
+      <Layout>
+        <Button id="Button00" taborder="1" text="경영실적현황" cssclass="btn_MF_content" left="25" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont01.png') center middle;" enable="true"/>
+        <Button id="Button01" taborder="2" text="WORK알림" cssclass="btn_MF_content" left="219" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont02.png') center middle;"/>
+        <Button id="Button02" taborder="3" text="공지사항" cssclass="btn_MF_content" left="413" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont13.png') center middle;"/>
+        <Button id="Button03" taborder="4" text="담당업무지원팀" cssclass="btn_MF_content" left="607" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont14.png') center middle;"/>
+        <Button id="Button04" taborder="5" text="테마설정" cssclass="btn_MF_content" left="801" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont15.png') center middle;"/>
+        <Button id="Button05" taborder="6" text="출장신청" cssclass="btn_MF_content" left="995" top="5" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont08.png') center middle;"/>
+        <Button id="Button06" taborder="7" text="경조금신청" cssclass="btn_MF_content" left="25" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont09.png') center middle;"/>
+        <Button id="Button07" taborder="8" text="학자금신청" cssclass="btn_MF_content" left="219" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont10.png') center middle;"/>
+        <Button id="Button08" taborder="9" text="법인카드&#13;&#10;미처리신청" cssclass="btn_MF_content" left="413" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont04.png') center middle;"/>
+        <Button id="Button09" taborder="10" text="임시전표" cssclass="btn_MF_content" left="607" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont03.png') center middle;" enable="true"/>
+        <Button id="Button10" taborder="11" text="지급/수금" cssclass="btn_MF_content" left="801" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont16.png') center middle;"/>
+        <Button id="Button11" taborder="12" text="금여/상여" cssclass="btn_MF_content" left="995" top="195" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont06.png') center middle;"/>
+        <Static id="Static24" taborder="13" text="h 45" visible="false" left="499" top="150" width="284" height="45" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="15" left="214" top="0" width="31" height="36" cssclass="sta_MF_number" text="1"/>
+        <Static id="Static02" taborder="16" cssclass="sta_MF_number" left="408" top="190" width="31" height="36" text="3"/>
+        <Static id="Static03" taborder="17" cssclass="sta_MF_number" left="602" top="190" width="31" height="36" onclick="Static03_onclick" text="2"/>
+        <CheckBox id="CheckBox00" taborder="18" left="146" top="131" width="24" height="24" cssclass="che_MF_C"/>
+        <Button id="Button65" taborder="19" text="취소" cssclass="btn_POP_CRUD" left="1073" top="545" width="62" height="24" visible="true"/>
+        <Button id="Button12" taborder="20" text="저장" cssclass="btn_POP_CRUD" left="1008" top="545" width="62" height="24" onclick="Button12_onclick"/>
+        <CheckBox id="CheckBox01" taborder="21" cssclass="che_MF_C" left="340" top="131" width="24" height="24"/>
+        <CheckBox id="CheckBox02" taborder="22" cssclass="che_MF_C" left="534" top="131" width="24" height="24"/>
+        <CheckBox id="CheckBox03" taborder="23" cssclass="che_MF_C" left="728" top="131" width="24" height="24"/>
+        <CheckBox id="CheckBox04" taborder="24" cssclass="che_MF_C" left="922" top="131" width="24" height="24"/>
+        <CheckBox id="CheckBox05" taborder="25" cssclass="che_MF_C" left="1116" top="131" width="24" height="24"/>
+        <CheckBox id="CheckBox06" taborder="26" cssclass="che_MF_C" left="146" top="321" width="24" height="24"/>
+        <CheckBox id="CheckBox07" taborder="27" cssclass="che_MF_C" left="340" top="321" width="24" height="24"/>
+        <CheckBox id="CheckBox08" taborder="28" cssclass="che_MF_C" left="534" top="321" width="24" height="24"/>
+        <CheckBox id="CheckBox09" taborder="29" cssclass="che_MF_C" left="728" top="321" width="24" height="24"/>
+        <CheckBox id="CheckBox10" taborder="30" cssclass="che_MF_C" left="922" top="321" width="24" height="24"/>
+        <CheckBox id="CheckBox11" taborder="31" cssclass="che_MF_C" left="1116" top="321" width="24" height="24"/>
+        <Button id="Button13" taborder="33" text="원천징수영수증" cssclass="btn_MF_content" left="25" top="385" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont07.png') center middle;"/>
+        <Button id="Button14" taborder="34" text="나의PC" cssclass="btn_MF_content" left="219" top="385" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont17.png') center middle;"/>
+        <Button id="Button15" taborder="35" text="팀근태" cssclass="btn_MF_content" left="413" top="385" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont18.png') center middle;"/>
+        <Button id="Button16" taborder="36" text="재직증명서" cssclass="btn_MF_content" left="607" top="385" width="140" height="145" style="background:#ffffffff URL('theme://images/ico_MF_cont05.png') center middle;"/>
+        <Static id="Static05" taborder="39" text="h 45" visible="false" left="499" top="340" width="284" height="45" style="background:#fb7b7b7a;"/>
+        <CheckBox id="CheckBox12" taborder="40" cssclass="che_MF_C" left="146" top="511" width="24" height="24"/>
+        <CheckBox id="CheckBox13" taborder="41" cssclass="che_MF_C" left="340" top="511" width="24" height="24"/>
+        <CheckBox id="CheckBox14" taborder="42" cssclass="che_MF_C" left="534" top="511" width="24" height="24"/>
+        <CheckBox id="CheckBox15" taborder="43" cssclass="che_MF_C" left="728" top="511" width="24" height="24"/>
+        <Static id="Static06" taborder="46" text="h 10" visible="false" left="945" top="569" width="196" height="11" style="background:#fb7b7b7a;"/>
+        <Static id="Static04" taborder="47" text="2" onclick="Static03_onclick" cssclass="sta_MF_number" left="796" top="190" width="31" height="36"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="Dataset01">
+        <ColumnInfo>
+          <Column id="Column0" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[
+this.Button12_onclick = function(obj:Button,  e:nexacro.ClickEventInfo)
+{
+	
+}
+]]></Script>
+  </Form>
+</FDL>

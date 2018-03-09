@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TMMA0080">
+    <typeAlias alias="egovMap"
+        type="egovframework.rte.psl.dataaccess.util.EgovMap" />                        
+
+    <select id="TMMA0080.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.LinkedHashMap">
+        <![CDATA[
+            SELECT /* TMMA0080.SEARCH00 */
+                   POST_NUMB                  /* 우편번호 */
+                 , DOROCODE AS POST_RDCD      /* 도로명코드 */
+                 , POST_SRAL AS POST_SEQN     /* 일련번호 */
+                 , SIDO  AS POST_SIDO         /* 시도 */
+                 , SIGUNGU AS POST_SIGU       /* 시군구 */
+                 , UPMYUN  AS POST_DONG       /* 읍면동 */
+                 , DORONAME AS POST_ROAD      /* 도로명 */
+              FROM TM_NWPOST
+             WHERE SIDO||SIGUNGU||UPMYUN||DORONAME LIKE '%' || #sPOST_ADDR# || '%'
+        ]]>
+    </select>
+
+    <insert id="TMMA0080.SAVE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+			INSERT INTO TM_NWPOST ( /* TMMA0080.SAVE00 */
+			        BUIL_MNNO      /* 건물관리번호 */    
+			       ,POST_NUMB      /* 우편번호 */
+			       ,DOROCODE       /* 도로명코드 */    
+			       ,POST_SRAL      /* 일련번호 */
+			       ,SIDO           /* 시도 */
+			       ,SIGUNGU        /* 시군구 */
+			       ,UPMYUN         /* 읍면동 */
+			       ,DOROENG        /* 도로명 */
+			       )
+			VALUES (
+			          (SELECT NVL(MAX(BUIL_MNNO)+1,00) AS BUIL_MNNO FROM TM_NWPOST)
+			       ,#POST_NUMB#
+			       ,#POST_RDCD#
+			       ,#POST_SEQN#
+			       ,#POST_SIDO#
+			       ,#POST_SIGU#
+			       ,#POST_DONG#
+			       ,#POST_ROAD#
+			       )
+        ]]>
+    </insert>
+
+    <update id="TMMA0080.UPDATE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+            UPDATE TM_NWPOST   /* TMMA0080.UPDATE00 */
+               SET  SIDO    = #POST_SIDO#     /* 시도 */
+                   ,SIGUNGU = #POST_SIGU#     /* 시군구 */
+                   ,UPMYUN  = #POST_DONG#     /* 읍면동 */
+                   ,DOROENG = #POST_ROAD#     /* 도로명 */
+             WHERE POST_NUMB  = #POST_NUMB#   /* 우편번호 */
+               AND DOROCODE   = #DOROCODE#    /* 도로명코드 */
+               AND POST_SRAL  = #POST_SRAL#   /* 일련번호 */
+        ]]>
+    </update>
+
+    <delete id="TMMA0080.DELETE00" parameterClass="java.util.HashMap">
+        <![CDATA[
+            DELETE FROM TM_NWPOST  /* TMMA0080.DELETE00 */
+             WHERE POST_NUMB  = #POST_NUMB#   /* 우편번호 */
+               AND DOROCODE   = #DOROCODE#    /* 도로명코드 */
+               AND POST_SRAL  = #POST_SRAL#   /* 일련번호 */
+        ]]>
+    </delete>
+
+</sqlMap>

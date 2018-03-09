@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMD0080">
+
+<!--
+ *   프로그램명 : 승진기간(직급별) 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.08.03
+ *   작 성 자 : 박철영
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 박철영
+	 작 성 일 : 2016.08.03
+	 내    용 : 발령상세 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="HRMD0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT	B.COMD_CDNM	AS CPOS_NAME2
+				,	C.COMD_CDNM	AS CPOS_NAME
+				,	ROUND(AVG(ROUND((TO_DATE(A.APNT_DATE) - TO_DATE(A.pAPNT_DATE)) / 365.00 , 2)),2)	AS APNT_DIFF
+			FROM (
+				SELECT	A.EMPL_NUMB
+					,	LEAD(MIN(A.APNT_DATE), 1, NULL) OVER (PARTITION BY A.EMPL_NUMB ORDER BY A.EMPL_NUMB, MIN(A.APNT_DATE) DESC) AS pAPNT_DATE
+					,	MIN(A.APNT_DATE) AS APNT_DATE
+					,	LEAD(C.REF9_FILD, 1, NULL) OVER (PARTITION BY A.EMPL_NUMB ORDER BY A.EMPL_NUMB, MIN(A.APNT_DATE) DESC) AS pCPOS_CODE
+					,	C.REF9_FILD AS CPOS_CODE
+				FROM	HR_APPOXD A
+				INNER JOIN HR_MASTXM B ON A.EMPL_NUMB=B.EMPL_NUMB
+				INNER JOIN TM_CODEXD C ON C.COMM_CODE = 'CPOS_CODE' AND A.CPOS_CODE=C.COMD_CODE
+				WHERE B.WODN_CODE = '1' 
+				GROUP BY A.EMPL_NUMB, C.REF9_FILD
+			) A
+			LEFT OUTER JOIN TM_CODEXD B 
+				ON B.COMM_CODE = 'CPOS_CODE' 
+				AND A.pCPOS_CODE=B.COMD_CODE
+			LEFT OUTER JOIN TM_CODEXD C 
+				ON C.COMM_CODE = 'CPOS_CODE' 
+				AND A.CPOS_CODE=C.COMD_CODE
+			WHERE	A.APNT_DATE LIKE #STDS_YEAR# || '%'
+			AND		A.CPOS_CODE <> A.pCPOS_CODE
+			AND		A.pAPNT_DATE IS NOT NULL
+			AND		ROUND((TO_DATE(A.APNT_DATE)-TO_DATE(A.pAPNT_DATE)) / 365.00 , 2) <> 0
+			GROUP BY B.COMD_CDNM, C.COMD_CDNM, B.SORT_ORDR
+			ORDER BY B.SORT_ORDR
+	]]>		
+	</select>
+
+
+</sqlMap>

@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MRPA0030">
+
+<!--  
+ *   프로그램명 : 통합큐시트
+ *   작 성 일 : 2016.11.27(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.27(표준화 완료)
+		내      용  : 프로그램리스트 목록 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드,MEDX_CODE:매체사 코드,BRND_NAME:브랜드명
+	-->
+	<select id="MRPA0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MRPA0030.SEARCH00 프로그램리스트 목록 조회 */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH              /* 년월 */
+                 , A.BRND_NAME              /* 브랜드 */
+                 , A.RMED_NAME              /* 채널 */
+                 , A.CONT_FORM              /* 광고유형 */
+                 , A.BUYY_FORM              /* 구매 */
+                 , A.BROD_FORM              /* 형태 */
+                 , A.PRGM_NAME              /* 프로그램 */
+                 , A.DAYY_WEEK              /* 요일 */
+                 , A.BROD_TIME              /* 시간 */
+                 , A.HOUR_TYPE              /* 시급 */
+                 , A.SECD_FILD              /* 초수 */
+                 , A.PRIC_FILD              /* 단가 */
+                 , A.APLY_PERC              /* 적용률 */
+                 , A.REAL_PRIC              /* 실단가 */
+                 , A.CONT_FILD              /* 횟수 */
+                 , A.RCON_FILD              /* 횟수(검수) */
+                 , A.DAY0_MNTH              /* 날짜 */
+                 , A.DAY1_MNTH              /* 날짜 */
+                 , A.DAY2_MNTH              /* 날짜 */
+                 , A.DAY3_MNTH              /* 날짜 */
+                 , A.DAY4_MNTH              /* 날짜 */
+                 , A.DAY5_MNTH              /* 날짜 */
+                 , A.DAY6_MNTH              /* 날짜 */
+                 , A.DAY7_MNTH              /* 날짜 */
+                 , A.DAY8_MNTH              /* 날짜 */
+                 , A.DAY9_MNTH              /* 날짜 */
+                 , A.UPPR_FILD              /* 광고비(Upfront) */
+                 , A.TPPR_FILD              /* 광고비(임시물) */
+                 , A.UPBO_FILD              /* 보너스(Upfront) */
+                 , A.TPBO_FILD              /* 보너스(임시물) */
+                 , A.PRCM_RATE              /* 시청률(전 CM) */
+                 , A.AFCM_RATE              /* 시청률(후 CM) */
+                 , A.AVCM_RATE              /* 평균시청률 */
+                 , A.AVAV_RATE              /* 시청률(P2049) */
+                 , A.CMCM_RATE              /* CM지정 요율 */
+                 , A.CMCM_PRIC              /* CM지정 금액 */
+                 , A.CMCM_SUGE              /* CM지정 제안위치 */
+                 , A.CMCM_LOCA              /* CM지정 위치 */
+              FROM MD_QSHTXM A  
+              WHERE YEAR_MNTH = #YEAR_MNTH#    /* 년월 */       
+          ]]>
+        <isNotEmpty prepend="AND" property="BRND_NAME">
+			A.BRND_NAME = #BRND_NAME#			/* 브랜드명 */
+		</isNotEmpty>	
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+		</isNotEmpty>	
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.27(표준화 완료)
+		내      용  : 매체별 프로그램 목록 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드,MEDX_CODE:매체사 코드,BRND_NAME:브랜드명
+	-->
+	<select id="MRPA0030.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MRPA0030.SEARCH01 매체별 프로그램리스트 목록 조회 */
+                 RMED_NAME||'1' SEQX_FILD 
+                 , YEAR_MNTH              /* 년월 */
+                 , BRND_NAME              /* 브랜드 */
+                 , RMED_NAME              /* 채널 */
+                 , CONT_FORM              /* 광고유형 */
+                 , BUYY_FORM              /* 구매 */
+                 , BROD_FORM              /* 형태 */
+                 , PRGM_NAME              /* 프로그램 */
+                 , DAYY_WEEK              /* 요일 */
+                 , BROD_TIME              /* 시간 */
+                 , HOUR_TYPE              /* 시급 */
+                 , SECD_FILD              /* 초수 */
+                 , PRIC_FILD              /* 단가 */
+                 , APLY_PERC              /* 적용률 */
+                 , REAL_PRIC              /* 실단가 */
+                 , CONT_FILD              /* 횟수 */
+                 , RCON_FILD              /* 횟수(검수) */
+                 , DAY0_MNTH              /* 날짜 */
+                 , DAY1_MNTH              /* 날짜 */
+                 , DAY2_MNTH              /* 날짜 */
+                 , DAY3_MNTH              /* 날짜 */
+                 , DAY4_MNTH              /* 날짜 */
+                 , DAY5_MNTH              /* 날짜 */
+                 , DAY6_MNTH              /* 날짜 */
+                 , DAY7_MNTH              /* 날짜 */
+                 , DAY8_MNTH              /* 날짜 */
+                 , DAY9_MNTH              /* 날짜 */
+                 , UPPR_FILD              /* 광고비(Upfront) */
+                 , TPPR_FILD              /* 광고비(임시물) */
+                 , UPBO_FILD              /* 보너스(Upfront) */
+                 , TPBO_FILD              /* 보너스(임시물) */
+                 , PRCM_RATE              /* 시청률(전 CM) */
+                 , AFCM_RATE              /* 시청률(후 CM) */
+                 , AVCM_RATE              /* 평균시청률 */
+                 , AVAV_RATE              /* 시청률(P2049) */
+                 , CMCM_RATE              /* CM지정 요율 */
+                 , CMCM_PRIC              /* CM지정 금액 */
+                 , CMCM_SUGE              /* CM지정 제안위치 */
+                 , CMCM_LOCA              /* CM지정 위치 */
+              FROM MD_QSHTXM  
+              WHERE YEAR_MNTH = #YEAR_MNTH#    /* 년월 */
+              ]]>
+			<isNotEmpty prepend="AND" property="BRND_NAME"> 
+              BRND_NAME = #BRND_NAME#			
+			</isNotEmpty>
+              <![CDATA[ 
+			UNION ALL
+              SELECT /*  MRPA0030.SEARCH01 매체별 프로그램리스트 목록 조회 */
+              	DECODE(RMED_NAME,'','힣',RMED_NAME||'2') SEQX_FILD
+                 , YEAR_MNTH              /* 년월 */
+                 , BRND_NAME          /* 브랜드 */
+                 , ''  AS RMED_NAME              /* 채널 */
+                 , '' CONT_FORM              /* 광고유형 */
+                 , '' BUYY_FORM              /* 구매 */
+                 , '' BROD_FORM              /* 형태 */
+                 ,  DECODE(RMED_NAME,'','합계',RMED_NAME||'소계')  AS PRGM_NAME              /* 프로그램 */
+                 , '' DAYY_WEEK              /* 요일 */
+                 , '' BROD_TIME              /* 시간 */
+                 , '' HOUR_TYPE              /* 시급 */
+                 , '' SECD_FILD              /* 초수 */
+                 , 0 PRIC_FILD              /* 단가 */
+                 , 0 APLY_PERC              /* 적용률 */
+                 , 0 REAL_PRIC              /* 실단가 */
+                 , SUM(CONT_FILD) CONT_FILD               /* 횟수 */
+                 , SUM(RCON_FILD) RCON_FILD              /* 횟수(검수) */
+                 , COUNT(DAY0_MNTH)+COUNT(DAY1_MNTH)+COUNT(DAY2_MNTH)
+                 +COUNT(DAY3_MNTH)+COUNT(DAY4_MNTH)+
+                 COUNT(DAY5_MNTH)+COUNT(DAY6_MNTH)+COUNT(DAY7_MNTH)
+                 +COUNT(DAY8_MNTH)+COUNT(DAY9_MNTH) DAY0_MNTH              /* 날짜 */
+                 , '' DAY1_MNTH              /* 날짜 */
+                 , '' DAY2_MNTH              /* 날짜 */
+                 , '' DAY3_MNTH              /* 날짜 */
+                 , '' DAY4_MNTH              /* 날짜 */
+                 , '' DAY5_MNTH              /* 날짜 */
+                 , '' DAY6_MNTH              /* 날짜 */
+                 , '' DAY7_MNTH              /* 날짜 */
+                 , '' DAY8_MNTH              /* 날짜 */
+                 , '' DAY9_MNTH              /* 날짜 */
+                 , SUM(UPPR_FILD) UPPR_FILD              /* 광고비(Upfront) */
+                 , SUM(TPPR_FILD) TPPR_FILD              /* 광고비(임시물) */
+                 , SUM(UPBO_FILD) UPBO_FILD              /* 보너스(Upfront) */
+                 , SUM(TPBO_FILD) TPBO_FILD              /* 보너스(임시물) */
+                 , '' PRCM_RATE              /* 시청률(전 CM) */
+                 , '' AFCM_RATE              /* 시청률(후 CM) */
+                 , '' AVCM_RATE              /* 평균시청률 */
+                 , '' AVAV_RATE              /* 시청률(P2049) */
+                 , '' CMCM_RATE              /* CM지정 요율 */
+                 , SUM(CMCM_PRIC) CMCM_PRIC             /* CM지정 금액 */
+                 , '' CMCM_SUGE              /* CM지정 제안위치 */
+                 , '' CMCM_LOCA              /* CM지정 위치 */
+              FROM MD_QSHTXM
+              WHERE YEAR_MNTH = #YEAR_MNTH#
+        ]]>
+        <isNotEmpty prepend="AND" property="BRND_NAME"> 
+              BRND_NAME = #BRND_NAME#			
+		</isNotEmpty>
+        <![CDATA[ 
+              GROUP BY YEAR_MNTH,BRND_NAME, ROLLUP(RMED_NAME)
+              ORDER BY BRND_NAME,SEQX_FILD
+		]]>
+		
+	</select>
+	
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.27(표준화 완료)
+		내      용  : 일자별 프로그램리스트 목록 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드,MEDX_CODE:매체사 코드,BRND_NAME:브랜드명
+	-->
+	<select id="MRPA0030.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT * FROM
+	(
+	SELECT /*  MRPA0030.SEARCH03 일자별 프로그램리스트 목록 조회 */
+	                 '0' CHEK_FILD                /*체크박스*/
+	                 , YEAR_MNTH              /* 년월 */
+	                 , BRND_NAME              /* 브랜드 */
+	                 , TO_CHAR(DAY0_MNTH) A             /* 날짜 */
+	                 , TO_CHAR(DAY1_MNTH) B             /* 날짜 */
+	                 , TO_CHAR(DAY2_MNTH) C             /* 날짜 */
+	                 , TO_CHAR(DAY3_MNTH) D             /* 날짜 */
+	                 , TO_CHAR(DAY4_MNTH) E             /* 날짜 */
+	                 , TO_CHAR(DAY5_MNTH) F             /* 날짜 */
+	                 , TO_CHAR(DAY6_MNTH) G             /* 날짜 */
+	                 , TO_CHAR(DAY7_MNTH) H             /* 날짜 */
+	                 , TO_CHAR(DAY8_MNTH) I             /* 날짜 */
+	                 , TO_CHAR(DAY9_MNTH) J             /* 날짜 */
+	                 , RMED_NAME              /* 채널 */
+	                 , PRGM_NAME              /* 프로그램 */
+	                 , DAYY_WEEK              /* 요일 */
+	                 , BROD_TIME              /* 시간 */
+	                 , CMCM_LOCA              /* CM지정 위치 */
+	                 , BUYY_FORM              /* 구매 */
+	              FROM MD_QSHTXM	
+	              WHERE YEAR_MNTH = #YEAR_MNTH#    /* 년월 */       
+	  ]]>
+	  		<isNotEmpty prepend="AND" property="BRND_NAME">
+			BRND_NAME = #BRND_NAME#			/* 브랜드명 */
+			</isNotEmpty>	
+			<isNotEmpty prepend="AND" property="MEDX_CODE">
+				MEDX_CODE = #MEDX_CODE#			/* 매체사코드 */
+			</isNotEmpty>	
+			<isNotEmpty prepend="AND" property="CUST_CODE">
+				CUST_CODE = #CUST_CODE#			/* 광고주코드 */
+			</isNotEmpty>	
+	  <![CDATA[ 
+	              )
+	UNPIVOT (DAYY_MNTH FOR DAYY_NAME IN (A,B,C,D,E,F,G,H,I,J))
+	ORDER BY TO_NUMBER(DAYY_MNTH)
+          ]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.28(표준화 완료)
+		내      용 : 프로그램목록 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MRPA0030.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_QSHTXM  /* MRPA0030.DELETE00 프로그램목록 삭제 */
+			WHERE YEAR_MNTH = #YEAR_MNTH#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.01(표준화 완료)
+		내      용 : 프로그램목록 저장 처리
+	-->
+	<insert id="MRPA0030.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_QSHTXM (  /* MRPA0030.SAVE00 프로그램목록 저장 처리 */
+                YEAR_MNTH        /* 년월 */
+               ,BRND_NAME        /* 브랜드명 */
+               ,RMED_NAME        /* 채널 */
+               ,CONT_FORM        /* 광고유형 */
+               ,BUYY_FORM        /* 구매 */
+               ,BROD_FORM        /* 형태 */
+               ,PRGM_NAME        /* 프로그램 */
+               ,DAYY_WEEK        /* 요일 */
+               ,BROD_TIME        /* 시간 */
+               ,HOUR_TYPE        /* 시급 */
+               ,SECD_FILD        /* 초수 */
+               ,PRIC_FILD        /* 단가 */
+               ,APLY_PERC        /* 적용률 */
+               ,REAL_PRIC        /* 실단가 */
+               ,CONT_FILD        /* 횟수 */
+               ,RCON_FILD        /* 횟수(검수) */
+               ,DAY0_MNTH        /* 날짜 */
+               ,DAY1_MNTH        /* 날짜 */
+               ,DAY2_MNTH        /* 날짜 */
+               ,DAY3_MNTH        /* 날짜 */
+               ,DAY4_MNTH        /* 날짜 */
+               ,DAY5_MNTH        /* 날짜 */
+               ,DAY6_MNTH        /* 날짜 */
+               ,DAY7_MNTH        /* 날짜 */
+               ,DAY8_MNTH        /* 날짜 */
+               ,DAY9_MNTH        /* 날짜 */
+               ,UPPR_FILD        /* 광고비 Upfront */
+               ,TPPR_FILD        /* 광고비 임시물 */
+               ,UPBO_FILD        /* 보너스 Upfront */
+               ,TPBO_FILD        /* 보너스임시물 */
+               ,PRCM_RATE        /* 시청률 전CM */
+               ,AFCM_RATE        /* 시청률 후CM */
+               ,AVCM_RATE        /* 시청률 평균 */
+               ,AVAV_RATE        /* 시청률 P2049 */
+               ,CMCM_RATE        /* CM지정 요율 */
+               ,CMCM_PRIC        /* CM지정 금액 */
+               ,CMCM_SUGE        /* CM지정 제안위치 */
+               ,CMCM_LOCA        /* CM지정위치 */
+               ,INST_USID        /*  */
+               ,INST_DATE        /*  */
+               ,UPDT_USID        /*  */
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 년월 */
+              ,#BRND_NAME#       /* 브랜드명 */
+              ,#RMED_NAME#       /* 채널 */
+              ,#CONT_FORM#       /* 광고유형 */
+              ,#BUYY_FORM#       /* 구매 */
+              ,#BROD_FORM#       /* 형태 */
+              ,#PRGM_NAME#       /* 프로그램 */
+              ,#DAYY_WEEK#       /* 요일 */
+              ,#BROD_TIME#       /* 시간 */
+              ,#HOUR_TYPE#       /* 시급 */
+              ,#SECD_FILD#       /* 초수 */
+              ,#PRIC_FILD#       /* 단가 */
+              ,#APLY_PERC#       /* 적용률 */
+              ,#REAL_PRIC#       /* 실단가 */
+              ,#CONT_FILD#       /* 횟수 */
+              ,#RCON_FILD#       /* 횟수(검수) */
+              ,#DAY0_MNTH#       /* 날짜 */
+              ,#DAY1_MNTH#       /* 날짜 */
+              ,#DAY2_MNTH#       /* 날짜 */
+              ,#DAY3_MNTH#       /* 날짜 */
+              ,#DAY4_MNTH#       /* 날짜 */
+              ,#DAY5_MNTH#       /* 날짜 */
+              ,#DAY6_MNTH#       /* 날짜 */
+              ,#DAY7_MNTH#       /* 날짜 */
+              ,#DAY8_MNTH#       /* 날짜 */
+              ,#DAY9_MNTH#       /* 날짜 */
+              ,#UPPR_FILD#       /* 광고비 Upfront */
+              ,#TPPR_FILD#       /* 광고비 임시물 */
+              ,#UPBO_FILD#       /* 보너스 Upfront */
+              ,#TPBO_FILD#       /* 보너스임시물 */
+              ,#PRCM_RATE#       /* 시청률 전CM */
+              ,#AFCM_RATE#       /* 시청률 후CM */
+              ,#AVCM_RATE#       /* 시청률 평균 */
+              ,#AVAV_RATE#       /* 시청률 P2049 */
+              ,#CMCM_RATE#       /* CM지정 요율 */
+              ,#CMCM_PRIC#       /* CM지정 금액 */
+              ,#CMCM_SUGE#       /* CM지정 제안위치 */
+              ,#CMCM_LOCA#       /* CM지정위치 */
+              ,#UPDT_USID#       /*  */
+              ,#UPDT_DATE#       /*  */
+              ,#UPDT_USID#       /*  */
+              )
+	]]>
+	</insert>
+	
+</sqlMap>

@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="TMMA0310" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" position="absolute" left="0" width="1187" top="0" height="717" onbeforeclose="fn_FormUnloadCheckProcess" titletext="경영계획및실적관리">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" taborder="30" cssclass="styFormSearchBox" left="8" top="60" right="25" height="43" radiusy="10" radiusx="10" type="roundrectangle"/>
+        <Static id="Static02" taborder="0" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static06" taborder="1" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="st_FormTitle" taborder="2" text="경영계획및실적관리" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="3" text="홈 &gt; 경영계획및실적관리" top="0" right="25" width="640" height="29" cssclass="styFormLocation"/>
+        <Div id="div_ButtonList" taborder="5" tabstop="false" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList" url="common::comButtonType01.xfdl"/>
+        <Button id="btn_favorite" taborder="6" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="stInformation" taborder="8" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." cssclass="styFormSearchInfo" left="8" top="107" width="262" height="21" usedecorate="true"/>
+        <Static id="Static30" taborder="31" text="기준년도" cssclass="styFormSearchCapBe" left="28" top="71" width="70" height="21"/>
+        <Static id="Static31" taborder="33" text="경영지표유형" cssclass="styFormSearchCapBe" left="195" top="71" width="92" height="21"/>
+        <Static id="Static34" taborder="39" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="40" visible="false" left="88" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="41" text="w 40" visible="false" left="166" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static00" taborder="44" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="45" text="h 15" height="15" style="background:#fb7b7b7a;" right="31" bottom="0" left="14" visible="false"/>
+        <Static id="Static04" taborder="47" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="48" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="49" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static09" taborder="51" text="h 6" visible="false" left="8" top="122" width="216" height="6" style="background:#fb7b7b7a;"/>
+        <Grid id="grdTR_MONEPL" taborder="108" binddataset="dsTR_MONEPL" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both" onexpanddown="fn_HelpDialoge" left="8" top="128" right="25" bottom="15" fillareatype="none" autofittype="col">
+          <Formats>
+            <Format id="FMT10">
+              <Columns>
+                <Column size="60"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="131"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell rowspan="2" text="월"/>
+                <Cell col="1" colspan="3" text="목표"/>
+                <Cell col="4" colspan="3" text="실적"/>
+                <Cell row="1" col="1" text="계열"/>
+                <Cell row="1" col="2" text="비계열"/>
+                <Cell row="1" col="3" text="계"/>
+                <Cell row="1" col="4" text="계열"/>
+                <Cell row="1" col="5" text="비계열"/>
+                <Cell row="1" col="6" text="계"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="text" edittype="none" style="align: ;" text="bind:STDS_YMTH" mask="expr:&quot;####-##&quot;" editlimit="0" suppress="1"/>
+                <Cell col="1" displaytype="number" edittype="normal" style="align:right;" text="bind:MI01_AMOT" suppressalign="last"/>
+                <Cell col="2" displaytype="number" edittype="normal" style="align:right;" text="bind:MI02_AMOT"/>
+                <Cell col="3" displaytype="number" edittype="none" style="align:right;" text="bind:MI03_AMOT" expr="expr:nexacro.toNumber(MI01_AMOT) + nexacro.toNumber(MI02_AMOT)"/>
+                <Cell col="4" displaytype="number" edittype="normal" style="align:right;" text="bind:MI04_AMOT"/>
+                <Cell col="5" displaytype="number" edittype="normal" style="align:right;" text="bind:MI05_AMOT"/>
+                <Cell col="6" displaytype="number" edittype="none" style="align:right;" text="bind:MI06_AMOT" expr="expr:nexacro.toNumber(MI04_AMOT) + nexacro.toNumber(MI05_AMOT)"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:center;" text="합계"/>
+                <Cell col="1" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI01_AMOT&quot;, 0)"/>
+                <Cell col="2" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI02_AMOT&quot;, 0)"/>
+                <Cell col="3" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI01_AMOT&quot;, 0) + dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI02_AMOT&quot;, 0)"/>
+                <Cell col="4" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI04_AMOT&quot;, 0)"/>
+                <Cell col="5" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI05_AMOT&quot;, 0)"/>
+                <Cell col="6" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI04_AMOT&quot;, 0) + dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI05_AMOT&quot;, 0)"/>
+              </Band>
+            </Format>
+            <Format id="FMT20">
+              <Columns>
+                <Column size="40"/>
+                <Column size="40"/>
+                <Column size="40"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+                <Row size="26" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="월"/>
+                <Cell col="1" text="목표"/>
+                <Cell col="2" text="실적"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:STDS_YMTH" mask="expr:&quot;####-##&quot;"/>
+                <Cell col="1" displaytype="number" edittype="normal" style="align:right;" text="bind:MI03_AMOT"/>
+                <Cell col="2" displaytype="number" edittype="normal" style="align:right;" text="bind:MI06_AMOT"/>
+              </Band>
+              <Band id="summary">
+                <Cell style="align:center;" text="합계"/>
+                <Cell col="1" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI03_AMOT&quot;, 0)"/>
+                <Cell col="2" displaytype="number" style="align:right;" expr="expr:dataset.getCaseSum(&quot;dataset.getRowLevel(currow)==0&quot;, &quot;MI06_AMOT&quot;, 0)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <PopupDiv id="popINSERT00" left="1267" top="153" width="474" height="118" scrollbars="none" cssclass="pdiv_WF_insert">
+          <Layouts>
+            <Layout>
+              <Static id="Shape00" taborder="29" cssclass="styFormItemBoxOut" left="9" top="9" width="456" height="67"/>
+              <Button id="btnClose" taborder="30" text="취소" onclick="popINSERT_btnClose_OnClick" cssclass="btn_POP_CRUD" left="403" top="84" width="62" height="24"/>
+              <Button id="btnINSERT" taborder="31" text="확인" onclick="popINSERT_btnINSERT_OnClick" cssclass="btn_POP_CRUD" left="338" top="84" width="62" height="24"/>
+              <Edit id="edtSHRWAGE_CODE_TO" taborder="32" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" visible="false" left="169" top="86" width="118" height="22"/>
+              <Edit id="edtSHRWAGE_CODE_FROM" taborder="33" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" visible="false" left="25" top="86" width="118" height="22"/>
+              <Static id="stInformation01" taborder="34" text="으로 복사합니다." cssclass="styFormSearchInfo" left="335" top="44" width="120" height="21" style="align:left middle;"/>
+              <Static id="stInformation00" taborder="35" text="의 급여조정 데이터를" cssclass="styFormSearchInfo" left="335" top="18" width="120" height="21" style="align:left middle;"/>
+              <Edit id="edtSHRWAGE_NAME_FROM" taborder="36" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="212" top="18" width="118" height="21"/>
+              <Edit id="edtSHRWAGE_NAME_TO" taborder="37" imemode="hangul" lengthunit="ascii" autoselect="true" onsetfocus="fn_EditFocus" onkillfocus="fn_HelpDialoge" cssclass="styFormItemText" left="212" top="44" width="118" height="21"/>
+              <Static id="imgHelpSHRPAYX_DATE_TO" taborder="38" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="189" top="44" width="22" height="21"/>
+              <Static id="imgHelpSHRPAYX_DATE_FROM" taborder="39" onclick="fn_HelpDialoge" cssclass="sytHelpPopup" left="189" top="18" width="22" height="21"/>
+              <MaskEdit id="medSHRPAYX_DATE_FROM" taborder="40" tabstop="false" type="string" mask="####-##-##" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="110" top="18" width="77" height="21"/>
+              <MaskEdit id="medSHRPAYX_DATE_TO" taborder="41" tabstop="false" type="string" mask="####-##-##" onsetfocus="fn_EditFocus" cssclass="styFormSearchItem" enable="false" left="110" top="44" width="77" height="21"/>
+              <Static id="imgSearchTitle_TO" taborder="42" text="대상지급일" cssclass="styFormSearchCapBe" left="29" top="44" width="87" height="21" style="align:left;"/>
+              <Static id="imgSearchTitle_FROM" taborder="43" text="기준지급일" cssclass="styFormSearchCapBe" left="29" top="18" width="87" height="21" style="align:left;"/>
+            </Layout>
+          </Layouts>
+        </PopupDiv>
+        <Static id="Static20" taborder="112" text="w8" cssclass="sta_GID_box" visible="false" left="1268" top="173" width="8" height="96"/>
+        <Static id="Static19" taborder="113" text="h8" cssclass="sta_GID_box" visible="false" left="1433" top="261" width="294" height="8"/>
+        <Static id="Static18" taborder="114" text="h8" cssclass="sta_GID_box" visible="false" left="1237" top="154" width="182" height="8"/>
+        <Static id="Static21" taborder="115" text="w8" cssclass="sta_GID_box" visible="false" left="1732" top="161" width="8" height="96"/>
+        <Edit id="edtSTDYEAR2" taborder="123" left="120" top="238" width="80" height="21" visible="false"/>
+        <Combo id="cmbMAID" taborder="124" codecolumn="codecolumn" datacolumn="datacolumn" index="0" left="289" top="71" width="120" height="21" onitemchanged="Combo00_onitemchanged" autoselect="true" value="1" text="취급액">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">1</Col>
+                <Col id="datacolumn">선택1</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">2</Col>
+                <Col id="datacolumn">선택2</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Calendar id="edtSTDYEAR" taborder="125" type="spin" dateformat="yyyy" editformat="yyyy" onsetfocus="fn_EditFocus" cssclass="styFormItemCalendar" left="96" top="71" width="70" height="21"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsTR_MONEPL" onrowposchanged="fn_KeyFieldDisible" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="STDS_YMTH" type="STRING" size="10"/>
+          <Column id="MAID_TYCD" type="STRING" size="10"/>
+          <Column id="MI01_AMOT" type="STRING" size="15"/>
+          <Column id="MI02_AMOT" type="STRING" size="15"/>
+          <Column id="MI03_AMOT" type="STRING" size="15"/>
+          <Column id="MI04_AMOT" type="STRING" size="15"/>
+          <Column id="MI05_AMOT" type="STRING" size="15"/>
+          <Column id="MI06_AMOT" type="STRING" size="15"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsCombo" useclientlayout="true">
+        <ColumnInfo>
+          <Column id="DSNAME" size="256" prop="default" type="STRING"/>
+          <Column id="CODEID" size="256" prop="default" type="STRING"/>
+          <Column id="HEADFLAG" size="256" prop="default" type="STRING"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODEID">MAID_TYCD</Col>
+            <Col id="DSNAME">dsMAID_TYCD</Col>
+            <Col id="HEADFLAG">A</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind/>
+    <Script type="xscript5.0"><![CDATA[ /***************************************************************************************************
+ * # Program : TMMA0310 경영계획및실적관리
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.11.01		최인철		Initial Created.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ *****************************************************************************INBUS*CO*KR************/
+ 
+/*************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/**********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST  = "TTTTTTTF"; //Button 사용여부 순서(종료, 조회, 입력, 삭제, 취소, 저장, 엑셀, 인쇄)
+this.sPACKAGENAME = "TMMA0310";
+
+if (this.getOwnerFrame()["sUSERAUTH"] == undefined) {
+	 this.sUSERAUTH     = "";
+	 this.sFORMCAPTION  = "";
+	 this.sFORMLOCATION = "";
+	 this.sUSERLAVEL    = "";
+} else {
+	 this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	 this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	 this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	 this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/***************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*------------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+	
+	this.fnc_GetComboDs(this.dsCombo); //콤보 조회 
+	//this.fnc_GetUserComboDs(this.dsUserCombo); //사용자콤보
+		
+		
+	this.edtSTDYEAR.set_value(this.fnc_SubStr(this.fnc_GetServerDateTime("DATE"), 0, 4));
+//	var sDate = this.fnc_GetServerDateTime("DATE");
+//	this.edtSTDYEAR.set_value(this.fnc_Left(sDate, 4));
+	//this.calSHRCIP_DAT2.set_value(this.fnc_Left(sDate));
+	//this.edtSTDYEAR.setFocus();
+
+}
+
+/*-----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+	
+
+}
+
+/*--------------------------+
+ |  03.조회 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Search = function (obj) {
+	
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTR_MONEPL"); 
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_MONEPL=dsTR_MONEPL";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.dsTR_MONEPL.setFocus();
+	
+	if( this.cmbMAID.value == "FMT10" ){      
+        this.grdTR_MONEPL.setFormat("FMT10"); 
+      }else
+      {    
+	    this.grdTR_MONEPL.setFormat("FMT20");
+	    }
+
+
+}
+
+/*--------------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Input = function (obj) {
+
+    if (this.dsTR_MONEPL.rowcount > 0) {
+    
+			var sQuestionText  ="이미데이터가 존재합니다.";
+			return this.fnc_Message("TMM125", sQuestionText);
+
+	}
+	
+			
+	var iRow ;
+	
+    for (var i = 0; i < 12 ; i++) {
+	    this.dsTR_MONEPL.addRow();	
+	    
+	    if( i < 10 ){
+	    this.dsTR_MONEPL.setColumn(i , "STDS_YMTH" , nexacro.toNumber(this.fnc_SubStr(this.edtSTDYEAR.value, 0, 4) +"0"+ i) + nexacro.toNumber("1")  );	    
+	    }else
+	    {
+	    this.dsTR_MONEPL.setColumn(i , "STDS_YMTH" , nexacro.toNumber(this.fnc_SubStr(this.edtSTDYEAR.value, 0, 4) + i) + nexacro.toNumber("1") );	    
+	    }
+	    
+	    this.dsTR_MONEPL.setColumn(i , "MI01_AMOT" , 0 );	    
+	    this.dsTR_MONEPL.setColumn(i , "MI02_AMOT" , 0 );
+	    this.dsTR_MONEPL.setColumn(i , "MI04_AMOT" , 0 );
+	    this.dsTR_MONEPL.setColumn(i , "MI05_AMOT" , 0 );
+	}
+	
+	//this.dsTR_MONEPL.setColumn(0 , "MI01_AMOT" , 0 );
+	//this.grdTR_MONEPL.setFocus(0, "MI01_AMOT");
+	this.grdTR_MONEPL.setCellPos(0, "MI01_AMOT");
+	//this.fnc_GridSetCellFocus(this.grdTR_MONEPL, "MI01_AMOT");
+	
+
+}
+
+/*--------------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +--------------------------------*/
+this.fn_Delete = function (obj) {	
+	if (this.fn_DeleteCheck()) this.dsTR_MONEPL.deleteAll();
+	this.grdTR_MONEPL.setFocus();
+}
+
+/*--------------------------+
+ |  06.취소 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Cancel = function (obj) {
+	this.fnc_DataSetCancel("dsTR_MONEPL");
+	this.grdTR_MONEPL.setFocus();
+}
+
+/*--------------------------+
+ |  07.저장 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_Save = function (obj) {
+	
+	if (!this.fn_SaveItemCheck()) return;
+	
+	var sMethodName = "SAVE00";
+	var sInDataSet  = "dsTR_MONEPL=dsTR_MONEPL:U";
+	var sOutDataSet = "dsTR_MONEPL=dsTR_MONEPL";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.grdTR_MONEPL.setFocus();
+
+
+}
+
+/*--------------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ ---------------------------*/
+this.fn_ToExcel = function (obj) {
+	this.fnc_ToExcel(this);
+}
+
+/*--------------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +--------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+
+/*------------------------------------+
+ |  10.화면 Close 時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;	
+	
+	var sMessage = this.fnc_FormUnloadCheck("dsTR_MONEPL", this);	
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+
+} 
+
+ 
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj, e);
+	
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)    |
+ +-----------------------------------*/
+this.fn_HotKey = function (obj, e:KeyEventInfo) {
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때   |
+ +-----------------------------------*/
+this.fn_EditFocus = function (obj) {
+	this.fnc_EditFocus(obj);
+}
+
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*--------------------------+
+ |  조회 필수 조건 체크!  |
+ +--------------------------*/
+this.fn_SearchItemCheck = function () {
+	
+	if (this.fnc_DatasetChangeCheck("dsTR_MONEPL")) {
+		if (this.fnc_Message("TMM023") == false) return false;	
+	}
+
+	return true;
+
+}
+
+/*---------------------+
+ |  삭제 여부 체크!  |
+ +---------------------*/
+this.fn_DeleteCheck = function () {
+	
+	if (this.dsTR_MONEPL.rowcount < 1) {
+		this.fnc_Message("TMM007");
+		return;
+	}
+	
+		
+	var sQuestionText  ="해당년도의 데이터를 전부 삭제하시겠습니까?";
+	return this.fnc_Message("TMM002", sQuestionText);
+
+}
+
+/*---------------------+
+ |  저장 여부 체크!  |
+ +---------------------*/
+this.fn_SaveItemCheck = function (){
+
+	if (!this.fnc_DatasetChangeCheck("dsTR_MONEPL")) {
+		this.fnc_Message("TMM003");
+		return false;
+	}
+
+	return true;
+	
+}
+
+
+/*--------------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +--------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+	
+	var sReturnString;
+
+	if (sKind == "SEARCH00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " STDYEAR="  + this.fnc_Quote(this.fnc_Trim(this.fnc_SubStr(this.edtSTDYEAR.value, 0, 4))); 
+		sReturnString += " MAID="     + this.fnc_Quote(this.fnc_Trim(this.cmbMAID.value));         
+   
+	
+	} else if ( sKind == "SAVE00") {
+	
+		sReturnString  = " pgm="       + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action="    + this.fnc_Quote(sKind);
+		sReturnString += " MAID_TYCD="     + this.fnc_Quote(this.fnc_Trim(this.cmbMAID.value));         
+		
+	}
+
+	return sReturnString;
+	
+}
+
+/*---------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +---------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	if (ErrorCode < 0) {
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+	
+	} else {
+		this.fn_PostProcess(sMethodName);
+	}
+	
+}
+
+
+/*-------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == "SEARCH00") {
+
+	    this.fnc_Information(this.stInformation, this.dsTR_MONEPL.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsTR_MONEPL.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.grdTR_MONEPL.setCellPos(1);
+
+	} else if (sMethodName == "SAVE00") {
+
+		this.fnc_Information(this.stInformation, this.dsTR_MONEPL.rowcount , "SAVE");
+		this.fnc_Message("TMM103");
+
+	} else if (sMethodName == "GetCommCode")  {
+	 
+	    var arrParam = new Array();
+	    arrParam[0]  = "COMBO,cmbMAID,dsMAID_TYCD,0"; 	   //경영지표유형
+	    this.fnc_CommonCodeInnerBind(arrParam);
+	    
+	}
+		
+}
+
+
+
+
+
+this.Combo00_onitemchanged = function(obj:Combo, e:nexacro.ItemChangeEventInfo)
+{
+
+	if (!this.fn_SearchItemCheck()) return;
+	this.fnc_DatasetClear("dsTR_MONEPL"); 
+	
+	  if( this.cmbMAID.value == "FMT10" ){      
+		this.grdTR_MONEPL.setFormat("FMT10");         
+	  }else
+	  {    
+		this.grdTR_MONEPL.setFormat("FMT20");
+		}
+	
+	var sMethodName = "SEARCH00";
+	var sInDataSet  = "";
+	var sOutDataSet = "dsTR_MONEPL=dsTR_MONEPL";
+	var sArgument   = this.fn_CreateArgument(sMethodName);
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+	this.dsTR_MONEPL.setFocus();
+	
+		
+}
+]]></Script>
+  </Form>
+</FDL>

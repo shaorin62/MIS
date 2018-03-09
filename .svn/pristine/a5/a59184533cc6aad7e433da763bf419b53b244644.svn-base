@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		  
+<sqlMap namespace="FAMB0030P01">
+<!-- 
+	/*******************************************************************************
+	     작  성  자 : 양현덕
+	     작  성  일 : 2016.07.24
+	     내      용 : 전표선텍조회
+    ********************************************************************************/
+-->
+	<select id="FAMB0030P01.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[
+        SELECT /* FAMB0030P01.SEARCH00.전표선택조회 */	
+        	   A.SLIP_NUMB 
+             , B.SORT_ORDR			/* 순번*/
+             , B.SLIP_LINE			/* 행번호*/
+             , A.SLIP_DATE
+             , B.ACCT_INTL
+             , SF_GET_ACCTNAME(B.ACCT_INTL) AS ACCT_NAME
+             , DECODE(B.DRCR_GUBN, 'D', B.SLIP_AMNT, 0) AS SLIP_DAMT
+             , DECODE(B.DRCR_GUBN, 'C', B.SLIP_AMNT, 0) AS SLIP_CAMT
+             , B.REMK_NAME
+          FROM TA_SLIPXM A
+          LEFT JOIN TA_SLIPNT B
+            ON A.SLIP_NUMB = B.SLIP_NUMB
+         WHERE 1 = 1
+           AND A.SLIP_DATE BETWEEN #SLIP_DATE1# AND #SLIP_DATE2#         
+    ]]>       
+    <isNotEmpty prepend="AND" property="ACCT_INTL">
+    	<![CDATA[
+				B.ACCT_INTL = #ACCT_INTL#
+		]]>
+	</isNotEmpty>	
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+    	<![CDATA[
+				A.EMPL_NUMB = #EMPL_NUMB#
+		]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+    	<![CDATA[
+				A.DEPT_CODE = #DEPT_CODE#
+		]]>
+	</isNotEmpty>       
+   	<isNotEmpty prepend="AND" property="REMK_NAME">
+    	<![CDATA[
+				B.REMK_NAME LIKE '%' || #REMK_NAME# || '%'
+		]]>
+	</isNotEmpty>             
+    <![CDATA[
+         ORDER BY A.SLIP_NUMB DESC, B.SORT_ORDR 
+	]]>
+	</select>
+</sqlMap>

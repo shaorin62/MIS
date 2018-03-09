@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMB0010P03">
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016. 07. 26
+     내      용 : 자산일괄등록 저장 처리
+********************************************************************************/
+ -->
+	<insert id="FSMB0010P03.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+		DECLARE
+	      	/*FSMB0010P03.SAVE00.자산일괄등록 저장 처리*/
+			sASST_NUMB FS_ASSTXM.ASST_NUMB%TYPE;   /*신규자산번호 채번*/
+	
+	    BEGIN
+		
+			/*  --2014.12 NDS 채번로직으로 변경. INBUS원본 
+	        SELECT 	NVL(MAX(ASST_NUMB),SUBSTR(iACQS_DATE,1,4)||'00000') + 1  -- 채번
+	        INTO 	sASST_NUMB
+	        FROM 	FS_ASSTXM
+	        WHERE 	ACQS_DATE LIKE  SUBSTR(iACQS_DATE,1,4) || '%';
+	        */
+	        
+	        /*             취득년                       품목대.중분류                  MAX(0000)+1 숫자 */
+	        SELECT 	SUBSTR(#ACQS_DATE#, 1, 4) ||  SUBSTR(#CLSF_CODE#,1,4) || LPAD(TO_NUMBER(NVL(SUBSTR(MAX(ASST_NUMB), 9, 4), '0')) + 1, 4, '0')
+	        INTO 	sASST_NUMB
+	        FROM 	FS_ASSTXM
+	          WHERE ( ACQS_DATE LIKE  SUBSTR(#ACQS_DATE#,1,4) || '%' or SUBSTR(ASST_NUMB , 1 , 4) LIKE SUBSTR(#ACQS_DATE#,1,4) || '%')
+			    AND ( CLSF_CODE LIKE  SUBSTR(#CLSF_CODE#,1,4) || '%' or SUBSTR(ASST_NUMB , 5 , 4) LIKE SUBSTR(#CLSF_CODE#,1,4) || '%') ;
+	
+	
+		    /*        FILE_PATH  파일경로       ,FILE_PSNM   파일명물리        ,FILE_LGNM   파일명논리           제거 */
+
+           BEGIN
+           		              
+	        INSERT INTO FS_ASSTXM (
+	               ASST_NUMB   /*자산번호*/
+	              ,ASST_NAME   /*자산명*/
+	              ,ACQS_DATE   /*취득일*/
+	              ,CLSF_CODE   /*품목분류코드*/
+	              ,DPCT_METH   /*상각방법[DPCT_METH]*/
+	              ,PRID_DPCT   /*내용년수*/
+	              ,DPCT_RATE   /*감가상각율*/
+	              ,DPCT_CYCL   /*상각주기[DPCT_CYCL]*/
+	              ,ACCT_UNIT   /*회계단위[ACCT_UNIT]*/
+	              ,ASST_STRD   /*자산규격*/
+	              ,DETL_STRD   /*세부규격*/
+	              ,ACQU_NUMB   /*취득수량*/
+	              ,ACQU_COST   /*취득단가*/
+	              ,ACQU_PRIC   /*취득금액*/
+	              ,DEPT_CODE   /*부서코드*/
+	              ,UNIT_CODE   /*자산단위코드[UNIT_CODE]*/
+	              ,EMPL_NUMB   /*사원번호*/
+	              ,BUYX_NAME   /*구매처명*/
+	              ,MUFT_NAME   /*제조업체*/
+	              ,BARX_CODE   /*자산바코드*/
+	              ,DESC_REMK   /*비고(100)*/
+	              ,DPCT_STAT   /*상각상태[DPCT_STAT]*/
+	              ,ASST_STAT   /*자산상태[ASST_STAT]*/
+	              ,UNDP_BALE   /*미상각잔액*/
+	              ,SAVG_VALU   /*잔존가액*/
+	              ,ACQU_CHNL   /*취득경로[ACQU_CHNL]*/
+	              ,PAST_NUMB   /*모자산번호*/
+	              ,FCHG_DATE   /*최종변동일*/
+	              ,ASST_CSCD   /*자산비용구분[ASST_CSCD]*/
+	              ,PRID_LEGL   /*세무년수*/
+	              ,IDLE_YSNO   /*유휴여부*/
+	              ,INST_DATE   /*등록일시*/
+	              ,INST_USID   /*등록자*/
+	              ,UPDT_DATE   /*수정일시*/
+	              ,UPDT_USID   /*수정자*/
+	              ,VATX_AMNT   /*부가세*/
+	              ,DPCT_CMPT   /*상각완료기준*/
+	              ,CUST_CODE   /*구매처*/
+	              ,ACCT_GUBN   /*사업장*/
+	              )
+	       VALUES (
+	               sASST_NUMB  /*자산채번번호*/
+	              ,#ASST_NAME#
+	              ,#ACQS_DATE#
+	              ,#CLSF_CODE#
+	              ,#DPCT_METH#
+	              ,#PRID_DPCT#
+	              ,#DPCT_RATE#
+	              ,#DPCT_CYCL#
+	              ,#ACCT_UNIT#
+	              ,#ASST_STRD#
+	              ,#DETL_STRD#
+	              ,#ACQU_NUMB#
+	              ,#ACQU_COST#
+	              ,#ACQU_PRIC#
+	              ,#DEPT_CODE#
+	              ,#UNIT_CODE#
+	              ,#EMPL_NUMB#
+	              ,#BUYX_NAME#
+	              ,#MUFT_NAME#
+	              ,#BARX_CODE#	             
+	              ,#DESC_REMK#
+	              ,#DPCT_STAT#
+	              ,#ASST_STAT#
+	              ,#UNDP_BALE#
+	              ,#SAVG_VALU#
+	              ,#ACQU_CHNL#
+	              ,#PAST_NUMB#
+	              ,#FCHG_DATE#
+	              ,#ASST_CSCD#       /*자산비용구분[ASST_CSCD]*/
+	              ,#PRID_LEGL#
+	              ,#IDLE_YSNO#
+	              ,SYSDATE
+	              ,#UPDT_USID#
+	              ,SYSDATE
+	              ,#UPDT_USID#
+	              ,#VATX_AMNT#
+	              ,#DPCT_CMPT#
+	              ,#CUST_CODE#
+	              ,'100'
+	              );         
+	              
+	               EXCEPTION 
+	                WHEN OTHERS THEN
+	                 RAISE_APPLICATION_ERROR(-20000, sASST_NUMB || '에러'||chr(13)||chr(10)||SQLERRM);
+	                END; 
+	
+	       /*신규취득으로 자산변동 테이블에 INSERT*/
+	        INSERT INTO FS_ASCHXM (
+	               CHNG_DATE   /*변동일*/
+	              ,ASST_NUMB   /*자산번호*/
+	              ,SEQN_NUMB   /*일련번호*/
+	              ,ASCH_GUBN   /*변동구분[ASCH_GUBN]*/
+	              ,ASST_STAT   /*자산상태[ASST_STAT]*/
+	              ,CHBF_DEPT   /*변경전부서코드*/
+	              ,CHBF_EMPL   /*변경전사원번호*/
+	              ,DEPT_CODE   /*부서코드*/
+	              ,EMPL_NUMB   /*사원번호*/
+	              ,ACQU_ENDX   /*취득가_기말잔액*/
+	              ,DPCT_ENDX   /*충당금_기말잔액*/
+	              ,UNDP_BALE   /*미상각잔액*/
+	              ,CHNG_AMOT   /*변동금액*/
+	              ,DSPS_AMOT   /*처분가액*/
+	              ,DSPS_GILS   /*처분손익*/
+	              ,DPCT_GRDC   /*충당금가감액*/
+	              ,ACCT_INTL   /*계정과목코드*/
+	              ,CUST_CODE   /*거래처코드*/
+	              ,RCGN_YSNO   /*승인여부*/
+	              ,APPV_DATE   /*승인일시*/
+	              ,APPR_EMPL   /*승인자*/
+	              ,SLIP_NUMB   /*전표번호*/
+	              ,DESC_REMK   /*비고(100)*/
+	              ,INST_DATE   /*등록일시*/
+	              ,INST_USID   /*등록자*/
+	              ,UPDT_DATE   /*수정일시*/
+	              ,UPDT_USID   /*수정자*/
+	              ,ACCT_GUBN   /*사업장*/
+	              )
+	       VALUES (
+	               #ACQS_DATE#  /*취득일*/
+	              ,sASST_NUMB  /*자산채번번호*/
+	              ,1           /*신규 자산으로 언제나 1*/
+	              ,'ACQU'      /*변동구분(신규취득:10)*/
+	              ,#ASST_STAT#  /*자산상태(사용중:USIG)*/
+	              ,#DEPT_CODE#  /*변경전부서*/
+	              ,#EMPL_NUMB#  /*변경전사원*/
+	              ,#DEPT_CODE#  /*현부서*/
+	              ,#EMPL_NUMB#  /*현사원*/
+	              ,#ACQU_PRIC#  /*취득가_기말잔액*/
+	              ,0           /*충당금_기말잔액*/
+	              ,#UNDP_BALE#  /*미상각잔액*/
+	              ,#ACQU_PRIC#  /*변동금액*/
+	              ,0           /*처분가액*/
+	              ,0           /*처분손익*/
+	              ,0           /*충당금가감액*/
+	              ,(SELECT DPCT_ACT1 FROM VI_ASSETCLASS WHERE SMAL_CODE = #CLSF_CODE#)        /*계정과목코드*/
+	              ,''          /*거래처코드*/
+	              ,'1'         /*승인여부(승인)*/
+	              ,SYSDATE  /*승인일시*/
+	              ,#UPDT_USID#  /*승인자*/
+	              /*,'0'         /*승인여부*/
+	              /*,''          /*승인일시*/
+	              /*,''          /*승인자*/
+	              ,''          /*전표번호*/
+	              ,#ASST_NAME#||'(신규취득)'          /*비고*/
+	              ,SYSDATE  /*등록일시*/
+	              ,#UPDT_USID#  /*등록자*/
+	              ,SYSDATE  /*수정일시*/
+	              ,#UPDT_USID#  /*수정자*/
+	              ,'100'
+	              );         
+	
+	    END;
+		]]>
+	</insert>
+</sqlMap>

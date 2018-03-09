@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYJ0010">
+
+<!--
+ *   프로그램명 : 월말인원실적 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.08.02
+ *   작 성 자 : 고민주
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 고민주
+	 작 성 일 : 2016.08.02
+	 내    용 : 월말인원 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="PAYJ0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		    SELECT	a.DGGP_NAME
+				,	a.DTGN_NAME
+				,	B.COMD_CDNM AS WRTY_NAME
+				, Sum(CASE WHEN STDS_YMTH = '01' THEN EMPL_COUT ELSE 0 END) MN01_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '02' THEN EMPL_COUT ELSE 0 END) MN02_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '03' THEN EMPL_COUT ELSE 0 END) MN03_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '04' THEN EMPL_COUT ELSE 0 END) MN04_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '05' THEN EMPL_COUT ELSE 0 END) MN05_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '06' THEN EMPL_COUT ELSE 0 END) MN06_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '07' THEN EMPL_COUT ELSE 0 END) MN07_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '08' THEN EMPL_COUT ELSE 0 END) MN08_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '09' THEN EMPL_COUT ELSE 0 END) MN09_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '10' THEN EMPL_COUT ELSE 0 END) MN10_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '11' THEN EMPL_COUT ELSE 0 END) MN11_AMOT
+		        , Sum(CASE WHEN STDS_YMTH = '12' THEN EMPL_COUT ELSE 0 END) MN12_AMOT
+       
+ 		FROM (
+				SELECT	SUBSTR(A.STDS_YMTH,5,2) AS STDS_YMTH
+					,	A.DGGP_NAME
+					,	A.DTGN_NAME
+					,	A.WRTY_CODE
+					,	COUNT(EMPL_NUMB) AS EMPL_COUT
+					,	B.SORT_ORDR AS BSORT
+					,	C.SORT_ORDR AS CSORT
+					,	D.SORT_ORDR AS DSORT
+				FROM	PY_EMPMTE A
+				INNER JOIN TM_CODEXD B 
+					ON B.COMM_CODE = 'DGGP_CODE' AND A.DGGP_CODE = B.COMD_CODE
+				INNER JOIN TM_CODEXD C
+					ON C.COMM_CODE = 'DTGN_CODE' AND A.DTGN_CODE = C.COMD_CODE
+				INNER JOIN TM_CODEXD D
+					ON D.COMM_CODE = 'WRTY_CODE' AND A.WRTY_CODE = D.COMD_CODE
+				WHERE STDS_YMTH LIKE #STDS_YEAR# || '%'
+				GROUP BY A.STDS_YMTH, A.DGGP_NAME, A.DTGN_NAME, A.WRTY_CODE, B.SORT_ORDR, C.SORT_ORDR, D.SORT_ORDR
+
+			) A
+			
+			INNER JOIN TM_CODEXD B ON B.COMM_CODE='WRTY_CODE' AND a.WRTY_CODE=B.COMD_CODE
+      		GROUP BY  a.DGGP_NAME  ,a.DTGN_NAME   ,	B.COMD_CDNM , A.BSORT, A.CSORT, A.DSORT
+      		ORDER BY  A.BSORT, A.CSORT, A.DSORT
+
+    ]]>         
+	</select>
+
+
+</sqlMap>

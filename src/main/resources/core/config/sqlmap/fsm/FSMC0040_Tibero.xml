@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FSMC0040">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 신민규
+     작  성  일 : 2016. 07. 26
+     내      용 : 불용자산현황 조회 처리
+********************************************************************************/
+-->
+	<select id="FSMC0040.SEARCH00" parameterClass="hashmap" resultClass = "hashmap">
+		<![CDATA[
+			SELECT  /* FSMC0040.SEARCH00.불용자산현황 조회 처리 */ 
+			         SF_GET_COMMNAME('ASCH_GUBN', A.ASCH_GUBN) AS  ASCH_GUBN   /*변동구분[ASCH_GUBN]*/
+                    ,C.ASCL_NAME    /*자산분류명*/
+                    ,C.LARG_NAME    /*품목(대분류)명*/
+                    ,A.ASST_NUMB    /*자산번호*/
+                    ,B.ASST_NAME    /*자산명*/
+                    ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME   /*부서명*/
+                    ,A.CHNG_DATE    /*변동일*/
+                    ,A.ACQU_ENDX    /*취득가_기말잔액*/
+                    ,A.DPCT_ENDX    /*충당금_기말잔액*/
+                    ,A.UNDP_BALE    /*미상각잔액*/
+                    ,A.DSPS_AMOT    /*처분가액*/
+                    ,A.DSPS_GILS    /*처분손익*/
+                    ,A.SLIP_NUMB    /*전표번호*/
+                    ,A.DESC_REMK    /*비고(100)*/
+               FROM FS_ASCHXM A INNER JOIN FS_ASSTXM B
+                                        ON A.ASST_NUMB = B.ASST_NUMB
+                                INNER JOIN VI_ASSETCLASS C
+                                        ON B.CLSF_CODE = C.SMAL_CODE
+                                INNER JOIN TM_CODEXD D
+                                        ON A.ASCH_GUBN = D.COMD_CODE AND D.COMM_CODE = 'ASCH_GUBN' AND D.REF2_FILD = 'USLS' /*불용*/
+              WHERE A.RCGN_YSNO          = '1'	/*승인상태가승인것*/
+                AND C.ASST_GUBN          = NVL(#ASST_GUBN#, C.ASST_GUBN)	/*고정/부외*/                               
+				AND A.CHNG_DATE BETWEEN NVL(#CHNG_DAT1#, A.CHNG_DATE) AND NVL(#CHNG_DAT2#, A.CHNG_DATE)	/* 변동일자 */
+        ]]>
+        <isNotEmpty property = "ASCH_GUBN" prepend = "AND">
+         <![CDATA[ 
+                   A.ASCH_GUBN = NVL(#ASCH_GUBN#, A.ASCH_GUBN)             /*변동구분*/
+         ]]>
+        </isNotEmpty>  
+        <isNotEmpty property = "ASCL_CODE" prepend = "AND">
+          <![CDATA[ 
+                   C.ASCL_CODE = NVL(#ASCL_CODE#, C.ASCL_CODE)             /*자산분류*/
+          ]]>
+        </isNotEmpty>
+        <isNotEmpty property = "CLSF_CODE" prepend = "AND">
+          <![CDATA[ 
+                   B.CLSF_CODE = NVL(#CLSF_CODE#, B.CLSF_CODE)             /*품목분류*/
+          ]]>
+        </isNotEmpty> 
+        <isNotEmpty property = "DEPT_CODE" prepend = "AND">
+          <![CDATA[ 
+                   A.DEPT_CODE = NVL(#DEPT_CODE#, A.DEPT_CODE)             /*부서*/
+          ]]>
+        </isNotEmpty>            
+        <![CDATA[
+              ORDER BY ASCH_GUBN, C.ASCL_NAME, LARG_NAME        
+        ]]>                                                       
+	</select>
+
+</sqlMap>

@@ -1,0 +1,1387 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MACA0020">
+
+<!--  
+ *   프로그램명 : 매체위수탁 
+ *   작 성 일 : 2016.10.24(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 : 
+ -->
+
+	<!-- 위수탁 미발행 조건 -->
+	<sql id="search">
+	    <isEmpty prepend="AND" property="MEDX_FLAG" >
+	    	A.MEDX_FLAG IN ('A004','A005','A006','A007','A008')
+	    </isEmpty>
+	    <isNotEmpty prepend="AND" property="MEDX_FLAG" >
+			 <isEqual  property="MEDX_FLAG" compareValue="A00B">
+					 A.MEDX_FLAG IN ('A005','A006')					/* 매체구분 */
+			</isEqual>
+			<isNotEqual property="MEDX_FLAG" compareValue="A00B">
+					 A.MEDX_FLAG= #MEDX_FLAG# 							/* 매체구분 */
+			</isNotEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="YEAR_MNTH">
+				A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'		/* 년월 */
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'		/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+				C.CUST_NAME LIKE '%' || #CUST_NAME# || '%'		/* 광고주명 */
+		</isNotEmpty>	
+	</sql>
+	
+	<!-- 위수탁  완료조건-->
+	<sql id="search2">
+		<isEmpty prepend="AND" property="MEDX_FLAG" >
+	    	A.MEDX_FLAG IN ('A004','A005','A006','A007','A008')
+	    </isEmpty>
+		<isNotEmpty property="MEDX_FLAG">
+			<isEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+					 A.MEDX_FLAG IN ('A005', 'A006') 					/* 매체구분 */
+			</isEqual>
+			<isNotEqual prepend="AND" property="MEDX_FLAG" compareValue="A00B">
+					 A.MEDX_FLAG= #MEDX_FLAG# 							/* 매체구분 */
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE">
+			A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'		/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="CUST_NAME">
+			C.CUST_NAME LIKE '%' || #CUST_NAME# || '%'		/* 광고주명 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'		/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CDNM">
+			D.CUST_NAME LIKE '%' || #MEDX_CDNM# || '%'		/* 매체사명 */
+		</isNotEmpty>	
+	</sql>
+
+		
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.24(표준화 완료)
+		내      용  : 위수탁 미발행  조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MACA0020.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , A.YEAR_MNTH      /*년월*/
+                 , TO_CHAR(SYSDATE,'YYYYMMDD') AS PRNT_DATE    /* 작성일자 */
+                 , '01' AS DTIX_TYPE
+                 , DECODE(G.TRTX_FLAG,'P','02','03') AS DTIY_TYPE
+                 , '02' AS TAXX_DMND
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE						/* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM  /* 공급자 사업장명 */
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , A.CUST_CODE						/*광고주코드*/
+                 , C.CUST_NAME						/* 공급받는 자 사업장명 */
+                 , A.AMNT_FILD AS TAXX_AMTX /* 공급가액  */
+                 , A.VATX_FILD AS TAXX_VATX /* 세액 */
+                 , A.SUMX_FILD AS SUMM_AMTX /* 합계 */
+                 , C.OWNR_NAME						/* 광고주대표 */
+                 , A.DEPT_CODE
+                 , F.DEPT_NAME						/*부서명*/
+                 , A.MEDX_FLAG						/*매체구분*/
+                 , C.ADDR_DESC    				    /* 주소 */
+          	     , C.DTL1_ADDR    				    /* 주소1 */
+       	         , C.DTL2_ADDR     				   /* 주소2 */
+       	         , D.OWNR_NAME	AS MOWN_NAME	/* 매체사대표 */
+       	         , D.ADDR_DESC  AS  MADD_DESC  	 /* 매체사주소 */
+          	     , D.DTL1_ADDR  AS  MDT1_ADDR	  /* 매체사주소1 */
+       	         , D.DTL2_ADDR  AS  MDT2_ADDR	 /* 매체사주소2 */
+       	         , A.TSEQ_FILD						/*거래명세서번호*/
+       	         , A.SEQX_FILD						/*개별청약서번호*/
+       	         , A.TRTR_NUMB
+       	         , A.MEMO_FILD					/*거래내역*/
+       	         , '' CONVERSATION_ID
+              FROM MD_TRANXD A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN TM_DEPTXM F ON A.DEPT_CODE = F.DEPT_CODE
+                LEFT JOIN (
+				SELECT YEAR_MNTH, SEQX_FILD,MEDX_FLAG, TRTX_FLAG, TRTR_NUMB FROM MD_PTMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,MEDX_FLAG, TRTX_FLAG, TRTR_NUMB FROM MD_CTMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,MEDX_FLAG, TRTX_FLAG, TRTR_NUMB FROM MD_ODMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,MEDX_FLAG, TRTX_FLAG, TRTR_NUMB FROM MD_ITMDXM
+				)G ON G.TRTR_NUMB = A.YEAR_MNTH||LPAD(A.TRTR_NUMB,4,'0')||LPAD(A.TSEQ_FILD,5,'0') AND A.MEDX_FLAG = G.MEDX_FLAG
+				WHERE 1=1
+			]]>
+			     <include refid="search" />	
+			<![CDATA[
+				AND A.TAXY_MONT IS NULL		/* 세금계산서 생성유무 */
+				
+	]]>
+
+	</select>
+	
+		<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 세금계산서조회
+		파라미터  : YEAR_MNTH : 년월, BUSI_FLAG : 위수탁 수수료 구분, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0020.SEARCH01 		세금계산서조회 */
+                  '0' CHEK_FILD                /*체크박스*/
+                 , A.TAXY_MONT  AS YEAR_MNTH     /* 세금계산서년월 */
+                 , A.TAXX_NUMB              /* 세금계산서번호 */
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , A.CUST_CODE              /* 광고주코드 */
+                 , A.CUST_NAME              /* 광고주명 */
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.MEDX_CDNM              /* 매체사명 */
+                 , A.TAXX_AMTX              /* 청구금액 */
+                 , A.TAXX_VATX              /* 부가세액 */
+                 , A.SUMM_AMTX              /* 합계금액 */
+                 , A.DEND_DATE              /* 청구일자 */
+                 , A.PRNT_DATE              /* 발행일자 */
+                 , A.SACH_NUMB              /* 매출전표번호 */
+                 , A.BIZR_NUMB              /* 광고주사업자번호 */
+                 , A.MEMO_FILD              /* 비고 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , A.OWNR_NAME              /* 광고주대표자명 */
+                 , A.ADDR_DESC              /* 주소 */
+                 , A.DTL1_ADDR              /* 주소1 */
+                 , A.DTL2_ADDR              /* 주소2 */
+                 , A.MOWN_NAME              /* 매체사대표명 */
+                 , A.MADD_DESC              /* 매체사주소 */
+                 , A.MDT1_ADDR              /* 매체사주소1 */
+                 , A.MDT2_ADDR              /* 매체사주소2 */
+                 , SUBSTR(A.DTIX_TYPE,1,2) AS  DTIX_TYPE    /* 세금계산서종류 */
+                 , SUBSTR(A.DTIX_TYPE,3,2) AS  DTIY_TYPE  	/* 세금계산서 분류 */
+                 , A.BUSI_FLAG              /* 위수탁 수수료 구분 */
+                 , A.TAXX_DMND              /* 영수구분 */
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , A.SEND_FLAG
+                 , A.TAXY_NUMB AS TAXX_SANB /*세금계산서 번호*/
+                 , A.CONVERSATION_ID
+                 , B.CONT_CONT	
+                 , F.APPROVE_ID
+                 , A.ORI_ISSUE_ID
+              FROM MD_SATXXH A              /* [매체세금계산서 헤더테이블] */
+              LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+              LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+              LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+              LEFT JOIN (
+					    SELECT 
+					    TAXY_MONT
+					    ,TAXX_NUMB
+					    ,COUNT(*) CONT_CONT 
+					    FROM MD_SATXXD
+					    GROUP BY TAXY_MONT,TAXX_NUMB 
+					)B ON A.TAXY_MONT = B.TAXY_MONT AND A.TAXX_NUMB = B.TAXX_NUMB
+			LEFT JOIN XXSB_DTI_MAIN F ON A.CONVERSATION_ID = F.CONVERSATION_ID
+			LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+              WHERE A.TAXY_MONT = #YEAR_MNTH# 
+              AND A.BUSI_FLAG= #BUSI_FLAG#
+              AND A.INPT_GUBN IS NULL
+		]]>
+	     <include refid="search2" />	
+	<![CDATA[
+	ORDER BY A.TAXY_NUMB
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.02(표준화 완료)
+		내      용  : 수수료 미발행  조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+	
+SELECT /*  MACA0020.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 ,  TO_CHAR(SYSDATE,'YYYYMMDD') PRNT_DATE       /* 발행일 */
+                 , '01' AS DTIX_TYPE
+                 , DECODE(A.CMTX_FLAG,'P','02','01') AS DTIY_TYPE
+                 , '02' AS TAXX_DMND
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM  /* 공급자 사업장명 */
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , C.CUST_NAME                        /* 공급받는 자 사업장명 */
+                 , A.COMI_FILD  AS TAXX_AMTX            /* 공급가액  */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*0.1),0) AS TAXX_VATX            /* 세액 */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*1.1),A.COMI_FILD)  AS SUMM_AMTX             /* 합계 */
+                 , C.OWNR_NAME                        /* 광고주대표 */
+                 , A.DEPT_CODE
+                 , F.DEPT_NAME                        /*부서명*/
+                 , A.MEDX_FLAG                        /*매체구분*/
+                 , C.ADDR_DESC                        /* 주소 */
+                 , C.DTL1_ADDR                    /* 주소1 */
+                 , C.DTL2_ADDR                    /* 주소2 */
+                 , A.YEAR_MNTH                        /*년월*/
+                 , A.SEQX_FILD                        /*개별청약서번호*/
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , C.CUST_NAME||' '||SUBSTR(A.YEAR_MNTH,5,2)||'월 수수료'  AS MEMO_FILD     /* 비고 */
+                 , '' CONVERSATION_ID
+                 , A.SEQX_FILD
+              FROM MD_CTMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+                LEFT JOIN TM_DEPTXM F ON A.DEPT_CODE = F.DEPT_CODE 
+                LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+                WHERE A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'        /* 년월 */
+                AND A.CMTX_NUMB IS NULL						/*수수료세금계산서번호*/
+          ]]>
+         <isNotEmpty prepend="AND" property="MEDX_FLAG">
+                A.MEDX_FLAG LIKE '%' || #MEDX_FLAG# || '%'        /* 매체구분 */
+        </isNotEmpty>  
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'		/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CDNM">
+			D.CUST_NAME LIKE '%' || #MEDX_CDNM# || '%'		/* 매체사명 */
+		</isNotEmpty>	     
+<![CDATA[ 
+UNION ALL
+SELECT /*  MACA0020.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 ,  TO_CHAR(SYSDATE,'YYYYMMDD') PRNT_DATE       /* 발행일 */
+                 , '01' AS DTIX_TYPE
+                 , DECODE(A.CMTX_FLAG,'P','02','01') AS DTIY_TYPE
+                 , '02' AS TAXX_DMND
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM  /* 공급자 사업장명 */
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , C.CUST_NAME                        /* 공급받는 자 사업장명 */
+                 , A.COMI_FILD  AS TAXX_AMTX            /* 공급가액  */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*0.1),0) AS TAXX_VATX            /* 세액 */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*1.1),A.COMI_FILD)  AS SUMM_AMTX             /* 합계 */
+                 , C.OWNR_NAME                        /* 광고주대표 */
+                 , A.DEPT_CODE
+                 , F.DEPT_NAME                        /*부서명*/
+                 , A.MEDX_FLAG                        /*매체구분*/
+                 , C.ADDR_DESC                        /* 주소 */
+                 , C.DTL1_ADDR                    /* 주소1 */
+                 , C.DTL2_ADDR                    /* 주소2 */
+                 , A.YEAR_MNTH                        /*년월*/
+                 , A.SEQX_FILD                        /*개별청약서번호*/
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , C.CUST_NAME||' '||SUBSTR(A.YEAR_MNTH,5,2)||'월 수수료'  AS MEMO_FILD     /* 비고 */
+                 , '' CONVERSATION_ID
+                 , A.SEQX_FILD
+              FROM MD_PTMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+                LEFT JOIN TM_DEPTXM F ON A.DEPT_CODE = F.DEPT_CODE 
+                LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+                WHERE A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'        /* 년월 */
+                AND A.CMTX_NUMB IS NULL						/*수수료세금계산서번호*/
+          ]]>
+          <isNotEmpty prepend="AND" property="MEDX_FLAG">
+	          <isEqual  property="MEDX_FLAG" compareValue="A00B">
+	          		A.MEDX_FLAG IN ('A005', 'A006') 					/* 매체구분 */
+	          </isEqual>
+	          <isNotEqual property="MEDX_FLAG" compareValue="A00B">
+	                A.MEDX_FLAG LIKE '%' || #MEDX_FLAG# || '%'        /* 광고주코드 */
+	          </isNotEqual>
+         </isNotEmpty>
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'		/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CDNM">
+			D.CUST_NAME LIKE '%' || #MEDX_CDNM# || '%'		/* 매체사명 */
+		</isNotEmpty>	 
+UNION ALL
+SELECT /*  MACA0020.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 , TO_CHAR(SYSDATE,'YYYYMMDD') PRNT_DATE       /* 발행일 */
+                 , '01' AS DTIX_TYPE
+                 , DECODE(A.CMTX_FLAG,'P','02','01') AS DTIY_TYPE
+                 , '02' AS TAXX_DMND
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM  /* 공급자 사업장명 */
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , C.CUST_NAME                        /* 공급받는 자 사업장명 */
+                 , A.COMI_FILD  AS TAXX_AMTX            /* 공급가액  */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*0.1),0) AS TAXX_VATX            /* 세액 */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*1.1),A.COMI_FILD)  AS SUMM_AMTX             /* 합계 */
+                 , C.OWNR_NAME                        /* 광고주대표 */
+                 , A.DEPT_CODE
+                 , F.DEPT_NAME                        /*부서명*/
+                 , 'A008' AS MEDX_FLAG                        /*매체구분*/
+                 , C.ADDR_DESC                        /* 주소 */
+                 , C.DTL1_ADDR                    /* 주소1 */
+                 , C.DTL2_ADDR                    /* 주소2 */
+                 , A.YEAR_MNTH                        /*년월*/
+                 , A.SEQX_FILD                        /*개별청약서번호*/
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , C.CUST_NAME||' '||SUBSTR(A.YEAR_MNTH,5,2)||'월 수수료'  AS MEMO_FILD     /* 비고 */
+                 , '' CONVERSATION_ID
+                 , A.SEQX_FILD
+              FROM MD_ITMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+                LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+                LEFT JOIN TM_DEPTXM F ON A.DEPT_CODE = F.DEPT_CODE 
+                LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+                WHERE A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'        /* 년월 */
+                AND A.CMTX_NUMB IS NULL						/*수수료세금계산서번호*/
+        <isNotEmpty prepend="AND" property="MEDX_FLAG">
+            A.MEDX_FLAG LIKE '%' || #MEDX_FLAG# || '%'        /* 매체구분 */
+        </isNotEmpty>  
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'		/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CDNM">
+			D.CUST_NAME LIKE '%' || #MEDX_CDNM# || '%'		/* 매체사명 */
+		</isNotEmpty>	     
+UNION ALL
+SELECT /*  MACA0020.SEARCH00 미완료  조회(거래명세서) */
+                 '0' CHEK_FILD                /*체크박스*/
+                 ,  TO_CHAR(SYSDATE,'YYYYMMDD') PRNT_DATE       /* 발행일 */
+                 , '01' AS DTIX_TYPE
+                 , DECODE(A.CMTX_FLAG,'P','02','01') AS DTIY_TYPE
+                 , '02' AS TAXX_DMND
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE                        /* 매체사코드 */
+                 , D.CUST_NAME AS MEDX_CDNM  /* 공급자 사업장명 */
+                 , A.CUST_CODE                        /*광고주코드*/
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , C.CUST_NAME                        /* 공급받는 자 사업장명 */
+                 , A.COMI_FILD  AS TAXX_AMTX            /* 공급가액  */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*0.1),0) AS TAXX_VATX            /* 세액 */
+                 , DECODE(A.CMTX_FLAG,'T',TRUNC(A.COMI_FILD*1.1),A.COMI_FILD)  AS SUMM_AMTX             /* 합계 */
+                 , C.OWNR_NAME                        /* 광고주대표 */
+                 , A.DEPT_CODE
+                 , F.DEPT_NAME                        /*부서명*/
+                 , 'A007' AS MEDX_FLAG                        /*매체구분*/
+                 , C.ADDR_DESC                        /* 주소 */
+                 , C.DTL1_ADDR                    /* 주소1 */
+                 , C.DTL2_ADDR                    /* 주소2 */
+                 , A.YEAR_MNTH                        /*년월*/
+                 , A.SEQX_FILD                        /*개별청약서번호*/
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , C.CUST_NAME||' '||SUBSTR(A.YEAR_MNTH,5,2)||'월 수수료'  AS MEMO_FILD     /* 비고 */
+                 , '' CONVERSATION_ID
+                 , A.SEQX_FILD
+              FROM MD_ODMDXM A              /* [거래명세서(상세)] */
+                LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+                LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+               LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+                LEFT JOIN TM_DEPTXM F ON A.DEPT_CODE = F.DEPT_CODE 
+                LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+                WHERE A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'        /* 년월 */
+                AND A.CMTX_NUMB IS NULL						/*수수료세금계산서번호*/
+        <isNotEmpty prepend="AND" property="MEDX_FLAG">
+            A.MEDX_FLAG LIKE '%' || #MEDX_FLAG# || '%'        /* 매체구분 */
+        </isNotEmpty>   
+        <isNotEmpty prepend="AND" property="MEDX_CODE">
+			A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'		/* 매체사코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="MEDX_CDNM">
+			D.CUST_NAME LIKE '%' || #MEDX_CDNM# || '%'		/* 매체사명 */
+		</isNotEmpty>	   
+
+	</select>
+	
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.06(표준화 완료)
+		내      용  : 세금계산서 디테일 조회(위수탁)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.SEARCH05" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MACA0020.SEARCH05 디테일  조회(개별청약) */
+				A.TAXY_MONT
+				, A.TAXX_NUMB
+				, A.DEND_DATE	/* 청구일자 */
+				, A.PRNT_DATE    /* 발행일자 */
+     			, D.TAXX_IDXX
+     			, DECODE(D.MEM2_FILD,NULL,D.MEMO_FILD,D.MEM2_FILD) AS MEMO_FILD
+     			, F.BRND_NAME
+                , D.TAXX_AMTX AS AMNT_FILD
+                , D.TAXX_VATX AS AVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX  AS ASUM_FILD             /* 합계 */
+                , D.TAXX_AMTX AS COMI_FILD
+                , D.TAXX_VATX AS CVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX AS CSUM_FILD             /* 합계 */
+              FROM MD_SATXXH A              /* [거래명세서(상세)] */
+            LEFT JOIN MD_SATXXD D ON A.TAXY_MONT = D.TAXY_MONT AND A.TAXX_NUMB = D.TAXX_NUMB
+            LEFT JOIN (
+			SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE FROM MD_PTMDXM
+			UNION ALL
+			SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE FROM MD_CTMDXM
+			UNION ALL
+			SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE FROM MD_ODMDXM
+			UNION ALL
+			SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE FROM MD_ITMDXM
+			)E ON A.TAXY_NUMB = E.TRTX_NUMB AND D.SEQX_FILD = E.SEQX_FILD AND D.MEDX_FLAG = E.MEDX_FLAG
+			LEFT JOIN MD_BRNDXM F ON E.CUST_CODE = F.CUST_CODE AND E.BRND_CODE = F.BRND_CODE
+            WHERE 1=1
+            AND A.TAXY_MONT=#YEAR_MNTH# AND A.TAXX_NUMB = #TAXX_NUMB# 
+ 	]]>
+ 	<isNotEmpty prepend="AND" property="MEDX_FLAG">
+	 	<isEqual property="MEDX_FLAG" compareValue="A00B">
+	 	 	A.MEDX_FLAG IN ('A005','A006')
+	 	</isEqual>
+	     <isNotEqual property="MEDX_FLAG" compareValue="A00B">
+	 	 	A.MEDX_FLAG = #MEDX_FLAG#
+	 	</isNotEqual>
+ 	</isNotEmpty>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.06(표준화 완료)
+		내      용  : 세금계산서 디테일 조회(수수료)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.SEARCH06" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MACA0020.SEARCH06 디테일  조회(개별청약) */
+				A.TAXY_MONT
+				, A.TAXX_NUMB
+				, A.DEND_DATE	/* 청구일자 */
+				, A.PRNT_DATE    /* 발행일자 */
+				, D.TAXX_IDXX
+				, DECODE(D.MEM2_FILD,NULL,D.MEMO_FILD,D.MEM2_FILD) AS MEMO_FILD
+     			, E.PRGM_NAME
+                , F.BRND_NAME
+                , D.TAXX_AMTX AS AMNT_FILD
+                , D.TAXX_VATX AS AVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX  AS ASUM_FILD             /* 합계 */
+                , D.TAXX_AMTX AS COMI_FILD
+                , D.TAXX_VATX AS CVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX AS CSUM_FILD             /* 합계 */
+              FROM MD_SATXXH A              /* [거래명세서(상세)] */
+            LEFT JOIN MD_SATXXD D ON A.TAXY_MONT = D.TAXY_MONT AND A.TAXX_NUMB = D.TAXX_NUMB
+            LEFT JOIN (
+				SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE ,MATT_NAME AS PRGM_NAME FROM MD_PTMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE, PRGM_NAME FROM MD_CTMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE ,MATT_NAME AS PRGM_NAME FROM MD_ODMDXM
+				UNION ALL
+				SELECT YEAR_MNTH, SEQX_FILD,CUST_CODE,MEDX_FLAG, TRTX_NUMB ,BRND_CODE ,MATT_NAME AS PRGM_NAME  FROM MD_ITMDXM
+			)E ON A.TAXY_NUMB = E.TRTX_NUMB AND D.SEQX_FILD = E.SEQX_FILD AND D.MEDX_FLAG = E.MEDX_FLAG
+			LEFT JOIN MD_BRNDXM F ON E.CUST_CODE = F.CUST_CODE AND E.BRND_CODE = F.BRND_CODE
+			WHERE 1=1
+            AND  A.TAXY_MONT=#YEAR_MNTH# AND A.TAXX_NUMB = #TAXX_NUMB# 
+	]]>
+	 	<isNotEmpty prepend="AND" property="MEDX_FLAG">
+			<isEqual property="MEDX_FLAG" compareValue="A00B">
+		 	 	 A.MEDX_FLAG IN ('A005','A006')
+		 	</isEqual>
+		     <isNotEqual property="MEDX_FLAG" compareValue="A00B">
+		 	 	 A.MEDX_FLAG = #MEDX_FLAG#
+		 	</isNotEqual>
+	 	</isNotEmpty>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.15(표준화 완료)
+		내      용  : 광고주목록 조회
+		파라미터  : 
+	-->
+	<select id="MACA0020.SEARCH04" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT                                         /* MDMA0030.SEARCH01 광고주목록 가져오기 */
+                A.CUST_CODE								/* 광고주코드 */
+                , A.CUST_NAME                                 /* 거래처명 */
+                , A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+                , ' ' AS USEX_CODE                          /* NULL */
+                FROM TA_CUSTXM A 
+                LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUCL_CODE = 'FA260110'
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 세금계싼서 디테일에 있는 매체구분 플레그를가져온다.
+		파라미터  : TAXY_MONT : 세금계산서 년월, TAXX_NUMB : 세금계산서 번호
+	-->
+	<select id="MACA0020.getMEDX_FLAG" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0020.getMEDX_FLAG 매체구분플래그 조회 */
+                   DISTINCT
+                   MEDX_FLAG 					/*매체구분*/
+              FROM MD_SATXXD
+              WHERE TAXY_MONT = #YEAR_MNTH# 
+              AND TAXX_NUMB= #TAXX_NUMB#
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 위수탁 세금계산서 저장 처리
+	-->
+	<insert id="MACA0020.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SATXXH (  /* MACA0020.SAVE00 세금계산서 저장 */
+                TAXY_MONT        /* 세금계산서년월 */
+               ,TAXX_NUMB        /* 세금계산서번호 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,CUST_NAME        /* 광고주명 */
+               ,MEDX_CODE        /* 매체사코드 */
+               ,MEDX_CDNM        /* 매체사명 */
+               ,TAXX_AMTX        /* 청구금액 */
+               ,TAXX_VATX        /* 부가세액 */
+               ,SUMM_AMTX        /* 합계금액 */
+               ,DEND_DATE        /* 청구일자 */
+               ,PRNT_DATE        /* 발행일자 */
+               ,SACH_NUMB        /* 매출전표번호 */
+               ,BIZR_NUMB        /* 광고주사업자번호 */
+               ,MEMO_FILD        /* 비고 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,OWNR_NAME        /* 광고주대표자명 */
+               ,ADDR_DESC        /* 주소 */
+               ,DTL1_ADDR        /* 주소1 */
+               ,DTL2_ADDR        /* 주소2 */
+               ,MOWN_NAME        /* 매체사대표명 */
+               ,MADD_DESC        /* 매체사주소 */
+               ,MDT1_ADDR        /* 매체사주소1 */
+               ,MDT2_ADDR        /* 매체사주소2 */
+               ,DTIX_TYPE        /* 세금계산서종류 */
+               ,INST_USID        /* 생성자 */
+               ,INST_DATE        /* 생성일자 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일자 */
+               ,BUSI_FLAG        /* 위수탁 수수료 구분 */
+               ,TAXX_DMND        /* 영수구분 */
+               ,TAXY_NUMB
+               ,CONVERSATION_ID
+              )
+       VALUES (
+              #YEAR_MNTH#       /* 년월 */
+              ,#TAXX_NUMB#    /* 세금계산서번호 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#CUST_NAME#       /* 광고주명 */
+              ,#MEDX_CODE#       /* 매체사코드 */
+              ,#MEDX_CDNM#       /* 매체사명 */
+              ,#TAXX_AMTX#       /* 청구금액 */
+              ,#TAXX_VATX#       /* 부가세액 */
+              ,#SUMM_AMTX#       /* 합계금액 */
+              ,#DEND_DATE#       		/* 청구일자 */
+              ,#DEND_DATE#       /* 발행일자 */
+              ,#SACH_NUMB#        /* 매출전표번호 */
+              ,#CUTX_CUNM#       /* 광고주사업자번호 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#MEDX_FLAG#       /* 매체구분 */
+              ,#OWNR_NAME#       /* 광고주대표자명 */
+              ,#ADDR_DESC#       /* 주소 */
+              ,#DTL1_ADDR#       /* 주소1 */
+              ,#DTL2_ADDR#       /* 주소2 */
+              ,#MOWN_NAME#       /* 매체사대표명 */
+              ,#MADD_DESC#       /* 매체사주소 */
+              ,#MDT1_ADDR#       /* 매체사주소1 */
+              ,#MDT2_ADDR#       /* 매체사주소2 */
+              ,#DTIX_TYPE#||#DTIY_TYPE#       /* 세금계산서종류 */
+              ,#UPDT_USID#       /* 생성자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 생성일자 */
+              ,#UPDT_USID#       /* 수정자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 수정일자 */
+              ,'B'		/* 위수탁 수수료 구분 */
+              ,#TAXX_DMND#       /* 영수구분 */
+              ,'10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')  /* 세금계산서 번호 */
+              ,#CONVERSATION_ID#
+              )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 세금계산서 디테일 저장 처리
+	-->
+	<insert id="MACA0020.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SATXXD (  /* MACA0020.SAVE00 세금계산서 디테일 저장 */
+                TAXY_MONT        /* 세금계산서년월 */
+               ,TAXX_NUMB        /* 세금계산서번호 */
+               ,TAXX_IDXX        /* 세금계산서ID */
+               ,CUST_CODE        /* 광고주코드 */
+               ,MEDX_CODE        /* 매체사코드 */
+               ,TAXX_AMTX        /* 청구금액 */
+               ,TAXX_VATX        /* 부가세액 */
+               ,DEND_DATE        /* 청구일자 */
+               ,PRNT_DATE        /* 발행일자 */
+               ,MEMO_FILD        /* 비고 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,REF2_FILD        /* 여분2 */
+               ,REF3_FILD        /* 여분3 */
+               ,REF4_FILD        /* 여분4 */
+               ,REF5_FILD        /* 여분5 */
+               ,INST_USID        /* 생성자 */
+               ,INST_DATE        /* 생성일자 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일자 */
+               ,SEQX_FILD
+               ,DEPT_CODE
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 세금계산서년월 */
+              ,#TAXX_NUMB#       /* 세금계산서번호 */
+              ,#TAXX_IDXX#       /* 세금계산서ID */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#MEDX_CODE#       /* 매체사코드 */
+              ,#TAXX_AMTX#       /* 청구금액 */
+              ,#TAXX_VATX#       /* 부가세액 */
+              ,#DEND_DATE#       /* 청구일자 */
+              ,#DEND_DATE#       /* 발행일자 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#MEDX_FLAG#       /* 매체구분 */
+              ,#REF2_FILD#       /* 여분2 */
+              ,#REF3_FILD#       /* 여분3 */
+              ,#REF4_FILD#       /* 여분4 */
+              ,#REF5_FILD#       /* 여분5 */
+              ,#UPDT_USID#       /* 생성자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 생성일자 */
+              ,#UPDT_USID#       /* 수정자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 수정일자 */
+              ,#SEQX_FILD#
+              ,#DEPT_CODE#
+              )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 수수료 세금계산서 저장 처리
+	-->
+	<insert id="MACA0020.SAVE02" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_SATXXH (  /* MACA0020.SAVE02 세금계산서 저장 */
+                TAXY_MONT        /* 세금계산서년월 */
+               ,TAXX_NUMB        /* 세금계산서번호 */
+               ,CUST_CODE        /* 광고주코드 */
+               ,CUST_NAME        /* 광고주명 */
+               ,MEDX_CODE        /* 매체사코드 */
+               ,MEDX_CDNM        /* 매체사명 */
+               ,TAXX_AMTX        /* 청구금액 */
+               ,TAXX_VATX        /* 부가세액 */
+               ,SUMM_AMTX        /* 합계금액 */
+               ,DEND_DATE        /* 청구일자 */
+               ,PRNT_DATE        /* 발행일자 */
+               ,SACH_NUMB        /* 매출전표번호 */
+               ,BIZR_NUMB        /* 광고주사업자번호 */
+               ,MEMO_FILD        /* 비고 */
+               ,MEDX_FLAG        /* 매체구분 */
+               ,OWNR_NAME        /* 광고주대표자명 */
+               ,ADDR_DESC        /* 주소 */
+               ,DTL1_ADDR        /* 주소1 */
+               ,DTL2_ADDR        /* 주소2 */
+               ,MOWN_NAME        /* 매체사대표명 */
+               ,MADD_DESC        /* 매체사주소 */
+               ,MDT1_ADDR        /* 매체사주소1 */
+               ,MDT2_ADDR        /* 매체사주소2 */
+               ,DTIX_TYPE        /* 세금계산서종류 */
+               ,INST_USID        /* 생성자 */
+               ,INST_DATE        /* 생성일자 */
+               ,UPDT_USID        /* 수정자 */
+               ,UPDT_DATE        /* 수정일자 */
+               ,BUSI_FLAG        /* 위수탁 수수료 구분 */
+               ,TAXX_DMND        /* 영수구분 */
+               ,TAXY_NUMB
+               ,CONVERSATION_ID
+              )
+       VALUES (
+               #YEAR_MNTH#       /* 년월 */
+              ,#TAXX_NUMB#    /* 세금계산서번호 */
+              ,#CUST_CODE#       /* 광고주코드 */
+              ,#CUST_NAME#       /* 광고주명 */
+              ,#MEDX_CODE#       /* 매체사코드 */
+              ,#MEDX_CDNM#       /* 매체사명 */
+              ,#TAXX_AMTX#       /* 청구금액 */
+              ,#TAXX_VATX#       /* 부가세액 */
+              ,#SUMM_AMTX#       /* 합계금액 */
+              ,#DEND_DATE#       		/* 청구일자 */
+              ,#DEND_DATE#       /* 발행일자 */
+              ,#SACH_NUMB#        /* 매출전표번호 */
+              ,#CUTX_CUNM#       /* 광고주사업자번호 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#MEDX_FLAG#       /* 매체구분 */
+              ,#OWNR_NAME#       /* 광고주대표자명 */
+              ,#ADDR_DESC#       /* 주소 */
+              ,#DTL1_ADDR#       /* 주소1 */
+              ,#DTL2_ADDR#       /* 주소2 */
+              ,#MOWN_NAME#       /* 매체사대표명 */
+              ,#MADD_DESC#       /* 매체사주소 */
+              ,#MDT1_ADDR#       /* 매체사주소1 */
+              ,#MDT2_ADDR#       /* 매체사주소2 */
+              ,#DTIX_TYPE#||#DTIY_TYPE#       /* 세금계산서종류 */
+              ,#UPDT_USID#       /* 생성자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 생성일자 */
+              ,#UPDT_USID#       /* 수정자 */
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')       /* 수정일자 */
+              ,'A'		/* 위수탁 수수료 구분 */
+              ,#TAXX_DMND#       /* 영수구분 */
+              ,'10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')  /* 세금계산서 번호 */
+              ,#CONVERSATION_ID#
+              )
+	]]>
+	</insert>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.27(표준화 완료)
+		내      용 : 위수탁 세금계금계산서 디테일 부가세, 비고 수정
+	-->
+	<update id="MACA0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXD    /* MACA0020.UPDATE00 세금계산서 디테일 MEMO_FILD 내용수정. */
+           SET 
+			   MEM2_FILD = #MEMO_FILD#   /* 비고2 */
+			   , TAXX_VATX = #AVAT_FILD#  /* 부가세 */
+             WHERE TAXY_MONT = #TAXY_MONT#
+             AND TAXX_NUMB = #TAXX_NUMB#
+             AND TAXX_IDXX = #TAXX_IDXX#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.27(표준화 완료)
+		내      용 : 위수탁 세금계산서 헤더 부가세 수정
+	-->
+	<update id="MACA0020.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXH    /* MACA0020.UPDATE01 위수탁 세금계산서 헤더 부가세 수정 */
+           SET 
+			   TAXX_VATX = (SELECT SUM(TAXX_VATX) FROM MD_SATXXD  
+					             WHERE TAXY_MONT=#TAXY_MONT# 			/*년월*/
+						         AND TAXX_NUMB = #TAXX_NUMB#			/*거래명세서 헤더번호*/   )  
+			   , SUMM_AMTX = (SELECT SUM(TAXX_AMTX+TAXX_VATX) FROM MD_SATXXD  
+					             WHERE TAXY_MONT=#TAXY_MONT# 			/*년월*/
+						         AND TAXX_NUMB = #TAXX_NUMB#			/*거래명세서 헤더번호*/   )  
+             WHERE TAXY_MONT = #TAXY_MONT#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2017.02.03(표준화 완료)
+		내      용 : 영수구분수정
+	-->
+	<update id="MACA0020.UPDATE02" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXH    /* MACA0020.UPDATE02 영수구분수정 */
+           SET 
+			   TAXX_DMND = #TAXX_DMND#
+             WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 위수탁 세금계산서 합산처리
+	-->
+	<update id="MACA0020.UPDATE10" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXH    /* MACA0020.UPDATE10 세금계산서 합산 */
+           SET 
+			 MEMO_FILD = NVL(#MEMO_FILD#,MEMO_FILD)			/* 적요수정 */
+			 , TAXX_AMTX = TAXX_AMTX+#TAXX_AMTX#  /* 청구금액 */
+             , TAXX_VATX = TAXX_VATX+#TAXX_VATX#  /* 부가세액 */
+             , SUMM_AMTX = SUMM_AMTX+#SUMM_AMTX#  /* 합계금액 */
+             WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 수수료 세금계산서 합산처리
+	-->
+	<update id="MACA0020.UPDATE11" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXH    /* MACA0020.UPDATE11 세금계산서 합산 */
+           SET  
+             MEMO_FILD = NVL(#MEMO_FILD#,MEMO_FILD)		/* 적요수정 */
+			 , TAXX_AMTX = TAXX_AMTX+#TAXX_AMTX#  /* 청구금액 */
+             , TAXX_VATX = TAXX_VATX+#TAXX_VATX#  /* 부가세액 */
+             , SUMM_AMTX = SUMM_AMTX+#SUMM_AMTX#  /* 합계금액 */
+             WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.27(표준화 완료)
+		내      용 : 위수탁 세금계산서 디테일 합산처리
+	-->
+	<update id="MACA0020.UPDATE12" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXD    /* MACA0020.UPDATE12 세금계산서 합산 */
+           SET 
+           	 MEMO_FILD = NVL(#MEMO_FILD#,MEMO_FILD)  	/* 적요수정 */
+			 , TAXX_AMTX = TAXX_AMTX+#TAXX_AMTX#  /* 청구금액 */
+             , TAXX_VATX = TAXX_VATX+#TAXX_VATX#  /* 부가세액 */
+             WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.12.27(표준화 완료)
+		내      용 : 수수료 세금계산서 디테일 합산처리
+	-->
+	<update id="MACA0020.UPDATE13" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_SATXXD    /* MACA0020.UPDATE13 세금계산서 합산 */
+           SET 
+           	 MEMO_FILD = NVL(#MEMO_FILD#,MEMO_FILD)  	/* 적요수정 */
+			 , TAXX_AMTX = TAXX_AMTX+#TAXX_AMTX#  /* 청구금액 */
+             , TAXX_VATX = TAXX_VATX+#TAXX_VATX#  /* 부가세액 */
+             WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.11(표준화 완료)
+		내      용 : 위수탁 세금계산서 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MACA0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_SATXXH  /* MACA0020.DELETE00 세금계산서 삭제 */
+			WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.11(표준화 완료)
+		내      용 : 수수료 세금계산서 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MACA0020.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_SATXXH  /* MACA0020.DELETE01 세금계산서 삭제 */
+			WHERE TAXY_MONT = #YEAR_MNTH#
+            AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</delete>
+
+<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.11(표준화 완료)
+		내      용 : 세금계산서 디테일 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MACA0020.DELETE02" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_SATXXD  /* MACA0020.DELETE00 세금계산서 삭제 */
+			WHERE TAXY_MONT = #YEAR_MNTH#
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</delete>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 위수탁 세금계산서 신규 일련번호 채번
+		파라미터  : 
+	-->
+	<select id="MACA0020.New_TAXX_NUMB00" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.New_TAXX_NUMB00 신규 세금계산서 일련번호 채번  */
+				NVL(MAX(TO_NUMBER(TAXX_NUMB)),0)+1		/* 세금계산서번호 */
+		FROM MD_SATXXH
+		WHERE TAXY_MONT = #YEAR_MNTH#				    /*년월*/
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.18(표준화 완료)
+		내      용  : 위수탁 세금계산서 디테일 신규 일련번호 채번
+		파라미터  : 
+	-->
+	<select id="MACA0020.New_TAXX_IDXX" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /* MACA0020.New_TAXX_IDXX 신규 세금계산서 디테일 일련번호 채번  */
+				NVL(MAX(TO_NUMBER(TAXX_IDXX)),0)+1		/* 세금계산서번호 */
+		FROM MD_SATXXD
+		WHERE TAXY_MONT = #YEAR_MNTH# 				    /*년월*/
+		AND TAXX_NUMB = #TAXX_NUMB#				 /*세금계산서번호*/
+	]]>
+	</select>
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 의수탁 세금계산서 일련번호 채번
+		파라미터  : 
+		-->
+	<select id="MACA0020.TAXX_NUMB00" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.TAXX_NUMB00 세금계산서 일련번호 채번  */
+				MAX(TO_NUMBER(TAXX_NUMB))		/* 세금계산서번호 */
+		FROM MD_SATXXH
+		WHERE CUST_CODE	=	#CUST_CODE# /* 광고주코드 */
+		AND  MEDX_CODE	=	#MEDX_CODE#	 /* 매체사코드 */
+		AND TAXY_MONT = #YEAR_MNTH# 				    /*년월*/
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 수수료 세금계산서 신규 일련번호 채번
+		파라미터  : 
+	-->
+	<select id="MACA0020.New_TAXX_NUMB01" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.New_TAXX_NUMB01 신규 세금계산서 일련번호 채번  */
+				NVL(MAX(TO_NUMBER(TAXX_NUMB)),0)+1		/* 세금계산서번호 */
+		FROM MD_SATXXH
+		WHERE TAXY_MONT = #YEAR_MNTH# 				    /*년월*/
+	]]>
+	</select>
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용  : 수수료 세금계산서 일련번호 채번
+		파라미터  : 
+		-->
+	<select id="MACA0020.TAXX_NUMB01" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.TAXX_NUMB01 세금계산서 일련번호 채번  */
+				MAX(TO_NUMBER(TAXX_NUMB))		/* 세금계산서번호 */
+		FROM MD_SATXXH
+		WHERE MEDX_CODE	=	#MEDX_CODE#	 /* 매체사코드 */
+		AND TAXY_MONT = #YEAR_MNTH# 				    /*년월*/
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.20(표준화 완료)
+		내      용  : 세금계산서가 발송되었는지 여부 파악
+		파라미터  : 
+		-->
+	<select id="MACA0020.SEND_FLAG" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.SEND_FLAG 세금계산서가 발송FLAG 채번  */
+				SEND_FLAG					/* 세금계산서 발송구분 */
+		FROM MD_SATXXH
+		WHERE  TAXY_MONT	=	#YEAR_MNTH#	 /* 년월 */
+		AND TAXX_NUMB	=	#TAXX_NUMB# /* 세금계산서번호 */
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.20(표준화 완료)
+		내      용  : 전표가 생성되었는지 여부 파악
+		파라미터  : 
+		-->
+	<select id="MACA0020.SACH_NUMB" parameterClass="hashmap" resultClass="String">
+	<![CDATA[ 
+		SELECT  /*  MACA0020.SACH_NUMB 전표번호  */
+				SACH_NUMB					/* 세금계산서 발송구분 */
+		FROM MD_SATXXH
+		WHERE  TAXY_MONT	=	#YEAR_MNTH#	 /* 년월 */
+		AND TAXX_NUMB	=	#TAXX_NUMB# /* 세금계산서번호 */
+	]]>
+	</select>
+	
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 거래명세서에 세금계산서 플래그기입
+	-->
+	<update id="MACA0020.updateTAXX_FLAG00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_TRANXD    /* MACA0020.updateTAXX_FLAG00 거래명세서에 세금계산서 플래그기입 */
+           SET TAXY_MONT =  #YEAR_MNTH# /* 년월 */
+           ,TAXX_NUMB=#TAXX_NUMB# /* 세금계산서번호 */
+           ,TAXY_NUMB= '10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')  /* 세금계산서 번호 */
+             WHERE YEAR_MNTH = #YEAR_MNTH#
+             AND TSEQ_FILD=#TSEQ_FILD#
+             AND SEQX_FILD=#SEQX_FILD#
+             AND MEDX_FLAG=#MEDX_FLAG#
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.03(표준화 완료)
+		내      용 : 거래명세서에 세금계산서 플래그삭제
+	-->
+	<update id="MACA0020.updateTAXX_FLAG_Del00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_TRANXD    /* MACA0020.updateTAXX_FLAG00 거래명세서에 세금계산서 플래그삭제 */
+           SET TAXY_MONT = ''  /* 세금계산서 년월 */
+           , TAXX_NUMB = '' /*세금계산서번호*/
+           ,TAXY_NUMB= ''  /* 세금계산서 번호 */
+             WHERE TAXY_MONT = #YEAR_MNTH# /* 세금계산서 생성유무 */
+             AND TAXX_NUMB = #TAXX_NUMB#
+	]]>
+	</update>
+	
+
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.17(표준화 완료)
+		내      용 : 개별청약서에 위수탁 세금계산서 번호기입
+	-->
+	<update id="MACA0020.updateTRTX_NUMB" parameterClass="hashmap">
+		<isLessEqual property="MEDX_FLAG" compareValue="A003">
+			UPDATE MD_ETMDXM   /* MACA0020.updateTRTX_NUMB 개별청약서에 세금계산서 플래그기입 */
+		</isLessEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A004">
+			UPDATE MD_CTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A005">
+			UPDATE MD_PTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A006">
+			UPDATE MD_PTMDXM  
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A007">
+			UPDATE MD_ODMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A008">
+			UPDATE MD_ITMDXM   
+		</isEqual>
+	<![CDATA[
+           SET TRTX_NUMB =  '10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')  /* 세금계산서 번호 */
+             WHERE TRTR_NUMB = #YEAR_MNTH#||LPAD(#TRTR_NUMB#,4,'0')||LPAD(#TSEQ_FILD#,5,'0')
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.17(표준화 완료)
+		내      용 : 개별청약서에 수수료 세금계산서 번호기입
+	-->
+	<update id="MACA0020.updateCMTX_NUMB" parameterClass="hashmap">
+		<isLessEqual property="MEDX_FLAG" compareValue="A003">
+			UPDATE MD_ETMDXM   /* MACA0020.updateCMTX_NUMB 개별청약서에 수수료 세금계산서 번호기입 */
+		</isLessEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A004">
+			UPDATE MD_CTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A005">
+			UPDATE MD_PTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A006">
+			UPDATE MD_PTMDXM  
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A007">
+			UPDATE MD_ODMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A008">
+			UPDATE MD_ITMDXM   
+		</isEqual>
+	<![CDATA[
+           SET CMTX_NUMB = '10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')  /* 세금계산서 번호 */
+             WHERE YEAR_MNTH = #YEAR_MNTH#
+             AND SEQX_FILD=#SEQX_FILD#
+	]]>
+	</update>
+	
+		<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.17(표준화 완료)
+		내      용 : 개별청약서에 위수탁 세금계산서 번호삭제
+	-->
+	<update id="MACA0020.updateTRTX_NUMB_Del" parameterClass="hashmap">
+		<isLessEqual property="MEDX_FLAG" compareValue="A003">
+			UPDATE MD_ETMDXM   /* MACA0020.updateTRTX_NUMB_Del 개별청약서에 수수료 세금계산서 번호삭제 */
+		</isLessEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A004">
+			UPDATE MD_CTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A005">
+			UPDATE MD_PTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A006">
+			UPDATE MD_PTMDXM  
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A007">
+			UPDATE MD_ODMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A008">
+			UPDATE MD_ITMDXM   
+		</isEqual>
+	<![CDATA[
+			SET TRTX_NUMB = ''  /* 세금계산서 번호 */
+             WHERE TRTX_NUMB = '10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.11.17(표준화 완료)
+		내      용 : 개별청약서에 수수료 세금계산서 번호삭제
+	-->
+	<update id="MACA0020.updateCMTX_NUMB_Del" parameterClass="hashmap">
+		<isLessEqual property="MEDX_FLAG" compareValue="A003">
+			UPDATE MD_ETMDXM   /* MACA0020.updateCMTX_NUMB_Del 개별청약서에 수수료 세금계산서 번호삭제 */
+		</isLessEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A004">
+			UPDATE MD_CTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A005">
+			UPDATE MD_PTMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A006">
+			UPDATE MD_PTMDXM  
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A007">
+			UPDATE MD_ODMDXM   
+		</isEqual>
+		<isEqual property="MEDX_FLAG" compareValue="A008">
+			UPDATE MD_ITMDXM   
+		</isEqual>
+	<![CDATA[
+			SET CMTX_NUMB = ''  /* 세금계산서 번호 */
+             WHERE CMTX_NUMB = '10'||#DEND_DATE#||'20A'||LPAD(#TAXX_NUMB#,5,'0')
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.19(표준화 완료)
+		내      용  : 세금계산서조회(헤더)
+		파라미터  : YEAR_MNTH : 년월, BUSI_FLAG : 위수탁 수수료 구분, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0020.PRINT00 		세금계산서조회 */
+                   A.TAXY_MONT         /* 세금계산서년월 */
+                 , A.TAXX_NUMB              /* 세금계산서번호 */
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , A.CUST_CODE              /* 광고주코드 */
+                 , A.CUST_NAME              /* 광고주명 */
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.MEDX_CDNM              /* 매체사명 */
+                 , A.TAXX_AMTX              /* 청구금액 */
+                 , A.TAXX_VATX              /* 부가세액 */
+                 , A.SUMM_AMTX              /* 합계금액 */
+                 , A.DEND_DATE              /* 청구일자 */
+                 , A.PRNT_DATE              /* 발행일자 */
+                 , A.SACH_NUMB              /* 매출전표번호 */
+                 , A.BIZR_NUMB              /* 광고주사업자번호 */
+                 , A.MEMO_FILD          /* 비고 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , A.OWNR_NAME              /* 광고주대표자명 */
+                 , A.ADDR_DESC              /* 주소 */
+                 , A.DTL1_ADDR              /* 주소1 */
+                 , A.DTL2_ADDR              /* 주소2 */
+                 , D.OWNR_NAME MOWN_NAME              /* 매체사대표명 */
+                 , D.ADDR_DESC MADD_DESC              /* 매체사주소 */
+                 , D.DTL1_ADDR MDT1_ADDR              /* 매체사주소1 */
+                 , D.DTL2_ADDR MDT2_ADDR              /* 매체사주소2 */
+                 , SUBSTR(A.DTIX_TYPE,1,2) AS  DTIX_TYPE    /* 세금계산서종류 */
+                 , SUBSTR(A.DTIX_TYPE,3,2) AS  DTIY_TYPE  	/* 세금계산서 분류 */
+                 , A.BUSI_FLAG              /* 위수탁 수수료 구분 */
+                 , A.TAXX_DMND              /* 영수구분 */
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , A.SEND_FLAG
+                 , A.TAXY_NUMB AS TAXX_SANB /*세금계산서 번호*/
+                 , A.CONVERSATION_ID
+                 , B.CONT_CONT	
+                 , F.APPROVE_ID
+                 , A.ORI_ISSUE_ID
+                 , C.BSNS_STAT
+                 , C.BSNS_TYPE
+                 , D.BSNS_STAT AS MBSN_STAT
+                 , D.BSNS_TYPE AS MBSN_TYPE
+                 , E.OWNR_NAME COWN_NAME
+                 , E.ADDR_DESC CADD_DESC
+                 , G.BSNS_STAT CBSN_STAT
+                 , G.BSNS_TYPE CBSN_TYPE
+              FROM MD_SATXXH A              /* [매체세금계산서 헤더테이블] */
+              LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+              LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+              LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+              LEFT JOIN (
+					    SELECT 
+					    TAXY_MONT
+					    ,TAXX_NUMB
+					    ,COUNT(*) CONT_CONT 
+					    FROM MD_SATXXD
+					    GROUP BY TAXY_MONT,TAXX_NUMB 
+					)B ON A.TAXY_MONT = B.TAXY_MONT AND A.TAXX_NUMB = B.TAXX_NUMB
+			LEFT JOIN XXSB_DTI_MAIN F ON A.CONVERSATION_ID = F.CONVERSATION_ID
+			LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+              WHERE A.TAXY_MONT = #TAXY_MONT# 
+              AND A.TAXX_NUMB IN ($TAXX_NUMB_QUERY$)
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.19(표준화 완료)
+		내      용  : 세금계산서 디테일 조회(위수탁)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MACA0020.SEARCH06 디테일  조회(개별청약) */
+				A.PRNT_DATE    /* 발행일자 */
+				, A.TAXY_MONT
+                , A.TAXX_NUMB
+                , D.TAXX_AMTX AS AMNT_FILD
+                , D.TAXX_VATX AS AVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX  AS ASUM_FILD             /* 합계 */
+                , D.TAXX_AMTX AS COMI_FILD
+                , D.TAXX_VATX AS CVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX AS CSUM_FILD             /* 합계 */
+                , DECODE(D.MEM2_FILD,NULL,D.MEMO_FILD,D.MEM2_FILD) AS MEMO_FILD
+                , D.DEND_DATE
+              FROM MD_SATXXH A              /* [거래명세서(상세)] */
+            LEFT JOIN MD_SATXXD D ON A.TAXY_MONT = D.TAXY_MONT AND A.TAXX_NUMB = D.TAXX_NUMB
+	            WHERE A.TAXY_MONT=#TAXY_MONT# AND A.TAXX_NUMB  IN ($TAXX_NUMB_QUERY$)
+	]]>
+	</select>
+	
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.19(표준화 완료)
+		내      용  : 세금계산서조회(헤더)
+		파라미터  : YEAR_MNTH : 년월, BUSI_FLAG : 위수탁 수수료 구분, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.PRINT02" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /* MACA0020.SEARCH01 		세금계산서조회 */
+                   A.TAXY_MONT         /* 세금계산서년월 */
+                 , A.TAXX_NUMB              /* 세금계산서번호 */
+                 , DECODE(C.BIZR_NUMB,null,C.RERN_NUMB,C.BIZR_NUMB) AS CUTX_CUNM /* 공급자받는자 사업자 번호 */
+                 , A.CUST_CODE              /* 광고주코드 */
+                 , A.CUST_NAME              /* 광고주명 */
+                 , DECODE(D.BIZR_NUMB,null,D.RERN_NUMB,D.BIZR_NUMB) AS METX_CUNM  /* 공급자 사업자 번호 */
+                 , A.MEDX_CODE              /* 매체사코드 */
+                 , A.MEDX_CDNM              /* 매체사명 */
+                 , A.TAXX_AMTX              /* 청구금액 */
+                 , A.TAXX_VATX              /* 부가세액 */
+                 , A.SUMM_AMTX              /* 합계금액 */
+                 , A.DEND_DATE              /* 청구일자 */
+                 , A.PRNT_DATE              /* 발행일자 */
+                 , A.SACH_NUMB              /* 매출전표번호 */
+                 , A.BIZR_NUMB              /* 광고주사업자번호 */
+                 , A.MEMO_FILD          /* 비고 */
+                 , A.MEDX_FLAG              /* 매체구분 */
+                 , A.OWNR_NAME              /* 광고주대표자명 */
+                 , A.ADDR_DESC              /* 주소 */
+                 , A.DTL1_ADDR              /* 주소1 */
+                 , A.DTL2_ADDR              /* 주소2 */
+                 , D.OWNR_NAME MOWN_NAME              /* 매체사대표명 */
+                 , D.ADDR_DESC MADD_DESC              /* 매체사주소 */
+                 , D.DTL1_ADDR MDT1_ADDR              /* 매체사주소1 */
+                 , D.DTL2_ADDR MDT2_ADDR              /* 매체사주소2 */
+                 , SUBSTR(A.DTIX_TYPE,1,2) AS  DTIX_TYPE    /* 세금계산서종류 */
+                 , SUBSTR(A.DTIX_TYPE,3,2) AS  DTIY_TYPE  	/* 세금계산서 분류 */
+                 , A.BUSI_FLAG              /* 위수탁 수수료 구분 */
+                 , A.TAXX_DMND              /* 영수구분 */
+                 , G.CUST_CODE AS ENTP_CODE	/*공급자코드*/
+                 , E.BSNS_NUMB AS ENTX_CUNM /*공급자사업자번호*/
+                 , E.OFFI_NAME AS ENTP_NAME /*공급자사업장명*/
+                 , A.SEND_FLAG
+                 , A.TAXY_NUMB AS TAXX_SANB /*세금계산서 번호*/
+                 , A.CONVERSATION_ID
+                 , B.CONT_CONT	
+                 , F.APPROVE_ID
+                 , A.ORI_ISSUE_ID
+                 , C.BSNS_STAT
+                 , C.BSNS_TYPE
+                 , D.BSNS_STAT AS MBSN_STAT
+                 , D.BSNS_TYPE AS MBSN_TYPE
+                 , E.OWNR_NAME COWN_NAME
+                 , E.ADDR_DESC CADD_DESC
+                 , G.BSNS_STAT CBSN_STAT
+                 , G.BSNS_TYPE CBSN_TYPE
+              FROM MD_SATXXH A              /* [매체세금계산서 헤더테이블] */
+              LEFT JOIN TA_CUSTXM C ON A.CUST_CODE = C.CUST_CODE
+              LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+              LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+              LEFT JOIN (
+					    SELECT 
+					    TAXY_MONT
+					    ,TAXX_NUMB
+					    ,COUNT(*) CONT_CONT 
+					    FROM MD_SATXXD
+					    GROUP BY TAXY_MONT,TAXX_NUMB 
+					)B ON A.TAXY_MONT = B.TAXY_MONT AND A.TAXX_NUMB = B.TAXX_NUMB
+			LEFT JOIN XXSB_DTI_MAIN F ON A.CONVERSATION_ID = F.CONVERSATION_ID
+			LEFT JOIN TA_CUSTXM G ON G.BIZR_NUMB = E.BSNS_NUMB
+              WHERE A.TAXY_MONT = #TAXY_MONT# 
+              AND A.TAXX_NUMB IN ($TAXX_NUMB_QUERY$)
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.12.19(표준화 완료)
+		내      용  : 세금계산서 디테일 조회(수수료)
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 매체사코드, MEDX_FLAG : 매체구분
+	-->
+	<select id="MACA0020.PRINT03" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+SELECT /*  MACA0020.SEARCH06 디테일  조회(개별청약) */
+				A.PRNT_DATE    /* 발행일자 */
+                , A.TAXY_MONT
+                , A.TAXX_NUMB
+                , D.TAXX_AMTX AS AMNT_FILD
+                , D.TAXX_VATX AS AVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX  AS ASUM_FILD             /* 합계 */
+                , D.TAXX_AMTX AS COMI_FILD
+                , D.TAXX_VATX AS CVAT_FILD            /* 세액 */
+                , D.TAXX_AMTX+D.TAXX_VATX AS CSUM_FILD             /* 합계 */
+                , DECODE(D.MEM2_FILD,NULL,D.MEMO_FILD,D.MEM2_FILD) AS MEMO_FILD
+                , D.DEND_DATE
+              FROM MD_SATXXH A              /* [거래명세서(상세)] */
+            LEFT JOIN MD_SATXXD D ON A.TAXY_MONT = D.TAXY_MONT AND A.TAXX_NUMB = D.TAXX_NUMB
+            WHERE A.TAXY_MONT=#TAXY_MONT# AND A.TAXX_NUMB IN ($TAXX_NUMB_QUERY$)
+	]]>
+	</select>
+	
+</sqlMap>

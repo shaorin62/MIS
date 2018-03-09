@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WFMG0030">
+
+<!--
+ *   프로그램명 : 연수지원현황 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.09.05
+ *   작 성 자 : 김혜림
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+
+<!--
+/*******************************************************************************
+	 작 성 자 : 김혜림
+	 작 성 일 : 2016.09.21
+	 내    용 : 연수지원신청현황
+	 파라미터 : 
+********************************************************************************/
+-->
+	<select id="WFMG0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+			 SELECT /* WFMG0030.SEARCH00 연수지원 신청 현황 조회*/
+                    A.EMPL_NUMB                            /* 사원번호 */
+                 , SUBSTR(A.TRAI_BEDE , 0, 4) AS TRAI_YEAR /* 년도 */
+                 , C.EMPL_NAME                             /* 사원명 */
+                 , D.DEPT_CODE                             /* 부서코드 */
+                 , D.DEPT_NAME                             /* 부서명 */
+                 , SF_GET_COMMNAME('OPOS_CODE',C.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+                 , C.ENCO_DATE AS ENCO_DATE                   /*입사일자*/
+                 , A.WOTM_DATE 								  /* 근속발생일자 */
+                 , A.TRSP_SEQN             					  /* 연수지원일련번호 */
+                 , A.WOTM_YCNT           					  /* 근속년수 */
+                 , A.TRAI_BEDE             					  /* 연수시작일 */
+                 , A.TRAI_ENDD              				  /* 연수종료일 */
+                 , A.TRAI_PROD             					  /* 연수희망일수 */
+                 , A.TRPL_NAME              				  /* 연수장소 */
+                 , A.TRAI_PLAN              				  /* 연수계획 */
+                 , A.TRSP_COST            					  /* 연수지원금액 */
+                 , A.REMK_200X              				  /* 비고200 */
+                 , A.DOCU_IDXX            					  /* 결재문서 DOC ID*/
+                 , A.APPR_SEQN           					  /* 결재문서 SEQ*/
+                 , B.SUBJ_NAME			   					  /* 결재문서 제목 */
+                 , B.APPR_DATE								  /* 신청일자*/
+                 , NVL(A.ZERO_YSNO, 0) AS ZERO_YSNO  /* 해외광고제 신청체크 */ 
+              FROM CW_TRSPXM A 
+                  LEFT OUTER JOIN TM_APPRXH B	/* 결재테이블 */
+		  	       ON A.DOCU_IDXX 		= B.DOCU_IDXX
+		           AND A.APPR_SEQN		= B.APPR_SEQN
+                 LEFT OUTER JOIN HR_MASTXM C  	/* 인사마스터 테이블 */
+                   ON A.EMPL_NUMB = C.EMPL_NUMB 
+                 LEFT OUTER JOIN TM_DEPTXM D    /* 부서마스터 테이블 */
+                   ON B.DEPT_CODE = D.DEPT_CODE      
+             WHERE 1=1   
+             AND A.DOCU_IDXX IN ('KHR143')    /*연수지원신청서*/            
+	]]>
+	<isNotEmpty property="TRAI_BEDE">
+		<isNotEmpty prepend="AND" property="TRAI_ENDD">
+		(TRAI_BEDE BETWEEN #TRAI_BEDE# AND #TRAI_ENDD#     
+         OR TRAI_ENDD BETWEEN #TRAI_BEDE# AND #TRAI_ENDD#) /* 연수지원기간 */
+         </isNotEmpty> 
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+			   A.EMPL_NUMB = #EMPL_NUMB#                   /* 사번 */
+	</isNotEmpty>
+	<![CDATA[ 
+		ORDER BY TRAI_YEAR, B.APPR_DATE, A.TRAI_BEDE, A.TRAI_ENDD
+	]]>
+
+	</select>
+	
+</sqlMap>

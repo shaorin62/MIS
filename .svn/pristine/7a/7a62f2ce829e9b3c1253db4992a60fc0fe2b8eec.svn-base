@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="COMMAINNOTICE">
+
+<!--
+ *   프로그램명 : 메인화면 공지사항
+ *   작 성 일 : 2016.11.21
+ *   작 성 자 : 박정훈
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 	 
+    <!--
+     작 성 자 : 박정훈
+     작 성 일 : 2016.11.21
+     내    용 : 메인화면 그룹웨어 공지사항 조회
+    -->
+    <select id="COMMAINNOTICE.GWNOTICE" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+		SELECT  
+		       ATCL_NO                     /* 게시물 번호 */
+		      ,BRD_ID
+		      ,TITLE                       /* 제목 */
+		      ,REG_NAME                    /* 작성자명 */
+		      ,REG_EMP_ID
+		      ,REG_DEPT_ID
+		      ,ATT_CNT                     /* 첨부 파일 */
+		      ,REG_DATE                    /* 작성일 */
+		FROM  CK_BRD_ARTICLE_V@NSGW        /* 통합그룹웨어 게시판 */
+		WHERE BRD_ID = 'BB140533555033482' /* 공지사항 게시판 */
+		AND   ROWNUM <= 8                         
+		ORDER BY ATCL_ORDER DESC
+    ]]>
+    </select>
+
+	<!--
+	 작 성 자 : jsh
+	 작 성 일 : 2016.12.04
+	 내    용 : 솔루션 메인 대시보드 공지사항 목록 조회
+	-->
+    <select id="COMMAINNOTICE.NOTICELIST" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+		SELECT A.SRAL_NUMB	/* 일련번호 */
+			  ,A.NTCE_SBJT	/* 공지제목 */
+			  ,A.BULT_CNTT	/* 공지내용 */
+			  ,A.POPD_BEDE	/* 게시기간시작일 */
+			  ,A.POPD_ENDD	/* 게시기간 종료일 */
+			  ,A.POPT_CODE	/* 게시구분코드 */
+			  ,SF_GET_COMMNAME('POPT_CODE', A.POPT_CODE) AS POPT_CDNM	/* 게시구분 */
+			  ,A.WRTR_EMNR	/* 작성자사원번호 */
+			  ,SF_GET_EMPLNAME(A.WRTR_EMNR) AS WRTR_EMNM	/* 작성자명 */
+			  ,A.DEPT_CODE	/* 작성부서 */
+			  ,SF_GET_DEPTNAME(A.DEPT_CODE) AS DEPT_NAME
+			  ,NVL(B.EMPL_CONT, 0) AS EMPL_CONT	/* 조회수 */
+		 FROM TM_NOTICE A
+			LEFT OUTER JOIN (
+				SELECT A.SRAL_NUMB
+					  ,COUNT(A.EMPL_NUMB) AS EMPL_CONT
+				  FROM TM_NTCEEM A
+				    INNER JOIN TM_NOTICE B
+				      ON A.SRAL_NUMB = B.SRAL_NUMB
+				    WHERE B.POPD_BEDE <= TO_CHAR(SYSDATE, 'YYYYMMDD')
+					  AND B.POPD_ENDD >= TO_CHAR(SYSDATE, 'YYYYMMDD')
+		  		 GROUP BY A.SRAL_NUMB
+			) B
+			 ON A.SRAL_NUMB = B.SRAL_NUMB
+		  WHERE A.POPD_BEDE <= TO_CHAR(SYSDATE, 'YYYYMMDD')
+			AND A.POPD_ENDD >= TO_CHAR(SYSDATE, 'YYYYMMDD')
+		 ORDER BY TO_DATE(A.POPD_BEDE, 'YYYYMMDD') DESC, TO_DATE(A.POPD_ENDD, 'YYYYMMDD') DESC
+    ]]>
+    </select>
+    
+
+</sqlMap>

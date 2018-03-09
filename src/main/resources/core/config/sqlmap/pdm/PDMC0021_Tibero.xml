@@ -1,0 +1,580 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PDMC0021">
+
+<!--  
+/***********************************************************************************
+ *   프로그램명 : 제작 견적서 
+ *   작 성 일 : 2016.12.21
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved.
+ /*********************************************************************************** 
+ -->
+	<!-- 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="JOBN_NUMB" >
+			 B.JOBN_NUMB = #JOBN_NUMB#
+		</isNotEmpty>
+		
+<!-- 		<isNotEmpty prepend="AND" property="JOBN_NAME" > -->
+<!-- 			B.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%' -->
+<!-- 		</isNotEmpty> -->
+	
+	</sql>
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.09.23
+     내      용 : 제작견적서 - 제작용 조회
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PDMC0021.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+               SELECT													/* PDMC0020.SEARCH00.제작 견적서 -제작용 헤더 *//* [제작견적서 제작용 헤더] */
+				E.PREE_CODE										/* 견적번호 */
+				,E.PREE_NAME										/* 견적명 */
+				,B.JOBN_NUMB										/* 제작번호 */
+				,B.JOBN_NAME										/* 제작명 */
+				,DECODE(E.ESTI_DATE,'',TO_CHAR(SYSDATE, 'YYYYMMDD'),E.ESTI_DATE) AS	ESTI_DATE 		/* 견적일자 */
+				,E.ESTI_AMTX        								/* 견적금액 */
+				,CASE WHEN NVL(B.DEND_DATE,'')  IS NULL THEN '미청구' ELSE '청구' END DEND_FLAG     /* 청구구분 */
+				,B.STAT_FLAG										/* 제작상태 */
+				,B.CUST_CODE										/* 광고주코드 */
+				,C.CUST_NAME									/* 광고주명 */	
+				,B.DEND_DATE										/* 청구일자 */
+				,B.MEDA_CODE										/* 제작종류 */
+				,B.HIGH_LEVL										/* 제작내용 */
+				,B.USEX_TYPE										/* 제작용도 */
+				,B.REQU_DATE										/* 의뢰일 */
+				,B.COMP_DATE										/* 완료희망일 */
+				,CASE WHEN NVL(B.DEND_DATE,'') IS NULL THEN '견적미확정' ELSE '견적확정' END CONF_FLAG /* 제작확정구분 */
+				,CASE WHEN NVL(E.JOBN_NUMB,'') IS NULL THEN 'N' ELSE 'Y' END CONF_YNGN /* 확정여부구분 */
+				FROM PD_ESTIMH A 			/* [제작견적서 제작용 헤더] */
+				RIGHT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+				LEFT JOIN PD_SUJUMH E ON B.JOBN_NUMB = E.JOBN_NUMB  
+				WHERE 1=1
+				
+				
+				
+			]]>
+				<include refid="search" />	
+			<![CDATA[
+				 ORDER BY A.PREE_CODE
+			]]>
+	</select>
+
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.21
+     내      용 : 제작견적서 - 제작용 하단 상세 견적 조회
+     파라미터   : JOBN_NUMB  : 상단의 제작번호로 하단 제작용 견적을 조회한다.
+   /***********************************************************************************
+     -->
+	<select id="PDMC0021.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+                   SELECT 		/* PDMC0021.SEARCH01.제작 견적서 -견적용 상세 하단 *//* [제작견적서 견적용 상세] */
+					'0' CHK						/* 선택 */
+					,A.ESTI_DATE				/* 견적일자 */
+					,A.PREE_NAME				/* 견적명 */
+					,A.PREE_IDXX				/* 견적순번 */
+					,A.PREE_CODE				/* 견적번호 */
+					,A.JOBN_NUMB             /* 제작번호 */
+					,A.ITEM_CODE				/* 분류항목코드 */
+					,B.HIGH_NAME 			/* 대분류명 */
+					,B.MIDD_NAME 			/* 중분류명 */
+					,B.SUBX_NAME 			/* 소분류명 제작항목 */
+					,A.MEMO_FILD				/* 내역 */
+					,A.TYPE_QTYX				/* 수량 */
+					,A.ESTI_PRCE				/* 단가 */
+					,A.ESTI_AMTX				/* 금액 */
+					,A.DEND_AMTX				/* 청구금액 */
+					,A.OUTS_CODE			/* 제작사코드 */
+					,C.CUST_NAME			/* 제작사명 */
+					,A.SORT_ORDR				/* 정렬순번 */
+					FROM PD_SUJUMD A		
+					LEFT JOIN PD_ITEMXD B ON A.ITEM_CODE = B.ITEM_CODE
+					LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+					WHERE 1=1
+					AND A.JOBN_NUMB =  #JOBN_NUMB#
+			
+				 ORDER BY A.SORT_ORDR, A.ITEM_CODE, A.PREE_IDXX
+			
+			]]>
+	</select>
+	
+	
+		<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.22
+     내      용 : 제작 견적서 -상세 내역 삭제
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<delete id="PDMC0021.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+		
+		BEGIN
+		
+	     	DELETE FROM PD_SUJUMD
+			WHERE 1=1
+			AND PREE_CODE = #PREE_CODE#
+			AND PREE_IDXX = #PREE_IDXX#
+        	;
+        	
+        	DELETE FROM PD_ESTIMD
+			WHERE 1=1
+			AND PREE_CODE = #PREE_CODE#
+			AND PREE_IDXX = #PREE_IDXX#
+        	;
+        	
+        END;
+	]]>		
+	</delete>
+	
+			<!-- 
+/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.22
+     내      용 : 제작 견적서 -예상견적서 삭제
+     파라미터   : 
+/***********************************************************************************     			 				
+     -->
+	<delete id="PDMC0021.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+		
+		BEGIN
+		
+	     	DELETE FROM PD_ESTIMH
+			WHERE 1=1
+			AND JOBN_NUMB = #JOBN_NUMB#
+        	;
+        	
+	     	DELETE FROM PD_ESTIMD
+			WHERE 1=1
+			AND JOBN_NUMB = #JOBN_NUMB#
+        	;
+        	
+        END;
+	]]>		
+	</delete>
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.11
+     내      용 : 제작견적세 제작용 저장시 헤더를 바로 저장하는 경우 발생 (이범석 부장님 요청) 예상견적 없음
+     파라미터   : 				
+     /***********************************************************************************
+     -->
+	<insert id="PDMC0021.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+	
+			BEGIN
+
+                INSERT INTO PD_SUJUMH (  /* PDMC0021.SAVE00.제작 견적서 */
+                PREE_CODE        /* 견적번호 */
+               ,PREE_NAME        /* 견적명 */
+               ,ESTI_DATE         /* 견적일자 */
+               ,JOBN_NUMB        /* 제작번호 */
+               ,ESTI_AMTX        /* 견적금액 */
+               ,DEND_AMTX        /* 청구금액 */
+               ,MEMO_FILD        /* 비고 */
+               ,INST_USID          /* 생성자 */
+               ,INST_DATE          /* 생성일자 */
+               ,UPDT_USID          /* 수정자 */
+               ,UPDT_DATE          /* 수정일자 */
+              )
+       VALUES (
+               #PREE_CODE#       /* 견적번호 */
+              ,#PREE_NAME#       /* 견적명 */
+              ,#ESTI_DATE#        /* 견적일자 */
+              ,#JOBN_NUMB#       /* 제작번호 */
+              ,#ESTI_AMTX#       /* 견적금액 */
+              ,#DEND_AMTX#       /* 청구금액 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#UPDT_USID#        /*입력작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+		      ,#UPDT_USID#   /*수정작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+              );
+              
+          INSERT INTO PD_ESTIMH (  /* PDMC0021.SAVE00.제작 견적서 -견적용 헤더 *//* [제작견적서 견적용 헤더] */
+                PREE_CODE        /* 견적번호 */
+               ,PREE_NAME        /* 견적명 */
+               ,ESTI_DATE         /* 견적일자 */
+               ,JOBN_NUMB        /* 제작번호 */
+               ,ESTI_AMTX        /* 견적금액 */
+               ,MEMO_FILD        /* 비고 */
+               ,INST_USID          /* 생성자 */
+               ,INST_DATE          /* 생성일자 */
+               ,UPDT_USID          /* 수정자 */
+               ,UPDT_DATE          /* 수정일자 */
+              )
+       VALUES (
+               #PREE_CODE#       /* 견적번호 */
+              ,#PREE_NAME#       /* 견적명 */
+              ,#ESTI_DATE#        /* 견적일자 */
+              ,#JOBN_NUMB#       /* 제작번호 */
+              ,#ESTI_AMTX#       /* 견적금액 */
+              ,#MEMO_FILD#       /* 비고 */
+              ,#UPDT_USID#        /*입력작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+		      ,#UPDT_USID#   /*수정작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+              );
+              
+        END;
+
+	]]>
+	</insert>
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.22
+     내      용 : 제작견적서 하단 내역 저장
+     파라미터   : 				
+     /***********************************************************************************
+     -->
+	<insert id="PDMC0021.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+	
+		BEGIN
+             
+              INSERT INTO PD_SUJUMD (  /* PDMC0021.SAVE01.제작 견적서 하단 *//* [제작정산 하단 상세 저장] */
+                PREE_CODE        				/* 견적번호 */
+               ,PREE_NAME        				/* 견적명 */
+               ,PREE_IDXX        				/* 견적순번 */
+               ,ESTI_DATE        				/* 견적일자 */
+               ,JOBN_NUMB        				/* 제작번호 */
+               ,ITEM_CODE        				/* 제작항목 */
+               ,TYPE_QTYX        				/* 수량 */
+               ,ESTI_PRCE        				/* 견적단가 */
+               ,ESTI_AMTX        				/* 견적금액 */
+               ,DEND_AMTX        			/* 청구금액 */
+               ,SUJU_AMTX        				/* 정산금액 */
+               ,OUTS_CODE        			/* 제작사코드 */
+               ,CONT_NUMB        			/* 계약서번호 */
+               ,MEMO_FILD        				/* 비고내역 */
+               ,SORT_ORDR        				/* 정렬구분 */
+               ,SUJU_DATE        				/* 정산일자 */
+               ,INST_USID        				/* 생성자 */
+               ,INST_DATE        				/* 생성일자 */
+               ,UPDT_USID        				/* 수정자 */
+               ,UPDT_DATE        				/* 수정일자 */
+              )
+       VALUES (
+               #PREE_CODE#       			/* 견적번호 */
+              ,#PREE_NAME#       			/* 견적명 */
+              ,#PREE_IDXX#       			/* 견적순번 */
+              ,#ESTI_DATE#       			/* 견적일자 */
+              ,#JOBN_NUMB#      			/* 제작번호 */
+              ,#ITEM_CODE#       			/* 제작항목 */
+              ,#TYPE_QTYX#       			/* 수량 */
+              ,#ESTI_PRCE#       			/* 견적단가 */
+              ,#ESTI_AMTX#       			/* 견적금액 */
+              ,#DEND_AMTX#       			/* 청구금액 */
+              ,#SUJU_AMTX#       			/* 정산금액 */
+              ,#OUTS_CODE#       			/* 제작사코드 */
+              ,#CONT_NUMB#       			/* 계약서번호 */
+              ,#MEMO_FILD#       			/* 비고내역 */
+              ,#SORT_ORDR#       			/* 정렬구분 */
+              ,#SUJU_DATE#       			/* 정산일자 */
+              ,#UPDT_USID#        			/*입력작업자*/
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+		      ,#UPDT_USID#   				/*수정작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+              );
+              
+              
+              
+               INSERT INTO PD_ESTIMD (  /* PDMC0021.SAVE01.제작 견적서 -견적용 상세 *//* [제작견적서 견적용 상세] */
+                PREE_CODE         		/* 견적번호 */
+               ,PREE_NAME         		/* 견적명 */
+               ,PREE_IDXX          		/* 견적순번 */
+               ,ESTI_DATE         			/* 견적일자 */
+               ,JOBN_NUMB         		/* 제작번호 */
+               ,ITEM_CODE         		/* 견적항목코드 */
+               ,TYPE_QTYX         		/* 수량 */
+               ,ESTI_PRCE          		/* 견적단가 */
+               ,ESTI_AMTX        			/* 견적금액 */
+               ,OUTS_CODE        		/* 제작사코드 */
+               ,MEMO_FILD         		/* 비고 */
+               ,SORT_ORDR         		/* 정렬순번 */
+               ,INST_USID          		/* 생성자 */
+               ,INST_DATE          		/* 생성일자 */
+               ,UPDT_USID          		/* 수정자 */
+               ,UPDT_DATE         		/* 수정일자 */
+              )
+       	VALUES (
+               #PREE_CODE#       		/* 견적번호 */
+              ,#PREE_NAME#       		/* 견적명 */
+              ,#PREE_IDXX#        		/* 견적순번 */
+              ,#ESTI_DATE#        		/* 견적일자 */
+              ,#JOBN_NUMB#       		/* 제작번호 */
+              ,#ITEM_CODE#       		/* 견적항목코드 */
+              ,#TYPE_QTYX#       		/* 수량 */
+              ,#ESTI_PRCE#        		/* 견적단가 */
+              ,#ESTI_AMTX#       		/* 견적금액 */
+              ,#OUTS_CODE#      		/* 제작사코드 */
+              ,#MEMO_FILD#       		/* 비고 */
+              ,#SORT_ORDR#       		/* 정렬순번 */
+              ,#UPDT_USID#        		/*입력작업자*/
+              ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+		      ,#UPDT_USID#   			/*수정작업자*/
+		      ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*수정일시*/
+              );
+
+              
+              END;
+              
+              
+              
+              
+
+	]]>
+	</insert>
+	
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작견적서  하단 수정
+     파라미터   : 				
+     /***********************************************************************************
+     -->
+	<update id="PDMC0021.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+	
+	
+		BEGIN
+
+               UPDATE PD_SUJUMD   				/* PDMC0021.UPDATE00.제작 견적서 */
+           SET ESTI_DATE = #ESTI_DATE#  	/* 견적일자 */
+             , PREE_NAME = #PREE_NAME#  		/* 견적명 */
+             , JOBN_NUMB = #JOBN_NUMB#  	/* 제작번호 */
+             , ITEM_CODE = #ITEM_CODE#  		/* 제작항목코드 */
+             , TYPE_QTYX = #TYPE_QTYX#  	/* 수량 */
+             , ESTI_PRCE = #ESTI_PRCE#  		/* 견적단가 */
+             , ESTI_AMTX = #ESTI_AMTX#  		/* 견적금액 */
+             , DEND_AMTX = #DEND_AMTX#  	/* 청구금액 */
+             , OUTS_CODE = #OUTS_CODE#  	/* 제작사코드 */
+             , MEMO_FILD = #MEMO_FILD#  		/* 비고 */
+             , SORT_ORDR = #SORT_ORDR#  	/* 정렬구분 */
+             , REF1_FILD = #REF1_FILD#  		/* 비고1 */
+             , REF2_FILD = #REF2_FILD#  		/* 비고2 */
+             , REF3_FILD = #REF3_FILD#  		/* 비고3 */
+             , REF4_FILD = #REF4_FILD#  		/* 비고4 */
+             , UPDT_USID = #UPDT_USID#  		/*수정자*/
+             ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+             WHERE 1=1
+             AND PREE_CODE = #PREE_CODE#  /* 견적번호 */
+             AND PREE_IDXX = #PREE_IDXX#  	/* 견적순번 */
+             
+             ;
+             
+             
+               UPDATE PD_ESTIMD   					/* PDMC0010.UPDATE01.제작 견적서 -견적용 상세 *//* [제작견적서 견적용 상세] */
+           SET ESTI_DATE = #ESTI_DATE#  		/* 견적일자 */
+           	 , PREE_NAME = #PREE_NAME#  			/* 견적명 */
+             , JOBN_NUMB = #JOBN_NUMB#  		/* 제작번호 */
+             , ITEM_CODE = #ITEM_CODE#  			/* 제작항목코드 */
+             , TYPE_QTYX = #TYPE_QTYX#  		/* 수량 */
+             , ESTI_PRCE = #ESTI_PRCE#  			/* 견적단가 */
+             , ESTI_AMTX = #ESTI_AMTX#  			/* 견적금액 */
+             , OUTS_CODE = #OUTS_CODE#  		/* 제작사코드 */
+             , MEMO_FILD = #MEMO_FILD#  			/* 비고 */
+             , SORT_ORDR = #SORT_ORDR#  		/* 정렬구분 */
+             , UPDT_USID = #UPDT_USID#  			/*수정자*/
+             ,UPDT_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')   /*입력일시*/
+             WHERE 1=1
+             AND PREE_CODE = #PREE_CODE#  		/* 견적번호 */
+             AND PREE_IDXX = #PREE_IDXX#  		/* 견적순번 */
+             
+             ;
+
+
+			END;
+
+	]]>
+	</update>
+
+
+<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작견적서  헤더 금액 업데이트
+     파라미터   : 				
+     /***********************************************************************************
+     -->
+	<update id="PDMC0021.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+
+		BEGIN
+		
+	     	UPDATE PD_SUJUMH
+			SET SUJU_AMTX = (
+			                 SELECT 
+			                 NVL(SUM(SUJU_AMTX),0)
+			                 FROM  PD_SUJUMD 
+			                 WHERE 1=1 
+			                 AND PREE_CODE = #PREE_CODE#
+			                 ) ,
+				 ESTI_AMTX = (
+							SELECT 
+							NVL(SUM(ESTI_AMTX),0) 
+							FROM  PD_SUJUMD 
+							WHERE 1=1 
+							AND PREE_CODE = #PREE_CODE#
+							) ,
+				 DEND_AMTX = (
+							SELECT 
+							NVL(SUM(DEND_AMTX),0) 
+							FROM  PD_SUJUMD 
+							WHERE 1=1 
+							AND PREE_CODE = #PREE_CODE#
+							),
+				 ESTI_DATE = #ESTI_DATE#    				                 
+			WHERE 1=1
+			AND PREE_CODE =  #PREE_CODE#
+        	;
+        	
+        	UPDATE PD_ESTIMH
+             SET ESTI_AMTX = (
+             							SELECT 
+             							SUM(ESTI_AMTX) 
+             							FROM  PD_ESTIMD 
+             							WHERE 1=1 
+             							AND PREE_CODE = #PREE_CODE#
+             							),
+				 ESTI_DATE = #ESTI_DATE#    				                  
+             WHERE PREE_CODE = #PREE_CODE#
+             ;
+             
+        END;
+
+
+	]]>
+	</update>
+	
+
+	
+	
+ <!-- 제작견적번호 만들기 -->
+	<select id="PDMC0021.getPREE_CODE" resultClass="String">
+			<![CDATA[			
+				SELECT
+                 '1' || LPAD(CAST(NVL(MAX(SUBSTR(PREE_CODE,2,6)),0) AS NUMERIC) + 1,6,'0')  
+                 FROM PD_SUJUMH
+                 WHERE 1=1
+                 AND LENGTH(PREE_CODE) < 8
+                 ]]>
+	</select>
+	
+		<!-- 제작견적하단 견적순번 생성 -->
+	<select id="PDMC0021.getPREE_IDXX" parameterClass="hashmap" resultClass="String">			
+                 SELECT
+                 CAST(NVL(MAX(PREE_IDXX),0) AS NUMERIC) + 1   
+                 FROM PD_SUJUMD
+                 WHERE PREE_CODE = #PREE_CODE#
+	</select>
+	
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작견적서 - 견적서 헤더 출력
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PDMC0021.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+               SELECT                                                    /* PDMC0020.PRINT00.제작 견적서 -제작용 헤더 *//* [제작견적서 제작용 헤더출력] */
+				A.PREE_CODE                                        /* 견적번호 */
+				,A.PREE_NAME                                        /* 견적명 */
+				,B.JOBN_NUMB                                        /* 제작번호 */
+				,B.JOBN_NAME                                        /* 제작명 */
+				,A.ESTI_DATE                                       /* 견적일자 */
+				,C.CUST_NAME                                    /* 광고주명 */    
+				,B.JOBN_SIZE                                            /* 규격*/
+				, F.OFFI_NAME AS HOME_NAME			/* 농심기획 */
+				, F.ADDR_DESC  AS HOME_ADDR			/* 농심기획주소 */
+				, F.BSNS_NUMB								/* 농심기획사업자번호 */
+				, F.OWNR_NAME AS HOME_OWNR		/* 농심기획대표자 */
+				FROM PD_SUJUMH A             /* [제작견적서 제작용 헤더] */
+				RIGHT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM C ON B.CUST_CODE = C.CUST_CODE
+				LEFT JOIN TM_OFFICE F ON F.ACCT_GUBN = '100' AND F.OFFI_GUBN ='1'
+				WHERE 1=1
+				AND A.PREE_CODE IS NOT NULL
+					AND A.PREE_CODE = #PREE_CODE#
+				 ORDER BY A.PREE_CODE
+			]]>
+	</select>
+	
+	
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.12.23
+     내      용 : 제작견적서 - 견적서 디테일 출력
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PDMC0021.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+                SELECT 		/* PDMC0020.PRINT01.제작 견적서 -견적용 상세 하단  *//* [제작견적서 견적용 상세 출력] */
+					'0' CHK						/*선택*/
+					,A.ESTI_DATE				/*견적일자*/
+					,A.PREE_NAME				/*견적명*/
+					,A.PREE_IDXX				/*견적순번*/
+					,A.PREE_CODE				/*견적번호*/
+					,A.JOBN_NUMB             /*제작번호*/
+					,A.ITEM_CODE				/*분류항목코드*/
+					,B.HIGH_NAME 			/*대분류명*/
+					,B.MIDD_NAME 			/*중분류명*/
+					,B.SUBX_NAME 			/*소분류명 제작항목*/
+					,A.MEMO_FILD				/*내역*/
+					,A.TYPE_QTYX				/*수량*/
+					,A.ESTI_PRCE				/*단가*/
+					,A.ESTI_AMTX				/*금액*/
+					,A.OUTS_CODE			/*제작사코드*/
+					,C.CUST_NAME			/*제작사명*/
+					,A.SORT_ORDR				/*정렬순번*/
+					FROM PD_SUJUMD A		
+					LEFT JOIN PD_ITEMXD B ON A.ITEM_CODE = B.ITEM_CODE
+					LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+					WHERE 1=1
+				AND A.PREE_CODE = #PREE_CODE#
+			
+				 ORDER BY A.SORT_ORDR, A.ITEM_CODE, A.PREE_CODE, A.PREE_IDXX
+			]]>
+	</select>
+	
+		
+	
+</sqlMap>
+
+

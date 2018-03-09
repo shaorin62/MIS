@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMD0010">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 권미영
+    작  성  일 : 2016.10.13
+    내      용 : 계정별잔액연령현황 조회
+******************************************************************************* */
+ -->
+	<select id="FAMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		SELECT /* FAMD0010.SEARCH00 계정별잔액연령현황 조회 */
+               A.ACCT_INTL
+             , A.ACCT_NAME
+			 , A.COND_VACD AS CUST_CODE
+			 , A.COND_VANM AS CUST_NAME
+			 , A.USEX_DEPT AS USEX_DEPT
+			 , SF_GET_DEPTNAME(A.USEX_DEPT) AS DEPT_NAME
+	         , SUM(CASE WHEN A.SLIP_DAYS <= $RECE_0001$ THEN A.BALA_AMNT ELSE 0 END) AS RECE_0001								/* ①일 이하 */
+	         , SUM(CASE WHEN A.SLIP_DAYS >  $RECE_0001$ AND A.SLIP_DAYS <= $RECE_0002$ THEN A.BALA_AMNT ELSE 0 END) AS RECE_0002 /* ①+1~②일 */
+	         , SUM(CASE WHEN A.SLIP_DAYS >  $RECE_0002$ AND A.SLIP_DAYS <= $RECE_0003$ THEN A.BALA_AMNT ELSE 0 END) AS RECE_0003 /* ②+1~③일 */
+	         , SUM(CASE WHEN A.SLIP_DAYS >  $RECE_0003$ THEN A.BALA_AMNT ELSE 0 END) AS RECE_0004								/* ③+1일 이상 */
+	         , SUM(A.BALA_AMNT) AS RECE_BALA   /* 매출채권_채권잔액 */
+		  FROM (  
+				 SELECT B.ACCT_INTL
+                      , AC.ACCT_NAME
+                      , B.ACCT_DATE AS ACCT_DATE
+					  , ROUND(MONTHS_BETWEEN(TO_DATE(B.ACCT_DATE, 'YYYYMMDD'), TO_DATE(#SLIP_DATE#, 'YYYYMMDD')) * -1, 1) AS SLIP_MONT
+					  , TO_NUMBER(TO_DATE(B.ACCT_DATE, 'YYYYMMDD') - TO_DATE(#SLIP_DATE#, 'YYYYMMDD')) * -1 AS SLIP_DAYS
+					  , C.COND_CODE AS COND_CODE
+					  , C.COND_VACD AS COND_VACD
+					  , C.COND_VANM
+					  , B.USEX_DEPT AS USEX_DEPT
+				  	  , B.SLIP_AMNT - NVL(S.SLIP_AMNT, 0) AS BALA_AMNT
+				   FROM TA_SLIPNT B 		      /* [전표 분개 정보] */
+                     	INNER JOIN TA_ACCTXM AC   /* [계정 정보] */
+                          	    ON AC.ACCT_INTL = B.ACCT_INTL
+	                           AND AC.GUNB_YSNO = '1'            	/* 건별 반제 계정만 */
+		]]>
+		<isNotEmpty property = "ACCT_TYPE">
+		<![CDATA[
+	                           AND AC.ACCT_TYPE = #ACCT_TYPE#    /* 매출채권 / 매입채권 */
+		]]>
+		</isNotEmpty>       	
+		<![CDATA[
+                      	LEFT  JOIN TA_ACCTXD AD   /* [계정별 관리과목 정보] */
+	                            ON AD.ACCT_INTL = AC.ACCT_INTL
+	                           AND AD.UNUS_YSNO = '1'            	/* 미불사용여부 */
+                      	LEFT  JOIN TA_SLIPRF C    /* [전표 관리항목] */
+	                            ON C.SLIP_NUMB = B.SLIP_NUMB
+	                           AND C.SLIP_LINE = B.SLIP_LINE
+	                           AND C.COND_CODE = AD.COND_CODE    	/* 건별 키 */
+                      	LEFT  JOIN (
+	                      			  SELECT Y.OSLI_NUMB
+	                      			       , Y.OSLI_LINE
+	                      			  	   , SUM(Y.SLIP_AMNT) AS SLIP_AMNT
+									    FROM TA_SLIPNT Y    /* [전표분개내역] */
+									   WHERE Y.ACCT_UNIT  = #ACCT_UNIT#
+									     AND Y.ACCT_DATE <= #SLIP_DATE#
+									   GROUP BY Y.OSLI_NUMB
+	                      			  		  , Y.OSLI_LINE
+                      			   ) S            /* [상대전표 금액] */
+	                            ON S.OSLI_NUMB = B.SLIP_NUMB
+	                           AND S.OSLI_LINE = B.SLIP_LINE
+				  WHERE B.OSLI_NUMB IS NULL    						/* 발생 자료만 */
+	                AND B.ACCT_UNIT = #ACCT_UNIT#
+				    AND B.ACCT_DATE <= #SLIP_DATE# /* 기준일자 */
+		]]>
+		<isNotEmpty property = "ACCT_INT1" prepend = "AND">
+		<![CDATA[
+				    B.ACCT_INTL >= #ACCT_INT1#       /* 계정코드 */
+		]]>
+		</isNotEmpty>       	
+		<isNotEmpty property = "ACCT_INT2" prepend = "AND">
+		<![CDATA[
+				    B.ACCT_INTL <= #ACCT_INT2#       /* 계정코드 */
+		]]>
+		</isNotEmpty>       	
+		<isNotEmpty property = "CUST_CODE" prepend = "AND">
+				    C.COND_VACD = #CUST_CODE#       /* 거래처 */
+		</isNotEmpty>       	
+		<![CDATA[
+				    AND B.SLIP_AMNT <> NVL(S.SLIP_AMNT, 0)
+		     ) A
+			   LEFT JOIN TA_CUSTXM B
+                      ON A.COND_VACD = B.CUST_CODE
+		]]>
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="CUTY_CODE">
+		 B.CUTY_CODE = #CUTY_CODE#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="RETY_CODE">
+		 B.RETY_CODE = #RETY_CODE#
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		 GROUP BY A.ACCT_INTL
+             , A.ACCT_NAME
+			 , A.COND_VACD
+			 , A.COND_VANM
+			 , A.USEX_DEPT
+		HAVING SUM(A.BALA_AMNT) <> 0
+		 ORDER BY A.ACCT_INTL
+		     , A.COND_VACD
+		     , A.USEX_DEPT
+	]]>
+	</select>
+	
+</sqlMap>

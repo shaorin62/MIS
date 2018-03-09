@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMF0110">
+<!-- 
+/*******************************************************************************
+    작  성  자  권미영
+    작  성  일  2016.10.17
+    내      용  원가명세서 조회
+********************************************************************************/
+-->
+	<select id="FAMF0110.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+	
+	SELECT	/* FAMF0110.SEARCH00 원가명세서 조회 */
+			*
+	FROM	TA_MODTMP
+	WHERE 	VIEW_ITLV < 9
+	]]>
+	
+	<isEqual prepend="AND" property="EXPT_ZERO" compareValue="1">
+	<![CDATA[
+		(   VIEW_ITLV <= 2   	/* 1, 2레벨은 무조건 표시 */
+		OR	NVL(VIEW_AM01, 0) <> 0 
+		OR 	NVL(VIEW_AM02, 0) <> 0
+		OR 	NVL(VIEW_AM03, 0) <> 0 
+		OR 	NVL(VIEW_AM04, 0) <> 0
+		)
+	]]>
+	</isEqual>
+	
+	ORDER	BY
+			SORT_ORDR
+	</select>
+
+<!-- 
+/*******************************************************************************
+    작  성  자  권미영
+    작  성  일  2016.10.17
+    내      용  원가명세서 자료 생성
+********************************************************************************/
+-->
+	<insert id="FAMF0110.SAVE00" parameterClass="hashmap" >
+	<![CDATA[
+	/*******************************************************************************
+	    FAMF0110.SAVE00 원가명세서 자료 생성             2016.10.17 by302
+	        - iFSFM_CODE    재무제표양식코드
+	        - iACCT_UNIT    회계단위
+	        - iCOST_GUBN    원가구분 : 21.매출원가(디자인), 22.매출원가(제작)
+		
+		아래 자료 처리 후 조회 시 레벨 9이하만 조회 함.(레벨 9는 임시 계정 집계)
+		SELECT * FROM TA_MODTMP WHERE VIEW_ITLV < 9 ORDER BY SORT_ORDR
+	*******************************************************************************/
+	
+    BEGIN
+    
+        /*======================================================================
+            STEP 1. 전표 라인별 계정 집계
+        ======================================================================*/
+        INSERT INTO TA_MODTMP (     /* [재무제표집계(조회용Temp)] */
+                    FSFM_CODE       /* 재무제표양식코드 */
+                  , VIEW_ITCD       /* 양식항목코드 */
+                  , VIEW_ITNM       /* 양식항목명 */
+                  , VIEW_ITLV       /* 양식항목레벨 */
+                  , VIEW_AM01       /* 양식금액1 */
+                  , VIEW_AM02       /* 양식금액2 */
+                  , VIEW_AM03       /* 양식금액3 */
+                  , VIEW_AM04       /* 양식금액4 */
+        )
+            SELECT #FSFM_CODE#                       	/* 재무제표양식코드 */
+                 , 'AC'||M.ACCT_INTL                    /* 계정코드 >> 양식항목코드 */
+                 , N.ACCT_NAME                          /* 양식항목명 */
+                 , 9                                    /* 레벨 */    
+                 , SUM(M.VIEW_AM01)     AS VIEW_AM01    /* 양식금액1 */
+                 , SUM(M.VIEW_AM02)     AS VIEW_AM02    /* 양식금액2 */
+                 , SUM(M.VIEW_AM03)     AS VIEW_AM03    /* 양식금액3 */
+                 , SUM(M.VIEW_AM04)     AS VIEW_AM04    /* 양식금액3 */
+              FROM (
+					
+                    SELECT A.ACCT_UNIT                                                 /* 회계단위[ACCT_UNIT] */
+                          ,A.ACCT_INTL                                                 /* 계정과목코드 */
+                         , SUM(CASE WHEN A.ACCT_DATE LIKE #BASE_YYM2# || '%' THEN A.SLIP_AMNT ELSE 0 END) AS VIEW_AM01 /* 당기월 */
+                         , SUM(CASE WHEN A.ACCT_DATE BETWEEN #BASE_YYM1# || '01' AND #BASE_YYM2# || '31' THEN A.SLIP_AMNT ELSE 0 END) AS VIEW_AM02	/* 당기누계 */
+                         , SUM(CASE WHEN A.ACCT_DATE LIKE #PREV_YYM2# || '%' THEN A.SLIP_AMNT ELSE 0 END) AS VIEW_AM03 /* 전기월 */
+                         , SUM(CASE WHEN A.ACCT_DATE BETWEEN #PREV_YYM1# || '01' AND #PREV_YYM2# || '31' THEN A.SLIP_AMNT ELSE 0 END) AS VIEW_AM04	/* 전기누계 */
+                      FROM TA_SLIPNT A              /* [회계전표상세] */
+                           LEFT JOIN TA_CSTCXM B    /* [코스트센터정보] */
+                                  ON A.CSTC_CODE = B.CSTC_CODE  /* 코스트센터코드 */
+								 AND A.ACCT_DATE BETWEEN B.BGIN_DATE AND B.ENDX_DATE 
+                     WHERE A.ACCT_UNIT = #ACCT_UNIT#                         	/* 회계단위[ACCT_UNIT] */
+                       AND (
+                       		   A.ACCT_DATE BETWEEN #BASE_YYM1# || '01' AND #BASE_YYM2# || '31' 		/* 당기 */
+                       	    OR A.ACCT_DATE BETWEEN #PREV_YYM1# || '01' AND #PREV_YYM2# || '31' 		/* 전기 */
+                       	    )
+                       AND A.ACCT_INTL LIKE '53%'
+                       AND A.DRCR_GUBN = 'D'
+                       AND NVL(B.COST_GUBN, ' ') = NVL(#COST_GUBN#, NVL(B.COST_GUBN, ' '))  /* 원가구분 : 21.매출원가(디자인), 22.매출원가(제작) */
+                     GROUP BY A.ACCT_UNIT, A.ACCT_INTL
+
+                   ) M
+                   INNER JOIN TA_ACCTXM N   /* [계정코드] */
+                           ON M.ACCT_INTL = N.ACCT_INTL
+             GROUP BY M.ACCT_UNIT, M.ACCT_INTL, N.ACCT_NAME, N.DRCR_GUBN
+            ;
+    
+    
+        /*======================================================================
+            STEP 2. 재무제표 산식에 따른 항목별 집계(N~1 레벨 역순 집계)
+        ======================================================================*/
+        FOR cTA_MODLXM IN ( SELECT VIEW_ITLV 
+                              FROM TA_MODLXM
+                             WHERE FSFM_CODE = #FSFM_CODE# 
+                             GROUP BY VIEW_ITLV 
+                             ORDER BY VIEW_ITLV DESC
+                          )
+        LOOP
+
+            INSERT INTO TA_MODTMP ( /* [재무제표집계(조회용Temp)] */
+                   FSFM_CODE        /* 재무제표양식코드 */
+                  ,VIEW_ITCD        /* 양식항목코드 */
+                  ,VIEW_ITNM        /* 양식항목명 */
+                  ,VIEW_ITLV        /* 양식레벨 */
+                  ,VIEW_AM01        /* 양식금액1 */
+                  ,VIEW_AM02        /* 양식금액2 */
+                  ,VIEW_AM03        /* 양식금액3 */
+                  ,VIEW_AM04        /* 양식금액4 */
+                  ,SORT_ORDR        /* 정렬순서 */
+                  ,PRTZ_YSNO        /* 괄호묶기여부 */
+                  ,BOLD_YSNO        /* 굵은글꼴여부 */
+                  ,ZPRT_YSNO        /* 제로(0)값출력여부 */
+                  )
+                  
+                SELECT  X.FSFM_CODE         /* 재무제표양식코드 */
+                       ,X.VIEW_ITCD         /* 양식항목코드 */
+                       ,LPAD(' ', (X.VIEW_ITLV - 1) * 2) || X.VIEW_ITNM         /* 양식항목명 */
+                       ,X.VIEW_ITLV         /* 양식레벨 */
+                       ,X.VIEW_AM01         /* 양식금액1 */
+                       ,X.VIEW_AM02         /* 양식금액2 */
+                       ,X.VIEW_AM03         /* 양식금액3 */
+                       ,X.VIEW_AM04         /* 양식금액4 */
+                       ,X.SORT_ORDR         /* 정렬순서 */
+                       ,X.PRTZ_YSNO         /* 괄호묶기여부 */
+                       ,X.BOLD_YSNO         /* 굵은글꼴여부 */
+                       ,X.ZPRT_YSNO         /* 제로(0)값출력여부 */
+                  FROM (        
+                        SELECT A.FSFM_CODE         /* 재무제표양식코드 */
+                              ,A.VIEW_ITCD         /* 양식항목코드 */
+                              ,A.VIEW_ITNM         /* 양식항목명 */
+                              ,A.VIEW_ITLV         /* 양식레벨 */
+                              ,(NVL(B.VIEW_AM01, 0) + NVL(C.VIEW_AM01, 0) + NVL(DECODE(A.OPST_CODE, 'PLUS', D.VIEW_AM01, D.VIEW_AM01 * -1), 0)) AS VIEW_AM01
+                              ,(NVL(B.VIEW_AM02, 0) + NVL(C.VIEW_AM02, 0) + NVL(DECODE(A.OPST_CODE, 'PLUS', D.VIEW_AM02, D.VIEW_AM02 * -1), 0)) AS VIEW_AM02
+                              ,(NVL(B.VIEW_AM03, 0) + NVL(C.VIEW_AM03, 0) + NVL(DECODE(A.OPST_CODE, 'PLUS', D.VIEW_AM03, D.VIEW_AM03 * -1), 0)) AS VIEW_AM03
+                              ,(NVL(B.VIEW_AM04, 0) + NVL(C.VIEW_AM04, 0) + NVL(DECODE(A.OPST_CODE, 'PLUS', D.VIEW_AM04, D.VIEW_AM04 * -1), 0)) AS VIEW_AM04
+                              ,A.SORT_ORDR         /* 정렬순서 */
+                              ,A.PRTZ_YSNO         /* 괄호묶기여부 */
+                              ,A.BOLD_YSNO         /* 굵은글꼴여부 */
+                              ,A.ZPRT_YSNO         /* 제로(0)값출력여부 */
+                          FROM TA_MODLXM A          /* [재무제표산식] */
+                               LEFT JOIN ( SELECT A.FSFM_CODE
+                                                 ,A.VIEW_ITCD
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM01, C.VIEW_AM01 * -1), 0)) AS VIEW_AM01
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM02, C.VIEW_AM02 * -1), 0)) AS VIEW_AM02
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM03, C.VIEW_AM03 * -1), 0)) AS VIEW_AM03
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM04, C.VIEW_AM04 * -1), 0)) AS VIEW_AM04
+                                             FROM TA_MODLXM A
+                                                  LEFT JOIN TA_MODLAC B   /* [재무제표계정] */
+                                                         ON A.FSFM_CODE = B.FSFM_CODE
+                                                        AND A.VIEW_ITCD = B.VIEW_ITCD
+                                                  LEFT JOIN TA_MODTMP C   /* [재무제표집계상세] */
+                                                         ON B.FSFM_CODE = C.FSFM_CODE
+                                                        AND 'AC'||B.ACCT_INTL = C.VIEW_ITCD
+                                                        AND C.VIEW_ITLV = 9
+                                            WHERE A.FSFM_CODE = #FSFM_CODE#
+                                              AND A.VIEW_ITLV = cTA_MODLXM.VIEW_ITLV
+                                            GROUP BY A.FSFM_CODE, A.VIEW_ITCD
+                                         ) B   /* [INLINE_VIEW - 재무제표_계정별 집계] */
+                                      ON A.FSFM_CODE = B.FSFM_CODE
+                                     AND A.VIEW_ITCD = B.VIEW_ITCD
+                               LEFT JOIN ( SELECT A.FSFM_CODE
+                                                 ,A.VIEW_ITCD
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM01, C.VIEW_AM01 * -1), 0)) AS VIEW_AM01
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM02, C.VIEW_AM02 * -1), 0)) AS VIEW_AM02
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM03, C.VIEW_AM03 * -1), 0)) AS VIEW_AM03
+                                                 ,SUM(NVL(DECODE(B.OPST_CODE, 'PLUS', C.VIEW_AM04, C.VIEW_AM04 * -1), 0)) AS VIEW_AM04
+                                             FROM TA_MODLXM A
+                                                  LEFT JOIN TA_MODLIM B   /* [재무제표항목] */
+                                                         ON A.FSFM_CODE = B.FSFM_CODE
+                                                        AND A.VIEW_ITCD = B.VIEW_ITCD
+                                                  LEFT JOIN TA_MODTMP C   /* [재무제표집계상세] */
+                                                         ON B.FSFM_CODE = C.FSFM_CODE
+                                                        AND B.OPFM_ITCD = C.VIEW_ITCD
+                                            WHERE A.FSFM_CODE = #FSFM_CODE#
+                                              AND A.VIEW_ITLV = cTA_MODLXM.VIEW_ITLV
+                                            GROUP BY A.FSFM_CODE, A.VIEW_ITCD
+                                         ) C   /* [INLINE_VIEW: 재무제표_항목별 집계] */
+                                      ON A.FSFM_CODE = C.FSFM_CODE
+                                     AND A.VIEW_ITCD = C.VIEW_ITCD
+                               LEFT JOIN TA_MODTMP D   /* [재무제표집계상세] */
+                                      ON A.FSFM_CODE = D.FSFM_CODE
+                                     AND A.OPFM_ITCD = D.VIEW_ITCD
+                         WHERE A.FSFM_CODE = #FSFM_CODE#     /* 재무제표양식코드 */
+                           AND A.VIEW_ITLV = cTA_MODLXM.VIEW_ITLV
+                       ) X
+                       ;
+
+        END LOOP;
+        
+    END;
+	]]>
+	</insert>
+
+</sqlMap>

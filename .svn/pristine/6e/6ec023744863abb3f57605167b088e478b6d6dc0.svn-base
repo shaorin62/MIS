@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYA0120">
+<!--
+/*******************************************************************************
+     작 성 자 :
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정 조회
+********************************************************************************/
+-->
+    <select id="PAYA0120.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+           SELECT /* PAYA0120.SEARCH00.급여전기설정 조회 */
+                  A.WAGE_CODE                   /* 급여코드 */
+                , A.CLSD_CODE                   /* 직원구분코드 */
+                , A.ALDE_CODE                   /* 지급공제구분코드 */
+                , A.CSTC_CODE                   /* 코스트센터코드 */
+                , (SELECT CSTC_NAME FROM TA_CSTCXM WHERE CSTC_CODE = A.CSTC_CODE) AS CSTC_NAME /* 코스트센터명 */
+                , A.ACCT_INTL                   /* 계정과목코드 */
+                , (SELECT ACCT_NAME FROM TA_ACCTXM WHERE ACCT_INTL = A.ACCT_INTL) AS ACCT_NAME /* 계정명 */
+             FROM PY_SLIPBS A                   /* [급여전기설정] */
+            WHERE A.WAGE_CODE = #WAGE_CODE#     /* 급여코드 */
+              AND A.CLSD_CODE = #CLSD_CODE#     /* 직원구분코드 */
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 :
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정(서브) 조회
+********************************************************************************/
+-->
+    <select id="PAYA0120.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+               SELECT /* PAYA0120.SEARCH01.급여전기설정(서브) 조회 */
+                      A.WAGE_CODE                   /* 급여코드 */
+                    , A.CLSD_CODE                   /* 직원구분코드 */
+                    , A.ALDE_CODE                   /* 지급공제구분코드 */
+                    , A.CSTC_CODE                   /* 코스트센터코드 */
+                    , (SELECT CSTC_NAME FROM TA_CSTCXM WHERE CSTC_CODE = A.CSTC_CODE) AS CSTC_NAME /* 코스트센터명 */
+                    , A.EXPD_CODE                   /* 수당공제코드 */
+                    , B.EXPD_NAME                   /* 수당공제명 */
+                    , A.ACCT_INTL                   /* 계정과목코드 */
+                    , (SELECT ACCT_NAME FROM TA_ACCTXM WHERE ACCT_INTL = A.ACCT_INTL) AS ACCT_NAME /* 계정명 */
+                 FROM PY_SLIPED A                   /* [급여전기수당공제코드] */
+                 LEFT OUTER JOIN PY_ALLDED B
+                              ON A.EXPD_CODE = B.EXPD_CODE
+                WHERE A.WAGE_CODE = #WAGE_CODE#     /* 급여코드 */
+                  AND A.CLSD_CODE = #CLSD_CODE#     /* 직원구분코드 */
+                  AND A.ALDE_CODE = #ALDE_CODE#     /* 지급공제구분코드 */
+                  AND A.CSTC_CODE = #CSTC_CODE#     /* 코스트센터코드 */
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 :
+     작 성 일 : 2016.11.22
+     내    용 : 지급항목(서브) 조회
+********************************************************************************/
+-->
+    <select id="PAYA0120.SEARCH02" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+               SELECT /* PAYA0120.SEARCH02.지급항목(서브) 조회 */
+                      A.EXPD_CODE                   /* 수당공제코드 */
+                    , A.EXPD_NAME                   /* 수당공제명 */
+                 FROM PY_ALLDED A                   /* [수당공제코드] */
+                WHERE A.EXPD_CODE LIKE #EXPD_CODE# || '%'     /* 수당공제코드 */
+                  AND A.WAUE_YSNO = '1'
+    ]]>
+    </select>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정 저장
+********************************************************************************/
+-->
+    <insert id="PAYA0120.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+            INSERT INTO PY_SLIPBS (/* PAYA0120.SAVE00.급여전기설정 저장 */ /* [급여전기설정] */
+                        WAGE_CODE          /* 급여코드 */
+                      , CLSD_CODE          /* 직원구분코드 */
+                      , ALDE_CODE          /* 지급공제구분코드 */
+                      , CSTC_CODE          /* 코스트센터코드 */
+                      , ACCT_INTL          /* 계정과목코드 */
+                      , INST_USID          /* 입력작업자 */
+                      , INST_DATE          /* 입력일시 */
+                      , UPDT_USID          /* 수정작업자 */
+                      , UPDT_DATE          /* 수정일시 */
+             ) VALUES (
+                        #WAGE_CODE#        /* 급여코드 */
+                      , #CLSD_CODE#        /* 직원구분코드 */
+                      , #ALDE_CODE#        /* 지급공제구분코드 */
+                      , #CSTC_CODE#        /* 코스트센터코드 */
+                      , #ACCT_INTL#        /* 계정과목코드 */
+                      , #UPDT_USID#        /* 입력작업자 */
+                      , SYSDATE            /* 입력일시 */
+                      , #UPDT_USID#        /* 수정작업자 */
+                      , SYSDATE            /* 수정일시 */
+                    )
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정(서브) 저장
+********************************************************************************/
+-->
+    <insert id="PAYA0120.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+            INSERT INTO PY_SLIPED (/* PAYA0120.SAVE01.급여전기설정(서브) 저장 */ /* [급여전기수당공제코드] */
+                        WAGE_CODE          /* 급여코드 */
+                      , CLSD_CODE          /* 직원구분코드 */
+                      , ALDE_CODE          /* 지급공제구분코드 */
+                      , CSTC_CODE          /* 코스트센터코드 */
+                      , EXPD_CODE          /* 수당공제코드 */
+                      , ACCT_INTL          /* 계정과목코드 */
+                      , INST_USID          /* 입력작업자 */
+                      , INST_DATE          /* 입력일시 */
+                      , UPDT_USID          /* 수정작업자 */
+                      , UPDT_DATE          /* 수정일시 */
+             ) VALUES (
+                        #WAGE_CODE#        /* 급여코드 */
+                      , #CLSD_CODE#        /* 직원구분코드 */
+                      , #ALDE_CODE#        /* 지급공제구분코드 */
+                      , #CSTC_CODE#        /* 코스트센터코드 */
+                      , #EXPD_CODE#        /* 수당공제코드 */
+                      , #ACCT_INTL#        /* 계정과목코드 */
+                      , #UPDT_USID#        /* 입력작업자 */
+                      , SYSDATE            /* 입력일시 */
+                      , #UPDT_USID#        /* 수정작업자 */
+                      , SYSDATE            /* 수정일시 */
+                    )
+    ]]>
+    </insert>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정 수정
+********************************************************************************/
+-->
+    <update id="PAYA0120.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+            UPDATE PY_SLIPBS /* PAYA0120.UPDATE00.급여전기설정 수정 */ /* [급여전기설정] */
+               SET ACCT_INTL = #ACCT_INTL#            /* 계정과목코드 */
+                 , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE                /* 수정일시 */
+             WHERE WAGE_CODE = #WAGE_CODE#            /* 급여코드 */
+               AND CLSD_CODE = #CLSD_CODE#            /* 직원구분코드 */
+               AND ALDE_CODE = #ALDE_CODE#            /* 지급공제구분코드 */
+               AND CSTC_CODE = #CSTC_CODE#            /* 코스트센터코드 */
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정(서브) 수정
+********************************************************************************/
+-->
+    <update id="PAYA0120.UPDATE01" parameterClass="hashmap">
+    <![CDATA[
+            UPDATE PY_SLIPED /* PAYA0120.UPDATE01.급여전기설정(서브) 수정 */ /* [급여전기수당공제코드] */
+               SET ACCT_INTL = #ACCT_INTL#            /* 계정과목코드 */
+                 , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+                 , UPDT_DATE = SYSDATE                /* 수정일시 */
+             WHERE WAGE_CODE = #WAGE_CODE#            /* 급여코드 */
+               AND CLSD_CODE = #CLSD_CODE#            /* 직원구분코드 */
+               AND ALDE_CODE = #ALDE_CODE#            /* 지급공제구분코드 */
+               AND CSTC_CODE = #CSTC_CODE#            /* 코스트센터코드 */
+               AND EXPD_CODE = #EXPD_CODE#            /* 수당공제코드 */
+    ]]>
+    </update>
+<!--
+/*******************************************************************************
+     작 성 자 : 안윤준
+     작 성 일 : 2016.11.22
+     내    용 : 급여전기설정 삭제
+********************************************************************************/
+-->
+    <delete id="PAYA0120.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        BEGIN
+            DELETE FROM PY_SLIPED /* PAYA0120.DELETE00.급여전기설정 삭제 */ /* [급여전기수당공제코드] */
+             WHERE WAGE_CODE = #WAGE_CODE#      /* 급여코드 */
+               AND CLSD_CODE = #CLSD_CODE#      /* 직원구분코드 */
+               AND ALDE_CODE = #ALDE_CODE#      /* 지급공제구분코드 */
+               AND CSTC_CODE = #CSTC_CODE#      /* 코스트센터코드 */
+              ;
+            DELETE FROM PY_SLIPBS /* [급여전기설정] */
+             WHERE WAGE_CODE = #WAGE_CODE#      /* 급여코드 */
+               AND CLSD_CODE = #CLSD_CODE#      /* 직원구분코드 */
+               AND ALDE_CODE = #ALDE_CODE#      /* 지급공제구분코드 */
+               AND CSTC_CODE = #CSTC_CODE#      /* 코스트센터코드 */
+               ;            
+        END;
+    ]]>
+    </delete>
+</sqlMap>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="TXMC0100">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 황치웅
+    작  성  일 : 2016. 09. 01
+    내      용 : TXMC0100(신용카드매출전표등수취명세서(인적사항)조회)
+********************************************************************************/
+-->
+	<select id="TXMC0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+        	SELECT /* TXMC0100.SEARCH00.신용카드매출전표등수취명세서(인적사항)조회 */
+               		   #ACCT_GUBN# AS BRANCH_CD   		/*VAT_지점코드*/
+                     , #VAT_YYYY# AS VAT_YYYY   		/*VAT_VAT년도*/ 
+                     , #VAT_QUARTER# AS VAT_QUARTER   	/*VAT_VAT분기*/ 
+                     , A.BIZ_NO   						/*VAT_사업자번호*/
+                     , A.BRANCH_NM   					/*VAT_지점명*/
+                     , A.CORP_NO   						/*VAT_법인번호*/
+                     , A.CORP_NM   						/*VAT_법인명*/
+                     , A.CORP_TYPENM   					/*VAT_업태명*/
+                     , A.CORP_LINE   					/*VAT_종목명*/
+                     , A.CORP_MASTER   					/*VAT_대표자명*/
+                     , A.CORP_ADDR   					/*VAT_사업자주소*/
+                     , A.CORP_TEL   					/*VAT_사업장전화번호*/
+                     , A.CORP_CELL   					/*VAT_사업자휴대전화*/
+                     , NVL(B.TYPE1, 0) AS TYPE1
+                     , NVL(B.TYPE2, 0) AS TYPE2
+                     , NVL(B.TYPE3, 0) AS TYPE3
+                     , NVL(B.TYPE4, 0) AS TYPE4
+                     , NVL(B.SAMT1, 0) AS SAMT1
+                     , NVL(B.SAMT2, 0) AS SAMT2
+                     , NVL(B.SAMT3, 0) AS SAMT3
+                     , NVL(B.SAMT4, 0) AS SAMT4
+                     , NVL(B.VAMT1, 0) AS VAMT1
+                     , NVL(B.VAMT2, 0) AS VAMT2
+                     , NVL(B.VAMT3, 0) AS VAMT3
+                     , NVL(B.VAMT4, 0) AS VAMT4
+			  FROM VA_VATBRANCH A
+             	   LEFT JOIN (
+                        SELECT A.BRANCH_CD
+                             , A.VAT_YYYY
+                             , A.VAT_QUARTER
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '1' THEN A.CREDIT_CCNT END), 0)) TYPE1
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '2' THEN A.CREDIT_CCNT END), 0)) TYPE2
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '3' THEN A.CREDIT_CCNT END), 0)) TYPE3
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '4' THEN A.CREDIT_CCNT END), 0)) TYPE4
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '1' THEN A.OFF_SAMT END), 0)) SAMT1
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '2' THEN A.OFF_SAMT END), 0)) SAMT2
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '3' THEN A.OFF_SAMT END), 0)) SAMT3
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '4' THEN A.OFF_SAMT END), 0)) SAMT4
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '1' THEN A.OFF_VAMT END), 0)) VAMT1
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '2' THEN A.OFF_VAMT END), 0)) VAMT2
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '3' THEN A.OFF_VAMT END), 0)) VAMT3
+                             , SUM(NVL((CASE WHEN A.CARD_TYPECD = '4' THEN A.OFF_VAMT END), 0)) VAMT4
+                          FROM TA_VAT164_D A
+                         WHERE A.VAT_YYYY = #VAT_YYYY#
+                           AND A.VAT_QUARTER = #VAT_QUARTER#
+                      GROUP BY A.BRANCH_CD
+                             , A.VAT_YYYY
+                             , A.VAT_QUARTER
+                       ) B
+                    ON A.BRANCH_CD = B.BRANCH_CD
+		 WHERE A.BRANCH_CD = #ACCT_GUBN#
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 한동조
+    작  성  일 : 2011. 08. 01
+    내      용 : TXMC0100(신용카드매출전표등수취명세서 조회)
+********************************************************************************/
+-->
+	<select id="TXMC0100.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+	        SELECT /* TXMC0100.SEARCH01.신용카드매출전표등수취명세서 조회 */
+	        	   MAIN.BRANCH_CD				/*지점코드*/
+	             , MAIN.VAT_YYYY				/*VAT년도*/
+	             , MAIN.VAT_QUARTER				/*VAT분기*/
+	             , ROWNUM AS CREDIT_SEQ   		/*신용카드매출일련번호*/
+	             , MAIN.CARD_TYPECD        		/*카드구분*/
+	             , DECODE(MAIN.CARD_TYPECD, '1', '신용카드및직불카드',  '2', '현금영수증', '3', '화물운송복지카드', '4', '사업용신용카드') AS CARD_TYPENM
+	             , MAIN.CARD_NO            		/*카드회원번호*/
+	             , MAIN.CUST_CD            		/*거래처코드*/
+	             , MAIN.CUST_BIZNO         		/*거래처사업자번호*/
+	             , MAIN.CREDIT_CCNT        		/*거래건수*/
+	             , MAIN.CREDIT_SAMT       		/*공급가액*/
+	             , MAIN.CREDIT_VAMT        		/*세액*/
+	          FROM (
+	                SELECT A.BRANCH_CD
+	                     , A.VAT_YYYY
+	                     , A.VAT_QUARTER
+	                     , C.APPL_V164 AS CARD_TYPECD
+	                     , A.CARD_NO
+	                     , A.CUST_CD
+	                     , D.CUST_BIZNO
+	                     , COUNT(0) AS CREDIT_CCNT
+	                     , SUM(A.VAT_SAMT) AS CREDIT_SAMT
+	                     , SUM(A.VAT_VAMT) AS CREDIT_VAMT
+	                  FROM TA_VATRAW A
+					       LEFT JOIN TA_VATCDH B
+					              ON A.VATH_TYPECD = B.VATH_TYPECD
+					       LEFT JOIN TA_VATCDD C
+					              ON A.VATH_TYPECD = C.VATH_TYPECD
+					             AND A.VATD_TYPECD = C.VATD_TYPECD
+					       LEFT JOIN VA_VATCUST D
+	                    		  ON A.CUST_CD = D.CUST_CD
+	                 WHERE A.BRANCH_CD = #ACCT_GUBN#
+	                   AND A.VAT_YYYY = #VAT_YYYY#
+	                   AND A.VAT_QUARTER = #VAT_QUARTER#
+	                   AND Nvl(C.APPL_V164, '0') <> '0'
+	              GROUP BY A.BRANCH_CD, A.VAT_YYYY, A.VAT_QUARTER, C.APPL_V164, A.CARD_NO, A.CUST_CD, D.CUST_BIZNO
+	              ORDER BY CARD_TYPECD, CARD_NO
+	               ) MAIN
+	      ORDER BY CREDIT_SEQ
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 한동조
+    작  성  일 : 2011. 08. 01
+    내      용 : TXMC0100(신용카드매출전표등수취명세서 처리)
+    실행 예제  : SP_TXMC0100_PROC00()
+********************************************************************************/
+-->
+    <insert id="TXMC0100.PROC00" parameterClass="hashmap">
+    <![CDATA[
+	BEGIN
+		/* TXMC0100.PROC00 신용카드매출전표등수취명세서 처리 */
+	
+		PKG_TXMA0030.SP_VAT_SUM (
+	         #UPDT_USID#    /* 작업자 */
+	        ,#ACCT_GUBN#    /* VAT_지점코드 */
+	        ,#VAT_YYYY#     /* VAT_VAT년도 */
+	        ,#VAT_QUARTER#  /* VAT_VAT분기 */
+	        ,'V164'   /* 양식구분 */
+	        )
+        ;
+	
+	END;
+    ]]>
+    </insert>
+
+<!-- 
+/*******************************************************************************
+    작  성  자 : 한동조
+    작  성  일 : 2011. 08. 01
+    내      용 : TXMC0100(신용카드매출전표등수취명세서 저장)
+    실행 예제  : SP_TXMC0100_SAVE00()
+********************************************************************************/
+-->	
+	<insert id="TXMC0100.SAVE00" parameterClass="hashmap">
+		<![CDATA[
+		DECLARE
+            /* TXMC0100.SAVE00.신용카드매출전표등수취명세서 저장 */
+			v_ROWCNT INT;
+			
+		BEGIN
+		
+			SELECT 
+			       COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT101_H1
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#;
+	
+	        IF v_ROWCNT = 0 THEN
+	          INSERT INTO
+	                 TA_VAT101_H1 (
+	                               BRANCH_CD
+	                             , VAT_YYYY
+	                             , VAT_QUARTER
+	                               )
+	                       VALUES (
+	                               #BRANCH_CD#
+	                             , #VAT_YYYY#
+	                             , #VAT_QUARTER#
+	                               );
+	        END IF;
+	
+	        SELECT COUNT(0) INTO v_ROWCNT
+	          FROM TA_VAT164_D
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#
+	           AND CREDIT_SEQ = #CREDIT_SEQ#;
+	
+	        IF v_ROWCNT = 0 THEN
+		        INSERT INTO TA_VAT164_D ( /* [신용카드매출전표등수취명세서_세부] */
+		               BRANCH_CD        /* VAT_지점코드 */
+		              ,VAT_YYYY        /* VAT_VAT년도 */
+		              ,VAT_QUARTER        /* VAT_VAT분기 */
+		              ,CREDIT_SEQ        /* VAT_신용카드매출일련번호 */
+		              ,CARD_TYPECD        /* VAT_카드구분 */
+		              ,CARD_MEM_NO        /* VAT_카드회원번호 */
+		              ,CUST_CD        /* VAT_거래처코드 */
+		              ,CREDIT_CCNT        /* VAT_거래건수 */
+		              ,OFF_SAMT        /* VAT_공급가액 */
+		              ,OFF_VAMT        /* VAT_세액 */
+		              ,INST_USID        /* 입력작업자 */
+		              ,INST_DATE        /* 입력일시 */
+		              ,UPDT_USID        /* 수정작업자 */
+		              ,UPDT_DATE        /* 수정일시 */
+		              )
+		       VALUES (
+		               #BRANCH_CD#       /* VAT_지점코드 */
+		              ,#VAT_YYYY#       /* VAT_VAT년도 */
+		              ,#VAT_QUARTER#       /* VAT_VAT분기 */
+		              ,#CREDIT_SEQ#       /* VAT_신용카드매출일련번호 */
+		              ,#CARD_TYPECD#       /* VAT_카드구분 */
+		              ,#CARD_MEM_NO#       /* VAT_카드회원번호 */
+		              ,#CUST_CD#       /* VAT_거래처코드 */
+		              ,#CREDIT_CCNT#       /* VAT_거래건수 */
+		              ,#OFF_SAMT#       /* VAT_공급가액 */
+		              ,#OFF_VAMT#       /* VAT_세액 */
+		              ,#UPDT_USID#       /* 입력작업자 */
+		              ,SYSDATE       /* 입력일시 */
+		              ,#UPDT_USID#       /* 수정작업자 */
+		              ,SYSDATE       /* 수정일시 */
+		              );
+	        ELSE
+		        UPDATE TA_VAT164_D                 /* [신용카드매출전표등수취명세서_세부] */
+		           SET  CARD_TYPECD = #CARD_TYPECD#  /* VAT_카드구분 */
+		               ,CARD_MEM_NO = #CARD_MEM_NO#  /* VAT_카드회원번호 */
+		               ,CUST_CD = #CUST_CD#  /* VAT_거래처코드 */
+		               ,CREDIT_CCNT = #CREDIT_CCNT#  /* VAT_거래건수 */
+		               ,OFF_SAMT = #OFF_SAMT#  /* VAT_공급가액 */
+		               ,OFF_VAMT = #OFF_VAMT#  /* VAT_세액 */
+		               ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+		               ,UPDT_DATE = SYSDATE  /* 수정일시 */
+		         WHERE BRANCH_CD  = #BRANCH_CD#  /* VAT_지점코드 */
+		           AND VAT_YYYY  = #VAT_YYYY#  /* VAT_VAT년도 */
+		           AND VAT_QUARTER  = #VAT_QUARTER#  /* VAT_VAT분기 */
+		           AND CREDIT_SEQ  = #CREDIT_SEQ#  /* VAT_신용카드매출일련번호 */
+           ;
+	        END IF;
+		END;
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 한동조
+    작  성  일 : 2011. 08. 01
+    내      용 : TXMC0100(신용카드매출전표등수취명세서 삭제)
+    실행 예제  : SP_TXMC0100_DELETE00()
+********************************************************************************/
+-->
+	<delete id="TXMC0100.DELETE00" parameterClass="hashmap">
+		<![CDATA[
+			DELETE /* TXMC0100.DELETE00.신용카드매출전표등수취명세서 삭제 */
+	          FROM TA_VAT164_D
+	         WHERE BRANCH_CD = #BRANCH_CD#
+	           AND VAT_YYYY = #VAT_YYYY#
+	           AND VAT_QUARTER = #VAT_QUARTER#
+		]]>
+	</delete>
+</sqlMap>

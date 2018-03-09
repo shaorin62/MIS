@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MDMD0010">
+
+<!--  
+ *   프로그램명 : 인터넷 개별청약
+ *   작 성 일 : 2016.10.13(표준화 완료)
+ *   작 성 자 : 최제현
+ *   비   고 :
+ *   Copyright (c) 2013 Inbus Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.10.13(표준화 완료)
+		내      용  : 인터넷 개별청약 조회
+		파라미터  : YEAR_MNTH : 년월, CUST_CODE : 광고주코드, BRND_CODE : 브랜드코드, MEDX_CODE : 청구지코드, RMED_CODE : 매체코드
+	-->
+	<select id="MDMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  	/* MDMD0010.SEARCH00 인터넷 개별청약 조회 */
+					 '0' CHEK_FILD		/*체크박스*/
+					,A.YEAR_MNTH		/*년월*/
+				    ,A.SEQX_FILD		/*일련번호*/
+				    ,A.CUST_CODE		/*광고주코드*/
+				    ,B.CUST_NAME		/*광고주명*/
+				    ,A.CTIM_CODE		/*광고주팀코드*/
+				    ,H.CUST_NAME CTIM_NAME	/*광고주팀명*/
+				    ,A.BRND_CODE		/*브랜드코드*/
+				    ,C.BRND_NAME		/*브랜드명*/
+				    ,A.MEDX_CODE	/*청구지코드*/
+				    ,D.CUST_NAME MEDX_NAME	/*청구지명*/
+				    ,A.RMED_CODE		/*매체코드*/
+				    ,E.CUST_NAME RMED_NAME	/*매체명*/
+				    ,A.APLY_DATE		/*적용일자*/
+				    ,A.MATT_NAME	/*소재명*/
+				    ,A.EMPL_CODE		/*사원코드*/
+				    ,SF_GET_EMPLNAME(A.EMPL_CODE) AS EMPL_NAME	/*사원명*/
+				    ,A.DEPT_CODE		/*부서코드*/
+				    ,G.DEPT_NAME		/*부서명*/
+				    ,A.STAR_DATE		/*광고시작일*/
+				    ,A.ENDD_DATE		/*광고종료일*/
+				    ,A.AMNT_FILD		/*광고비*/
+				    ,A.COMI_FILD		/*수수료*/
+				    ,A.COMI_RATE		/*수수료율*/
+				    ,A.TRTX_FLAG		/*위수탁부가세유무*/
+				    ,A.CMTX_FLAG		/*수수료부가세유무*/
+				    ,A.TRTR_NUMB		/*위수탁거래명세서번호*/
+				    ,A.TRTX_NUMB		/*위수탁세금계산서번호*/
+				    ,A.TRCH_NUMB		/*위수탁임시전표번호*/
+				    ,A.CMTR_NUMB	/*수수료거래명세서번호*/
+				    ,A.CMTX_NUMB	/*수수료세금계산서번호*/
+				   	,A.CMCH_NUMB	/*수수료임시전표번호*/
+				    ,A.MEMO_FILD		/*비고*/
+				    ,A.ITAD_FLAG		/*인터넷광고구분*/
+				    ,A.AORX_FLAG		/*AOR구분*/
+				    ,A.INST_USID		/*입력자*/
+				    ,SUBSTR(REPLACE(A.INST_DATE,'/',''),-6) INST_DATE		/*입력일*/
+				    ,A.UPDT_USID		/*수정자*/
+				    ,A.UPDT_DATE		/*수정일*/
+				FROM MD_ITMDXM A
+				LEFT JOIN TA_CUSTXM B ON A.CUST_CODE = B.CUST_CODE
+				LEFT JOIN MD_BRNDXM C ON A.BRND_CODE = C.BRND_CODE AND A.CUST_CODE = C.CUST_CODE
+				LEFT JOIN TA_CUSTXM D ON A.MEDX_CODE = D.CUST_CODE
+				LEFT JOIN MD_CUSTXM E ON A.RMED_CODE = E.CUST_CODE
+				LEFT JOIN TM_DEPTXM G ON A.DEPT_CODE = G.DEPT_CODE
+				LEFT JOIN MD_CUSTXM H ON A.CTIM_CODE = H.CUST_CODE
+	]]>
+	<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="YEAR_MNTH">
+				A.YEAR_MNTH LIKE '%' || #YEAR_MNTH# || '%'		/* 년월 */
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="CUST_CODE">
+				A.CUST_CODE LIKE '%' || #CUST_CODE# || '%'		/* 광고주코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="BRND_CODE">
+				A.BRND_CODE LIKE '%' || #BRND_CODE# || '%'		/* 브랜드코드 */
+		</isNotEmpty>	
+		<isNotEmpty prepend="AND" property="RMED_CODE">
+				A.RMED_CODE LIKE '%' || #RMED_CODE# || '%'		/* 매체코드 */
+		</isNotEmpty>			
+		<isNotEmpty prepend="AND" property="MEDX_CODE">
+				A.MEDX_CODE LIKE '%' || #MEDX_CODE# || '%'	/* 청구지코드 */
+		</isNotEmpty>	
+	</dynamic>
+	<![CDATA[
+		 ORDER BY TO_NUMBER(A.SEQX_FILD)
+	]]>
+	</select>
+	
+	<!-- 
+		작  성  자 :  최제현
+		작  성  일 : 2016.11.15(표준화 완료)
+		내      용  : 광고주목록 조회
+		파라미터  : 
+	-->
+	<select id="MDMD0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT                                         /* MDMA0030.SEARCH01 광고주목록 가져오기 */
+                A.CUST_CODE								/* 광고주코드 */
+                , A.CUST_NAME                                 /* 거래처명 */
+                , A.CUST_NAME AS CLIENT_NAME    /* 거래처명 */
+                , ' ' AS USEX_CODE                          /* NULL */
+                FROM TA_CUSTXM A 
+                LEFT JOIN TA_CUSTXD B ON A.CUST_CODE = B.CUST_CODE
+                WHERE 1=1
+                AND B.CUCL_CODE = 'FA260110'
+	]]>
+	</select>
+
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.09.26(표준화 완료)
+		내      용 : 인터넷 개별청약 저장 처리
+	-->
+	<insert id="MDMD0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO MD_ITMDXM (	/* MDMD0010.SAVE00 인터넷 개별청약 저장 */
+					 YEAR_MNTH		/*년월*/
+				    ,SEQX_FILD			/*일련번호*/
+				    ,CUST_CODE		/*광고주코드*/
+				    ,CTIM_CODE		/*광고주팀코드*/
+				    ,BRND_CODE		/*브랜드코드*/
+				    ,MEDX_CODE		/*청구지코드*/
+				    ,RMED_CODE		/*매체코드*/
+				    ,APLY_DATE			/*적용일자*/
+				    ,MATT_NAME		/*소재명*/
+				    ,EMPL_CODE		/*사원코드*/
+				    ,DEPT_CODE		/*부서코드*/
+				    ,STAR_DATE		/*광고시작일*/
+				    ,ENDD_DATE		/*광고종료일*/
+				    ,AMNT_FILD		/*광고비*/
+				    ,COMI_FILD			/*수수료*/
+				    ,COMI_RATE		/*수수료율*/
+				    ,TRTX_FLAG		/*위수탁부가세유무*/
+				    ,CMTX_FLAG		/*수수료부가세유무*/
+				    ,TRTR_NUMB		/*위수탁거래명세서번호*/
+				    ,TRTX_NUMB		/*위수탁세금계산서번호*/
+				    ,TRCH_NUMB		/*위수탁임시전표번호*/
+				    ,CMTR_NUMB		/*수수료거래명세서번호*/
+				    ,CMTX_NUMB		/*수수료세금계산서번호*/
+				   	,CMCH_NUMB		/*수수료임시전표번호*/
+				    ,MEMO_FILD		/*비고*/
+				    ,ITAD_FLAG			/*인터넷광고구분*/
+				    ,AORX_FLAG		/*AOR구분*/
+				    ,INST_USID			/*입력자*/
+				    ,INST_DATE			/*입력일*/
+				    ,UPDT_USID		/*수정자*/
+				    ,UPDT_DATE		/*수정일*/
+				    ,MEDX_FLAG		/*매체구분*/
+		) VALUES (
+					 #YEAR_MNTH#	/*년월*/
+					,(SELECT NVL(MAX(TO_NUMBER(SEQX_FILD)), 0) + 1
+                        FROM MD_ITMDXM
+                       WHERE YEAR_MNTH = #YEAR_MNTH#)		/*일련번호*/
+				    ,#CUST_CODE#		/*광고주코드*/
+				    ,#CTIM_CODE#		/*광고주팀코드*/
+				    ,#BRND_CODE#		/*브랜드코드*/
+				    ,#MEDX_CODE#		/*청구지코드*/
+				    ,#RMED_CODE#		/*매체코드*/
+				    ,#APLY_DATE#			/*적용일자*/
+				    ,#MATT_NAME#		/*소재명*/
+				    ,#EMPL_CODE#		/*사원코드*/
+				    ,#DEPT_CODE#		/*부서코드*/
+				    ,#STAR_DATE#		/*광고시작일*/
+				    ,#ENDD_DATE#		/*광고종료일*/
+				    ,#AMNT_FILD#		/*광고비*/
+				    ,#COMI_FILD#			/*수수료*/
+				    ,#COMI_RATE#		/*수수료율*/
+				    ,#TRTX_FLAG#		/*위수탁부가세유무*/
+				    ,#CMTX_FLAG#		/*수수료부가세유무*/
+				    ,#TRTR_NUMB#		/*위수탁거래명세서번호*/
+				    ,#TRTX_NUMB#		/*위수탁세금계산서번호*/
+				    ,#TRCH_NUMB#		/*위수탁임시전표번호*/
+				    ,#CMTR_NUMB#		/*수수료거래명세서번호*/
+				    ,#CMTX_NUMB#		/*수수료세금계산서번호*/
+				   	,#CMCH_NUMB#		/*수수료임시전표번호*/
+				    ,#MEMO_FILD#		/*비고*/
+				    ,#ITAD_FLAG#			/*인터넷광고구분*/
+				    ,#AORX_FLAG#		/*AOR구분*/
+				    ,#INST_USID#			/*입력자*/
+				    ,TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')			/*입력일*/
+				    ,#UPDT_USID#		/*수정자*/
+				    ,#UPDT_DATE#		/*수정일*/
+				    ,'A006'					/*매체구분*/
+		)
+	]]>
+	</insert>
+	
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.13(표준화 완료)
+		내      용 : 인터넷 개별청약 수정 처리
+	-->
+	<update id="MDMD0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		UPDATE MD_ITMDXM		/* MDMD0010.UPDATE00 인터넷 개별청약 수정 */
+			SET    YEAR_MNTH	=	#YEAR_MNTH#		/*년월*/
+				    ,SEQX_FILD 	=  #SEQX_FILD#			/* 일련번호 */
+				    ,CUST_CODE	=	#CUST_CODE#		/*광고주코드*/
+				    ,CTIM_CODE	=	#CTIM_CODE#			/*광고주팀코드*/
+				    ,BRND_CODE	=	#BRND_CODE#			/*브랜드코드*/
+				    ,MEDX_CODE	=	#MEDX_CODE#		/*청구지코드*/
+				    ,RMED_CODE	=	#RMED_CODE#		/*매체코드*/
+				    ,APLY_DATE		=	#APLY_DATE#			/*적용일자*/
+				    ,MATT_NAME	=	#MATT_NAME#		/*소재명*/
+				    ,EMPL_CODE	=	#EMPL_CODE#			/*사원코드*/
+				    ,DEPT_CODE	=	#DEPT_CODE#			/*부서코드*/
+				    ,STAR_DATE	=	#STAR_DATE#			/*광고시작일*/
+				    ,ENDD_DATE	=	#ENDD_DATE#			/*광고종료일*/
+				    ,AMNT_FILD	=	#AMNT_FILD#			/*광고비*/
+				    ,COMI_FILD		=	#COMI_FILD#			/*수수료*/
+				    ,COMI_RATE	=	#COMI_RATE#			/*수수료율*/
+				    ,TRTX_FLAG	=	#TRTX_FLAG#			/*위수탁부가세유무*/
+				    ,CMTX_FLAG	=	#CMTX_FLAG#			/*수수료부가세유무*/
+				    ,TRTR_NUMB	=	#TRTR_NUMB#			/*위수탁거래명세서번호*/
+				    ,TRTX_NUMB	=	#TRTX_NUMB#		/*위수탁세금계산서번호*/
+				    ,TRCH_NUMB	=	#TRCH_NUMB#		/*위수탁임시전표번호*/
+				    ,CMTR_NUMB	=	#CMTR_NUMB#		/*수수료거래명세서번호*/
+				    ,CMTX_NUMB	=	#CMTX_NUMB#		/*수수료세금계산서번호*/
+				   	,CMCH_NUMB	=	#CMCH_NUMB#		/*수수료임시전표번호*/
+				    ,MEMO_FILD	=	#MEMO_FILD#			/*비고*/
+				    ,ITAD_FLAG		=	#ITAD_FLAG#			/*인터넷광고구분*/
+				    ,AORX_FLAG	=	#AORX_FLAG#			/*AOR구분*/
+				    ,INST_USID		=	#INST_USID#			/*입력자*/
+				    ,INST_DATE		=	#INST_DATE#			/*입력일*/
+				    ,UPDT_USID	=	#UPDT_USID#			/*수정자*/
+				    ,UPDT_DATE	=	TO_CHAR(SYSDATE, 'YYYY-MM-DD AM HH:MI:SS')		/*수정일*/
+         WHERE SEQX_FILD 	= #SEQX_FILD#			/*일련번호*/
+         AND YEAR_MNTH	=	#YEAR_MNTH# 			/*년월*/
+         AND TRTR_NUMB IS NULL			/*위수탁거래명세서번호*/
+		AND TRTX_NUMB IS NULL			/*위수탁세금계산서번호*/
+		AND TRCH_NUMB IS NULL			/*위수탁임시전표번호*/
+		AND CMTR_NUMB IS NULL			/*수수료거래명세서번호*/
+		AND CMTX_NUMB IS NULL			/*수수료세금계산서번호*/
+		AND CMCH_NUMB IS NULL			/*수수료임시전표번호*/
+	]]>
+	</update>
+	
+	<!-- 
+		작  성  자 : 최제현
+		작  성  일 : 2016.10.13(표준화 완료)
+		내      용 : 인터넷 개별청약 삭제 처리(체크박스 체크여부 확인 후 삭제)
+	-->
+	<delete id="MDMD0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+			DELETE FROM MD_ITMDXM		/* MDMD0010.DELETE00 인터넷 개별청약 삭제 */
+			WHERE SEQX_FILD = #SEQX_FILD#		/* 일련번호 */
+			AND YEAR_MNTH	=	#YEAR_MNTH# /*년월*/
+			AND TRTR_NUMB IS NULL			/*위수탁거래명세서번호*/
+			AND TRTX_NUMB IS NULL			/*위수탁세금계산서번호*/
+			AND TRCH_NUMB IS NULL			/*위수탁임시전표번호*/
+			AND CMTR_NUMB IS NULL			/*수수료거래명세서번호*/
+			AND CMTX_NUMB IS NULL			/*수수료세금계산서번호*/
+			AND CMCH_NUMB IS NULL			/*수수료임시전표번호*/
+	]]>
+	</delete>
+	
+</sqlMap>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PACA0022">
+
+<!--  
+ *   프로그램명 : 제작 전자세금계산서 인증서관리  
+ *   작 성 일 : 2016.11.08
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved. 
+ -->
+	
+	<!-- 미완료  검색 조건 -->
+	<sql id="search">
+		<isNotEmpty prepend="AND" property="CORP_REG_NO" >
+			  A.CORP_REG_NO LIKE '%' || REPLACE(#CORP_REG_NO#,'-','') || '%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			  B.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			  B.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.08
+     내      용 : 제작 전자세금계산서 인증서 관리 
+     파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="PACA0022.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+					
+						SELECT 							/* PACA0022.SEARCH00.제작 전자세금계산서 인증서관리 [제작 전자세금계산서 인증서 관리] */
+						'0' CHK							/* 선택 */
+						, A.CERT_ID              		/* 인증서ID */
+						, A.CORP_REG_NO        		/* 사업자등록번호 */
+						, A.OID              				/* 사용안함 */
+						, A.VALID_DATE           	/* 유효일(시작) */
+						, A.EXPIRATION_DATE   	/* 유효일(종료) */
+						, A.SIGN_CERT_PUBLIC  	/* 서명용 공개키 */
+						, A.SIGN_CERT_PRIVATE   	/* 서명용 개인키 */
+						, A.KM_CERT_PUBLIC     	/* 암호화용 공개키 */
+						, A.KM_CERT_PRIVATE   	/* 암호와용 개인키 */
+						, A.PASSWORD             	/* 인증서패스워드 */
+						, A.RVALUE              	 	/* 사용안함 */
+						, A.ENCRYPTION_METHOD  /* 인증방식 */
+						, A.USE_YN              		/* 사용여부(1,0) */
+						, A.REG_TIMESTAMP         /* 등록시간 */
+						, B.CUST_CODE				/* 사업자코드 */
+						, B.CUST_NAME				/* 사업자명 */
+						FROM SBMS_CERTIFICATE A    
+						LEFT JOIN TA_CUSTXM B ON A.CORP_REG_NO  = B.BIZR_NUMB
+						LEFT JOIN TA_CUSTXD C ON B.CUST_CODE = C.CUST_CODE 
+						WHERE 1=1
+						]]>
+						     <include refid="search" />	
+						<![CDATA[
+						AND C.CUCL_CODE = 'FA260110'
+			]]>
+	</select>
+	
+	
+	<!--
+/***********************************************************************************  
+     작  성  자 : 오세훈
+     작  성  일 : 2016.11.09
+     내      용 : 전자세금계산서 인증서 수정
+     파라미터   : 				
+/*********************************************************************************** 
+     -->
+	<update id="PACA0022.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+		     	   
+     	           UPDATE SBMS_CERTIFICATE   									/* PACA0010.UPDATE00.세금계산서 번호 업데이트*//* [세금계산서 번호 업데이트] */
+					SET VALID_DATE = #VALID_DATE#  						/* 유효일(시작) */
+					  , EXPIRATION_DATE = #EXPIRATION_DATE#  			/* 유효일(만료) */
+					  , PASSWORD = #PASSWORD#  								/* 인증서패스워드 */
+					  , ENCRYPTION_METHOD = #ENCRYPTION_METHOD# /* 인증방식 */
+					  , USE_YN = #USE_YN#  										/* 사용여부 */
+					  , REG_TIMESTAMP = SYSDATE								/* 등록시각 */
+					  WHERE 1=1 
+					  AND CERT_ID = #CERT_ID#
+		     	   
+	]]>
+	</update>
+	
+	
+		
+<!-- 
+      작  성  자 : 오세훈
+    작  성  일 : 2016.11.09
+    내      용 : 제작 전자세금계산서 인증서 삭제 
+    파라미터   :  			  	
+   -->
+	<delete id="PACA0022.DELETE00" parameterClass="hashmap">
+	<![CDATA[		
+			 DECLARE
+				BEGIN
+				
+				    DELETE FROM SBMS_CERTIFICATE
+					WHERE 1=1
+					AND CERT_ID = #CERT_ID#
+					
+				;
+			
+		       	END; 
+	]]>		
+	</delete>
+	
+
+</sqlMap>
+
+

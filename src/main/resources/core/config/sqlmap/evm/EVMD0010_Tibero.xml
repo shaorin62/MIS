@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+		
+<sqlMap namespace="EVMD0010">
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.26
+     내      용 : 종합평가현황 조회
+********************************************************************************/
+-->
+	<select id="EVMD0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		   SELECT  /* EVMD0010.SEARCH00.종합평가현황 조회 */
+		           A.SYNT_EACD                                                                                          /* 인사평가코드 */
+                 , A.EMPL_NUMB                                                                                          /* 사원번호 */
+                 , SF_GET_EMPLNAME(A.EMPL_NUMB)                                                         AS EMPL_NAME    /* 성명*/
+                 , SF_GET_SECTNAME(A.DEPT_CODE)                                                         AS SECT_NAME    /* 소속명 */
+			     , SF_GET_DEPTNAME(A.DEPT_CODE)                                                         AS DEPT_NAME    /* 부서명 */                 
+                 , SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE)                                            AS CPOS_NAME    /* 직급명 */
+                 , SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE)                                            AS OPOS_NAME    /* 직위명 */                 
+             	 , DECODE(C.PVGD_CODE, NULL, NULL, A.FACH_EVSC)                                         AS PVGD_EVSC    /* 개인평가점수 */
+                 , DECODE(C.BVGD_CODE, NULL, NULL, B.FACH_EVSC)                                         AS BVGD_EVSC    /* 조직평가점수 */
+                 , DECODE(C.PVGD_CODE, NULL, NULL, NVL(A.FACH_EVSC,0) * (PVGN_RATE / 100))              AS PVGD_REVSC
+                 , DECODE(C.BVGD_CODE, NULL, NULL, NVL(B.FACH_EVSC,0) * (BVGN_RATE / 100))              AS BVGD_REVSC
+                 , DECODE(C.TVGD_CODE, NULL, NULL, (NVL(A.FACH_EVSC,0) * (PVGN_RATE / 100)) + (NVL(B.FACH_EVSC,0) * (BVGN_RATE / 100)))  AS TVGD_EVSC    /* 종합평가점수 */
+                 , C.PVGD_CODE                                                                                          /* 개인평가등급코드 */
+                 , C.BVGD_CODE                                                                                          /* 조직평가등급코드 */
+                 , C.TVGD_CODE                                                                                          /* 종합평가등급코드 */
+             FROM EV_WGETXM A                           /* [인사평가대상자] */               
+       INNER JOIN EV_TEVPXM X             
+               ON A.SYNT_EACD = X.SYNT_EACD
+  LEFT OUTER JOIN EV_DTETXM B                           /* [조직평가대상부서] */
+               ON A.SYNT_EACD = B.SYNT_EACD
+              AND A.DEPT_CODE = B.DEPT_CODE
+  LEFT OUTER JOIN EV_WGTOTL C                           /* [종합평가점수] */
+               ON A.EMPL_NUMB             = C.EMPL_NUMB 
+              AND SUBSTR(A.SYNT_EACD,1,4) = C.STDS_YEAR               
+  LEFT OUTER JOIN VI_DEPTXM E                           /* [VIEW_부서정보(현재시점)] */
+               ON A.DEPT_CODE = E.DEPT_CODE              
+            WHERE 1=1
+    ]]>
+		<isNotEmpty property="SYNT_EACD" prepend="AND">
+		    A.SYNT_EACD = #SYNT_EACD#     /* 인사평가코드 */
+		</isNotEmpty>
+		<isNotEmpty property="DEPT_CODE" prepend="AND">
+		    A.DEPT_CODE = #DEPT_CODE#     /* 부서코드 */
+		</isNotEmpty>
+		<isNotEmpty property="EMPL_NUMB" prepend="AND">
+			A.EMPL_NUMB = #EMPL_NUMB#     /* 사원번호 */
+		</isNotEmpty>
+	         ORDER BY E.SORT_ORDR, 4, 5, A.CPOS_CODE, A.EMPL_NUMB DESC
+	</select>
+<!--
+/*******************************************************************************
+     작  성  자 : 김석영
+     작  성  일 : 2016.10.26
+     내      용 : 종합평가현황 처리
+********************************************************************************/
+-->
+	<update id="EVMD0010.PROC00" parameterClass="hashmap">
+	<![CDATA[
+		DECLARE   /* EVMD0010.PROC00.종합평가현황 처리 */
+			v_ROWCNT INT;
+		BEGIN
+			
+			/*평가마감여부체크*/
+			SELECT COUNT(1) 
+			  INTO v_ROWCNT
+			  FROM EV_TEVPXM
+			 WHERE SYNT_EACD = #SYNT_EACD#
+			   AND CLSE_YSNO = '1';
+			   
+			IF v_ROWCNT > 0 THEN
+				RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('EVM010'));   
+			END IF;	
+				
+   			MERGE INTO EV_WGTOTL T   /* [종합평가점수] */
+	        USING (
+                     SELECT C.STDS_YEAR  /* 기준년도 */
+			               ,C.EMPL_NUMB  /* 사원번호 */
+					       ,C.PVGD_EVSC  /* 개인 평가점수 */
+                           ,C.PVGD_CODE  /* 개인 평가등급코드 */
+					       ,C.BVGD_EVSC  /* 조직평가점수 */
+                           ,C.BVGD_CODE  /* 조직평가등급코드 */
+                           ,C.TVGD_EVSC  /* 종합평가점수 */
+					       ,(SELECT WGEG_CODE
+					           FROM EV_WGEGXM
+					          WHERE SYNT_EACD = C.SYNT_EACD					          
+					            AND ( BGIN_SCOR <= C.TVGD_EVSC
+					              AND ENDX_SCOR >= C.TVGD_EVSC)
+					        )                                                       AS TVGD_CODE  /* 종합평가등급코드 */
+					   FROM (SELECT SUBSTR(A.SYNT_EACD,1,4)                         AS STDS_YEAR  /* 기준년도 */
+					               ,A.SYNT_EACD
+					               ,A.EMPL_NUMB                                                   /* 사원번호 */
+							       ,A.FACH_EVSC                                     AS PVGD_EVSC  /* 개인 평가점수 */
+		                           ,A.FACH_CODE                                     AS PVGD_CODE  /* 개인 평가등급코드 */
+							       ,B.FACH_EVSC                                     AS BVGD_EVSC  /* 조직평가점수 */
+		                           ,B.FACH_CODE                                     AS BVGD_CODE  /* 조직평가등급코드 */
+		                           ,(NVL(A.FACH_EVSC,0) * (PVGN_RATE / 100)) + (NVL(B.FACH_EVSC,0) * (BVGN_RATE / 100))  AS TVGD_EVSC  /* 종합평가점수 */
+							   FROM EV_WGETXM A                 /* [인사평가대상자] */                 
+		                 INNER JOIN EV_TEVPXM X             
+		                         ON A.SYNT_EACD = X.SYNT_EACD
+		            LEFT OUTER JOIN EV_DTETXM B                 /* [조직평가대상부서] */
+		                         ON A.SYNT_EACD = B.SYNT_EACD
+		                        AND A.DEPT_CODE = B.DEPT_CODE
+		                        AND B.FACH_CODE IS NOT NULL
+		                      WHERE A.SYNT_EACD =  #SYNT_EACD#
+		                        AND A.FACH_CODE IS NOT NULL
+		                    )  C
+			        ) A
+	                ON	(
+	                        A.STDS_YEAR	= T.STDS_YEAR	/* 기준년도 */
+	                AND		A.EMPL_NUMB	= T.EMPL_NUMB	/* 부서코드 */
+	                )
+		WHEN MATCHED THEN UPDATE SET 
+		             T.PVGD_CODE = A.PVGD_CODE
+					,T.BVGD_CODE = A.BVGD_CODE
+					,T.TVGD_CODE = A.TVGD_CODE
+					,T.UPDT_USID = #UPDT_USID#
+					,T.UPDT_DATE = SYSDATE 	                
+        WHEN NOT MATCHED THEN INSERT
+				 ( 	                
+	                 STDS_YEAR        /* 기준년도 */
+	                ,EMPL_NUMB        /* 사원번호 */
+	                ,PVGD_CODE        /* 개인평가등급코드 */
+	                ,BVGD_CODE        /* 조직평가등급코드 */
+	                ,TVGD_CODE        /* 종합평가등급코드 */
+	                ,INST_USID        /* 입력작업자 */
+	                ,INST_DATE        /* 입력일시 */
+	                ,UPDT_USID        /* 수정작업자 */
+	                ,UPDT_DATE        /* 수정일시 */
+	             )
+	      VALUES (
+	                 A.STDS_YEAR      /* 기준년도 */
+	                ,A.EMPL_NUMB      /* 사원번호 */
+	                ,A.PVGD_CODE      /* 개인평가등급코드 */
+	                ,A.BVGD_CODE      /* 조직평가등급코드 */
+	                ,A.TVGD_CODE      /* 종합평가등급코드 */
+	                ,#UPDT_USID#      /* 입력작업자 */
+	                ,SYSDATE          /* 입력일시 */
+	                ,#UPDT_USID#      /* 수정작업자 */
+	                ,SYSDATE          /* 수정일시 */
+	             );	                
+		END;	 
+	]]>
+	</update>	
+
+</sqlMap>

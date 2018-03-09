@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+        <style type='text/css'>
+        li {    
+            margin-bottom:10px;
+        }
+        </style>
+		<title>인증서 등록 화면</title>
+    </head>
+    <body>
+        <form name='form1' action='http://172.24.1.32:20000/dti/api/v1/certificate/1188114916' method = 'post' enctype='multipart/form-data'>
+            <ul>
+                <li>서명용 공개키</li>
+                <li><input type='file' name='signCertPublic' /></li>
+                <li>서명용 개인키</li>
+                <li><input type='file' name='signCertPrivate' /></li>
+                <li>암호화용 공개키(option)</li>
+                <li><input type='file' name='kmCertPublic' /></li>
+                <li>암호화용 개인키(option)</li>
+                <li><input type='file' name='kmCertPrivate' /></li>
+                <li>인증서 패스워드</li>
+                <li><input type='password' name='password' /></li>
+                <li><button>등록</button></li>
+            </ul>
+        </form>
+    </body>
+
+</html>

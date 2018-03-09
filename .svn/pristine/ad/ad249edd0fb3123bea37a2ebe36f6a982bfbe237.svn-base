@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PRPA0040">
+
+<!--  
+/***********************************************************************************
+ *   프로그램명 : 제작결산관리 실적집계표(광고주 매체별분류)
+ *   작 성 일 : 2016.10.25
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved.
+ /*********************************************************************************** 
+ -->
+	
+	<!-- 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="YEAR_MONT1" >
+			 SUBSTR(B.DEND_DATE,0,6) BETWEEN #YEAR_MONT1# AND '999999'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="YEAR_MONT2" >
+			SUBSTR(B.DEND_DATE,0,6) BETWEEN '000000' AND #YEAR_MONT2#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			B.CUST_CODE = #CUST_CODE#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			D.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="MEDA_CODE" >
+			B.MEDA_CODE = #MEDA_CODE#
+		</isNotEmpty>
+		
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.25
+     내      용 : 제작 결산관리 실적집계표(실적집계)
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0040.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        
+	        
+	        SELECT
+			CUST_CODE
+			,CUST_NAME
+			,MEDA_CODE
+			,TO_CHAR(MEDA_NAME) AS MEDA_NAME
+			,SUM(CNT) AS CNT
+			,NVL(SUM(ESTI_AMTX),0) AS ESTI_AMTX
+			,NVL(SUM(DEND_AMTX),0) AS DEND_AMTX
+			,NVL(SUM(SUJU_AMTX),0) AS SUJU_AMTX
+			,NVL(SUM(NESU_AMTX),0) AS NESU_AMTX
+			,TO_CHAR(DECODE(NVL(SUM(DEND_AMTX2),0),0,0,DECODE(SUM(DEND_AMTX2),0,0,ROUND(((SUM(DEND_AMTX2) - SUM(SUJU_AMTX2))/SUM(DEND_AMTX2)) * 100,2))),'fm999,999,999,999,999.0') AS NESU_RATE
+			,SORT_ORDR
+			,ROW_NUM
+			FROM (
+			    SELECT
+			    SUBSTR(B.DEND_DATE,0,6) AS YEARMON 
+			    ,B.CUST_CODE
+			    ,D.CUST_NAME
+			    ,B.MEDA_CODE
+			    ,E.SORT_ORDR
+			    , E.COMD_CDNM AS MEDA_NAME
+			    , COUNT(B.JOBN_NUMB) AS CNT
+			    ,SUM(A.ESTI_AMTX) AS ESTI_AMTX
+			    ,SUM(A.DEND_AMTX) AS DEND_AMTX
+			    ,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+			    ,SUM((A.DEND_AMTX -A.SUJU_AMTX)) AS NESU_AMTX   
+			    ,SUM(G.DEND_AMTX) AS DEND_AMTX2
+			    ,SUM(G.SUJU_AMTX) AS SUJU_AMTX2
+			    , H.ROW_NUM
+			    FROM PD_SUJUMH A 
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			    LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			    LEFT JOIN PD_CLASXM F ON B.CUST_CODE = F.CUST_CODE
+			    LEFT JOIN TM_CODEXD E ON B.MEDA_CODE = E.COMD_CODE AND E.COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (SELECT 
+			        A.PREE_CODE 
+			        ,SUM(ESTI_AMTX) AS ESTI_AMTX
+			        ,SUM(DEND_AMTX) AS DEND_AMTX
+			        ,SUM(SUJU_AMTX) AS SUJU_AMTX
+			        FROM PD_SUJUMD A 
+			        LEFT JOIN PD_ITEMXD B  ON A.ITEM_CODE = B.ITEM_CODE
+			        WHERE 1=1
+			        AND  NVL(B.DOME_YN,'N') = 'N'
+			        GROUP BY A.PREE_CODE )G ON A.PREE_CODE = G.PREE_CODE
+			     LEFT JOIN (
+			         SELECT 
+			            B.CUST_CODE
+			            , SUM(A.DEND_AMTX)
+			            , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX) DESC) AS ROW_NUM
+			            FROM PD_SUJUMH A 
+			            LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			            LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			            WHERE 1=1
+			            ]]>
+					     <include refid="search" />	
+						<![CDATA[
+			            GROUP BY B.CUST_CODE
+			     )H ON B.CUST_CODE = H.CUST_CODE
+			    WHERE 1=1
+			    ]]>
+			     <include refid="search" />	
+				<![CDATA[
+			    GROUP BY SUBSTR(B.DEND_DATE,0,6),F.AGCY_YSNO,B.MEDA_CODE ,E.SORT_ORDR
+			    ,B.CUST_CODE, D.CUST_NAME, E.COMD_CDNM, H.ROW_NUM
+			)A
+			GROUP BY MEDA_NAME
+			,CUST_CODE,CUST_NAME, MEDA_CODE,SORT_ORDR, ROW_NUM
+			UNION ALL
+			SELECT
+			CUST_CODE
+			, CUST_NAME
+			,NULL MEDA_CODE
+			,'소계' MEDA_NAME
+			,SUM(CNT) AS CNT
+			,SUM(ESTI_AMTX) AS ESTI_AMTX
+			,SUM(DEND_AMTX) AS DEND_AMTX
+			,SUM(SUJU_AMTX) AS SUJU_AMTX
+			,SUM(NESU_AMTX) AS NESU_AMTX
+			,TO_CHAR(DECODE(NVL(SUM(DEND_AMTX2),0),0,0,DECODE(SUM(DEND_AMTX2),0,0,ROUND(((SUM(DEND_AMTX2) - SUM(SUJU_AMTX2))/SUM(DEND_AMTX2)) * 100,2))),'fm999,999,999,999,999.0') AS NESU_RATE
+			,999999 AS SORT_ORDR
+			,ROW_NUM
+			FROM (
+				SELECT
+				SUBSTR(B.DEND_DATE,0,6) AS YEARMON 
+				,B.CUST_CODE
+				,D.CUST_NAME
+				,B.MEDA_CODE
+				,E.SORT_ORDR
+				, E.COMD_CDNM AS MEDA_NAME
+				, COUNT(B.JOBN_NUMB) AS CNT
+				,SUM(A.ESTI_AMTX) AS ESTI_AMTX
+				,SUM(A.DEND_AMTX) AS DEND_AMTX
+				,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+				,SUM((A.DEND_AMTX -A.SUJU_AMTX)) AS NESU_AMTX   
+			    ,SUM(G.DEND_AMTX) AS DEND_AMTX2
+			    ,SUM(G.SUJU_AMTX) AS SUJU_AMTX2
+				,NVL(F.AGCY_YSNO,'N') AS AGCY_YSNO       
+				,H.ROW_NUM
+				FROM PD_SUJUMH A 
+				LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				LEFT JOIN PD_CLASXM F ON B.CUST_CODE = F.CUST_CODE
+			    LEFT JOIN TM_CODEXD E ON B.MEDA_CODE = E.COMD_CODE AND E.COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (SELECT 
+			        A.PREE_CODE 
+			        ,SUM(ESTI_AMTX) AS ESTI_AMTX
+			        ,SUM(DEND_AMTX) AS DEND_AMTX
+			        ,SUM(SUJU_AMTX) AS SUJU_AMTX
+			        FROM PD_SUJUMD A 
+			        LEFT JOIN PD_ITEMXD B  ON A.ITEM_CODE = B.ITEM_CODE
+			        WHERE 1=1
+			        AND  NVL(B.DOME_YN,'N') = 'N'
+			        GROUP BY A.PREE_CODE )G ON A.PREE_CODE = G.PREE_CODE
+			     LEFT JOIN (
+			         SELECT 
+			            B.CUST_CODE
+			            , SUM(A.DEND_AMTX)
+			            , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX) DESC) AS ROW_NUM
+			            FROM PD_SUJUMH A 
+			            LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			            LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			            WHERE 1=1
+			            ]]>
+					     <include refid="search" />	
+						<![CDATA[
+			            GROUP BY B.CUST_CODE
+			     )H ON B.CUST_CODE = H.CUST_CODE
+				WHERE 1=1
+			    ]]>
+			     <include refid="search" />	
+				<![CDATA[
+				GROUP BY SUBSTR(B.DEND_DATE,0,6),F.AGCY_YSNO,B.MEDA_CODE,E.SORT_ORDR
+				,B.CUST_CODE, D.CUST_NAME, E.COMD_CDNM, H.ROW_NUM
+			)A
+			GROUP BY CUST_CODE, CUST_NAME, ROW_NUM
+			UNION ALL
+			SELECT
+			'ZZZZZZZZZZ' CUST_CODE
+			,NULL CUST_NAME
+			,NULL MEDA_CODE
+			,'합계' MEDA_NAME
+			,SUM(CNT) AS CNT
+			,SUM(ESTI_AMTX) AS ESTI_AMTX
+			,SUM(DEND_AMTX) AS DEND_AMTX
+			,SUM(SUJU_AMTX) AS SUJU_AMTX
+			,SUM(NESU_AMTX) AS NESU_AMTX
+			,TO_CHAR(DECODE(NVL(SUM(DEND_AMTX2),0),0,0,DECODE(SUM(DEND_AMTX2),0,0,ROUND(((SUM(DEND_AMTX2) - SUM(SUJU_AMTX2))/SUM(DEND_AMTX2)) * 100,2))),'fm999,999,999,999,999.0') AS NESU_RATE
+			,999999 AS SORT_ORDR
+			,NULL AS ROW_NUM
+			FROM (
+				SELECT
+				SUBSTR(B.DEND_DATE,0,6) AS YEARMON 
+				,B.CUST_CODE
+				,D.CUST_NAME
+				,B.MEDA_CODE
+				,E.SORT_ORDR
+				,E.COMD_CDNM AS MEDA_NAME
+				, COUNT(B.JOBN_NUMB) AS CNT
+				,SUM(A.ESTI_AMTX) AS ESTI_AMTX
+				,SUM(A.DEND_AMTX) AS DEND_AMTX
+				,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+				,SUM((A.DEND_AMTX -A.SUJU_AMTX)) AS NESU_AMTX 
+			    ,SUM(G.DEND_AMTX) AS DEND_AMTX2
+			    ,SUM(G.SUJU_AMTX) AS SUJU_AMTX2  
+				,NVL(F.AGCY_YSNO,'N') AS AGCY_YSNO   
+				,H.ROW_NUM    
+				FROM PD_SUJUMH A 
+				LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				LEFT JOIN PD_CLASXM F ON B.CUST_CODE = F.CUST_CODE
+			    LEFT JOIN TM_CODEXD E ON B.MEDA_CODE = E.COMD_CODE AND E.COMM_CODE = 'CLAS_CODE'
+			     LEFT JOIN (SELECT 
+			        A.PREE_CODE 
+			        ,SUM(ESTI_AMTX) AS ESTI_AMTX
+			        ,SUM(DEND_AMTX) AS DEND_AMTX
+			        ,SUM(SUJU_AMTX) AS SUJU_AMTX
+			        FROM PD_SUJUMD A 
+			        LEFT JOIN PD_ITEMXD B  ON A.ITEM_CODE = B.ITEM_CODE
+			        WHERE 1=1
+			        AND  NVL(B.DOME_YN,'N') = 'N'
+			        GROUP BY A.PREE_CODE )G ON A.PREE_CODE = G.PREE_CODE
+			     LEFT JOIN (
+			         SELECT 
+			            B.CUST_CODE
+			            , SUM(A.DEND_AMTX)
+			            , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX) DESC) AS ROW_NUM
+			            FROM PD_SUJUMH A 
+			            LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			            LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			            WHERE 1=1
+			            ]]>
+					     <include refid="search" />	
+						<![CDATA[
+			            GROUP BY B.CUST_CODE
+			     )H ON B.CUST_CODE = H.CUST_CODE
+				WHERE 1=1
+			    ]]>
+			     <include refid="search" />	
+				<![CDATA[
+				GROUP BY SUBSTR(B.DEND_DATE,0,6),F.AGCY_YSNO,B.MEDA_CODE,E.SORT_ORDR
+				,B.CUST_CODE, D.CUST_NAME, E.COMD_CDNM, H.ROW_NUM
+			)A
+			ORDER BY ROW_NUM ASC ,SORT_ORDR,MEDA_CODE, CNT DESC
+			
+					    
+			]]>
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표(실적집계)
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0040.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+	        
+	        SELECT
+	        #YEAR_MONT1# YEAR_MONT1
+			,#YEAR_MONT2# YEAR_MONT2
+			,CUST_CODE
+			,CUST_NAME
+			,MEDA_CODE
+			,TO_CHAR(MEDA_NAME) AS MEDA_NAME
+			,SUM(CNT) AS CNT
+			,NVL(SUM(ESTI_AMTX),0) AS ESTI_AMTX
+			,NVL(SUM(DEND_AMTX),0) AS DEND_AMTX
+			,NVL(SUM(SUJU_AMTX),0) AS SUJU_AMTX
+			,NVL(SUM(NESU_AMTX),0) AS NESU_AMTX
+			,SUM(DEND_AMTX2) AS DEND_AMTX2
+			,SUM(SUJU_AMTX2) AS SUJU_AMTX2
+			,TO_CHAR(DECODE(NVL(SUM(DEND_AMTX2),0),0,0,DECODE(SUM(DEND_AMTX2),0,0,ROUND(((SUM(DEND_AMTX2) - SUM(SUJU_AMTX2))/SUM(DEND_AMTX2)) * 100,2))),'fm999,999,999,999,999.0') AS NESU_RATE
+			,SORT_ORDR
+			,ROW_NUM
+			FROM (
+			    SELECT
+			    SUBSTR(B.DEND_DATE,0,6) AS YEARMON 
+			    ,B.CUST_CODE
+			    ,D.CUST_NAME
+			    ,B.MEDA_CODE
+			    ,E.SORT_ORDR
+			    , E.COMD_CDNM AS MEDA_NAME
+			    , COUNT(B.JOBN_NUMB) AS CNT
+			    ,SUM(A.ESTI_AMTX) AS ESTI_AMTX
+			    ,SUM(A.DEND_AMTX) AS DEND_AMTX
+			    ,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+			    ,SUM((A.DEND_AMTX -A.SUJU_AMTX)) AS NESU_AMTX   
+			    ,SUM(G.DEND_AMTX) AS DEND_AMTX2
+			    ,SUM(G.SUJU_AMTX) AS SUJU_AMTX2
+			    , H.ROW_NUM
+			    FROM PD_SUJUMH A 
+			    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			    LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			    LEFT JOIN PD_CLASXM F ON B.CUST_CODE = F.CUST_CODE
+			    LEFT JOIN TM_CODEXD E ON B.MEDA_CODE = E.COMD_CODE AND E.COMM_CODE = 'CLAS_CODE'
+			    LEFT JOIN (SELECT 
+			        A.PREE_CODE 
+			        ,SUM(ESTI_AMTX) AS ESTI_AMTX
+			        ,SUM(DEND_AMTX) AS DEND_AMTX
+			        ,SUM(SUJU_AMTX) AS SUJU_AMTX
+			        FROM PD_SUJUMD A 
+			        LEFT JOIN PD_ITEMXD B  ON A.ITEM_CODE = B.ITEM_CODE
+			        WHERE 1=1
+			        AND  NVL(B.DOME_YN,'N') = 'N'
+			        GROUP BY A.PREE_CODE )G ON A.PREE_CODE = G.PREE_CODE
+			     LEFT JOIN (
+			         SELECT 
+			            B.CUST_CODE
+			            , SUM(A.DEND_AMTX)
+			            , ROW_NUMBER() OVER (ORDER BY  SUM(A.DEND_AMTX) DESC) AS ROW_NUM
+			            FROM PD_SUJUMH A 
+			            LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB  = B.JOBN_NUMB
+			            LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+			            WHERE 1=1
+			            ]]>
+					     <include refid="search" />	
+						<![CDATA[
+			            GROUP BY B.CUST_CODE
+			     )H ON B.CUST_CODE = H.CUST_CODE
+			    WHERE 1=1
+			    ]]>
+			     <include refid="search" />	
+				<![CDATA[
+			    GROUP BY SUBSTR(B.DEND_DATE,0,6),F.AGCY_YSNO,B.MEDA_CODE ,E.SORT_ORDR
+			    ,B.CUST_CODE, D.CUST_NAME, E.COMD_CDNM, H.ROW_NUM
+			)A
+			GROUP BY MEDA_NAME,CUST_CODE,CUST_NAME, MEDA_CODE,SORT_ORDR, ROW_NUM
+			ORDER BY ROW_NUM ASC ,SORT_ORDR,MEDA_CODE, CNT DESC
+			]]>
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표(실적집계) - 유비리포트 년월
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0040.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+						SELECT
+						#YEAR_MONT1# YEAR_MONT1
+						,#YEAR_MONT2# YEAR_MONT2
+						FROM DUAL
+			]]>
+	</select>	
+	
+</sqlMap>
+

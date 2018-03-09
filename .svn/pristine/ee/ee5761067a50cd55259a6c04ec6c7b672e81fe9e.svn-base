@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PRPA0090">
+
+<!--  
+/***********************************************************************************
+ *   프로그램명 : 제작결산관리 실적집계표(외주처별 개인별 상세)
+ *   작 성 일 : 2016.10.31
+ *   작 성 자 : 오세훈
+ *   비   고 :
+ *   Copyright (c) 2016 JNF Communication Co.,Ltd All Rights reserved.
+ /*********************************************************************************** 
+ -->
+
+	<!-- 검색 조건 -->
+	<sql id="search">
+	    <isNotEmpty prepend="AND" property="YEAR_MONT1" >
+			 SUBSTR(B.DEND_DATE,0,6) BETWEEN #YEAR_MONT1# AND '999999'
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="YEAR_MONT2" >
+			SUBSTR(B.DEND_DATE,0,6) BETWEEN '000000' AND #YEAR_MONT2#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CITY_GUBN" >
+			C.CITY_CODE = #CITY_GUBN#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CUST_CODE" >
+			A.OUTS_CODE = #CUST_CODE#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="CUST_NAME" >
+			C.CUST_NAME LIKE '%' || #CUST_NAME# || '%'
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="JOBN_NAME" >
+			B.JOBN_NAME LIKE '%' || #JOBN_NAME# || '%'
+		</isNotEmpty>
+		
+	</sql>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 오세훈
+     작  성  일 : 2016.10.31
+     내      용 : 제작 결산관리 실적집계표(외주처별 개인별 상세)
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0090.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+			    
+			    SELECT
+				OUTS_CODE
+				,OUTS_NAME
+				,CUST_CODE
+				,CUST_NAME
+				,JOBN_NUMB
+				,JOBN_NAME
+				,NVL(SUJU_AMTX,0) AS SUJU_AMTX
+				,NVL(SUJU_VATX,0) AS SUJU_VATX
+				,NVL(SUMX_AMTX,0) AS SUMX_AMTX
+				,CITY_CODE
+				,NVL(SOSO_AMTX,0) AS SOSO_AMTX
+				,NVL(JUMI_AMTX,0) AS JUMI_AMTX
+				,NVL(SUMX_AMTX2,0) AS SUMX_AMTX2
+				FROM 
+				(
+				    SELECT
+				    0 AS SORT_GUBN
+				    ,A.OUTS_CODE AS OUTS_CODE
+				    ,C.CUST_NAME AS OUTS_NAME
+				    ,B.CUST_CODE
+				    ,D.CUST_NAME
+				    ,B.JOBN_NUMB
+				    ,B.JOBN_NAME
+				    ,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+				    ,TRUNC(SUM(A.SUJU_AMTX) * 0.1) AS SUJU_VATX
+				    ,SUM(A.SUJU_AMTX)  + (SUM(A.SUJU_AMTX) * 0.1) AS SUMX_AMTX   
+				    ,C.CITY_CODE
+				    ,F.ROW_NUM
+				    , TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) AS SOSO_AMTX    /* 예수금(자유직업소득세) */
+					, TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1 AS JUMI_AMTX  /* 예수금(자유직업주민세) */
+					, SUM(A.SUJU_AMTX) - (TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) + TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1) AS SUMX_AMTX2
+				    FROM PD_SUJUMD A
+				    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				    LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				    LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				    LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				    LEFT JOIN  (
+				        SELECT 
+				        A.OUTS_CODE
+				        , SUM(A.SUJU_AMTX)
+				        , ROW_NUMBER() OVER (ORDER BY  SUM(A.SUJU_AMTX) DESC) AS ROW_NUM
+				        FROM PD_SUJUMD A 
+				        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				        LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				        LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				        LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				        WHERE 1=1
+				        ]]>
+						     <include refid="search" />	
+							<![CDATA[
+				        GROUP BY A.OUTS_CODE
+				    )F ON A.OUTS_CODE = F.OUTS_CODE
+				    WHERE 1=1
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+				    /* AND NVL(C.BIZR_NUMB,' ') != E.BSNS_NUMB */
+				    AND A.SUJU_AMTX <> 0
+				    GROUP BY A.OUTS_CODE,F.ROW_NUM
+				    ,C.CUST_NAME ,B.JOBN_NUMB,B.JOBN_NAME
+				    ,B.CUST_CODE,D.CUST_NAME,C.CITY_CODE
+				    UNION ALL
+				    SELECT
+				    1 AS SORT_GUBN
+				    ,A.OUTS_CODE AS OUTS_CODE
+				    ,C.CUST_NAME AS OUTS_NAME
+				    ,NULL AS CUST_CODE
+				    ,NULL AS CUST_NAME
+				    ,NULL AS JOBN_NUMB
+				    ,TO_CHAR('소계') AS JOBN_NAME
+				    ,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+				    ,TRUNC(SUM(A.SUJU_AMTX) * 0.1) AS SUJU_VATX
+				    ,SUM(A.SUJU_AMTX)  + (SUM(A.SUJU_AMTX) * 0.1) AS SUMX_AMTX   
+				    ,C.CITY_CODE AS CITY_CODE
+				    ,F.ROW_NUM
+				    , TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) AS SOSO_AMTX    /* 예수금(자유직업소득세) */
+					, TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1 AS JUMI_AMTX  /* 예수금(자유직업주민세) */
+					, SUM(A.SUJU_AMTX) - (TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) + TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1) AS SUMX_AMTX2
+				    FROM PD_SUJUMD A 
+				    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				    LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				    LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				    LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				    LEFT JOIN  (
+				        SELECT 
+				        A.OUTS_CODE
+				        , SUM(A.SUJU_AMTX)
+				        , ROW_NUMBER() OVER (ORDER BY  SUM(A.SUJU_AMTX) DESC) AS ROW_NUM
+				        FROM PD_SUJUMD A 
+				        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				        LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				        LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				        LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				        WHERE 1=1
+				        ]]>
+					     <include refid="search" />	
+						<![CDATA[
+				        GROUP BY A.OUTS_CODE
+				    )F ON A.OUTS_CODE = F.OUTS_CODE
+				    WHERE 1=1
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+				    /* AND NVL(C.BIZR_NUMB,' ') != E.BSNS_NUMB */
+				    AND A.SUJU_AMTX <> 0
+				    GROUP BY A.OUTS_CODE,C.CUST_NAME,C.CITY_CODE,F.ROW_NUM
+				    ORDER BY CITY_CODE,ROW_NUM,SORT_GUBN ASC, SUJU_AMTX DESC
+				)A 
+				WHERE 1=1
+				UNION ALL
+				SELECT
+				NULL AS OUTS_CODE
+				,TO_NCHAR('합계')  AS OUTS_NAME
+				,NULL AS CUST_CODE
+				,NULL AS CUST_NAME
+				,NULL AS JOBN_NUMB
+				,NULL AS JOBN_NAME
+				,SUM(Z.SUJU_AMTX) AS SUJU_AMTX
+				,SUM(Z.SUJU_VATX) AS SUJU_VATX
+				,SUM(Z.SUJU_AMTX) + SUM(Z.SUJU_VATX) AS SUMX_AMTX
+			    ,NULL CITY_CODE
+				,SUM(Z.SOSO_AMTX) AS SOSO_AMTX
+				,SUM(Z.JUMI_AMTX) AS JUMI_AMTX
+				,SUM(Z.SUJU_AMTX) - ( SUM(Z.SOSO_AMTX)+SUM(Z.JUMI_AMTX) ) AS SUMX_AMTX2 
+				FROM
+				(
+				SELECT
+				A.OUTS_CODE AS OUTS_CODE
+				,A.SUJU_AMTX AS SUJU_AMTX
+				,TRUNC(A.SUJU_AMTX * 0.1) AS SUJU_VATX
+				, TRUNC(NVL(A.SUJU_AMTX,0) * 0.03,-1) AS SOSO_AMTX    /* 예수금(자유직업소득세) */
+				, TRUNC(NVL(A.SUJU_AMTX,0) * 0.03,-1)* 0.1 AS JUMI_AMTX  /* 예수금(자유직업주민세) */
+				FROM PD_SUJUMD A 
+				LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+				LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+				LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+				LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+				WHERE 1=1
+				    ]]>
+				     <include refid="search" />	
+					<![CDATA[
+				/* AND NVL(C.BIZR_NUMB,' ') != E.BSNS_NUMB	*/
+				AND A.SUJU_AMTX <> 0
+				) Z
+				GROUP BY ROLLUP (Z.OUTS_CODE)  HAVING  GROUPING_ID (Z.OUTS_CODE) = 1  
+			]]>
+
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표(외주처별 개인별 상세) 유비리포트
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0090.PRINT00" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+			    
+						SELECT
+						 #CITY_GUBN#  CITY_GUBN
+						,#YEAR_MONT1# YEAR_MONT1
+						,#YEAR_MONT2# YEAR_MONT2
+						,CITY_CODE
+						,OUTS_CODE
+						,OUTS_NAME
+						,CUST_CODE
+						,CUST_NAME
+						,JOBN_NUMB
+						,JOBN_NAME
+						,NVL(SUJU_AMTX,0) AS SUJU_AMTX
+						,NVL(SUJU_VATX,0) AS SUJU_VATX
+						,NVL(SUMX_AMTX,0) AS SUMX_AMTX
+						,NVL(SOSO_AMTX,0) AS SOSO_AMTX
+						,NVL(JUMI_AMTX,0) AS JUMI_AMTX
+						,NVL(SUMX_AMTX2,0) AS SUMX_AMTX2
+						FROM 
+						(
+						    SELECT
+						    0 AS SORT_GUBN
+						    ,A.OUTS_CODE AS OUTS_CODE
+						    ,C.CUST_NAME AS OUTS_NAME
+						    ,B.CUST_CODE
+						    ,D.CUST_NAME
+						    ,B.JOBN_NUMB
+						    ,B.JOBN_NAME
+						    ,SUM(A.SUJU_AMTX) AS SUJU_AMTX
+						    ,TRUNC(SUM(A.SUJU_AMTX) * 0.1) AS SUJU_VATX
+						    ,SUM(A.SUJU_AMTX)  + (SUM(A.SUJU_AMTX) * 0.1) AS SUMX_AMTX   
+						    ,C.CITY_CODE
+						    ,F.ROW_NUM
+						    , TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) AS SOSO_AMTX    /* 예수금(자유직업소득세) */
+							, TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1 AS JUMI_AMTX  /* 예수금(자유직업주민세) */
+							, SUM(A.SUJU_AMTX) - (TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1) + TRUNC(NVL(SUM(A.SUJU_AMTX),0) * 0.03,-1)* 0.1) AS SUMX_AMTX2
+						    FROM PD_SUJUMD A
+						    LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+						    LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+						    LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+						    LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+						    LEFT JOIN  (
+						        SELECT 
+						        A.OUTS_CODE
+						        , SUM(A.SUJU_AMTX)
+						        , ROW_NUMBER() OVER (ORDER BY  SUM(A.SUJU_AMTX) DESC) AS ROW_NUM
+						        FROM PD_SUJUMD A 
+						        LEFT JOIN PD_JOBNXM B ON A.JOBN_NUMB = B.JOBN_NUMB
+						        LEFT JOIN TA_CUSTXM C ON A.OUTS_CODE = C.CUST_CODE
+						        LEFT JOIN TA_CUSTXM D ON B.CUST_CODE = D.CUST_CODE
+						        LEFT JOIN TM_OFFICE E ON E.ACCT_GUBN = '100' AND E.OFFI_GUBN ='1'
+						        WHERE 1=1
+						        ]]>
+								     <include refid="search" />	
+									<![CDATA[
+						        GROUP BY A.OUTS_CODE
+						    )F ON A.OUTS_CODE = F.OUTS_CODE
+						    WHERE 1=1
+						    ]]>
+						     <include refid="search" />	
+							<![CDATA[
+						    /* AND NVL(C.BIZR_NUMB,' ') != E.BSNS_NUMB */
+						    AND A.SUJU_AMTX <> 0
+						    GROUP BY A.OUTS_CODE,F.ROW_NUM
+						    ,C.CUST_NAME ,B.JOBN_NUMB,B.JOBN_NAME
+						    ,B.CUST_CODE,D.CUST_NAME,C.CITY_CODE
+						    ORDER BY CITY_CODE,ROW_NUM,SORT_GUBN ASC, SUJU_AMTX DESC
+						)A 
+						WHERE 1=1  
+			]]>
+	</select>
+	
+	<!-- 
+	/***********************************************************************************
+     작  성  자 : 최제현
+     작  성  일 : 2017.01.23
+     내      용 : 제작 결산관리 실적집계표 - 유비리포트 년월
+     파라미터   :
+   /***********************************************************************************
+     -->
+	<select id="PRPA0090.PRINT01" parameterClass="hashmap" resultClass="hashmap">
+	        <![CDATA[ 
+						SELECT
+						#YEAR_MONT1# YEAR_MONT1
+						,#YEAR_MONT2# YEAR_MONT2
+						FROM DUAL
+			]]>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EDMB0050">
+<!--
+/*******************************************************************************
+     작  성  자 : 김혜림
+     작  성  일 : 2016.09.12
+     내      용 : 교육이수결과관리 데이터 조회
+********************************************************************************/
+-->
+	<select id="EDMB0050.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		     SELECT /* EDMB0050.SEARCH00  교육이수결과조회 */
+                   A.EMPL_NUMB              /* 사원번호  */
+                 , C.EMPL_NAME              /* 사원명 */
+                 , A.EDRT_SEQN              /* 교육결과일련번호 */
+                 , A.EDUC_BEDE              /* 교육시작일 */
+                 , A.EDUC_ENDD              /* 교육종료일 */
+                 , A.EDSB_NAME              /* 교육명 */
+                 , A.EDCY_CODE              /* 교육분류코드 */
+                 , A.EDCD_CODE              /* 교육구분코드 */
+                 , A.EDUC_INNM              /* 교육기관 */
+                 , A.EDUP_CODE              /* 교육기간 */
+                 , A.EDUC_COST              /* 교육금액 */
+                 , A.EDUC_PROD              /* 교육기간단위  */
+                 , A.EDEV_CODE              /* 교육평가코드 */
+                 , A.EDEV_YSNO              /* 평가여부 */
+                 , A.ACQS_CRDT              /* 이수학점 */
+                 , A.RFND_YSNO              /* 환급여부 */
+                 , A.REMK_200X              /* 비고 */
+                 , B.EDC1_CODE              /* 교육대분류 */
+                 , B.EDC2_CODE              /* 교육중분류 */
+                 , B.EDC3_CODE              /* 교육소분류 */
+                 , C.OPOS_CODE              /* 직위코드 */
+                 , SF_GET_COMMNAME('OPOS_CODE',C.OPOS_CODE) AS OPOS_NAME  /* 직위명 */
+                 , D.DEPT_CODE                                            /* 부서코드 */
+                 , D.DEPT_NAME                                            /* 부서명 */
+                 , C.DUTY_CODE                                            /* 직무코드 */
+                 , SF_GET_COMMNAME('DUTY_CODE', C.DUTY_CODE) AS DUTY_NAME /* 직무명 */
+              FROM ED_EDRSLT A 
+                 LEFT OUTER JOIN ED_CFCTXM B ON A.EDCY_CODE = B.EDCY_CODE   /*교육분류 JOIN*/
+                 LEFT OUTER JOIN HR_MASTXM C ON A.EMPL_NUMB = C.EMPL_NUMB   /*인사기본 JOIN*/
+                 LEFT OUTER JOIN VI_DEPTXM D ON C.DEPT_CODE = D.DEPT_CODE   /*부서       JOIN*/ 
+             WHERE 1=1 
+   ]]>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+		 D.DEPT_CODE = #DEPT_CODE#    /*부서코드*/
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="DUTY_CODE">
+		 C.DUTY_CODE = #DUTY_CODE#    /*직종코드*/
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+		 A.EMPL_NUMB = #EMPL_NUMB#    /*사원번호*/
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EDC1_CODE">
+		 B.EDC1_CODE = #EDC1_CODE#    /*대분류*/
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EDC2_CODE">
+		 B.EDC2_CODE = #EDC2_CODE#    /*중분류*/ 
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EDC3_CODE">
+		 B.EDC3_CODE = #EDC3_CODE#    /*소분류*/ 
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EDEV_YSNO">
+		 A.EDEV_YSNO = #EDEV_YSNO#      /*평가여부*/
+	</isNotEmpty> 
+	<isNotEmpty prepend="AND" property="EDUC_BEDE">
+		(EDUC_BEDE BETWEEN #EDUC_BEDE# AND #EDUC_ENDD#     /*교육기간*/
+         OR EDUC_ENDD BETWEEN #EDUC_BEDE# AND #EDUC_ENDD#)
+	</isNotEmpty> 
+ 
+	<![CDATA[ 
+		ORDER BY EDUC_BEDE
+	]]>
+	</select>
+	
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 김혜림
+     작  성  일 : 2016.09.12
+     내      용  : 교육이수결과 저장 
+********************************************************************************/
+-->
+	<insert id="EDMB0050.SAVE00" parameterClass="hashmap">
+	<selectKey keyProperty="EDRT_SEQN" resultClass="String">
+		<![CDATA[
+		  SELECT NVL(MAX(EDRT_SEQN),0) + 1  /*교육이수결과 seq*/
+	      FROM ED_EDRSLT
+	      WHERE EMPL_NUMB = #EMPL_NUMB#
+		]]>
+	</selectKey>
+	
+	<![CDATA[
+
+		INSERT INTO ED_EDRSLT (  /* EDMB0050.SAVE00 교육이수결과관리 insert*/
+                EMPL_NUMB        /* 사원번호 */
+               ,EDRT_SEQN        /* 교육결과일련번호 */
+               ,EDUC_BEDE        /* 교육시작일 */
+               ,EDUC_ENDD        /* 교육종료일 */
+               ,EDSB_NAME        /* 교육명 */
+               ,EDCY_CODE        /* 교육분류코드 */
+               ,EDCD_CODE        /* 교육구분코드 */
+               ,EDUC_INNM        /* 교육기관 */
+               ,EDUP_CODE        /* 교육기간 */
+               ,EDUC_PROD        /* 교육기간단위 */
+               ,EDUC_COST        /* 교육금액 */
+               ,EDEV_CODE        /* 교육평가코드 */
+               ,EDEV_YSNO        /* 평가여부 */
+               ,ACQS_CRDT        /* 이수학점 */
+               ,RFND_YSNO        /* 환급여부 */
+               ,INST_USID        /* 입력작업자 */
+               ,INST_DATE        /* 입력일시 */
+               ,UPDT_USID        /* 수정작업자 */
+               ,UPDT_DATE        /* 수정일시 */
+               ,REMK_200X        /* 비고 */
+              )
+       VALUES (
+               #EMPL_NUMB#       /* 사원번호 */
+              ,#EDRT_SEQN#       /* 교육결과일련번호 */
+              ,#EDUC_BEDE#       /* 교육시작일 */
+              ,#EDUC_ENDD#       /* 교육종료일 */
+              ,#EDSB_NAME#       /* 교육명 */
+              ,#EDCY_CODE#       /* 교육분류코드 */
+              ,#EDCD_CODE#       /* 교육구분코드 */
+              ,#EDUC_INNM#       /* 교육기관 */
+              ,#EDUP_CODE#       /* 교육기간단위 */
+              ,#EDUC_PROD#       /* 교육기간 */
+              ,#EDUC_COST#       /* 교육금액 */
+              ,#EDEV_CODE#       /* 교육평가코드 */
+              ,#EDEV_YSNO#       /* 평가여부 */
+              ,#ACQS_CRDT#       /* 이수학점 */
+              ,#RFND_YSNO#       /* 환급여부 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE           /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자 */
+              ,SYSDATE           /* 수정일시 */             
+              ,#REMK_200X#       /* 비고 */
+              )
+	
+		]]>
+	</insert>
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 김혜림
+     작  성  일 : 2016.09.12
+     내      용  : 대분류 수정 
+********************************************************************************/
+-->		
+	<update id="EDMB0050.UPDATE00" parameterClass="hashmap" >
+	<![CDATA[
+		   UPDATE ED_EDRSLT    /* EDMB0050.UPDATE00 교육이수결과관리 update*/
+           SET EDUC_BEDE = #EDUC_BEDE#  /* 교육시작일 */
+             , EDUC_ENDD = #EDUC_ENDD#  /* 교육종료일 */
+             , EDSB_NAME = #EDSB_NAME#  /* 교육명 */
+             , EDCY_CODE = #EDCY_CODE#  /* 교육분류코드 */
+             , EDCD_CODE = #EDCD_CODE#  /* 교육구분코드 */
+             , EDUC_INNM = #EDUC_INNM#  /* 교육기관 */
+             , EDUP_CODE = #EDUP_CODE#  /* 교육기간단위 */
+             , EDUC_COST = #EDUC_COST#  /* 교육금액 */
+             , EDUC_PROD = #EDUC_PROD#  /* 교육기간 */
+             , EDEV_CODE = #EDEV_CODE#  /* 교육평가코드 */
+             , EDEV_YSNO = #EDEV_YSNO#  /* 평가여부 */
+             , ACQS_CRDT = #ACQS_CRDT#  /* 이수학점 */
+             , RFND_YSNO = #RFND_YSNO#  /* 환급여부 */
+             , UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+             , UPDT_DATE = SYSDATE      /* 수정일시 */
+             , REMK_200X = #REMK_200X#  /* 비고 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#  /* 사원번호 */
+           AND EDRT_SEQN = #EDRT_SEQN#  /* 교육결과일련번호 */
+	]]>
+	</update>
+	
+	
+<!--
+/*******************************************************************************
+     작  성  자 : 김혜림
+     작  성  일 : 2016.09.05
+     내      용 : 교육분류삭제
+********************************************************************************/
+-->
+	<delete id="EDMB0050.DELETE00" parameterClass="hashmap" >
+	<![CDATA[
+	     DELETE FROM ED_EDRSLT           /* EDMB0050.DELETE00 교육이수결과관리 삭제*/
+         WHERE EMPL_NUMB = #EMPL_NUMB#   /* 사원번호 */
+         AND EDRT_SEQN = #EDRT_SEQN#     /* 교육결과일련번호 */
+
+	]]>
+	</delete>
+
+
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 김혜림
+     작  성  일 : 2016. 09. 20
+     내      용 : 사원별교육현황  엑셀 업로드 처리
+********************************************************************************/
+ -->
+ 
+  <insert id="EDMB0050.SAVE01" parameterClass="hashmap">
+    <![CDATA[
+     DECLARE /*EDMB0050.SAVE01.교육이수결과관리  엑셀 업로드 처리 */
+        iCHK1 DECIMAL(15,0);  /*상태 체크*/
+		iCHK2 DECIMAL(15,0);  /*상태 체크*/
+		iCHK3 DECIMAL(15,0);  /*상태 체크*/
+		iCHK4 DECIMAL(15,0);  /*상태 체크*/
+		iCHK5 DECIMAL(15,0);  /*상태 체크*/
+		
+	BEGIN	
+     /*정상적으로 등록된 사원번호인지 판단*/
+	 BEGIN	
+        SELECT COUNT(EMPL_NUMB) INTO iCHK1
+        FROM HR_MASTXM
+        WHERE EMPL_NUMB = #EMPL_NUMB#;
+	 END;
+	 
+     IF iCHK1 < 1 THEN
+        RAISE_APPLICATION_ERROR(-20000, #EMPL_NUMB# || ':' || #EMPL_NUMB# || '(은/는) 등록되지 않은 사원입니다!');
+     END IF;
+           
+    /*SEQ 채번*/
+    BEGIN
+	    SELECT NVL(MAX(EDRT_SEQN),0) + 1 
+	    INTO sEDRT_SEQN
+	    FROM ED_EDRSLT
+	    WHERE EMPL_NUMB = #EMPL_NUMB#;
+	END;        
+	
+	BEGIN        
+		INSERT INTO ED_EDRSLT (  /* EDMB0050.SAVE00 교육이수결과관리 insert*/
+                EMPL_NUMB        /* 사원번호 */
+               ,EDRT_SEQN        /* 교육결과일련번호 */
+               ,EDUC_BEDE        /* 교육시작일 */
+               ,EDUC_ENDD        /* 교육종료일 */
+               ,EDSB_NAME        /* 교육명 */
+               ,EDCY_CODE        /* 교육분류코드 */
+               ,EDCD_CODE        /* 교육구분코드 */
+               ,EDUC_INNM        /* 교육기관 */
+               ,EDUP_CODE        /* 교육기간단위*/
+               ,EDUC_PROD        /* 교육기간 */
+               ,EDUC_COST        /* 교육금액 */
+               ,EDEV_CODE        /* 교육평가코드 */
+               ,EDEV_YSNO        /* 평가여부 */
+               ,ACQS_CRDT        /* 이수학점 */
+               ,RFND_YSNO        /* 환급여부 */
+               ,INST_USID        /* 입력작업자 */
+               ,INST_DATE        /* 입력일시 */
+               ,UPDT_USID        /* 수정작업자*/
+               ,UPDT_DATE        /* 수정일시*/
+               ,REMK_200X        /* 비고 */
+              )
+       VALUES ( 
+               #EMPL_NUMB#       /* 사원번호 */
+              ,sEDRT_SEQN        /* 교육결과일련번호 */
+              ,#EDUC_BEDE#       /* 교육시작일 */
+              ,#EDUC_ENDD#       /* 교육종료일 */
+              ,#EDSB_NAME#       /* 교육명 */
+              ,#EDCY_CODE#       /* 교육분류코드 */
+              ,#EDCD_CODE#       /* 교육구분코드 */
+              ,#EDUC_INNM#       /* 교육기관 */
+              ,#EDUP_CODE#       /* 교육기간단위 */
+              ,#EDUC_PROD#       /* 교육기간 */
+              ,#EDUC_COST#       /* 교육금액 */
+              ,#EDEV_CODE#       /* 교육평가코드 */
+              ,#EDEV_YSNO#       /* 평가여부 */
+              ,#ACQS_CRDT#       /* 이수학점 */
+              ,#RFND_YSNO#       /* 환급여부 */
+              ,#UPDT_USID#       /* 입력작업자 */
+              ,SYSDATE           /* 입력일시 */
+              ,#UPDT_USID#       /* 수정작업자*/
+              ,SYSDATE           /* 수정일시*/
+              ,''       		 /* 비고 */
+        	 );
+      END;     
+     END; 
+    ]]>
+    </insert>
+  
+</sqlMap>

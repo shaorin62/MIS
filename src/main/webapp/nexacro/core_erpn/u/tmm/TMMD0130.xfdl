@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="../../default_typedef.xml"/>
+  <Form id="TMMD0130" onkeydown="fn_HotKey" onload="fn_FormLoadSetting" onclose="fn_FormUnloadProcess" titletext="메타용어오류검증" position="absolute" scrollbars="none" left="0" width="1187" top="0" height="717">
+    <Layouts>
+      <Layout>
+        <Static id="spSearchBox0" position="absolute" left="8" top="60" height="43" cssclass="styFormSearchBox" right="25" taborder="11"/>
+        <Static id="imgSearchOption" text="Option" left="28" width="60" top="71" height="21" cssclass="styFormSearchCapBe" taborder="12"/>
+        <Static id="stInformation" text="&lt;b v='true'&gt;00&lt;/b&gt; 건이 조회 되었습니다." position="absolute" left="8" width="280" top="107" height="21" cssclass="styFormSearchInfo" taborder="13" usedecorate="true"/>
+        <Grid autoenter="TRUE" binddataset="dsErrorMeta" cellsizingtype="row" enable="true" id="grdTM_METAXM" useinputpanel="false" selecttype="row" taborder="1" tabstop="true" autosizingtype="none" usecontextmenu="true" useselcolor="false" visible="true" wheelscrollrow="1" position="absolute" left="8" top="128" cssclass="styGrid01" right="25" bottom="95" autofittype="col">
+          <Formats>
+            <Format id="Default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="160"/>
+                <Column size="70"/>
+                <Column size="40"/>
+                <Column size="40"/>
+                <Column size="80"/>
+                <Column size="150"/>
+                <Column size="80"/>
+                <Column size="160"/>
+                <Column size="70"/>
+                <Column size="40"/>
+                <Column size="40"/>
+              </Columns>
+              <Rows>
+                <Row size="26" band="head"/>
+                <Row size="26" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell colspan="5" displaytype="text" text="Meta 표준용어"/>
+                <Cell col="5" colspan="7" displaytype="text" text="Table 정의 용어"/>
+                <Cell row="1" displaytype="text" text="물리명"/>
+                <Cell row="1" col="1" displaytype="text" text="논리명"/>
+                <Cell row="1" col="2" displaytype="text" text="TYPE"/>
+                <Cell row="1" col="3" displaytype="text" text="Len1"/>
+                <Cell row="1" col="4" displaytype="text" text="Len2"/>
+                <Cell row="1" col="5" displaytype="text" text="테이블명"/>
+                <Cell row="1" col="6" displaytype="text" text="논리 테이블명"/>
+                <Cell row="1" col="7" displaytype="text" text="물리명"/>
+                <Cell row="1" col="8" displaytype="text" text="논리명"/>
+                <Cell row="1" col="9" displaytype="text" text="TYPE"/>
+                <Cell row="1" col="10" displaytype="text" text="Len1"/>
+                <Cell row="1" col="11" displaytype="text" text="Len2"/>
+              </Band>
+              <Band id="body">
+                <Cell displaytype="normal" style="align:center;" text="bind:COLM_NAME"/>
+                <Cell col="1" displaytype="normal" style="align:left;" text="bind:ATTR_NAME"/>
+                <Cell col="2" displaytype="normal" style="align:left middle;" text="bind:REF1_FILD"/>
+                <Cell col="3" displaytype="number" style="align:right;" text="bind:DOMN_LEN1"/>
+                <Cell col="4" displaytype="number" style="align:right;" text="bind:DOMN_LEN2"/>
+                <Cell col="5" displaytype="normal" style="align:center;" text="bind:TABLE_NAME"/>
+                <Cell col="6" displaytype="text" style="align:left;" text="bind:TABLE_COMMENTS"/>
+                <Cell col="7" displaytype="normal" style="align:center;" text="bind:COLUMN_NAME"/>
+                <Cell col="8" displaytype="normal" style="align:left;" text="bind:COMMENTS"/>
+                <Cell col="9" displaytype="normal" style="align:left;" text="bind:DATA_TYPE"/>
+                <Cell col="10" displaytype="number" style="align:right;" text="bind:DATA_LENGTH1"/>
+                <Cell col="11" displaytype="number" style="align:right;" text="bind:DATA_LENGTH2"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <CheckBox falsevalue="0" id="chkSHRREMK_100X" onclick="fn_CheckBoxChange" taborder="0" text="REMK_100X 포함여부" value="true" left="81" width="152" top="71" height="21" cssclass="styFormSearchChk" style="buttonalign:right;"/>
+        <Static id="Shape3" position="absolute" left="8" height="65" cssclass="styFormItemBoxOut" right="25" bottom="15" taborder="17"/>
+        <Edit autoselect="true" binddataset="dsErrorMeta" lengthunit="ascii" id="edtCOLUMN_NAME" imemode="english" maxlength="15" readonly="true" taborder="4" position="absolute" left="96" width="171" height="21" cssclass="styFormSearchItem" bottom="24"/>
+        <Edit autoselect="true" binddataset="dsErrorMeta" lengthunit="ascii" id="edtCOMMENTS" imemode="native" maxlength="100" readonly="true" taborder="5" position="absolute" left="394" width="259" height="21" cssclass="styFormSearchItem" bottom="24"/>
+        <MaskEdit autoselect="true" binddataset="dsErrorMeta" id="mskDATA_LENGTH1" readonly="true" taborder="29" position="absolute" left="734" width="120" height="21" bottom="24"/>
+        <MaskEdit autoselect="true" binddataset="dsErrorMeta" id="msdDATA_LENGTH2" readonly="true" taborder="7" position="absolute" left="937" height="21" bottom="24" width="120"/>
+        <Edit autoselect="true" binddataset="dsErrorMeta" lengthunit="ascii" id="edtTABLE_COMMENTS" imemode="native" maxlength="100" readonly="true" taborder="3" position="absolute" left="394" height="21" cssclass="styFormSearchItem" right="130" bottom="50"/>
+        <Edit autoselect="true" binddataset="dsErrorMeta" lengthunit="ascii" id="edtTABLE_NAME" imemode="english" maxlength="15" readonly="true" taborder="28" position="absolute" left="96" width="171" height="21" cssclass="styFormSearchItem" bottom="50"/>
+        <Static id="stREF5_FILD" text="Len 1" position="absolute" left="682" width="96" height="21" cssclass="styFormItemCapBE" bottom="24" taborder="22"/>
+        <Static id="stREF6_FILD" text="Len 2" left="883" width="101" height="21" cssclass="styFormItemCapBE" bottom="24" taborder="23"/>
+        <Static id="Static0" text="물리명" position="absolute" left="28" width="96" height="21" cssclass="styFormItemCapBE" bottom="24" taborder="25"/>
+        <Static id="Static3" text="논리명" position="absolute" left="295" width="96" height="21" cssclass="styFormItemCapBE" bottom="24" taborder="14"/>
+        <Static id="Static10" text="테이블명" position="absolute" left="28" width="96" height="21" cssclass="styFormItemCapBE" bottom="50" taborder="20"/>
+        <Static id="Static11" text="논리 테이블명" position="absolute" left="295" width="96" height="21" cssclass="styFormItemCapBE" bottom="50" taborder="21"/>
+        <Static id="st_FormTitle" taborder="30" text="메타용어오류검증" cssclass="styFormTitle" left="8" top="0" width="576" height="29"/>
+        <Static id="st_FormLocation" taborder="31" text="홈 &gt; 공통관리 &gt; 시스템관리" cssclass="styFormLocation" top="0" right="25" width="640" height="29"/>
+        <Div id="div_ButtonList" taborder="32" tabstop="false" url="common::comButtonType01.xfdl" top="33" right="25" width="510" height="23" scrollbars="none" cssclass="styFormButtonList"/>
+        <Button id="btn_favorite" taborder="33" onclick="btn_favorite_onclick" cssclass="btn_WF_Bookmark" left="8" top="0" width="18" height="29"/>
+        <Static id="Static04" taborder="34" text="h 10" visible="false" left="898" top="23" width="264" height="10" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="35" text="h 60" visible="false" left="538" top="0" width="32" height="60" style="background:#fb7b7b7a;"/>
+        <Static id="Static07" taborder="36" text="h 4" visible="false" left="637" top="56" width="128" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static02" taborder="37" text="w&#13;&#10;8" cssclass="sta_GID_box" visible="false" left="0" top="0" width="8" height="717"/>
+        <Static id="Static00" taborder="38" text="h 25" visible="false" left="573" top="103" width="80" height="25" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="39" text="w&#13;&#10;25" cssclass="sta_GID_box" visible="false" top="0" right="0" width="25" height="717"/>
+        <Static id="Static01" taborder="40" text="h 15" visible="false" left="14" right="31" bottom="0" height="15" style="background:#fb7b7b7a;"/>
+        <Static id="Static34" taborder="41" text="w30" visible="false" left="9" top="61" width="30" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static36" taborder="42" visible="false" left="80" top="61" width="8" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static37" taborder="43" text="w 40" visible="false" left="233" top="61" width="40" height="41" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="44" text="w30" visible="false" left="9" top="649" width="30" height="21" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsErrorMeta">
+        <ColumnInfo>
+          <Column id="TABLE_NAME" size="30" prop="default" type="STRING"/>
+          <Column id="TABLE_COMMENTS" size="256" prop="default" type="STRING"/>
+          <Column id="COLUMN_NAME" size="30" prop="default" type="STRING"/>
+          <Column id="COMMENTS" size="4000" prop="default" type="STRING"/>
+          <Column id="DATA_TYPE" size="106" prop="default" type="STRING"/>
+          <Column id="DATA_LENGTH1" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DATA_LENGTH2" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="COLM_NAME" size="50" prop="default" type="STRING"/>
+          <Column id="ATTR_NAME" size="50" prop="default" type="STRING"/>
+          <Column id="REF1_FILD" size="100" prop="default" type="STRING"/>
+          <Column id="DOMN_LEN1" size="22" prop="default" type="BIGDECIMAL"/>
+          <Column id="DOMN_LEN2" size="22" prop="default" type="BIGDECIMAL"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="edtTABLE_COMMENTS_value" compid="edtTABLE_COMMENTS" propid="value" datasetid="dsErrorMeta" columnid="TABLE_COMMENTS"/>
+      <BindItem id="edtTABLE_NAME_value" compid="edtTABLE_NAME" propid="value" datasetid="dsErrorMeta" columnid="TABLE_NAME"/>
+      <BindItem id="edtCOLUMN_NAME_value" compid="edtCOLUMN_NAME" propid="value" datasetid="dsErrorMeta" columnid="COLUMN_NAME"/>
+      <BindItem id="edtCOMMENTS_value" compid="edtCOMMENTS" propid="value" datasetid="dsErrorMeta" columnid="COMMENTS"/>
+      <BindItem id="mskDATA_LENGTH1_value" compid="mskDATA_LENGTH1" propid="value" datasetid="dsErrorMeta" columnid="DATA_LENGTH1"/>
+      <BindItem id="msdDATA_LENGTH2_value" compid="msdDATA_LENGTH2" propid="value" datasetid="dsErrorMeta" columnid="DATA_LENGTH2"/>
+    </Bind>
+    <Script type="xscript5.0"><![CDATA[/***************************************************************************************************
+ * # Program: 	TMMD0130 메타용어 오류 검증
+ * 
+ * # Modification Information
+ * -------------------------------------------------------------------------------------------------
+ *   Date			Modifier	Comment
+ * -------------------------------------------------------------------------------------------------
+ *   2016.09.26		김준수		주석 수정.
+ *   
+ * -------------------------------------------------------------------------------------------------
+ * Copyright 1998-2016 By INBUS Co,Ltd. All rights reserved.
+ ****************************************************************************************************
+ *   Form Common Script
+ *      1) 공통 스크립트 위치 및 명칭은 수정 불가 입니다. 
+ *      2) 각 함수에서 필요한 부분의 소스를 수정 하세요.  
+ *      3) 해당 프로그램의 기능이 없는 경우 해당 함수의 이름만 놓고 공백 처리  
+ *
+ *  ★ 위 사항의 변경이 있거나 추가 사항이 있을 경우 반드시 개발 PL과 상의 후 수정 요망
+ *     현재 총 100 컬럼임 되도록 100 컬럼 안으로 코딩을 하세요                         
+ 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 1234567890
+ ********************************************************************************INBUS*CO*KR********/
+
+/************************
+ *  공통 Script Include  *
+ ************************/
+include "script::lib_script_common.xjs"
+
+/*********************
+ *  화면 변수 선언부  *
+ *********************/
+this.sBUTTONLIST = 'TTFFFFTF'; //버튼순서[종료,조회,입력,삭제,취소,저장,엑셀,인쇄]
+this.sPACKAGENAME = 'TMMD0130'; //해당 Form에서 사용 할 Package 명
+this.sSCRIPT = ''; //Script Source
+	
+if(this.getOwnerFrame()["sUSERAUTH"] == undefined)
+{
+	//Quick View 실행 시 설정
+	this.sUSERAUTH     = '';   //사용자별 프로그램 사용 권한
+	this.sFORMCAPTION  = '';   //Form의 Title 정보
+	this.sFORMLOCATION = '';   //Form의 Location 정보
+	this.sUSERLAVEL    = '';   //Form의 Location 정보
+}else{
+	this.sUSERAUTH     = this.getOwnerFrame()["sUSERAUTH"];
+	this.sFORMCAPTION  = this.getOwnerFrame()["sFORMCAPTION"];
+	this.sFORMLOCATION = this.getOwnerFrame()["sFORMLOCATION"];
+	this.sUSERLAVEL    = this.getOwnerFrame()["sUSERLAVEL"];
+}
+
+/**************************************************************************************************
+ *                                         공통 Event 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------+
+ |  01.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormLoadSetting = function (obj:Form, e:LoadEventInfo) {
+
+	this.fnc_FormLoadSetting(obj, this.sFORMCAPTION, this.sFORMLOCATION, this.sBUTTONLIST, this.sUSERAUTH);
+	this.fnc_GridSetting(this);
+}
+
+/*----------------------------------+
+ |  02.화면 종료(닫기) 버튼 클릭 時  |
+ ------------------------------------*/
+this.fn_End = function (obj) {
+
+	this.close();
+}
+
+/*-----------------------+
+ |  03.조회 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Search = function (obj) {
+
+	this.fnc_DatasetClear('dsErrorMeta');
+	var sMethodName = "SEARCH00";
+	var sInDataSet = "";
+	var sOutDataSet = "dsErrorMeta=dsErrorMeta";
+	var sArgument = this.fn_CreateArgument(sMethodName);
+
+	this.fnc_TransactionCall(this, this.sPACKAGENAME, sMethodName, sInDataSet, sOutDataSet, sArgument, "fn_CallBack");
+}
+
+/*-----------------------------+
+ |  04.입력(신규) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Input = function (obj) {
+	// 기능없음
+}
+
+/*-----------------------------+
+ |  05.삭제(제거) 버튼 클릭 時  |
+ +------------------------------*/
+this.fn_Delete = function (obj)
+{
+	// 기능없음
+}
+
+/*-----------------------+
+ |  06.취소 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Cancel = function (obj) {
+	// 기능없음
+}
+
+/*-----------------------+
+ |  07.저장 버튼 클릭 時  |
+ -------------------------*/
+this.fn_Save = function (obj) {
+	// 기능없음
+}
+
+/*-----------------------+
+ |  08.엑셀 버튼 클릭 時  |
+ -------------------------*/
+this.fn_ToExcel = function (obj) {
+
+	this.fnc_ToExcel(this.name);
+}
+
+/*-----------------------+
+ |  09.인쇄 버튼 클릭 時  |
+ +------------------------*/
+this.fn_Print = function (obj) {
+	// 기능 없음
+}
+
+/*-----------------------------------+
+ |  10.최초 화면 Load時 처리 할 사항  |
+ +------------------------------------*/
+this.fn_FormUnloadCheckProcess = function(obj:Form, e:nexacro.CloseEventInfo) {
+
+	if(e.fromobject instanceof Div) return;
+	var sMessage = this.fnc_FormUnloadCheck("", this);
+
+	if(!this.fnc_IsEmpty(sMessage)) return sMessage;
+
+}
+
+this.fn_FormUnloadProcess = function (obj:Form, e:CloseEventInfo) {
+
+	this.fnc_FormUnload(obj,e);
+}
+
+/*-----------------------------------+
+ |  11.단축키 처리(Form KeyDown)      |
+ +------------------------------------*/
+this.fn_HotKey = function (obj:Form, e:KeyEventInfo) {
+
+	this.fnc_HotKey(this, e.fromreferenceobject, e);
+}
+
+/*-----------------------------------+
+ |  12.Text Box가 Focus를 받을 때     |
+ +------------------------------------*/
+this.fn_EditFocus = function (obj) {
+
+	this.fnc_EditFocus(obj);
+}
+
+/**************************************************************************************************
+ *                                      공통 Function 처리 부분                                    *
+ ***************************************************************************************************/
+/*-----------------------------------------+
+ |  Service 호출 시 넘어 갈 Argument 생성!  |
+ +------------------------------------------*/
+this.fn_CreateArgument = function (sKind) {
+
+	var sReturnString;
+
+	// 조회 Argument 생성
+	if (sKind == 'SEARCH00') {
+	
+		sReturnString = " pgm=" + this.fnc_Quote(this.sPACKAGENAME);
+		sReturnString += " action=" + this.fnc_Quote(sKind);
+	
+	}
+
+	return sReturnString;
+}
+
+/*------------------------------------+
+ |  Transaction 후 처리 해야 할 내용!  |
+ +-------------------------------------*/
+this.fn_CallBack = function (sMethodName, ErrorCode, ErrorMSG) {
+
+	// Service에서 오류 발생 시 처리
+	if (ErrorCode < 0) {
+	
+		if (application.GBL_SESSONCHK == "E0001") {
+			// 비인가 접속이나 Session 단절시 처리
+			this.fnc_ErrorProcess(ErrorCode, ErrorMSG);
+		} else {
+			// Server에서 받은 Message 처리
+			this.fnc_Message("SERVERMSG", ErrorMSG);
+		}
+		
+	} else {
+		// 오류가 없이 정상 처리되었다면...
+		this.fn_PostProcess(sMethodName);
+	}
+}
+
+/*------------------------------------+
+ |  Transaction 후 Post Process!       |
+ +-------------------------------------*/
+this.fn_PostProcess = function (sMethodName) {
+
+	if (sMethodName == 'SEARCH00') {
+			
+		this.fnc_Information(this.stInformation, this.dsErrorMeta.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+		this.fnc_Message("TMM018", this.dsErrorMeta.getCaseCount("dataset.getRowLevel(currow)==0"));
+		this.fn_CheckBoxChange();
+		
+	}
+}
+
+/**************************************************************************************************
+ *                                  사용자 정의  Event 처리 부분                                   *
+ ***************************************************************************************************/
+
+/*---------------------+
+ |  CheckBox 선택 처리  |
+ +----------------------*/
+this.fn_CheckBoxChange = function (obj:CheckBox) {
+
+	if (this.chkSHRREMK_100X.value == "true" || this.chkSHRREMK_100X.value == "1") {
+		this.dsErrorMeta.filter("");
+	} else {
+		this.dsErrorMeta.filter("COLUMN_NAME !== 'REMK_100X'");
+	}
+
+	this.fnc_Information(this.stInformation, this.dsErrorMeta.getCaseCount("dataset.getRowLevel(currow)==0"), "SHR");
+
+}
+]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                      
+<sqlMap namespace="FAMA0020">
+<!-- 
+/*******************************************************************************
+	 작  성  자 : 황치웅
+	 작  성  일 : 2016.08.12
+	 내      용 : 코스트센터그룹관리 조회
+********************************************************************************/
+-->
+	<select id="FAMA0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[
+    		SELECT /* FAMA0020.SEARCH00.사용 조회 */
+	               A.CSTG_CODE     /* 코스트센터그룹코드 */
+	             , A.CSTG_NAME     /* 코스트센터그룹명 */
+	             , A.BGIN_DATE     /* 시작일 */
+	             , A.ENDX_DATE     /* 종료일 */
+	             , A.DESC_REMK     /* 설명비고 */
+	          FROM TA_CSTGXM A     /* [코스트센터그룹정보] */
+             WHERE 1=1
+		]]>
+            <isEqual prepend="AND" property="USEX_YSNO" compareValue="0"  >
+                <![CDATA[
+                   NOT EXISTS ( SELECT * FROM TA_CSTGXM WHERE #STDX_DATE# BETWEEN A.BGIN_DATE AND A.ENDX_DATE )
+                ]]>
+            </isEqual>
+            
+            <isEqual prepend="AND" property="USEX_YSNO" compareValue="1"  >
+                    #STDX_DATE# BETWEEN A.BGIN_DATE AND A.ENDX_DATE
+            </isEqual>
+            
+            <isNotEmpty prepend="AND" property="CSTG_CODE">
+                 A.CSTG_CODE || A.CSTG_NAME LIKE '%' || #CSTG_CODE# || '%' /* 코스트센터그룹코드 */
+            </isNotEmpty>
+		
+		<![CDATA[
+			 ORDER BY A.CSTG_CODE, A.BGIN_DATE
+		]]>
+	</select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터그룹관리 저장
+********************************************************************************/
+-->
+	<insert id="FAMA0020.SAVE00" parameterClass="hashmap" >
+		<![CDATA[
+	        INSERT INTO TA_CSTGXM ( /* FAMA0020.SAVE00.코스트센터그룹관리 저장 *//*[코스트센터그룹정보]*/
+	               CSTG_CODE        /* 코스트센터그룹코드 */
+	              ,CSTG_NAME        /* 코스트센터그룹명 */
+	              ,BGIN_DATE        /* 시작일 */
+	              ,ENDX_DATE        /* 종료일 */
+	              ,DESC_REMK        /* 설명비고 */
+	              ,INST_USID        /* 입력작업자 */
+	              ,INST_DATE        /* 입력일시 */
+	              ,UPDT_USID        /* 수정작업자 */
+	              ,UPDT_DATE        /* 수정일시 */
+	              )
+	       VALUES (
+	               #CSTG_CODE#       /* 코스트센터그룹코드 */
+	              ,#CSTG_NAME#       /* 코스트센터그룹명 */
+	              ,#BGIN_DATE#       /* 시작일 */
+	              ,#ENDX_DATE#       /* 종 료일 */
+	              ,#DESC_REMK#       /* 설명비고 */
+	              ,#UPDT_USID#       /* 입력작업자 */
+	              ,SYSDATE           /* 입력일시 */
+	              ,#UPDT_USID#       /* 수정작업자 */
+	              ,SYSDATE           /* 수정일시 */
+	              )
+		]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터그룹관리 수정
+********************************************************************************/
+-->
+    <update id="FAMA0020.UPDATE00" parameterClass="hashmap" >
+        <![CDATA[
+	        UPDATE TA_CSTGXM   /* FAMA0020.DELETE00.코스트센터그룹관리 수정 *//*[코스트센터그룹정보]*/
+	           SET CSTG_NAME = #CSTG_NAME#  /* 코스트센터그룹명 */
+	              ,BGIN_DATE = #BGIN_DATE#  /* 시작일 */
+	              ,ENDX_DATE = #ENDX_DATE#  /* 종료일 */
+	              ,DESC_REMK = #DESC_REMK#  /* 설명비고 */
+	              ,UPDT_USID = #UPDT_USID#  /* 수정작업자 */
+	              ,UPDT_DATE = SYSDATE      /* 수정일시 */
+	        WHERE CSTG_CODE  = #CSTG_CODE#  /* 코스트센터그룹코드 */
+	        
+        ]]>
+    </update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 황치웅
+     작  성  일 : 2016.08.12
+     내      용 : 코스트센터그룹관리 삭제
+********************************************************************************/
+-->
+	<delete id="FAMA0020.DELETE00" parameterClass="hashmap" >
+		<![CDATA[
+	        DELETE FROM TA_CSTGXM   /* FAMA0020.DELETE00.코스트센터그룹관리 삭제 *//*[코스트센터그룹정보]*/
+	         WHERE CSTG_CODE = #CSTG_CODE#   /*코스트센터그룹코드*/
+		]]>
+	</delete>
+
+</sqlMap>

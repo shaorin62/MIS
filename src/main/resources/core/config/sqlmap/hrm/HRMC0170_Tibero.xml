@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="HRMC0170">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.12
+     내      용 : 장기근속현황 조회
+********************************************************************************/
+-->
+	<select id="HRMC0170.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+		<![CDATA[ 
+			SELECT /* HRMC0170.SEARCH00.장기근속현황 조회 */
+			A.EMPL_NUMB /* 사원번호 */
+			,A.EMPL_NAME /* 성명 */
+			,A.SECT_CODE /* 소속코드 */
+			,A.SECT_NAME /* 소속 */
+			,A.DEPT_CODE /* 부서코드 */
+			,A.DEPT_NAME /* 부서 */
+			,A.OPOS_CODE /* 직위코드 */
+			,A.OPOS_NAME /* 직위명 */
+			,A.CPOS_CODE /* 직급코드 */
+			,A.CPOS_NAME /* 직금명 */
+			,A.PCOP_JCDT /* 그룹입사일 */
+			,A.ENCO_DATE /* 입사일 */
+			,A.STDS_DATE /* 기준일 */
+			,FLOOR(MM/12)||'년' AS CWRK_YCNT /* 근속년수 */
+			,FLOOR(MM/12)||'년 '||MOD(MM,12)||'개월 '||(TRUNC(A.STDS_DATE,'dd') 
+			- ADD_MONTHS(TO_DATE(NVL(A.PCOP_JCDT, A.ENCO_DATE))-1,mm))||'일' AS CWRK_DCNT /* 근속일수 */
+			FROM (
+				SELECT   A.EMPL_NUMB /* 사원번호 */
+						,A.EMPL_NAME /* 성명 */
+						,B.SECT_CODE /* 소속코드 */
+						,B.SECT_NAME /* 소속 */
+						,B.DEPT_CODE /* 부서코드 */
+						,B.DEPT_NAME /* 부서 */
+						,A.OPOS_CODE /* 직위코드 */
+						,SF_GET_COMMNAME('OPOS_CODE', A.OPOS_CODE) AS OPOS_NAME /* 직위명 */
+						,A.CPOS_CODE /* 직급코드 */
+						,SF_GET_COMMNAME('CPOS_CODE', A.CPOS_CODE) AS CPOS_NAME /* 직금명 */
+						,A.PCOP_JCDT /* 그룹입사일 */
+						,NVL(A.TEMT_DATE, A.ENCO_DATE) AS ENCO_DATE /* 입사일 */
+						,TO_DATE(#STDS_YEAR# || SF_GET_REFXFILD('HRMX_CODE', '002', '1')) AS STDS_DATE
+						,FLOOR(MONTHS_BETWEEN(TO_DATE(#STDS_YEAR# || SF_GET_REFXFILD('HRMX_CODE', '002', '1')), TO_DATE(NVL(A.PCOP_JCDT,  NVL(A.TEMT_DATE , A.ENCO_DATE)))-1)) AS MM
+				FROM  HR_MASTXM Z
+				INNER JOIN TABLE(SF_HR_MASTXM(Z.EMPL_NUMB, #STDS_DATE#)) A
+					 ON Z.EMPL_NUMB=A.EMPL_NUMB
+				LEFT OUTER JOIN VI_DEPTXM B
+					 ON A.DEPT_CODE = B.DEPT_CODE
+				LEFT OUTER JOIN TM_CODEXD C
+					 ON C.COMM_CODE = 'CPOS_CODE'
+					AND A.CPOS_CODE = C.COMD_CODE
+				LEFT OUTER JOIN TM_CODEXD D
+					 ON D.COMM_CODE = 'DUTY_CODE'
+					AND A.DUTY_CODE = D.COMD_CODE
+				LEFT OUTER JOIN ( SELECT * FROM HR_SCHCRR WHERE HISL_YSNO = '1' ) E
+					 ON A.EMPL_NUMB = E.EMPL_NUMB
+				LEFT OUTER JOIN ( SELECT EMPL_NUMB, MIN(APNT_DATE) AS SEAS_DATE FROM HR_APPOXD WHERE APDN_CODE ='00002' GROUP BY EMPL_NUMB) F
+					 ON A.EMPL_NUMB = F.EMPL_NUMB
+				WHERE A.WODN_CODE = 1
+				  AND NVL(A.PCOP_JCDT,A.ENCO_DATE) <= #STDS_YEAR#
+				  AND EXISTS ( SELECT 'Y'
+		                         FROM HR_APPOXD Z
+		                        WHERE Z.EMPL_NUMB = A.EMPL_NUMB
+		                          AND Z.APAL_YSNO = '1'
+		                          AND ROWNUM =  1 )
+		]]>
+				<isNotEmpty prepend="AND" property="EMPL_NUMB">
+					A.EMPL_NUMB = #EMPL_NUMB#                                      /* 사원번호 */
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="DEPT_CODE">
+					B.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'           /* 부서 */					
+				</isNotEmpty>
+		<![CDATA[
+				ORDER BY B.DEPT_FCOD, C.SORT_ORDR, A.PRON_DATE, A.ENCO_DATE
+			) A
+				WHERE 1=1
+		]]>
+				<isEqual prepend="AND" property="CWRK_YCNT" compareValue="1">
+<![CDATA[			FLOOR(MM/12) IN ('10', '15', '20', '25', '30') ]]>
+				</isEqual>
+	</select>
+
+</sqlMap>

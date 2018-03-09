@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="HATF0010">
+
+<!--
+ *   프로그램명 : 출장기준등록 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.08.31
+ *   작 성 자 : 박정윤
+ *   비   고 :
+ *   Copyright (c) 2016 NDS Co.,Ltd All Rights reserved.
+ -->
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 일비기준등록 조회
+********************************************************************************/
+-->	
+	<select id="HATF0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT /* HATF0010.SEARCH00.일비지급기준 조회*/
+		      A.BSRP_CODE																			 /*출장구분코드*/
+		      ,SF_GET_COMMNAME('DPAY_CODE', A.BSRP_CODE) 						AS BSRP_CODE_NM	     /*출장구분코드명*/ 
+		      ,A.TRGT_CODE 																		     /*대상구분코드*/ 
+		      ,SF_GET_COMMNAME('OPAY_CODE', A.TRGT_CODE)                         AS TRGT_CODE_NM     /*대상구분코드명*/ 
+		      ,A.STDT_DATE		    																 /*시작일자*/	
+		      ,A.ENDD_DATE																			 /*종료일자*/ 	
+		      ,A.DAIL_APAY																			 /*일비갑*/ 	
+		      ,A.DAIL_BPAY																			 /*일비을*/ 
+		      ,A.DAIL_RATE	    													    			 /*비율*/ 
+		      ,A.REMK_ETCR																			 /*기타*/ 
+		      ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE							 			 /*등록일*/ 			
+		      ,A.INST_USID																			 /*등록자*/ 	
+		      ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE										 /*수정일*/ 
+		      ,A.UPDT_USID																			 /*수정자*/ 
+		FROM  AT_DAYECT A /*일비지급기준관리*/
+		WHERE 1=1
+		  AND #STDT_DATE# BETWEEN A.STDT_DATE AND A.ENDD_DATE		
+	]]>	
+		<isNotEmpty prepend="AND" property="BSRP_CODE">
+			A.BSRP_CODE = #BSRP_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="TRGT_CODE">
+			A.TRGT_CODE = #TRGT_CODE#
+		</isNotEmpty>
+	<![CDATA[	
+		ORDER BY A.BSRP_CODE, A.TRGT_CODE, A.STDT_DATE			    
+	]]>		 
+	</select>	
+
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 일비기준등록 저장
+********************************************************************************/
+-->
+	<insert id="HATF0010.SAVE00" parameterClass="hashmap">
+	<![CDATA[
+		INSERT INTO AT_DAYECT (
+		    BSRP_CODE            /*출장구분*/
+		    ,TRGT_CODE           /*대상자구분*/
+		    ,STDT_DATE		     /*시작일자*/
+		    ,ENDD_DATE           /*종료일자*/
+		    ,DAIL_APAY           /*일비갑*/
+		    ,DAIL_BPAY	         /*일비을*/
+		    ,DAIL_RATE	         /*비율*/
+		    ,REMK_ETCR           /*기타*/
+		    ,INST_USID           /*등록자*/
+		    ,INST_DATE		     /*등록일*/
+		) VALUES (
+		    #BSRP_CODE#
+		    ,#TRGT_CODE# 
+		    ,#STDT_DATE#		    
+		    ,#ENDD_DATE#
+		    ,#DAIL_APAY#
+		    ,#DAIL_BPAY#
+		    ,#DAIL_RATE#
+		    ,#REMK_ETCR#		    		    	
+			,#INST_USID#
+			,SYSDATE			
+		)	
+	]]>
+	</insert>
+
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 일비기준등록 수정
+********************************************************************************/
+-->
+	<update id="HATF0010.UPDATE00" parameterClass="hashmap">
+	<![CDATA[    
+		UPDATE AT_DAYECT 
+		SET ENDD_DATE			= #ENDD_DATE#    /*종료일*/
+			,DAIL_APAY			= #DAIL_APAY#    /*일비갑*/
+		    ,DAIL_BPAY			= #DAIL_BPAY#	 /*일비을*/
+		    ,DAIL_RATE		    = #DAIL_RATE#	 /*요율*/
+		    ,REMK_ETCR			= #REMK_ETCR#    /*비고*/
+		    ,UPDT_USID		    = #UPDT_USID#    /*수정자*/
+		    ,UPDT_DATE		 	= SYSDATE        /*수정일*/
+		 WHERE 1 = 1
+		   	AND BSRP_CODE  	= #BSRP_CODE#   /*출장구분*/
+		   	AND TRGT_CODE 	= #TRGT_CODE#   /*대상구분*/
+		   	AND STDT_DATE  	= #STDT_DATE#	/*시작일*/
+ 	]]>
+	</update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 일비기준등록 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0010.DELETE00" parameterClass="hashmap">
+	<![CDATA[ 
+		DELETE FROM AT_DAYECT
+		WHERE 1 = 1 
+		   	AND BSRP_CODE  	= #BSRP_CODE#    /*출장구분*/
+		   	AND TRGT_CODE 	= #TRGT_CODE#    /*대상구분*/
+		   	AND STDT_DATE  	= #STDT_DATE#	 /*시작일*/	   	 
+	]]>
+	</delete>
+		
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 숙박비기준등록 조회
+********************************************************************************/
+-->	
+	<select id="HATF0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT A.BSRP_CODE																			 /*출장구분코드*/
+		      ,SF_GET_COMMNAME('DPAY_CODE', A.BSRP_CODE) 						AS BSRP_CODE_NM	     /*출장구분코드명*/ 
+		      ,A.TRGT_CODE 																		     /*대상구분코드*/ 
+		      ,SF_GET_COMMNAME('OPAY_CODE', A.TRGT_CODE)                         AS TRGT_CODE_NM     /*대상구분코드명*/ 
+		      ,A.STDT_DATE		    																 /*시작일자*/	
+		      ,A.ENDD_DATE																			 /*종료일자*/ 	
+		      ,A.STAY_APAY																			 /*숙박비갑*/ 	
+		      ,A.STAY_BPAY																			 /*숙박비을*/ 
+		      ,A.REMK_ETCR																			 /*기타*/ 
+		      ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE										 /*등록일*/ 			
+		      ,A.INST_USID																			 /*등록자*/ 	
+		      ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE										 /*수정일*/ 
+		      ,A.UPDT_USID																			 /*수정자*/ 
+		FROM  AT_ROOMCT A /*일비지급기준관리*/
+		WHERE 1=1
+		  AND #STDT_DATE# BETWEEN A.STDT_DATE AND A.ENDD_DATE	
+	]]>	
+		<isNotEmpty prepend="AND" property="BSRP_CODE">
+			A.BSRP_CODE = #BSRP_CODE#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="TRGT_CODE">
+			A.TRGT_CODE = #TRGT_CODE#
+		</isNotEmpty>
+	<![CDATA[	
+		ORDER BY A.BSRP_CODE, A.TRGT_CODE, A.STDT_DATE			    
+	]]>		 
+	</select>	
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 숙박비지급기준 저장
+********************************************************************************/
+-->	
+	<insert id="HATF0020.SAVE00" parameterClass="hashmap">
+		INSERT INTO AT_ROOMCT (
+		    BSRP_CODE                   /*출장구분*/
+		    ,TRGT_CODE 				    /*대상자구분*/
+		    ,STDT_DATE		    		/*시작일자*/
+		    ,ENDD_DATE					/*종료일자*/
+		    ,STAY_APAY					/*숙박비갑*/
+		    ,STAY_BPAY		    		/*숙박비을*/
+		    ,REMK_ETCR					/*기타*/
+		    ,INST_USID					/*등록자*/
+		    ,INST_DATE		    		/*등록일*/
+		) VALUES (
+		    #BSRP_CODE#
+		    ,#TRGT_CODE# 
+		    ,#STDT_DATE#		    
+		    ,#ENDD_DATE#
+		    ,#STAY_APAY#
+		    ,#STAY_BPAY#
+		    ,#REMK_ETCR#		    		    	
+			,#INST_USID#
+			,SYSDATE			
+		)	
+	</insert>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 숙박비기준 수정
+********************************************************************************/
+-->
+	<update id="HATF0020.UPDATE00" parameterClass="hashmap">
+	<![CDATA[    
+		UPDATE AT_ROOMCT 
+		SET ENDD_DATE			= #ENDD_DATE#     /*종료일*/
+			,STAY_APAY			= #STAY_APAY#     /*숙박비갑*/
+		    ,STAY_BPAY			= #STAY_BPAY#	  /*숙박비을*/    
+		    ,REMK_ETCR			= #REMK_ETCR#     /*비고*/
+		    ,UPDT_USID			= #UPDT_USID#     /*수정자*/
+		    ,UPDT_DATE			= SYSDATE         /*수정일*/
+		 WHERE 1 = 1
+		   	AND BSRP_CODE  	= #BSRP_CODE#    /*출장구분*/
+		   	AND TRGT_CODE 	= #TRGT_CODE#    /*대상구분*/
+		   	AND STDT_DATE  	= #STDT_DATE#    /*시작일자*/		   
+ 	]]>
+	</update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 숙박비기준 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[ 
+		DELETE FROM AT_ROOMCT
+		WHERE 1 = 1 
+		   	AND BSRP_CODE  	= #BSRP_CODE#    /*출장구분*/
+		   	AND TRGT_CODE 	= #TRGT_CODE#    /*대상구분*/
+		   	AND STDT_DATE  	= #STDT_DATE#    /*시작일자*/		   
+	]]>
+	</delete>
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 유류비지급기준등록 조회
+********************************************************************************/
+-->	
+	<select id="HATF0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT A.STDT_DATE		    								/*시작일자*/
+		    ,A.ENDD_DATE											/*종료일자*/
+		    ,A.STDR_DSTN											/*기준거리*/
+		    ,A.OILP_UNTP		    								/*유류단가*/
+		    ,A.REMK_ETCR											/*기타*/
+		    ,TO_CHAR(A.INST_DATE, 'YYYYMMDD') AS INST_DATE			/*등록일*/
+		    ,A.INST_USID											/*등록자*/
+		    ,TO_CHAR(A.UPDT_DATE, 'YYYYMMDD') AS UPDT_DATE			/*수정일*/
+		    ,A.UPDT_USID											/*수정자*/
+		FROM AT_GASBCT A											/*유류비기준*/
+		WHERE 1=1
+		    AND #STDT_DATE# BETWEEN A.STDT_DATE AND A.ENDD_DATE		    		
+		ORDER BY A.STDT_DATE			    
+	]]>		 
+	</select>	
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 유류비지급기준등록 입력
+********************************************************************************/
+-->	
+	<insert id="HATF0030.SAVE00" parameterClass="hashmap">
+		INSERT INTO AT_GASBCT (
+		    STDT_DATE		    					/*시작일*/
+		    ,ENDD_DATE								/*종료일*/
+		    ,STDR_DSTN								/*기준거리*/
+		    ,OILP_UNTP		    					/*유류단가*/
+		    ,REMK_ETCR								/*기타*/
+		    ,INST_USID								/*등록자*/
+		    ,INST_DATE		    		    		/*등록일*/
+		) VALUES (
+			 #STDT_DATE#		    
+		    ,#ENDD_DATE#
+		    ,#STDR_DSTN#
+		    ,#OILP_UNTP#
+		    ,#REMK_ETCR#		    		    	
+			,#INST_USID#
+			,SYSDATE			
+		)	
+	</insert>
+	
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 유류비지급기준 수정
+********************************************************************************/
+-->
+	<update id="HATF0030.UPDATE00" parameterClass="hashmap">
+		UPDATE AT_GASBCT 
+		SET ENDD_DATE			= #ENDD_DATE#    /*종료일*/
+			,STDR_DSTN			= #STDR_DSTN#    /*기준거리*/
+		    ,OILP_UNTP			= #OILP_UNTP#	 /*유류단가*/	    
+		    ,REMK_ETCR			= #REMK_ETCR#    /*비고*/
+		    ,UPDT_USID			= #UPDT_USID#    /*수정자*/
+		    ,UPDT_DATE		 	= SYSDATE        /*수정일*/
+		 WHERE 1 = 1
+		   	AND STDT_DATE  	= #STDT_DATE#		   			   
+	</update>
+
+<!-- 
+/*******************************************************************************
+     작  성  자 : 박정윤
+     작  성  일 : 2016.09.02
+     내       용 : 유류비기준 삭제
+********************************************************************************/
+-->
+	<delete id="HATF0030.DELETE00" parameterClass="hashmap">
+		DELETE FROM AT_GASBCT
+		WHERE 1 = 1 
+		   	AND STDT_DATE  	= #STDT_DATE#  /*시작일자*/		   	
+	</delete>	
+
+</sqlMap>

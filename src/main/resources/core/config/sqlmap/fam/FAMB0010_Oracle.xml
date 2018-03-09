@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                              
+                                                                                                                    
+<sqlMap namespace="FAMB0010">
+
+<!-- 전표 정보 조회 -->
+<!-- 
+/*******************************************************************************
+	   작 성 자 : 권미영
+	   작 성 일 : 2016.07.15
+	   내    용 : 전표 조회
+******************************************************************************* */
+-->
+	<select id="FAMB0010.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+        SELECT /* FAMB0010.SEARCH00 전표조회 */
+               '0'                    AS CHK                                               /* 체크박스 */
+             , A.SLIP_NUMB                                                                 /* 전표번호 */
+             , MAX(A.ACCT_GUBN)       AS ACCT_GUBN                                         /* 회계구분_사업장 */
+             , MAX(A.SLIP_DATE)       AS SLIP_DATE                                         /* 전표일자 */
+             , MAX(A.SLIP_GUBN)       AS SLIP_GUBN                                         /* 전표유형 */
+             , MAX(A.REQU_NUMB)       AS REQU_NUMB                                         /* 품의번호 */
+             , MAX(A.ACCT_UNIT)       AS ACCT_UNIT                                         /* 회계단위 */
+             , MAX(A.TITL_NAME)       AS TITL_NAME                                         /* 제목 */
+             , MAX(A.EMPL_NUMB)       AS EMPL_NUMB                                         /* 사원번호 */
+             , MAX(A.DEPT_CODE)       AS DEPT_CODE                                         /* 부서코드 */
+             , SF_GET_EMPLNAME(MAX(A.EMPL_NUMB))      AS EMPL_NAME                         /* 발행자명 */
+             , SF_GET_DEPTNAME(MAX(A.DEPT_CODE))      AS DEPT_NAME                         /* 발행부서명 */
+             , SUM(CASE WHEN B.DRCR_GUBN = 'D' THEN B.SLIP_AMNT ELSE 0 END)   AS CHAX_AMNT /* 차변원화금액 */
+             , SUM(CASE WHEN B.DRCR_GUBN = 'C' THEN B.SLIP_AMNT ELSE 0 END)   AS DAEX_AMNT /* 대변원화금액 */
+             , SUM(CASE WHEN B.DRCR_GUBN = 'D' THEN B.FORI_AMNT ELSE 0 END)   AS FOCH_AMNT /* 차변외화금액 */
+             , SUM(CASE WHEN B.DRCR_GUBN = 'C' THEN B.FORI_AMNT ELSE 0 END)   AS FODA_AMNT /* 대변외화금액 */
+             , MAX(A.ACCT_DATE)       AS ACCT_DATE                                         /* 승인일자 */
+             , MAX(A.APPR_EMPL)       AS APPR_EMPL                                         /* 승인자 */
+             , SF_GET_EMPLNAME(MAX(A.APPR_EMPL))      AS APPR_EMNM                         /* 승인자 */
+             , MAX(A.APPS_CODE)       AS APPS_CODE                                         /* 결재상태 */
+             , MAX(A.RECE_DATE)       AS RECE_DATE                                         /* 접수일 */
+             , MAX(A.RECE_EMPL)       AS RECE_EMPL                                         /* 접수자 */
+             , SF_GET_EMPLNAME(MAX(A.RECE_EMPL))      AS RECE_EMNM                         /* 접수자 */
+             , MAX(A.EVID_ACPT)       AS EVID_ACPT                                         /* 증빙제출구분 */
+             , MAX(A.MEMO_REMK)       AS MEMO_REMK                                         /* 메모 */
+             , MAX(A.RECE_DEPT)       AS RECE_DEPT                                         /* 접수부서 */
+             , MAX(A.APPR_DEPT)       AS APPR_DEPT                                         /* 승인부서 */
+             , MAX(A.AUTO_YSNO)       AS AUTO_YSNO                                         /* 자동여부 */
+         FROM TA_SLIPXM A
+              LEFT JOIN TA_SLIPNT B
+                     ON B.SLIP_NUMB = A.SLIP_NUMB    
+        WHERE A.ACCT_UNIT = #ACCT_UNIT#		/* 회계단위  */
+          AND A.SLIP_DATE BETWEEN #SLIP_DATE1# AND #SLIP_DATE2#	/* 전표일자 */
+	]]>
+	
+	<isNotEmpty prepend="AND" property="EVID_ACPT">
+		A.EVID_ACPT = #EVID_ACPT#	/* 증빙제출 */
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="SLIP_GUBN">
+		A.SLIP_GUBN = #SLIP_GUBN#	/* 전표종류 */
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">
+		A.DEPT_CODE = #DEPT_CODE#	/* 기표부서 */
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">
+		A.EMPL_NUMB = #EMPL_NUMB#	/* 기표자 */
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="ACCT_DATE1">
+	<![CDATA[
+		A.ACCT_DATE >= #ACCT_DATE1# /* 승인일 */
+	]]>
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="ACCT_DATE2">	
+	<![CDATA[
+		A.ACCT_DATE <= #ACCT_DATE2#
+	]]>
+	</isNotEmpty>
+	
+	<isEqual prepend="AND" property="APPS_CODE" compareValue="DISAPPROVE">
+	<![CDATA[
+	   NVL(A.APPS_CODE,' ') <> 'FA1'	/* 미승인 */
+	]]>
+	</isEqual>
+	<isNotEqual property="APPS_CODE" compareValue="DISAPPROVE">
+		<isNotEmpty prepend="AND" property="APPS_CODE">
+		   A.APPS_CODE = #APPS_CODE#	/* 승인상태 */
+		</isNotEmpty>
+	</isNotEqual>
+	
+	<![CDATA[
+        GROUP BY
+              A.SLIP_NUMB    /* 전표번호 */
+        ORDER BY
+          	  MAX(A.SLIP_DATE) DESC, SLIP_NUMB DESC /* 전표번호 */       
+	]]>
+	</select>
+	
+<!-- 
+/*******************************************************************************
+	   작 성 자 : 권미영
+	   작 성 일 : 2016.07.15
+	   내    용 : 전표조회
+******************************************************************************* */
+-->
+	<select id="FAMB0010.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+         SELECT /* FAMB0010.SEARCH01 전표조회 */	
+                ST.SLIP_NUMB   /* 전표번호 */
+              , ST.SLIP_LINE   /* 전표순번 */
+              , ST.SORT_ORDR   /* 정렬순서 */
+              , ST.ACCT_GUBN   /* 회계구분_사업장 */
+              , ST.ACCT_INTL   /* 계정코드 */
+			  , SF_GET_ACCTNAME(ST.ACCT_INTL)		AS ACCT_NAME /* 계정코드명 */
+			  , (CASE WHEN ST.DRCR_GUBN = 'D' THEN ST.SLIP_AMNT ELSE 0 END)	AS CHAX_AMNT /* 차변원화금액 */
+			  , (CASE WHEN ST.DRCR_GUBN = 'C' THEN ST.SLIP_AMNT ELSE 0 END)	AS DAEX_AMNT /* 대변원화금액 */
+			  , ST.CURR_GUBN	/* 화폐 */
+			  , ST.EXCH_RATE	/* 환율 */
+			  , (CASE WHEN ST.DRCR_GUBN = 'D' THEN ST.FORI_AMNT ELSE 0 END)	AS CHAX_FORI /* 차변외화금액 */
+			  , (CASE WHEN ST.DRCR_GUBN = 'C' THEN ST.FORI_AMNT ELSE 0 END)	AS DAEX_FORI /* 차변원화금액 */
+			  , ST.REMK_NAME	/* 적요 */
+			  , SF.CODE_SEQ1	/* 관리항목1값 */	
+			  , SF.CODE_SEQ2	/* 관리항목2값 */	
+			  , SF.CODE_SEQ3	/* 관리항목3값 */	
+			  , SF.CODE_SEQ4	/* 관리항목4값 */	
+			  , SF.CODE_SEQ5	/* 관리항목5값 */	
+			  , SF.CODE_SEQ6	/* 관리항목6값 */	
+           FROM TA_SLIPNT ST
+				LEFT JOIN (
+					 SELECT 
+							SF.SLIP_NUMB   /* 전표번호 */
+					      , SF.SLIP_LINE   /* 전표순번 */
+					      , MAX(CASE WHEN AD.CODE_SEQN = 1 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ1
+					      , MAX(CASE WHEN AD.CODE_SEQN = 2 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ2
+					      , MAX(CASE WHEN AD.CODE_SEQN = 3 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ3
+					      , MAX(CASE WHEN AD.CODE_SEQN = 4 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ4
+					      , MAX(CASE WHEN AD.CODE_SEQN = 5 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ5
+					      , MAX(CASE WHEN AD.CODE_SEQN = 6 THEN NVL(SF.COND_VANM, SF.COND_VACD) END) AS CODE_SEQ6
+					   FROM TA_SLIPRF SF
+							LEFT JOIN TA_SLIPNT ST
+								   ON ST.SLIP_NUMB = SF.SLIP_NUMB
+								  AND ST.SLIP_LINE = SF.SLIP_LINE
+							LEFT JOIN TA_ACCTXD AD
+								   ON AD.ACCT_INTL = ST.ACCT_INTL
+								  AND AD.COND_CODE = SF.COND_CODE
+					  WHERE SF.SLIP_NUMB = #SLIP_NUMB#    /* 전표번호 */
+					  GROUP BY
+							SF.SLIP_NUMB   /* 전표번호 */
+							,SF.SLIP_LINE  /* 전표순번 */
+			  ) SF				
+					   ON SF.SLIP_NUMB = ST.SLIP_NUMB
+					  AND SF.SLIP_LINE = ST.SLIP_LINE			
+          WHERE ST.SLIP_NUMB = #SLIP_NUMB#    /* 전표번호 */
+          ORDER BY ST.SORT_ORDR, ST.SLIP_LINE
+	]]>
+	</select>
+
+</sqlMap>

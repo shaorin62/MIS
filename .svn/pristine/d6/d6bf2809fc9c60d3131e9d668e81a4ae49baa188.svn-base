@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMK0030">
+<!-- 
+/*******************************************************************************
+     작  성  자 : KS
+     작  성  일 : 2016.09.06
+     내      용 : 인사관리>증명관리>증명서발급현황 조회
+********************************************************************************/
+-->
+	<select id="HRMK0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+			SELECT  /* HRMK0030.SEARCH00.증명서발급현황 */
+			        M.STSD_CODE AS STSD_CODE /* 발급구분코드 */
+			       ,SF_GET_COMMNAME('STSD_CODE', M.STSD_CODE) AS STSD_NAME /* 발급구분 */
+			       ,M.ISSU_NUMB AS ISSU_NUMB /* 발급번호 */
+			       ,M.ISSU_DATE AS ISSU_DATE /* 발급일 */
+			       ,M.EMPL_NUMB AS EMPL_NUMB /* 사원번호 */
+			       ,SF_GET_EMPLNAME(M.EMPL_NUMB) AS EMPL_NAME /* 성명 */
+			       ,D.SECT_CODE AS SECT_CODE /* 소속코드 */
+                   ,D.SECT_NAME AS SECT_NAME /* 소속명 */
+			       ,M.DEPT_CODE AS DEPT_CODE /* 부서코드 */
+			       ,D.DEPT_NAME AS DEPT_NAME /* 부서 */
+			       ,M.CPOS_CODE AS CPOS_CODE /* 직급코드 */
+			       ,SF_GET_COMMNAME('CPOS_CODE', M.CPOS_CODE) AS CPOS_NAME /* 직급 */
+			       ,M.DURS_CODE AS DURS_CODE /* 직책코드 */
+			       ,SF_GET_COMMNAME('DURS_CODE', M.DURS_CODE) AS DURS_NAME /* 직책 */
+			       ,M.OPOS_CODE AS OPOS_CODE /* 직위코드 */
+			       ,SF_GET_COMMNAME('OPOS_CODE', M.OPOS_CODE) AS OPOS_NAME /* 직위 */
+			       ,M.LADN_CODE AS LADN_CODE /* 언어코드 */
+			       ,SF_GET_COMMNAME('LADN_CODE', M.LADN_CODE) AS LADN_NAME /* 언어 */
+			       ,M.APPL_YEAR AS APPL_YEAR /* 발행년도 */
+			       ,M.SBMT_ORGT AS SBMT_ORGT /* 제출처 */
+			       ,M.CSUS_CODE AS CSUS_CODE /* 용도코드 */
+			       ,SF_GET_COMMNAME('CSUS_CODE', M.CSUS_CODE) AS CSUS_NAME /* 용도 */
+			       ,M.CERS_USEX AS CERS_USEX /* 세부용도 */
+			       ,M.APPL_PCNT AS APPL_PCNT /* 신청매수 */
+			       ,M.ISSU_PCNT AS ISSU_PCNT /* 인쇄매수 */
+			       ,M.REMK_100X AS REMK_100X /* 반려사유 */
+			       ,M.APPL_DATE AS APPL_DATE /* 신청일 */
+			       ,M.APPL_SEQN AS APPL_SEQN /* 신청일련번호 */
+			       ,M.PCOC_YSNO AS PCOC_YSNO /* 담당자연락처여부 */
+			       ,M.RCGN_DATE AS RCGN_DATE /* 승인일 */
+			       ,M.APPD_CODE AS APPD_CODE /* 진행상태 */
+			FROM  HR_CERSIS M
+			LEFT OUTER JOIN VI_DEPTXM D
+			ON    M.DEPT_CODE = D.DEPT_CODE
+			WHERE M.ISSU_NUMB IS NOT NULL
+			AND   M.ISSU_DATE BETWEEN NVL(#ISSU_STDT#, '19000101') AND NVL(#ISSU_ENDT#, '99991231')  
+	]]>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">			 
+			   	  M.DEPT_CODE = #DEPT_CODE#
+	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">			 
+			   	  M.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="STSD_CODE">			 
+			   	  M.STSD_CODE = #STSD_CODE#
+	</isNotEmpty>
+	<![CDATA[
+		 	ORDER BY M.ISSU_DATE DESC, M.STSD_CODE, M.ISSU_NUMB DESC, M.EMPL_NUMB
+	]]>
+	</select>
+</sqlMap>

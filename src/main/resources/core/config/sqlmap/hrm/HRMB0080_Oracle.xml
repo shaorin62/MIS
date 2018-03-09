@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HRMB0080">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.26
+     내      용 : 인사기록변경요청 테이블 조회
+********************************************************************************/
+-->
+    <select id="HRMB0080.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    <![CDATA[
+        SELECT  /* HRMB0080.SEARCH00.인사기록변경요청 테이블 조회 */
+               '0' AS SELE_CHEK
+             , A.EMPL_NUMB     /* 사원번호 */
+             , A.CHRQ_DATE     /* 변경요청일 */
+             , A.CHRQ_SEQN     /* 변경요청일련번호 */
+             , A.CGRG_CODE     /* 변경요청구분코드 */
+             , A.CHRC_CODE     /* 변경승인코드 */
+             , A.RCGN_DATE     /* 승인일 */
+             , A.RJCT_PROW     /* 반려사유 */
+             , A.FILE_IDXX     /* 파일ID */
+             , A.REMK_100X     /* 비고100 */
+             , B.EMPL_NAME     /* 성명 */
+             , C.SECT_NAME     /* 소속 */
+             , C.DEPT_NAME     /* 부서 */
+             , '' AS SYST_LNCD /* WORK알림 사용자언어코드 */
+             , '' AS WORK_USID /* WORK알림 작업자ID */
+             , '' AS WKNT_EMNR /* WORK알림 알림수신자 */
+             , '' AS WKNT_TYCD /* WORK알림 작업알림유형코드 */
+             , '' AS SOUS_LNKY /* WORK알림 출처연결키 */
+             , '' AS WKNT_CNTT /* WORK알림 작업알림내용 */
+             , Z.COMD_CDNM AS STSD_NAME /* 신청구분명 */
+          FROM HR_MSTCRQ A
+          LEFT OUTER JOIN TABLE(SF_HR_MASTXM(A.EMPL_NUMB, A.CHRQ_DATE)) B
+                       ON A.EMPL_NUMB = B.EMPL_NUMB
+          LEFT OUTER JOIN VI_DEPTXM C
+                       ON B.DEPT_CODE = C.DEPT_CODE    
+          LEFT OUTER JOIN TM_CODEXD D
+                       ON D.COMM_CODE = 'CGRG_CODE'
+                      AND A.CGRG_CODE = D.COMD_CODE
+          LEFT OUTER JOIN PY_MASTPM E
+                       ON A.EMPL_NUMB = E.EMPL_NUMB
+          LEFT OUTER JOIN TM_CODEXD Z
+                       ON Z.COMM_CODE = 'CGRG_CODE'
+                      AND Z.COMD_CODE = A.CGRG_CODE
+         WHERE A.CHRC_CODE <> 'S'
+           AND A.CHRQ_DATE BETWEEN NVL(#CHRQ_STDT#, '19000101') AND NVL(#CHRQ_ENDT#, '29991231')
+    ]]>
+    <isNotEmpty prepend="AND" property="DEPT_CODE">
+               C.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="EMPL_NUMB">
+               A.EMPL_NUMB = #EMPL_NUMB#
+    </isNotEmpty>
+           
+    <isNotEmpty prepend="AND" property="CHRC_CODE">
+               A.CHRC_CODE = #CHRC_CODE#
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="CGRG_CODE">
+               A.CGRG_CODE = #CGRG_CODE#
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="HRPY_GUBN">
+               D.REF1_FILD = #HRPY_GUBN#
+    </isNotEmpty>
+    
+    <isNotEmpty prepend="AND" property="ENFC_CODE">
+               E.ENFC_CODE = #ENFC_CODE#
+    </isNotEmpty>
+         ORDER BY A.CHRQ_DATE DESC, A.CHRQ_SEQN DESC
+    </select>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.08.26
+     내      용 : 인사기록변경요청 테이블 수정
+********************************************************************************/
+-->
+    <update id="HRMB0080.UPDATE00" parameterClass="hashmap">
+    <![CDATA[
+        DECLARE /* HRMB0080.UPDATE00.인사기록변경요청 테이블 수정 */
+            v_CHRC_CODE HR_MSTCRQ.CHRC_CODE%TYPE;
+            v_CHRC_NAME VARCHAR2(100);
+            
+            v_CHRQ_DATE_PREV VARCHAR2(8);
+            v_CHRQ_SEQN_PREV VARCHAR2(5);
+        
+        BEGIN
+            
+            SELECT CHRC_CODE   /*변경승인코드*/
+                 , SF_GET_COMMNAME('CHRC_CODE', CHRC_CODE)
+              INTO v_CHRC_CODE, v_CHRC_NAME
+              FROM HR_MSTCRQ
+             WHERE EMPL_NUMB = #EMPL_NUMB#   /*사원번호*/
+               AND CHRQ_DATE = #CHRQ_DATE#   /*변경요청일*/
+               AND CHRQ_SEQN = #CHRQ_SEQN#   /*변경요청일련번호*/
+            ;
+            
+            IF #CHRC_CODE# <> '1' AND v_CHRC_CODE = '1' THEN 
+                IF v_CHRC_CODE = '0' OR v_CHRC_CODE = '1' OR v_CHRC_CODE = '2' THEN
+                    RAISE_APPLICATION_ERROR(-20000, SF_GET_MESSAGE('HRM014',v_CHRC_NAME || ',처리'));
+                END IF;  
+            END IF;
+            
+        UPDATE HR_MSTCRQ /* [인사기록변경요청] */
+           SET CHRC_CODE = #CHRC_CODE#            /* 변경승인코드 */
+             , RCGN_DATE = TO_CHAR(SYSDATE,'YYYYMMDD')            /* 승인일 */
+             , RJCT_PROW = #RJCT_PROW#            /* 반려사유 */
+             , UPDT_USID = #UPDT_USID#            /* 수정작업자 */
+             , UPDT_DATE = SYSDATE                /* 수정일시 */
+         WHERE EMPL_NUMB = #EMPL_NUMB#            /* 사원번호 */
+           AND CHRQ_DATE = #CHRQ_DATE#            /* 변경요청일 */
+           AND CHRQ_SEQN = #CHRQ_SEQN#            /* 변경요청일련번호 */
+            ;
+         
+            IF #CHRC_CODE# = '1' AND v_CHRC_CODE <> '1' THEN /*새로 변경승인시*/
+                IF #CGRG_CODE# = 'MASTXM' THEN /*인사마스터 변경*/
+                    UPDATE HR_MASTXM A
+                       SET ( EMPL_NAME, CCEM_NAME, ENEE_NAME, RERN_NUMB)  
+                         = (SELECT B.EMPL_NAME   /*사원명*/
+                                  ,B.CCEM_NAME   /*한자사원명*/
+                                  ,B.ENEE_NAME   /*영문사원명*/
+                                  ,B.RERN_NUMB   /*주민등록번호*/ 
+                             FROM HR_MASTRQ B
+                            WHERE B.EMPL_NUMB  = #EMPL_NUMB#   /*사원번호*/
+                              AND B.CHRQ_DATE  = #CHRQ_DATE#   /*변경요청일*/
+                              AND B.CHRQ_SEQN  = #CHRQ_SEQN#)  /*변경요청일련번호*/
+                     WHERE A.EMPL_NUMB = #EMPL_NUMB#
+                     ; 
+                    UPDATE HR_MASTXD A
+                       SET ( HALT_CODE, SVIM_YSNO, DEDY_CODE, DEGC_CODE, HAAD_DATE  
+                            ,REDN_CODE, RCMP_NUMB, HALT_PROW, RCMP_DATE, MAMR_CODE
+                            ,MNOM_NAME, HDPP_NAME)  
+                         = (SELECT B.HALT_CODE   /*장애코드*/
+                                  ,B.SVIM_YSNO   /*중증장애여부*/
+                                  ,B.DEDY_CODE   /*장애등급코드*/
+                                  ,B.DEGC_CODE   /*장애유형코드*/
+                                  ,B.HAAD_DATE   /*장애인정일*/
+                                  ,B.REDN_CODE   /*보훈구분코드*/
+                                  ,B.RCMP_NUMB   /*보훈번호*/
+                                  ,B.HALT_PROW   /* 장애사유 */
+                                  ,B.RCMP_DATE   /* 보훈일자 */
+                                  ,B.MAMR_CODE   /* 유공자관계코드 */
+                                  ,B.MNOM_NAME   /* 유공자성명 */
+                                  ,B.HDPP_NAME   /* 해당지청명 */
+                             FROM HR_MASTRQ B
+                            WHERE B.EMPL_NUMB  = #EMPL_NUMB#   /*사원번호*/
+                              AND B.CHRQ_DATE  = #CHRQ_DATE#   /*변경요청일*/
+                              AND B.CHRQ_SEQN  = #CHRQ_SEQN#)   /*변경요청일련번호*/
+                     WHERE A.EMPL_NUMB = #EMPL_NUMB#
+                     ;
+                ELSIF #CGRG_CODE# = 'FAMILY' OR #CGRG_CODE# = 'FMLPAY' THEN /*가족사항 변경*/
+                                DELETE FROM HR_FAMILY
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_FAMILY (        /* [가족사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , FMLY_NAME          /* 가족성명 */
+                                      , FMLY_SSEC          /* 가족주민등록번호 */
+                                      , FREL_CODE          /* 가족관계코드 */
+                                      , SCCR_CODE          /* 학력코드 */
+                                      , FMLY_JOBX          /* 가족직업 */
+                                      , FMLY_BIRT          /* 가족생년월일 */
+                                      , GNDR_CODE          /* 성별코드 */
+                                      , WORK_NAME          /* 직장명 */
+                                      , LVTG_YSNO          /* 동거여부 */
+                                      , FALP_YSNO          /* 가족수당지급여부 */
+                                      , SUPT_YSNO          /* 부양여부 */
+                                      , HALT_CODE          /* 장애코드 */
+                                      , FRDE_CODE          /* 가족관계신고코드 */
+                                      , BGIN_YMTH          /* 시작년월 */
+                                      , ENDX_YMTH          /* 종료년월 */
+                                      , HLIN_YSNO          /* 건강보험여부 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , FMLY_NAME          /* 가족성명 */
+                                      , FMLY_SSEC          /* 가족주민등록번호 */
+                                      , FREL_CODE          /* 가족관계코드 */
+                                      , SCCR_CODE          /* 학력코드 */
+                                      , FMLY_JOBX          /* 가족직업 */
+                                      , FMLY_BIRT          /* 가족생년월일 */
+                                      , GNDR_CODE          /* 성별코드 */
+                                      , WORK_NAME          /* 직장명 */
+                                      , LVTG_YSNO          /* 동거여부 */
+                                      , FALP_YSNO          /* 가족수당지급여부 */
+                                      , SUPT_YSNO          /* 부양여부 */
+                                      , HALT_CODE          /* 장애코드 */
+                                      , FRDE_CODE          /* 가족관계신고코드 */
+                                      , BGIN_YMTH          /* 시작년월 */
+                                      , ENDX_YMTH          /* 종료년월 */
+                                      , HLIN_YSNO          /* 건강보험여부 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                  FROM HR_FMLYRQ 
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                   AND CHRQ_DATE = #CHRQ_DATE#
+                                   AND CHRQ_SEQN = #CHRQ_SEQN#
+                                   AND CHDV_CODE <> 'D'
+                                   ;
+                       
+                ELSIF #CGRG_CODE# = 'SCHCRR' THEN /*학력사항 변경*/
+                                DELETE FROM HR_SCHCRR
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_SCHCRR (        /* [학력사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , SCDN_CODE          /* 학교구분코드 */
+                                      , ENIS_DATE          /* 입학일 */
+                                      , GRDT_DATE          /* 졸업일 */
+                                      , SCHL_CODE          /* 학교코드 */
+                                      , MJRA_CODE          /* 전공계열코드 */
+                                      , MAJR_CODE          /* 전공코드 */
+                                      , SHGD_CODE          /* 학년제코드 */
+                                      , DNGB_CODE          /* 주야간구분코드 */
+                                      , SCGN_CODE          /* 본교구분코드 */
+                                      , SCHL_SEAT          /* 학교소재지 */
+                                      , GRDN_CODE          /* 졸업구분코드 */
+                                      , DGDN_CODE          /* 학위구분코드 */
+                                      , HISL_YSNO          /* 최종학교여부 */
+                                      , ENSC_YSNO          /* 입사전학력여부 */
+                                      , SCHL_NAME          /* 학교명 */
+                                      , MAJR_NAME          /* 전공명 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , SCDN_CODE          /* 학교구분코드 */
+                                      , ENIS_DATE          /* 입학일 */
+                                      , GRDT_DATE          /* 졸업일 */
+                                      , SCHL_CODE          /* 학교코드 */
+                                      , MJRA_CODE          /* 전공계열코드 */
+                                      , MAJR_CODE          /* 전공코드 */
+                                      , SHGD_CODE          /* 학년제코드 */
+                                      , DNGB_CODE          /* 주야간구분코드 */
+                                      , SCGN_CODE          /* 본교구분코드 */
+                                      , SCHL_SEAT          /* 학교소재지 */
+                                      , GRDN_CODE          /* 졸업구분코드 */
+                                      , DGDN_CODE          /* 학위구분코드 */
+                                      , HISL_YSNO          /* 최종학교여부 */
+                                      , ENSC_YSNO          /* 입사전학력여부 */
+                                      , SCHL_NAME          /* 학교명 */
+                                      , MAJR_NAME          /* 전공명 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                  FROM HR_SCHLRQ
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                   AND CHRQ_DATE = #CHRQ_DATE#
+                                   AND CHRQ_SEQN = #CHRQ_SEQN#
+                                   AND CHDV_CODE <> 'D'
+                                   ;
+                ELSIF #CGRG_CODE# = 'LICEXM' THEN /*자격사항 변경*/
+                                DELETE FROM HR_LICEXM
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_LICEXM (        /* [자격사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , LICE_CODE          /* 자격증코드 */
+                                      , CTCS_CODE          /* 자격등급코드 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , ISSU_INNM          /* 발급기관명 */
+                                      , QFCA_LICN          /* 자격면허번호 */
+                                      , ENDX_DATE          /* 종료일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , LICE_CODE          /* 자격증코드 */
+                                      , CTCS_CODE          /* 자격등급코드 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , ISSU_INNM          /* 발급기관명 */
+                                      , QFCA_LICN          /* 자격면허번호 */
+                                      , ENDX_DATE          /* 종료일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                      FROM HR_LICERQ
+                                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                                       AND CHRQ_DATE = #CHRQ_DATE#
+                                       AND CHRQ_SEQN = #CHRQ_SEQN#
+                                       AND CHDV_CODE <> 'D'      
+                                       ;
+                ELSIF #CGRG_CODE# = 'FRLANG' THEN /*어학 변경*/
+                                DELETE FROM HR_FRLANG
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                ;
+                            INSERT INTO HR_FRLANG (        /* [외국어] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , OACT_CODE          /* 공인과정종류코드 */
+                                      , KFLG_CODE          /* 외국어종류코드 */
+                                      , DFLG_CODE          /* 외국어등급코드 */
+                                      , LADN_CODE          /* 언어구분코드 */
+                                      , FOLG_SCOR          /* 외국어점수 */
+                                      , PFSC_SCOR          /* 만점점수 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , OACT_CODE          /* 공인과정종류코드 */
+                                      , KFLG_CODE          /* 외국어종류코드 */
+                                      , DFLG_CODE          /* 외국어등급코드 */
+                                      , LADN_CODE          /* 언어구분코드 */
+                                      , FOLG_SCOR          /* 외국어점수 */
+                                      , PFSC_SCOR          /* 만점점수 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                      FROM HR_FRLARQ
+                                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                                       AND CHRQ_DATE = #CHRQ_DATE#
+                                       AND CHRQ_SEQN = #CHRQ_SEQN#
+                                       AND CHDV_CODE <> 'D'      
+                                       ;
+                END IF;
+
+            ELSIF #CHRC_CODE# <> '1' AND v_CHRC_CODE = '1' THEN /* 승인 취소시*/
+            
+                    SELECT CHRQ_DATE
+                         , CHRQ_SEQN
+                      INTO v_CHRQ_DATE_PREV,v_CHRQ_SEQN_PREV 
+                      FROM HR_MSTCRQ 
+                     WHERE EMPL_NUMB = #EMPL_NUMB# 
+                       AND CGRG_CODE = #CGRG_CODE# 
+                       AND CHRC_CODE = '1' 
+                       AND CHRQ_DATE = (SELECT MAX(CHRQ_DATE) 
+                                          FROM HR_MSTCRQ
+                                         WHERE EMPL_NUMB = #EMPL_NUMB# 
+                                           AND CGRG_CODE = #CGRG_CODE# 
+                                           AND CHRC_CODE = '1' 
+                                           AND RCGN_DATE <= #RCGN_DATE#
+                                        ) 
+                       AND CHRQ_SEQN = (SELECT MAX(CHRQ_SEQN) 
+                                          FROM HR_MSTCRQ
+                                         WHERE EMPL_NUMB = #EMPL_NUMB# 
+                                           AND CGRG_CODE = #CGRG_CODE# 
+                                           AND CHRC_CODE = '1' 
+                                           AND RCGN_DATE <= #RCGN_DATE#
+                                        )
+                     GROUP BY CHRQ_DATE,CHRQ_SEQN
+            ;
+            
+                IF #CGRG_CODE# = 'MASTXM' THEN /*인사마스터 변경*/
+
+                            UPDATE HR_MASTXM A
+                               SET ( EMPL_NAME, CCEM_NAME, ENEE_NAME, RERN_NUMB)  
+                                 = (SELECT B.EMPL_NAME   /*사원명*/
+                                          ,B.CCEM_NAME   /*한자사원명*/
+                                          ,B.ENEE_NAME   /*영문사원명*/
+                                          ,B.RERN_NUMB   /*주민등록번호*/ 
+                                     FROM HR_MASTRQ B
+                                    WHERE B.EMPL_NUMB  = #EMPL_NUMB#   /*사원번호*/
+                                      AND B.CHRQ_DATE  = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                      AND B.CHRQ_SEQN  = v_CHRQ_SEQN_PREV)   /*변경요청일련번호*/
+                             WHERE A.EMPL_NUMB = #EMPL_NUMB#
+                             ; 
+                            UPDATE HR_MASTXD A
+                               SET ( HALT_CODE, SVIM_YSNO, DEDY_CODE, DEGC_CODE, HAAD_DATE  
+                                    ,REDN_CODE, RCMP_NUMB)  
+                                 = (SELECT B.HALT_CODE   /*장애코드*/
+                                          ,B.SVIM_YSNO   /*중증장애여부*/
+                                          ,B.DEDY_CODE   /*장애등급코드*/
+                                          ,B.DEGC_CODE   /*장애유형코드*/
+                                          ,B.HAAD_DATE   /*장애인정일*/
+                                          ,B.REDN_CODE   /*보훈구분코드*/
+                                          ,B.RCMP_NUMB   /*보훈번호*/
+                                     FROM HR_MASTRQ B
+                                    WHERE B.EMPL_NUMB  = #EMPL_NUMB#   /*사원번호*/
+                                      AND B.CHRQ_DATE  = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                      AND B.CHRQ_SEQN  = v_CHRQ_SEQN_PREV)   /*변경요청일련번호*/
+                             WHERE A.EMPL_NUMB = #EMPL_NUMB#
+                             ;           
+                ELSIF #CGRG_CODE# = 'FAMILY' OR #CGRG_CODE# = 'FMLPAY' THEN /*가족사항 변경*/
+                   
+                                DELETE FROM HR_FAMILY
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_FAMILY (        /* [가족사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , FMLY_NAME          /* 가족성명 */
+                                      , FMLY_SSEC          /* 가족주민등록번호 */
+                                      , FREL_CODE          /* 가족관계코드 */
+                                      , SCCR_CODE          /* 학력코드 */
+                                      , FMLY_JOBX          /* 가족직업 */
+                                      , FMLY_BIRT          /* 가족생년월일 */
+                                      , GNDR_CODE          /* 성별코드 */
+                                      , WORK_NAME          /* 직장명 */
+                                      , LVTG_YSNO          /* 동거여부 */
+                                      , FALP_YSNO          /* 가족수당지급여부 */
+                                      , SUPT_YSNO          /* 부양여부 */
+                                      , HALT_CODE          /* 장애코드 */
+                                      , FRDE_CODE          /* 가족관계신고코드 */
+                                      , BGIN_YMTH          /* 시작년월 */
+                                      , ENDX_YMTH          /* 종료년월 */
+                                      , HLIN_YSNO          /* 건강보험여부 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , FMLY_NAME          /* 가족성명 */
+                                      , FMLY_SSEC          /* 가족주민등록번호 */
+                                      , FREL_CODE          /* 가족관계코드 */
+                                      , SCCR_CODE          /* 학력코드 */
+                                      , FMLY_JOBX          /* 가족직업 */
+                                      , FMLY_BIRT          /* 가족생년월일 */
+                                      , GNDR_CODE          /* 성별코드 */
+                                      , WORK_NAME          /* 직장명 */
+                                      , LVTG_YSNO          /* 동거여부 */
+                                      , FALP_YSNO          /* 가족수당지급여부 */
+                                      , SUPT_YSNO          /* 부양여부 */
+                                      , HALT_CODE          /* 장애코드 */
+                                      , FRDE_CODE          /* 가족관계신고코드 */
+                                      , BGIN_YMTH          /* 시작년월 */
+                                      , ENDX_YMTH          /* 종료년월 */
+                                      , HLIN_YSNO          /* 건강보험여부 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                  FROM HR_FMLYRQ 
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                   AND CHRQ_DATE = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                   AND CHRQ_SEQN = v_CHRQ_SEQN_PREV   /*변경요청일련번호*/
+                                   AND CHDV_CODE <> 'D'
+                                   ;
+                       
+                ELSIF #CGRG_CODE# = 'SCHCRR' THEN /*학력사항 변경*/
+                                DELETE FROM HR_SCHCRR
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_SCHCRR (        /* [학력사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , SCDN_CODE          /* 학교구분코드 */
+                                      , ENIS_DATE          /* 입학일 */
+                                      , GRDT_DATE          /* 졸업일 */
+                                      , SCHL_CODE          /* 학교코드 */
+                                      , MJRA_CODE          /* 전공계열코드 */
+                                      , MAJR_CODE          /* 전공코드 */
+                                      , SHGD_CODE          /* 학년제코드 */
+                                      , DNGB_CODE          /* 주야간구분코드 */
+                                      , SCGN_CODE          /* 본교구분코드 */
+                                      , SCHL_SEAT          /* 학교소재지 */
+                                      , GRDN_CODE          /* 졸업구분코드 */
+                                      , DGDN_CODE          /* 학위구분코드 */
+                                      , HISL_YSNO          /* 최종학교여부 */
+                                      , ENSC_YSNO          /* 입사전학력여부 */
+                                      , SCHL_NAME          /* 학교명 */
+                                      , MAJR_NAME          /* 전공명 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , SCDN_CODE          /* 학교구분코드 */
+                                      , ENIS_DATE          /* 입학일 */
+                                      , GRDT_DATE          /* 졸업일 */
+                                      , SCHL_CODE          /* 학교코드 */
+                                      , MJRA_CODE          /* 전공계열코드 */
+                                      , MAJR_CODE          /* 전공코드 */
+                                      , SHGD_CODE          /* 학년제코드 */
+                                      , DNGB_CODE          /* 주야간구분코드 */
+                                      , SCGN_CODE          /* 본교구분코드 */
+                                      , SCHL_SEAT          /* 학교소재지 */
+                                      , GRDN_CODE          /* 졸업구분코드 */
+                                      , DGDN_CODE          /* 학위구분코드 */
+                                      , HISL_YSNO          /* 최종학교여부 */
+                                      , ENSC_YSNO          /* 입사전학력여부 */
+                                      , SCHL_NAME          /* 학교명 */
+                                      , MAJR_NAME          /* 전공명 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                  FROM HR_SCHLRQ
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                   AND CHRQ_DATE = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                   AND CHRQ_SEQN = v_CHRQ_SEQN_PREV   /*변경요청일련번호*/
+                                   AND CHDV_CODE <> 'D'
+                                   ;
+                ELSIF #CGRG_CODE# = 'LICEXM' THEN /*자격사항 변경*/
+                                DELETE FROM HR_LICEXM
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                 ;
+                            INSERT INTO HR_LICEXM (        /* [자격사항] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , LICE_CODE          /* 자격증코드 */
+                                      , CTCS_CODE          /* 자격등급코드 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , ISSU_INNM          /* 발급기관명 */
+                                      , QFCA_LICN          /* 자격면허번호 */
+                                      , ENDX_DATE          /* 종료일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */ 
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , LICE_CODE          /* 자격증코드 */
+                                      , CTCS_CODE          /* 자격등급코드 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , ISSU_INNM          /* 발급기관명 */
+                                      , QFCA_LICN          /* 자격면허번호 */
+                                      , ENDX_DATE          /* 종료일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                      FROM HR_LICERQ
+                                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                                       AND CHRQ_DATE = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                       AND CHRQ_SEQN = v_CHRQ_SEQN_PREV   /*변경요청일련번호*/
+                                       AND CHDV_CODE <> 'D'      
+                                       ;
+                ELSIF #CGRG_CODE# = 'FRLANG' THEN /*어학사항 변경*/
+                                DELETE FROM HR_FRLANG
+                                 WHERE EMPL_NUMB = #EMPL_NUMB#
+                                ;
+                            INSERT INTO HR_FRLANG (        /* [외국어] */
+                                        EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , OACT_CODE          /* 공인과정종류코드 */
+                                      , KFLG_CODE          /* 외국어종류코드 */
+                                      , DFLG_CODE          /* 외국어등급코드 */
+                                      , LADN_CODE          /* 언어구분코드 */
+                                      , FOLG_SCOR          /* 외국어점수 */
+                                      , PFSC_SCOR          /* 만점점수 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , UPDT_USID          /* 수정작업자 */
+                                      , UPDT_DATE          /* 수정일시 */
+                                       )
+                                 SELECT EMPL_NUMB          /* 사원번호 */
+                                      , SRAL_NUMB          /* 일련번호 */
+                                      , OACT_CODE          /* 공인과정종류코드 */
+                                      , KFLG_CODE          /* 외국어종류코드 */
+                                      , DFLG_CODE          /* 외국어등급코드 */
+                                      , LADN_CODE          /* 언어구분코드 */
+                                      , FOLG_SCOR          /* 외국어점수 */
+                                      , PFSC_SCOR          /* 만점점수 */
+                                      , ACQS_DATE          /* 취득일 */
+                                      , REMK_100X          /* 비고100 */
+                                      , INST_USID          /* 입력작업자 */
+                                      , INST_DATE          /* 입력일시 */
+                                      , #UPDT_USID#        /*수정작업자*/
+                                      , SYSDATE            /*수정일시*/
+                                      FROM HR_FRLARQ
+                                     WHERE EMPL_NUMB = #EMPL_NUMB#
+                                       AND CHRQ_DATE = v_CHRQ_DATE_PREV   /*변경요청일*/
+                                       AND CHRQ_SEQN = v_CHRQ_SEQN_PREV   /*변경요청일련번호*/
+                                       AND CHDV_CODE <> 'D'      
+                                       ;
+                END IF;                 
+            END IF;             
+        END;
+    ]]>
+    </update>
+<!-- 
+/*******************************************************************************
+     작  성  자 : 안윤준
+     작  성  일 : 2016.12.19
+     내      용 : work 알림 저장 
+********************************************************************************/
+-->
+    <insert id="HRMB0080.WORKSAVE00" parameterClass="hashmap">
+    <![CDATA[
+        BEGIN /* HRMB0080.WORKSAVE00.work 알림 저장 */
+            PKG_TMMIFWKNT.SP_WORKNOTICE_SAVENOW (
+                #SYST_LNCD#        /* 시스템언어코드 */
+              , #WORK_USID#        /* 작업자ID */
+              , #WKNT_EMNR#        /* 작업알림사원번호 */
+              , #WKNT_TYCD#        /* 작업알림유형코드[WKNT_TYCD] */
+              , #SOUS_LNKY#        /* 출처연결키 */
+              , #WKNT_CNTT#        /* 작업알림내용 */
+            );
+        END; 
+    ]]>
+    </insert>
+</sqlMap>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="APPROVAL">
+<!-- 
+/*******************************************************************************
+     작  성  자 : 
+     작  성  일 : 2016.08.25
+     내      용 : 결재 정보
+********************************************************************************/
+-->
+	<update id="APPROVAL.UPDATE00" parameterClass="java.util.HashMap">
+		BEGIN
+	    	/* APPROVAL.UPDATE00 결재 정보 */
+	    	PKG_IFGWAPPROVAL.SP_GWAP_POST (
+	    		 #DOCUMENT_ID#   	/* 결재문서양식ID */
+	    		,#APPR_SEQ#			/* 전자결재일련번호 */
+	    		,#APPR_STATE#		/* 전자결재상태코드 */
+	    	);
+    	END;
+	</update>
+</sqlMap>

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="1.5">
+  <TypeDefinition url="..\..\default_typedef.xml"/>
+  <Form id="Popup00003" onload="fn_FormLoadSetting" titletext="팝업(1000x760)_그리드2" position="absolute" scrollbars="none" left="0" width="1000" top="0" height="760">
+    <Layouts>
+      <Layout>
+        <MPFileDialog Filter="Excel File(*.xls)|*.xls|All(*.*)|*.*|" id="fdExcel" taborder="4" position="absolute" left="820" width="24" top="4" height="24"/>
+        <MPFile FileName="C:\down.xls" id="flExcel" taborder="4" position="absolute" left="852" width="24" top="4" height="24"/>
+        <Button id="btnClose" onclick="btnClose_OnClick" taborder="2" position="absolute" width="62" height="24" cssclass="btn_POP_CRUD" style="cursor:hand;" text="닫기" right="14" top="724"/>
+        <Static id="Static02" taborder="6" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="0" top="7" width="15" height="461"/>
+        <Static id="Static07" taborder="8" text="h 8" visible="false" left="922" top="716" width="64" height="8" style="background:#fb7b7b7a;"/>
+        <Static id="Static05" taborder="9" text="h 12" visible="false" left="922" top="748" width="64" height="12" style="background:#fb7b7b7a;"/>
+        <Grid id="grdTR_MONEPL02" taborder="10" binddataset="dsTR_MONEPL" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both"  autofittype="col" onexpanddown="fn_HelpDialoge" left="15" top="389" right="15" height="327">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="항목"/>
+                <Cell col="1" text="항목"/>
+                <Cell col="2" text="항목"/>
+                <Cell col="3" text="항목"/>
+                <Cell col="4" text="항목"/>
+                <Cell col="5" text="항목"/>
+                <Cell col="6" text="항목"/>
+                <Cell col="7" text="항목"/>
+              </Band>
+              <Band id="body">
+                <Cell/>
+                <Cell col="1"/>
+                <Cell col="2"/>
+                <Cell col="3"/>
+                <Cell col="4"/>
+                <Cell col="5"/>
+                <Cell col="6"/>
+                <Cell col="7"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static90" taborder="11" text="Grid 1" cssclass="sta_WF_Subtitle" left="15" top="10" width="233" height="21"/>
+        <Grid id="grdTR_MONEPL00" taborder="12" binddataset="dsTR_MONEPL" wheelscrollrow="1" useinputpanel="false" selecttype="multirow" cellsizingtype="both"  autofittype="col" onexpanddown="fn_HelpDialoge" left="15" top="31" right="15" height="327">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+                <Column size="120"/>
+              </Columns>
+              <Rows>
+                <Row size="29" band="head"/>
+                <Row size="26"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="항목"/>
+                <Cell col="1" text="항목"/>
+                <Cell col="2" text="항목"/>
+                <Cell col="3" text="항목"/>
+                <Cell col="4" text="항목"/>
+                <Cell col="5" text="항목"/>
+                <Cell col="6" text="항목"/>
+                <Cell col="7" text="항목"/>
+              </Band>
+              <Band id="body">
+                <Cell/>
+                <Cell col="1"/>
+                <Cell col="2"/>
+                <Cell col="3"/>
+                <Cell col="4"/>
+                <Cell col="5"/>
+                <Cell col="6"/>
+                <Cell col="7"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="Button41" taborder="13" text="엑셀저장" cssclass="btn_WF_Module" top="6" right="15" width="74" height="21"/>
+        <Static id="Static00" taborder="14" text="Grid 2" cssclass="sta_WF_Subtitle" left="15" top="368" width="233" height="21"/>
+        <Button id="Button00" taborder="15" text="엑셀저장" cssclass="btn_WF_Module" top="364" right="15" width="74" height="21"/>
+        <Static id="Static03" taborder="16" text="h 6" visible="false" left="839" top="358" width="120" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static01" taborder="17" text="h 4" visible="false" left="839" top="385" width="120" height="4" style="background:#fb7b7b7a;"/>
+        <Static id="Static06" taborder="18" text="w&#13;&#10;15" cssclass="sta_GID_box" visible="false" left="985" top="7" width="15" height="461"/>
+        <Static id="Static04" taborder="19" text="h 6" visible="false" left="847" top="0" width="120" height="6" style="background:#fb7b7b7a;"/>
+        <Static id="Static08" taborder="20" text="h 4" visible="false" left="847" top="27" width="120" height="4" style="background:#fb7b7b7a;"/>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Script type="xscript5.0"><![CDATA[]]></Script>
+  </Form>
+</FDL>

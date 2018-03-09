@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">  
+		                                                                                                                                               
+<sqlMap namespace="FAMB0030P02">
+<!-- 
+	/* ******************************************************************************
+	    작 성 자 : 양현덕
+	    작  성  일 : 2016.07.24
+	    내    용 : 미결발생전표 조회
+    ******************************************************************************* */
+-->
+	<select id="FAMB0030P02.SEARCH00" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	<![CDATA[		
+		SELECT	 /* FAMB0030P02.SEARCH00.미결발생전표 */
+		       ST.SLIP_NUMB   	/* 전표번호 */
+		     , ST.SLIP_LINE   	/* 전표라인번호 */
+		     , ST.SLIP_NUMB || '-' || ST.SLIP_LINE AS DISP_NUMB   /* 발생번호 */
+		     , ST.SLIP_DATE		/* 기표일자 */
+		     , ST.ACCT_DATE   	/* 회계일자 */
+		     , ST.REMK_NAME   	/* 발생적요 */
+		     , ST.SLIP_AMNT   	/* 발생금액 */
+		     , ST.BANJ_AMNT		/* 반제금액 */
+		     , NVL(ST.SLIP_AMNT,0) - NVL(ST.BANJ_AMNT,0) AS BALA_AMNT	/* 잔액 */
+		     , ST.COND_VACD		/* 관리항목 */
+		     , ST.COND_VANM		/* 관리항목값명 */
+		     , ST.ENDX_DATE		/* 만기일 */
+             , ST.CURR_GUBN    	/* 통화구분 */
+             , ST.EXCH_RATE    	/* 환율 */
+             , ST.FORI_AMNT    	/* 외화금액 */
+		  FROM (
+				SELECT  
+				       AC.ACCT_INTL  	/* 계정과목코드 */
+				     , AC.ACCT_NAME   	/* 계정명 */
+				     , ST.SLIP_NUMB   	/* 전표번호 */
+				     , ST.SLIP_LINE   	/* 전표라인번호 */
+				     , ST.SLIP_NUMB || '-' || ST.SLIP_LINE AS DISP_NUMB   /* 전표번호 */ 	
+				     , SM.SLIP_DATE		/* 기표일자 */
+				     , ST.ACCT_DATE   	/* 회계일자 */
+				     , ST.SLIP_AMNT   	/* 전표금액 */
+				     , (
+				       SELECT SUM(SK.SLIP_AMNT)
+				         FROM TA_SLIPNT SK
+				        WHERE SK.OSLI_NUMB = ST.SLIP_NUMB
+				          AND SK.OSLI_LINE = ST.SLIP_LINE
+				       ) AS BANJ_AMNT	/* 반제금액 */
+				     , SF.COND_VACD		/* 관리항목 */
+				     , SF.COND_VANM		/* 관리항목값명 */
+				     , SF0048.COND_VANM AS ENDX_DATE		/* 만기일 */
+				     , ST.REMK_NAME   	/* 적요 */
+		             , ST.CURR_GUBN    	/* 통화구분 */
+		             , ST.EXCH_RATE    	/* 환율 */
+		             , ST.FORI_AMNT    	/* 외화금액 */
+				  FROM TA_ACCTXM AC		/* 계정과목 */
+					   LEFT JOIN TA_SLIPNT ST		/* 전표행 */
+					          ON ST.ACCT_INTL = AC.ACCT_INTL
+					         AND ST.DRCR_GUBN = AC.DRCR_GUBN
+					   LEFT JOIN TA_SLIPXM SM		/* 전표마스터 */
+						      ON SM.SLIP_NUMB = ST.SLIP_NUMB
+					   LEFT JOIN TA_ACCTXD AD		/* 계정과목관리항목 */
+							  ON AD.ACCT_INTL = AC.ACCT_INTL
+							 AND AD.UNUS_YSNO = '1'	/* 반제관리항목 */
+					   LEFT JOIN TA_SLIPRF SF		/* 전표관리항목 */
+							  ON SF.SLIP_NUMB = ST.SLIP_NUMB
+							 AND SF.SLIP_LINE = ST.SLIP_LINE
+							 AND SF.COND_CODE = AD.COND_CODE
+					   LEFT JOIN TA_SLIPRF SF0048		/* 전표관리항목 */
+							  ON SF0048.SLIP_NUMB = ST.SLIP_NUMB
+							 AND SF0048.SLIP_LINE = ST.SLIP_LINE
+							 AND SF0048.COND_CODE = '0048'	/* 만기일 관리항목 */
+				 WHERE AC.GUNB_YSNO = '1'			/* 건별반제여부 */
+				  /*AND ST.UNMC_YSNO = '0'*/			/* (NDS 마이그오류로 인해 주석처리) 미불완료여부 */
+				   AND ST.ACCT_UNIT = #ACCT_UNIT#	/* 회계단위 */
+				   AND AC.ACCT_INTL = #ACCT_INTL#	/* 계정과목 */
+				   AND SF.COND_CODE = #COND_CODE#	/* 관리항목코드 */
+				   AND ST.ACCT_DATE IS NOT NULL 	/* 발생전표 승인완료 된건만 인정한다. */
+		]]>
+	    <isNotEmpty prepend="AND" property="COND_VACD">
+	    	<![CDATA[
+					SF.COND_VACD = #COND_VACD#	/* 관리항목값 */
+			]]>
+		</isNotEmpty>
+		<![CDATA[				
+				) ST
+		 WHERE NVL(ST.SLIP_AMNT,0) - NVL(ST.BANJ_AMNT,0) <> 0	/* (NDS 마이그오류로 인해 조건절 추가) 정산완료건 UNMC_YSNO 값이 '1' 로 제대로 업데이트된 경우 불필요. */
+		 ORDER BY ST.SLIP_NUMB, ST.SLIP_LINE
+		]]>
+	</select>
+</sqlMap>

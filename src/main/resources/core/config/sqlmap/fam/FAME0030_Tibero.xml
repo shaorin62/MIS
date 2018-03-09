@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"                  
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">                             
+                                                                                                                      
+<sqlMap namespace="FAME0030">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김용성
+    작  성  일 : 2011.05.12
+    내      용 : FAMZ0010_Oracle 화면의 지출결의/전표등록 세부내역조회 Procedure
+********************************************************************************/
+-->
+	<select id="FAME0030.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+		/* FAME0030.SEARCH00 최초미결전표등록 */
+	 	SELECT SLIP_NUMB   /*전표번호*/
+              ,SLIP_LINE   /*전표순번*/
+              ,ACCT_GUBN   /* 사업장*/
+              ,SLIP_DATE   /*전표일자*/
+              ,ACCT_GUB1   /* 회계단위*/
+              ,ACCT_INTL   /*계정코드*/
+              ,SF_GET_ACCTNAME(ACCT_INTL) AS ACCT_NAME   /*계정명*/
+              ,DRCR_GUBN   /*차대구분*/
+              ,CURR_GUBN   /*통화구분*/
+              ,CURR_AMNT   /*환율*/
+              ,SLIP_AMNT   /*원화금액*/
+              ,FORI_AMNT   /*외화금액*/
+              ,USEX_DEPT   /*사용부서*/
+              ,SF_GET_DEPTNAME(USEX_DEPT) AS DEPT_NAME   /*사용부서*/
+              ,REMK_NAME   /*적요1*/
+              ,APPR_DATE   /*회계일자*/
+              ,COND_CODE
+              ,COND_VACD
+              ,'' 	AS COND_VANM /* 관리항목명*/	
+        FROM   TA_SLIPNT_BASE SB
+        ORDER  BY ACCT_INTL, SLIP_NUMB,SLIP_LINE
+              
+	]]>
+	</select>
+
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김용성
+    작  성  일 : 2011.05.12
+    내      용 : FAMZ0010_Oracle 기초 분개전표D Procedure
+********************************************************************************/
+-->	
+	<insert id="FAME0030.SAVE01" parameterClass="hashmap">
+	<![CDATA[
+        /* FAME0030.SAVE01 기초 분개전표D */
+        INSERT INTO TA_SLIPNT_BASE ( 
+             SLIP_NUMB      /* 전표번호 */
+            ,SLIP_LINE      /* 전표순번 */
+            ,ACCT_GUBN      /* 회계구분_사업장 */
+            ,SLIP_DATE      /* 전표일자 */
+            ,ACCT_GUB1      /* 회계단위 */
+            ,ACCT_INTL      /* 계정코드 */
+            ,DRCR_GUBN      /* 차대구분 */
+            ,CURR_GUBN      /* 통화구분 */
+            ,CURR_AMNT      /* 환율 */
+            ,SLIP_AMNT      /* 원화금액 */
+            ,FORI_AMNT      /* 외화금액 */
+            ,USEX_DEPT      /* 사용부서 */
+            ,REMK_NAME      /* 적요1 */
+            ,APPR_DATE      /* 승인일자 */
+            ,COND_CODE      /* 관리항목코드 */
+            ,COND_VACD      /* 관리항목값 */
+            ,INST_USID      /* 등록자 */
+            ,INST_DATE      /* 등록일시 */
+            ,WORK_USID      /* 수정자 */
+            ,WORK_DATE      /* 수정일시 */
+            ) 
+        VALUES 
+            ( 
+             #SLIP_NUMB#    /* 전표번호 */
+            ,#SLIP_LINE#    /* 전표순번 */
+            ,#ACCT_GUBN#    /* 회계구분_사업장 */
+            ,#SLIP_DATE#    /* 전표일자 */
+            ,#ACCT_GUB1#    /* 회계단위 */
+            ,#ACCT_INTL#    /* 계정코드 */
+            ,#DRCR_GUBN#    /* 차대구분 */
+            ,#CURR_GUBN#    /* 통화구분 */
+            ,#CURR_AMNT#    /* 환율 */
+            ,#SLIP_AMNT#    /* 원화금액 */
+            ,#FORI_AMNT#    /* 외화금액 */
+            ,#USEX_DEPT#    /* 사용부서 */
+            ,#REMK_NAME#    /* 적요1 */
+            ,#APPR_DATE#    /* 승인일자 */
+            ,#COND_CODE#    /* 관리항목코드 */
+            ,#COND_VACD#    /* 관리항목값 */
+            ,#UPDT_USID#    /* 등록자 */
+            ,SYSDATE        /* 등록일시 */
+            ,#UPDT_USID#    /* 수정자 */
+            ,SYSDATE        /* 수정일시 */
+            ) 
+	]]>
+	</insert>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김용성
+    작  성  일 : 2011.05.12
+    내      용 : FAMZ0010_Oracle 화면의 지출결의/전표등록 세부내역 수정 Procedure
+********************************************************************************/
+ -->
+	<update id="FAME0030.UPDATE01" parameterClass="hashmap">
+	<![CDATA[
+        /* FAME0030.UPDATE01 기초 분개전표D */
+        UPDATE TA_SLIPNT_BASE
+           SET  ACCT_GUBN = #ACCT_GUBN#  /* 회계구분_사업장 */
+               ,SLIP_DATE = #SLIP_DATE#  /* 전표일자 */
+               ,ACCT_GUB1 = #ACCT_GUB1#  /* 회계단위 */
+               ,ACCT_INTL = #ACCT_INTL#  /* 계정코드 */
+               ,DRCR_GUBN = #DRCR_GUBN#  /* 차대구분 */
+               ,CURR_GUBN = #CURR_GUBN#  /* 통화구분 */
+               ,CURR_AMNT = #CURR_AMNT#  /* 환율 */
+               ,SLIP_AMNT = #SLIP_AMNT#  /* 원화금액 */
+               ,FORI_AMNT = #FORI_AMNT#  /* 외화금액 */
+               ,USEX_DEPT = #USEX_DEPT#  /* 사용부서 */
+               ,REMK_NAME = #REMK_NAME#  /* 적요1 */
+               ,APPR_DATE = #APPR_DATE#  /* 승인일자 */
+               ,COND_CODE = #COND_CODE#  /* 관리항목코드 */
+               ,COND_VACD = #COND_VACD#  /* 관리항목값 */
+               ,WORK_USID = #UPDT_USID#  /* 수정자 */
+               ,WORK_DATE = SYSDATE      /* 수정일시 */
+         WHERE SLIP_NUMB  = #SLIP_NUMB#  /* 전표번호 */
+           AND SLIP_LINE  = #SLIP_LINE#  /* 전표순번 */
+			
+	]]>
+	</update>
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김용성
+    작  성  일 : 2011.05.12
+    내      용 : FAMZ0010_Oracle 화면의 지출결의/전표등록 세부내역 삭제 Procedure
+********************************************************************************/
+-->
+	<delete id="FAME0030.DELETE01" parameterClass="hashmap">
+	<![CDATA[
+        /* FAME0030.DELETE01 기초 분개전표D */
+        DELETE TA_SLIPNT_BASE
+         WHERE SLIP_NUMB  = #SLIP_NUMB#  /* 전표번호 */ 
+           AND SLIP_LINE  = #SLIP_LINE#  /* 전표순번 */ 	
+			
+	]]>
+	</delete>
+
+</sqlMap>

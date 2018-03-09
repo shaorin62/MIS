@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+/*******************************************************************************
+    작  성  자 : 김준수
+    작  성  일 : 2016.06.24
+    내      용 : TXMD0070_Oracle 일용근로소득 등록 및 관리
+********************************************************************************/
+ -->
+<sqlMap namespace="TXMD0070">
+ 
+        <!--********************************************** 일용근로소득 관리 프로그램의 자료 조회 **********************************************/-->
+    <select id="TXMD0070.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT   /* TXMD0070.SEARCH00.일용근로소득지급명세 조회  */
+                   A.CUST_CODE  /*소득자번호*/
+                  ,A.CUST_NAME  /*소득자성명*/
+                  ,A.TELE_NUMB  /*소득자전화번호*/
+                  ,B.SUPP_DATE AS SUPP_DATE         /*지급일자*/
+                  ,B.PERS_YYMM  /*소득귀속년월*/
+                  ,A.RERN_NUMB  /*소득자주민번호*/
+                  ,A.BIZR_NUMB  /*소득자사업자번호*/
+                  ,A.FORI_GUBN  /*내외국인구분*/
+                  ,SF_GET_COMMNAME('FORI_GUBN', A.FORI_GUBN) AS FORI_NAME    /*내외국인구분명*/
+                  ,B.WORK_DCNT  /*근무일수*/
+                  ,B.SUPP_KMAK AS GASE_TOKM  /*소득금액 */ /*총지급액으로 표시하도록 수정 (2011-03-07 : 장성환)*/
+                  ,B.OUTL_KMAK  /*필요경비*/
+                  ,B.TAXX_RATE  /*세율*/
+                  ,B.INCM_TAXX  /*소득세*/
+                  ,B.INHA_TAXX  /*주민세*/
+                  ,B.SEKM_TOKM  /*원천징수계*/
+                  ,A.RESI_GUBN  /*소득자거주구분*/
+                  ,SF_GET_COMMNAME('RESI_GUBN', A.RESI_GUBN) AS RESI_NAME   /*소득자거주구분명*/
+                  ,B.REMK_NOTE AS GITA_MEMO
+            FROM TA_CUSTXM A
+            LEFT OUTER JOIN TA_INCMXM B
+              ON A.CUST_CODE = B.CUST_CODE
+           WHERE A.CUST_CODE = DECODE(#CUST_CODE#, NULL, A.CUST_CODE, #CUST_CODE#)
+             AND B.INCM_TYCD = 'FA010030'
+             AND B.SUPP_DATE BETWEEN DECODE(#PAYY_DATE1#, NULL, '19000101', #PAYY_DATE1#) AND DECODE(#PAYY_DATE2#, NULL, '29991231', #PAYY_DATE2#)
+           ORDER BY PAYX_DATE, TELE_NUMB
+            
+        ]]>
+    </select>
+</sqlMap>

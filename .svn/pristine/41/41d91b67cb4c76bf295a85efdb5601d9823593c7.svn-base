@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TMMA0100">
+
+<!--
+/*******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.110.17
+   내     용   : 다국어명칭관리 헤더 조회
+********************************************************************************/
+ -->
+    <select id="TMMA0100.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+    
+    <isEqual property="MTLN_TGTY" compareValue="COMD_CODE">
+        <![CDATA[
+            SELECT /* TMMA0100.SEARCH00.다국어명칭관리 헤더 조회-COMD_CODE */  
+                   #MTLN_TGTY#                  AS MTLN_TGTY                /* 다국어대상유형 */ 
+                 , B.COMM_CODE                  AS MTLN_DTCD                /* 다국어자료코드(코드) */
+                 , B.COMM_CDNM                  AS MTLN_DTNM                /* 다국어자료코드명(명칭) */
+                 , A.COMD_CODE                  AS MTLN_DDCD                /* 다국어세부자료코드(세부코드) */
+                 , A.COMD_CDNM                  AS MTLN_DDNM                /* 다국어세부자료코드명(세부명칭) */
+                 , LPAD(A.SORT_ORDR, 5, '0')    AS SORT_ORDR                /* 정렬순서 */
+              FROM TM_CODEXD A                                              /* [공통코드상세] */
+                   INNER JOIN TM_CODEXH 
+                            B ON A.COMM_CODE = B.COMM_CODE
+             WHERE 1 = 1 
+        ]]>
+        <isNotEmpty prepend="AND" property="MTLN_DTCD">
+                   (   B.COMM_CODE LIKE '%' || #MTLN_DTCD# || '%'
+                    OR B.COMM_CDNM LIKE '%' || #MTLN_DTCD# || '%' )         /* 다국어자료코드/명...코드/명칭/세부코드/세부명칭 */
+        </isNotEmpty>   
+        <![CDATA[ 
+             ORDER BY B.COMM_CODE, A.SORT_ORDR, A.COMD_CODE
+        ]]>
+    </isEqual>
+    
+    <isEqual property="MTLN_TGTY" compareValue="MSGE_CODE">
+        <![CDATA[
+            SELECT /* TMMA0100.SEARCH00.다국어명칭관리 헤더 조회-MSGE_CODE */ 
+                   #MTLN_TGTY# AS MTLN_TGTY                                 /* 다국어대상유형 */ 
+                 , #MTLN_TGTY# AS MTLN_DTCD                                 /* 다국어자료코드(코드) */
+                 , SF_GET_COMMNAME('MTLN_TGTY', #MTLN_TGTY#) AS MTLN_DTNM   /* 다국어자료코드명(명칭) */ 
+                 , A.MSGE_CODE AS MTLN_DDCD                                 /* 다국어세부자료코드(세부코드) */
+                 , A.MSGE_CNTT AS MTLN_DDNM                                 /* 다국어세부자료코드명(세부명칭) */
+                 , 0           AS SORT_ORDR                                 /* 정렬순서 */
+              FROM TM_MESSXM A                                              /* [공통메시지] */
+             WHERE 1 = 1 
+        ]]>
+        <isNotEmpty prepend="AND" property="MTLN_DTCD">
+                   (   A.MSGE_CODE LIKE '%' || #MTLN_DTCD# || '%'
+                    OR A.MSGE_CNTT LIKE '%' || #MTLN_DTCD# || '%' )         /* 다국어자료코드/명...메시지코드,명칭 */
+        </isNotEmpty>   
+        <![CDATA[ 
+             ORDER BY A.MSGE_CODE, A.MSGE_CNTT
+        ]]>
+    </isEqual>
+    
+    <isEqual property="MTLN_TGTY" compareValue="MENU_IDXX">
+        <![CDATA[
+            SELECT /* TMMA0100.SEARCH00.다국어명칭관리 헤더 조회-MENU_IDXX */ 
+                   #MTLN_TGTY# AS MTLN_TGTY                                /* 다국어대상유형 */ 
+                 , #MTLN_TGTY# AS MTLN_DTCD                                /* 다국어자료코드(코드) */
+                 , SF_GET_COMMNAME('MTLN_TGTY', #MTLN_TGTY#) AS MTLN_DTNM  /* 다국어자료코드명(명칭) */
+                 , A.MENU_IDXX AS MTLN_DDCD                                /* 다국어세부자료코드(세부코드) */       
+                 , A.MENU_NAME AS MTLN_DDNM                                /* 다국어세부자료코드명(세부명칭) */
+                 , A.SORT_IDXX AS SORT_ORDR                                /* 정렬순서 */
+              FROM VI_MENUXM A                                             /* [메뉴구조] */
+             WHERE 1 = 1 
+        ]]>
+        <isNotEmpty prepend="AND" property="MTLN_DTCD">
+                   (   A.MENU_IDXX LIKE '%' || #MTLN_DTCD# || '%'
+                    OR A.MENU_NAME LIKE '%' || #MTLN_DTCD# || '%' )         /* 다국어자료코드/명...메뉴ID,명칭 */
+        </isNotEmpty>   
+        <![CDATA[ 
+             ORDER BY A.MENU_IDXX, A.MENU_NAME, A.SORT_IDXX
+        ]]>
+    </isEqual>  
+    
+    <isEqual property="MTLN_TGTY" compareValue="LABEL">
+        <![CDATA[
+            SELECT DISTINCT 
+                   #MTLN_TGTY# AS MTLN_TGTY                   /* 다국어대상유형 */  
+                 , A.MTLN_DTCD                                /* 다국어자료코드(코드) - 프로그램ID */
+                 , B.PROG_NAME AS MTLN_DTNM                   /* 다국어자료코드명(명칭) - 프로그램명 */
+                 , A.MTLN_DDCD                                /* 다국어세부자료코드(세부코드) */
+                 , A.MTLN_DDCD AS MTLN_DDNM                   /* 다국어세부자료코드명(세부명칭) */
+                 , 0           AS SORT_ORDR                   /* 정렬순서 */
+              FROM TM_MTLNXM A                                /* [다국어명칭] */       				
+                   LEFT JOIN TM_PROGXM B                      /* [프로그램정보] */
+                          ON A.MTLN_DTCD = B.PROG_IDXX        /* 프로그램 ID */
+             WHERE A.MTLN_TGTY = 'LABEL'                      /* 레이블 */
+        ]]>
+        <isNotEmpty prepend="AND" property="MTLN_DTCD">
+                   (   A.MTLN_DTCD LIKE '%' || #MTLN_DTCD# || '%'
+                    OR B.PROG_NAME LIKE '%' || #MTLN_DTCD# || '%'
+                    OR A.MTLN_DDCD LIKE '%' || #MTLN_DTCD# || '%' )         /* 다국어자료코드/명...메뉴ID,명칭 */
+        </isNotEmpty>   
+        <![CDATA[ 
+             ORDER BY A.MTLN_DTCD, A.MTLN_DDCD
+        ]]>
+    </isEqual>  
+
+    </select>
+
+<!--
+/*******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.110.17
+   내     용   : 다국어명칭관리상세 조회
+********************************************************************************/
+ -->
+    <select id="TMMA0100.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+        <![CDATA[
+            SELECT /* TMMA0100.SEARCH01.다국어명칭관리상세 조회  */
+                   #MTLN_TGTY# AS MTLN_TGTY             /* 다국어대상유형 */
+                 , #MTLN_DTCD# AS MTLN_DTCD             /* 다국어자료코드 */
+                 , #MTLN_DDCD# AS MTLN_DDCD             /* 다국어세부자료코드 */
+                 , A.COMD_CODE AS SYST_LNCD             /* 시스템언어코드 */
+                 , B.LNSP_NAME                          /* 언어별 명칭 */
+                 , B.REMK_200X                          /* 비고 */
+              FROM TM_CODEXD A                          /* [공통코드상세] */
+                   LEFT JOIN TM_MTLNXM B                /* [다국어명칭] */
+                          ON B.MTLN_TGTY = #MTLN_TGTY#  /* MTLN_TGTY.다국어대상유형 */
+                         AND B.MTLN_DTCD = #MTLN_DTCD#  /* MTLN_DTCD.다국어자료코드 */
+                         AND B.MTLN_DDCD = #MTLN_DDCD#  /* MTLN_DDCD.다국어세부자료코드 */
+                         AND A.COMD_CODE = B.SYST_LNCD  
+            WHERE A.COMM_CODE = 'SYST_LNCD'
+              AND A.COMD_CODE <> 'ko'
+            ORDER BY SORT_ORDR           
+        ]]>
+    </select>
+<!--
+/*******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.110.17
+   내     용   : 다국어명칭관리상세 저장
+********************************************************************************/
+ -->
+    <insert id="TMMA0100.SAVE00" parameterClass="hashmap">
+    <![CDATA[
+        MERGE INTO TM_MTLNXM T
+        USING (
+               SELECT /* TMMA0100.SEARCH01.다국어명칭관리상세 조회  */
+                      A.COMD_CODE AS SYST_LNCD             /* 시스템언어코드 */
+                    , B.LNSP_NAME                          /* 언어별 명칭 */
+                    , B.REMK_200X                          /* 비고 */
+                    , #MTLN_TGTY# AS MTLN_TGTY             /* 다국어대상유형 */
+                    , #MTLN_DTCD# AS MTLN_DTCD             /* 다국어자료코드 */
+                    , #MTLN_DDCD# AS MTLN_DDCD             /* 다국어세부자료코드 */
+                FROM TM_CODEXD A                           /* [공통코드상세] */
+                LEFT OUTER JOIN TM_MTLNXM B                /* [다국어명칭] */
+                             ON B.MTLN_TGTY = #MTLN_TGTY#  /* MTLN_TGTY.다국어대상유형 */
+                            AND B.MTLN_DTCD = #MTLN_DTCD#  /* MTLN_DTCD.다국어자료코드 */
+                            AND B.MTLN_DDCD = #MTLN_DDCD#  /* MTLN_DDCD.다국어세부자료코드 */
+                            AND A.COMD_CODE = B.SYST_LNCD
+               WHERE A.COMM_CODE = 'SYST_LNCD'    
+                 AND A.COMD_CODE = #SYST_LNCD#
+            ) F
+           ON ( T.MTLN_TGTY = F.MTLN_TGTY   /* MTLN_TGTY.다국어대상유형 */
+          AND   T.MTLN_DTCD = F.MTLN_DTCD   /* MTLN_DTCD.다국어자료코드 */
+          AND   T.MTLN_DDCD = F.MTLN_DDCD   /* MTLN_DDCD.다국어세부자료코드 */ 
+          AND   T.SYST_LNCD = F.SYST_LNCD  )
+         WHEN MATCHED THEN
+              UPDATE 
+                 SET LNSP_NAME = #LNSP_NAME#    /* 언어별명칭 */
+                   , UPDT_USID = #UPDT_USID#    /* 수정작업자 */
+                   , UPDT_DATE = SYSDATE        /* 수정일시*/
+                   , REMK_200X = #REMK_200X#    /* 비고200 */
+               WHERE T.MTLN_TGTY = F.MTLN_TGTY  /* MTLN_TGTY.다국어대상유형 */
+                 AND T.MTLN_DTCD = F.MTLN_DTCD  /* MTLN_DTCD.다국어자료코드 */
+                 AND T.MTLN_DDCD = F.MTLN_DDCD  /* MTLN_DDCD.다국어세부자료코드 */
+                 AND T.SYST_LNCD = F.SYST_LNCD  /* MTLN_DDCD.다국어세부자료코드 */
+         WHEN NOT MATCHED THEN 
+              INSERT (  
+                     MTLN_TGTY        /* 다국어대상유형 */
+                   , MTLN_DTCD        /* 다국어자료코드 */
+                   , MTLN_DDCD        /* 다국어세부자료코드 */
+                   , SYST_LNCD        /* 시스템언어코드 */
+                   , LNSP_NAME        /* 언어별명칭 */
+                   , INST_USID        /* 입력작업자 */
+                   , INST_DATE        /* 입력일시 */
+                   , UPDT_USID        /* 수정작업자 */
+                   , UPDT_DATE        /* 수정일시 */
+                   , REMK_200X        /* 비고200 */
+              )
+              VALUES (
+                     #MTLN_TGTY#       /* 다국어대상유형 */
+                   , #MTLN_DTCD#       /* 다국어자료코드 */
+                   , #MTLN_DDCD#       /* 다국어세부자료코드 */
+                   , #SYST_LNCD#       /* 시스템언어코드 */
+                   , #LNSP_NAME#       /* 언어별명칭 */
+                   , #UPDT_USID#       /* 입력작업자 */
+                   , SYSDATE           /* 수정일시*/
+                   , #UPDT_USID#       /* 수정작업자 */
+                   , SYSDATE           /* 수정일시*/
+                   , #REMK_200X#       /* 비고200 */
+              )
+    ]]>
+    </insert>
+    
+<!--
+/*******************************************************************************
+   작 성 자   : 황치웅
+   작 성 일   : 2016.110.17
+   내     용   : 다국어명칭관리상세 삭제
+********************************************************************************/
+ -->
+    <delete id="TMMA0100.DELETE00" parameterClass="hashmap">
+    <![CDATA[
+        DELETE FROM TM_MTLNXM  /* TMMA0100.DELETE00.다국어명칭관리상세 삭제 *//* [다국어명칭] */
+         WHERE MTLN_TGTY = #MTLN_TGTY#   /* 다국어대상유형 */
+           AND MTLN_DTCD = #MTLN_DTCD#   /* 다국어자료코드 */
+           AND MTLN_DDCD = #MTLN_DDCD#   /* 다국어세부자료코드 */
+           AND SYST_LNCD = #SYST_LNCD#   /* 시스템언어코드 */
+    ]]>        
+    </delete>
+</sqlMap>

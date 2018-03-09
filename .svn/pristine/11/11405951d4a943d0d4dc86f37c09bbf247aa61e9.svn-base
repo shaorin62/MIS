@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="WFMB0020">
+
+<!--
+ *   프로그램명 : 학자금신청 결재내역  SQLMAP
+ *   작 성 일 : 2016.09.12
+ *   작 성 자 : 전종원
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+ 
+<!--
+/*******************************************************************************
+	작 성 자 : 전종원
+	작 성 일 : 2016.09.12
+	내     용 : 학자금신청 결재내역 조회
+	파라미터 : 
+********************************************************************************/
+-->
+	<select id="WFMB0020.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  A.DOCU_IDXX 				/*결재문서 DOC_ID*/
+		       ,A.APPR_SEQN 				/*결재문서 SEQ*/
+		       ,A.APPR_DATE					/*신청일자*/
+		       ,B.EMPL_NAME	AS APPR_EMPL_NAME /*신청자 성명*/
+		       ,A.EMPL_NUMB	AS APPR_EMPL_NUMB /*신청자 사원번호*/
+		       ,A.SUBJ_NAME					/*결재문서 제목*/
+		       ,A.APPR_STAT 				/*결재상태*/
+		       ,SF_GET_COMMNAME('APPR_STAT', A.APPR_STAT) APPR_STAT_STR /*결재상태*/
+		       ,SF_GET_COMMNAMEREF('APPR_STAT', A.APPR_STAT, '1') APPR_STAT_PROC /*결재상태*/
+		       ,A.DEPT_CODE					/*신청자 부서*/
+		       ,A.ENDX_DATE					/*결재완료일자*/
+		       ,A.INST_USID					/*입력작업자*/
+		       ,A.INST_DATE					/*입력일시*/
+		       ,A.UPDT_USID					/*수정작업자*/
+		       ,A.UPDT_DATE					/*수정일시*/
+		       ,'0' CHK_BOX					/*체크박스*/
+		  FROM TM_APPRXH A					/*결재테이블*/
+		  	LEFT OUTER JOIN HR_MASTXM B		/*인사마스터 테이블*/
+		  	  ON A.EMPL_NUMB = B.EMPL_NUMB   
+		 WHERE A.APPR_DATE BETWEEN #APPR_DATE1# AND #APPR_DATE2#
+	]]>
+		<isNotEmpty prepend="AND" property="DOCU_IDXX">
+			   A.DOCU_IDXX = #DOCU_IDXX#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="EMPL_NUMB">
+			   A.EMPL_NUMB = #EMPL_NUMB#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="APPR_STAT">
+			   A.APPR_STAT = #APPR_STAT#
+		</isNotEmpty>
+	<![CDATA[ 
+		ORDER BY A.APPR_DATE desc, A.APPR_SEQN
+	]]>
+	</select>	
+	
+<!--
+/*******************************************************************************
+	작 성 자 : 전종원
+	작 성 일 : 2016.09.12
+	내     용 : 학자금결재 SEQ 조회 
+	비     고 : SEQ 사용해서 하려다가 MAX + 1로 바뀌어 더이상 사용안함. 
+	파라미터 : 
+********************************************************************************/
+-->
+	<select id="WFMB0020.SEARCH01" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[ 
+		SELECT  NVL(MAX(APPR_SEQN) + 1, TO_CHAR(SYSDATE,'YYYYMMDD')||LPAD('1',5,0)) APPR_SEQN
+		  FROM  TM_APPRXH
+         WHERE  APPR_SEQN LIKE TO_CHAR(SYSDATE,'YYYYMMDD')||'%'
+	]]>
+	</select>	
+	
+<!--
+/*******************************************************************************
+	작  성  자 : 전종원
+	작  성  일 : 2016.09.06
+	내       용 : 직무 삭제
+********************************************************************************/
+-->
+	<delete id="WFMB0020.DELETE00" parameterClass="hashmap">
+	<![CDATA[
+        DELETE FROM TM_APPRXH 
+         WHERE DOCU_IDXX   = #DOCU_IDXX#      /* 결재문서 DOC_ID */
+           AND APPR_SEQN   = #APPR_SEQN#         /* 결재문서 SEQ */
+	]]>
+	</delete>
+</sqlMap>

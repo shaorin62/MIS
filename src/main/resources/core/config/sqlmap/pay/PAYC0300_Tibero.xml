@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PAYC0300">
+
+<!--
+ *   프로그램명 : 전달사항관리 데이터 처리 SQLMAP
+ *   작 성 일 : 2016.07.27
+ *   작 성 자 : 고민주
+ *   비   고 :
+ *   Copyright (c) 2016 Inbus Co.,Ltd All Rights reserved.
+ -->
+	<!--
+	 작 성 자 : 고민주
+	 작 성 일 : 2016.07.27
+	 내    용 : 급여 테이블 조회
+	 파라미터 : 
+	-->
+	<select id="PAYC0300.SEARCH00" parameterClass="hashmap" resultClass="hashmap">
+	<![CDATA[
+			SELECT	A.PAYX_DATE
+				,	A.WAGE_CODE
+				,	B.EMPL_NUMB	/*사원번호*/  
+				,	E.EMPL_NAME	/*성명*/  
+				,	SF_GET_SECTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS SECT_NAME 	/*부실*/  
+				,	SF_GET_DEPTNAME2(B.DEPT_CODE,A.PAYX_DATE) AS DEPT_NAME 	/*부서*/  
+				,	F.COMD_CDNM		AS CPOS_NAME							/*직급*/  
+				,	SF_GET_COMMNAME('DUTY_CODE', B.DUTY_CODE) AS DUTY_NAME	/*직무*/ 
+				,	B.REMK_1000		
+			FROM PY_PMDIRY A    
+			INNER JOIN PY_PMMAST B  
+				ON A.PAYX_DATE = B.PAYX_DATE  
+				AND A.WAGE_CODE = B.WAGE_CODE 
+			LEFT OUTER JOIN HR_MASTXM E
+				ON E.EMPL_NUMB = B.EMPL_NUMB 
+		  	LEFT OUTER JOIN VI_DEPTXM D  
+			    ON B.DEPT_CODE = D.DEPT_CODE 
+			LEFT OUTER JOIN TM_CODEXD F  
+				ON F.COMM_CODE = 'CPOS_CODE'  
+				AND F.COMD_CODE = B.CPOS_CODE   			  
+			WHERE A.PAYX_DATE = #PAYX_DATE#   
+			AND A.WAGE_CODE = #WAGE_CODE#
+	]]>
+	<isNotEmpty prepend="AND" property="DEPT_CODE">			  
+	     	D.DEPT_FCOD LIKE SF_GET_DEPTFCOD(#DEPT_CODE#) || '%'
+	</isNotEmpty>	
+	<isNotEmpty prepend="AND" property="EMPL_NUMB">			  
+	  	 	B.EMPL_NUMB = #EMPL_NUMB#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="CLSD_CODE">			  
+	     	B.CLSD_CODE = #CLSD_CODE#
+	</isNotEmpty>
+			ORDER BY D.DEPT_FCOD, F.SORT_ORDR, E.ENCO_DATE 	
+	</select>
+
+	<!--
+	 작 성 자 : 고민주
+	 작 성 일 : 2016.07.27
+	 내    용 : 급여 테이블 수정
+	 파라미터 : 
+	-->
+	<procedure id="PAYC0300.UPDATE00" parameterClass="hashmap">
+	<![CDATA[
+			UPDATE	PY_PMMAST
+			SET		REMK_1000 = #REMK_1000#
+			WHERE	PAYX_DATE = #PAYX_DATE#   
+			AND		WAGE_CODE = #WAGE_CODE#
+			AND		EMPL_NUMB = #EMPL_NUMB#
+	]]>
+	</procedure>
+
+</sqlMap>
